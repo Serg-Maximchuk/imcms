@@ -26,9 +26,9 @@
     <property name="user"                  value="${webroot}/user"/>
     <property name="javascript"            value="${webroot}/javascript"/>
     <property name="adminbuttons"          value="${imcmsimages}/admin"/>
-    <property name="shop"	           	   value="${webroot}/shop"/>
+	<property name="shop"	           	   value="${webroot}/shop"/>
 	<property name="poll"	           	   value="${webroot}/poll"/>
-    <property name="magazinesubscriptions" value="${webroot}/magazinesubscriptions"/>
+	<property name="magazinesubscriptions" value="${webroot}/magazinesubscriptions"/>
 
     <!-- 'WEB-INF' - Everything put here is private to the webapp -->
     <property name="WEB-INF"        value="${webroot}/WEB-INF"/>
