@@ -252,13 +252,13 @@ public class AdminConference extends Administrator {
 				
 						debateTags.put( "DEBATE", queryResultDebate[k][1] );
 						debateTags.put( "DATE", queryResultDebate[k][2] );
-						debateList.append( (Parser.parseTags( new StringBuffer( htmlDebateElement ), '#', " <>\n\r\t", debateTags, true, 1 )).toString() );
+						debateList.append( (Parser.parseTags( new StringBuffer( htmlDebateElement ), '#', " <>\n\r\t", (java.util.Map)debateTags, true, 1 )).toString() );
 						
 					}
 					
 					forumTags.put("FORUM", queryResultForum[j][1] );
      				forumTags.put("DEBATE_LIST", debateList.toString() );
-					forumList.append( (Parser.parseTags( new StringBuffer( htmlForumElement ), '#', " <>\n\r\t", forumTags, true, 1 )).toString() );
+					forumList.append( (Parser.parseTags( new StringBuffer( htmlForumElement ), '#', " <>\n\r\t", (java.util.Map)forumTags, true, 1 )).toString() );
 				}
 				
 				if ( queryResultForum.length > 0 ) {
@@ -266,7 +266,7 @@ public class AdminConference extends Administrator {
 					conferenceTags.put( "META_ID", metaId );
 	     			conferenceTags.put( "CONFERENCE", listOfConferences[i][1] );
 	     			conferenceTags.put( "FORUM_LIST", forumList.toString() );
-					conferencesListTag.append( (Parser.parseTags( new StringBuffer( htmlConferenceElement ), '#', " <>\n\r\t", conferenceTags, true, 1 )).toString() );
+					conferencesListTag.append( (Parser.parseTags( new StringBuffer( htmlConferenceElement ), '#', " <>\n\r\t", (java.util.Map)conferenceTags, true, 1 )).toString() );
 				}
 			}
 			
