@@ -37,7 +37,10 @@ if ( meta_id != null ){
 				int text_no = Integer.parseInt( allQuestions[i][3]);
 				String question_text = getText( imcref, Integer.parseInt(meta_id), text_no );
 				
-				out.write( getQuestionResult(imcref, poll, Integer.parseInt(meta_id), question_id, question_no, question_text, Integer.parseInt(diagram_width), image_height, image_url ).toString() );
+				//lets show the result if question textstring not is empty   
+				if ( !("").equals(question_text) ){
+					out.write( getQuestionResult(imcref, poll, Integer.parseInt(meta_id), question_id, question_no, question_text, Integer.parseInt(diagram_width), image_height, image_url ).toString() );
+				}
 			}
 		}
 	}

@@ -32,7 +32,9 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 			set_cookie = "0";
 			show_result = "1";
 		*/
-				
+		
+		// if we not already have create a poll in db for this meta 
+		// lets do it now and then get the new poll from db.		
 		if ( poll_param == null || poll_param.length == 0 ) {
 			imcref.sqlUpdateProcedure( "Poll_AddNew ", new String[] { ""+meta_id } ) ;
 			poll_param = imcref.sqlProcedure( "Poll_GetOne ", new String[] { ""+meta_id } ) ; 
@@ -47,7 +49,8 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 			
 			if ( question_no > 0 ) {
 				String[] sql_data =  imcref.sqlProcedure( "Poll_GetQuestion ", new String[] { ""+poll_id, ""+question_no } ) ; 
-					
+				
+				// if we not already have create the question in db lets do it now.	
 				if ( sql_data == null || sql_data.length == 0 || ("-1").equals(sql_data[3]) ){
 					imcref.sqlUpdateProcedure("Poll_AddQuestion ", new String[] { ""+poll_id, ""+question_no, ""+text_no } ) ;
 				}
@@ -74,6 +77,7 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 				
 					sql_data = imcref.sqlProcedure( "Poll_GetAnswer ", new String[] { ""+question_id, ""+option_no } ) ;
 					
+					// if we not already have create the answer in db lets do it now.
 					if ( sql_data == null || sql_data.length == 0 ){
 						imcref.sqlUpdateProcedure("Poll_AddAnswer ", new String[] { ""+question_id, ""+text_no, ""+option_no } ) ;	
 					}
@@ -100,7 +104,8 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 				if ( question_id > 0 ) {
 			
 					sql_data = imcref.sqlProcedure( "Poll_GetAnswer ", new String[] { ""+question_id, ""+option_no } ) ;	
-				
+					
+					// if we have an answer item in db lets set it´s answerpoint value
 					if ( sql_data != null && sql_data.length > 0 ){
 						imcref.sqlUpdateProcedure("Poll_SetAnswerPoint ", new String[] { sql_data[0], textstring.trim() } ) ;
 					}
