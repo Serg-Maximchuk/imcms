@@ -36,7 +36,6 @@ public class GetDoc extends HttpServlet {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
 
         int meta_id;
-        Utility.setDefaultHtmlContentType( res );
 
         try {
             meta_id = Integer.parseInt( req.getParameter( "meta_id" ) );
@@ -140,6 +139,7 @@ public class GetDoc extends HttpServlet {
         }
 
         if ( document instanceof FormerExternalDocument ) {
+            Utility.setDefaultHtmlContentType( res );
             redirectToExternalDocumentTypeWithAction( document, res, "view" );
             // Log to accesslog
             trackLog.info( documentRequest );
@@ -178,6 +178,7 @@ public class GetDoc extends HttpServlet {
             trackLog.info( documentRequest );
             return null;
         } else if ( document instanceof HtmlDocumentDomainObject ) {
+            Utility.setDefaultHtmlContentType( res );
             String html_str_temp = imcref.isFramesetDoc( meta_id );
             if ( html_str_temp == null ) {
                 throw new RuntimeException( "Null-frameset encountered." );
@@ -221,6 +222,7 @@ public class GetDoc extends HttpServlet {
             trackLog.info( documentRequest );
             return null;
         } else {
+            Utility.setDefaultHtmlContentType( res );
             String externalparam = null;
             if ( req.getParameter( "externalClass" ) != null || req.getAttribute( "externalClass" ) != null ) {
                 String className;
