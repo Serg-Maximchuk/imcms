@@ -31,13 +31,16 @@ public class MagazineSubscriptions extends HttpServlet {
 	/* Where to go next */
 	String forwardTo = req.getParameter("next_url") ;
 
-	User user = null ;
-	/* Check if user logged on */
-	String no_permission_url =  Prefs.get   ( "admin_url",  IMCConstants.HOST_PROPERTIES );
-	if ( (user=Check.userLoggedOn(req,res,no_permission_url))==null ) {
+	HttpSession session = req.getSession(true) ;
+	User user = (User)session.getAttribute("logon.isDone") ;
+
+	/* Check if user logged on as someone else than "user" */
+	if ( null == user || "user".equals(user.getLoginName()) ) {
 	    String targetURL = HttpUtils.getRequestURL(req).append('?').append(urlEncodeParameters(flagParameterValues, setflagParameterValues, forwardTo)).toString() ;
 	    log.debug("TargetUrl: "+targetURL) ;
-	    req.getSession(true).setAttribute("login.target", targetURL) ;
+	    session.setAttribute("login.target", targetURL) ;
+	    String loginUrl =  Prefs.get ( "admin_url",  IMCConstants.HOST_PROPERTIES );
+	    res.sendRedirect(loginUrl) ;
 	    return ;
 	}
 
