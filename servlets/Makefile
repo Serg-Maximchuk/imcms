@@ -10,7 +10,6 @@ CLASSES = AddDoc.class \
           ChangeExternalDoc2.class \
           ChangeImage.class \
           ChangeText.class \
-          ChangeUrl.class \
           FileAdmin.class \
           GetDoc.class \
           GetExistingDoc.class \
