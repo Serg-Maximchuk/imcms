@@ -35,6 +35,8 @@ public class ShoppingItem implements Comparable {
        get-method for descriptions
 
        @return the value of descriptions
+
+       @deprecated Use getDescription() instead.
     **/
     public Map getDescriptions()  {
 	return this.descriptions;
@@ -44,9 +46,32 @@ public class ShoppingItem implements Comparable {
        set-method for descriptions
 
        @param descriptions Value for descriptions
+
+       @deprecated Use setDescription() instead.
     **/
     public void setDescriptions(Map descriptions) {
 	this.descriptions = descriptions;
+    }
+
+
+    /**
+       Set one description of the item.
+    **/
+    public void setDescription(int i, String description) {
+	if (null == description) {
+	    descriptions.remove(new Integer(i)) ;
+	} else {
+	    descriptions.put(new Integer(i), description) ;
+	}
+    }
+
+    /**
+       Get one description of the item.
+    **/
+    public String getDescription(int i) {
+	String description = (String)descriptions.get(new Integer(i)) ;
+
+	return null == description ? "" : description ;
     }
 
     /**
@@ -71,10 +96,12 @@ public class ShoppingItem implements Comparable {
     /** Compare a ShoppingItem to another. **/
     public int compareTo(Object o) {
 	ShoppingItem item = (ShoppingItem)o ;
-	if (equals(item)) {
-	    return 0 ;
-	}
 
+	int descriptionComparison = compareDescriptionTo(item) ;
+	return 0 != descriptionComparison ? descriptionComparison : comparePriceTo(item) ;
+    }
+
+    int compareDescriptionTo(ShoppingItem item) {
 	/* Compare descriptions. */
 	Iterator it1 = descriptions.entrySet().iterator() ;
 	Iterator it2 = item.descriptions.entrySet().iterator() ;
@@ -84,7 +111,7 @@ public class ShoppingItem implements Comparable {
 		Map.Entry desc2 = (Map.Entry)it2.next() ;
 		int descCompare = ((Integer)desc1.getKey()).compareTo(desc2.getKey()) ;
 		if (0 != descCompare) {
-		    return descCompare ;
+		    return -descCompare ;
 		}
 		descCompare = ((String)desc1.getValue()).compareTo(desc2.getValue()) ;
 		if (0 != descCompare) {
@@ -94,6 +121,10 @@ public class ShoppingItem implements Comparable {
 		return it1.hasNext() ? 1 : -1 ; // Does it1 have more descriptions?
 	    }
 	}
+	return 0 ;
+    }
+
+    int comparePriceTo(ShoppingItem item) {
 	/* Compare price */
 	if (price < item.price) {
 	    return -1 ;
