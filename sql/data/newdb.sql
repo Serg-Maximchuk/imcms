@@ -52,17 +52,13 @@ INSERT INTO templategroups
 INSERT INTO templates_cref
  VALUES(2,7)
   
- INSERT INTO templates 
+INSERT INTO templates 
  VALUES (8,'poll_result_default_template.html', 'poll_result_default_template', 'se', 0,0,0)
-INSERT INTO templategroups
- VALUES (2, 'Example-templates')
 INSERT INTO templates_cref
  VALUES(2,8)
  
- INSERT INTO templates 
+INSERT INTO templates 
  VALUES (9,'poll_confirmation_template.html', 'poll_confirmation_template', 'se', 0,0,0)
-INSERT INTO templategroups
- VALUES (2, 'Example-templates')
 INSERT INTO templates_cref
  VALUES(2,9)
  
