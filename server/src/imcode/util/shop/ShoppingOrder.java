@@ -18,8 +18,7 @@ public class ShoppingOrder extends ShoppingCart {
     }
 
     public ShoppingOrder(ShoppingCart cart) {
-	super() ;
-	this.cart = cart.cart ;
+	this.addAll(cart) ;
     }
 
     /**

@@ -73,9 +73,9 @@ function isSent() {
 
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
-<form action="/servlet/PutInShoppingCart" method="POST">
-<input type="hidden" name="next" value="/shop/cart.jsp">
-<input type="hidden" name="send_next" value="/shop/cart.jsp?sent=yes">
+<form action="@servleturl@/PutInShoppingCart" method="POST">
+<input type="hidden" name="next" value="@rooturl@/shop/cart.jsp">
+<input type="hidden" name="send_next" value="@rooturl@/shop/cart.jsp?sent=yes">
 <input type="hidden" name="priceformatgroupingseparator" value=".">
 <tr>
 	<td colspan="7" class="dark_beigebg" valign="top" height="26">

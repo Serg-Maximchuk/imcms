@@ -94,7 +94,17 @@ public class ShoppingOrderSystemImpl implements ShoppingOrderSystem {
     }
 
     /** Add a shopping order. **/
-    public void addShoppingOrder(ShoppingOrder theOrder) {
+    public void addShoppingOrder(ShoppingOrder theOrder) throws NullPointerException {
+
+	User user = theOrder.getUser() ;
+	Date datetime = theOrder.getDatetime() ;
+	if (null == user) {
+	    throw new NullPointerException("null == user") ;
+	}
+	if (null == datetime) {
+	    throw new NullPointerException("null == datetime") ;
+	}
+
 
 	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
 

@@ -169,6 +169,8 @@ public class PutInShoppingCart extends HttpServlet {
 	    ShoppingOrderSystem shoppingOrderSystem = imcref.getShoppingOrderSystem() ;
 
 	    ShoppingOrder theOrder = new ShoppingOrder(cart) ;
+	    theOrder.setUser(user) ;
+	    theOrder.setDatetime(new Date()) ;
 
 	    /* Store the order in the database */
 	    shoppingOrderSystem.addShoppingOrder(theOrder) ;
