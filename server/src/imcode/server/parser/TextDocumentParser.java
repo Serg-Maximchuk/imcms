@@ -100,14 +100,7 @@ public class TextDocumentParser implements imcode.server.IMCConstants {
             String param_value = paramsToParse.getParameter();
             String extparam_value = paramsToParse.getExternalParameter();
 
-            String[] user_permission_set = ImcmsAuthenticatorAndUserMapper.sprocGetUserPermissionSet( serverObject, meta_id_str, user_id_str );
-            if ( user_permission_set == null ) {
-                log.error( "parsePage: GetUserPermissionset returned null" );
-                return ( "GetUserPermissionset returned null" );
-            }
-
-            int user_set_id = Integer.parseInt( user_permission_set[0] );
-            int user_perm_set = Integer.parseInt( user_permission_set[1] );
+            DocumentMapper documentMapper = serverObject.getDocumentMapper();
 
             boolean textmode = false;
             boolean imagemode = false;
@@ -116,12 +109,25 @@ public class TextDocumentParser implements imcode.server.IMCConstants {
             boolean includemode = false;
 
             if ( flags > 0 ) {
+                boolean isSuperAdmin = serverObject.getUserAndRoleMapper().hasSuperAdminRole( user ) ;
 
-                textmode = ( flags & PERM_DT_TEXT_EDIT_TEXTS ) != 0 && ( user_set_id == 0 || ( user_perm_set & PERM_DT_TEXT_EDIT_TEXTS ) != 0 );
-                imagemode = ( flags & PERM_DT_TEXT_EDIT_IMAGES ) != 0 && ( user_set_id == 0 || ( user_perm_set & PERM_DT_TEXT_EDIT_IMAGES ) != 0 );
-                menumode = ( flags & PERM_DT_TEXT_EDIT_MENUS ) != 0 && ( user_set_id == 0 || ( user_perm_set & PERM_DT_TEXT_EDIT_MENUS ) != 0 );
-                templatemode = ( flags & PERM_DT_TEXT_CHANGE_TEMPLATE ) != 0 && ( user_set_id == 0 || ( user_perm_set & PERM_DT_TEXT_CHANGE_TEMPLATE ) != 0 );
-                includemode = ( flags & PERM_DT_TEXT_EDIT_INCLUDES ) != 0 && ( user_set_id == 0 || ( user_perm_set & PERM_DT_TEXT_EDIT_INCLUDES ) != 0 );
+                int user_set_id = IMCConstants.DOC_PERM_SET_NONE;
+                if (!isSuperAdmin) {
+                    user_set_id = serverObject.getUserHighestPermissionSet( meta_id, user_id ) ;
+                }
+
+                boolean isSuperAdminOrFullAdmin = isSuperAdmin || IMCConstants.DOC_PERM_SET_FULL == user_set_id ;
+
+                int user_perm_set = 0 ;
+                if (!isSuperAdminOrFullAdmin) {
+                    user_perm_set = documentMapper.getUsersPermissionBitsOnDocumentIfRestricted(user_set_id, myDoc) ;
+                }
+
+                textmode = ( flags & PERM_DT_TEXT_EDIT_TEXTS ) != 0 && ( isSuperAdminOrFullAdmin || ( user_perm_set & PERM_DT_TEXT_EDIT_TEXTS ) != 0 );
+                imagemode = ( flags & PERM_DT_TEXT_EDIT_IMAGES ) != 0 && ( isSuperAdminOrFullAdmin || ( user_perm_set & PERM_DT_TEXT_EDIT_IMAGES ) != 0 );
+                menumode = ( flags & PERM_DT_TEXT_EDIT_MENUS ) != 0 && ( isSuperAdminOrFullAdmin || ( user_perm_set & PERM_DT_TEXT_EDIT_MENUS ) != 0 );
+                templatemode = ( flags & PERM_DT_TEXT_CHANGE_TEMPLATE ) != 0 && ( isSuperAdminOrFullAdmin || ( user_perm_set & PERM_DT_TEXT_CHANGE_TEMPLATE ) != 0 );
+                includemode = ( flags & PERM_DT_TEXT_EDIT_INCLUDES ) != 0 && ( isSuperAdminOrFullAdmin || ( user_perm_set & PERM_DT_TEXT_EDIT_INCLUDES ) != 0 );
             }
 
             String[] included_docs = DocumentMapper.sprocGetIncludes( serverObject, meta_id );

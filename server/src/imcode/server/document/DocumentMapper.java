@@ -324,14 +324,11 @@ public class DocumentMapper {
 
     public boolean hasEditPermission( int documentId, UserDomainObject user ) {
 
-        int[] wantedPermissionSetIds = {IMCConstants.DOC_PERM_SET_FULL, IMCConstants.DOC_PERM_SET_RESTRICTED_1, IMCConstants.DOC_PERM_SET_RESTRICTED_2};
-
-        return userIsSuperAdminOrHasPermissionSetId( documentId, user, wantedPermissionSetIds );
+        return userIsSuperAdminOrHasAtLeastPermissionSetId( documentId, user, IMCConstants.DOC_PERM_SET_RESTRICTED_2 );
     }
 
     public boolean hasAtLeastDocumentReadPermission( int documentId, UserDomainObject user ) {
-        int[] wantedPermissionSetIds = {IMCConstants.DOC_PERM_SET_FULL, IMCConstants.DOC_PERM_SET_RESTRICTED_1, IMCConstants.DOC_PERM_SET_RESTRICTED_2, IMCConstants.DOC_PERM_SET_READ};
-        return userIsSuperAdminOrHasPermissionSetId( documentId, user, wantedPermissionSetIds );
+        return userIsSuperAdminOrHasAtLeastPermissionSetId( documentId, user, IMCConstants.DOC_PERM_SET_READ );
     }
 
     /**
@@ -344,7 +341,7 @@ public class DocumentMapper {
         return hasAtLeastDocumentReadPermission( documentId, user );
     }
 
-    private boolean userIsSuperAdminOrHasPermissionSetId( int documentId, UserDomainObject user, int[] wantedPermissionSetIds ) {
+    public boolean userIsSuperAdminOrHasAtLeastPermissionSetId( int documentId, UserDomainObject user, int wantedPermissionSetId ) {
         boolean result = false;
 
         boolean userHasSuperAdminRole = imcmsAAUM.hasSuperAdminRole( user );
@@ -352,25 +349,8 @@ public class DocumentMapper {
         if ( userHasSuperAdminRole ) {
             result = true;
         } else {
-
-            String[] perms = sprocGetUserPermissionSet( service, documentId, user.getUserId() );
-
-            if ( perms.length > 0 ) {
-                int userPermissionSetId = Integer.parseInt( perms[0] );
-
-                result = arrayContains( wantedPermissionSetIds, userPermissionSetId );
-            }
-        }
-        return result;
-    }
-
-    private boolean arrayContains( int[] array, int wantedValue ) {
-        boolean result = false;
-        for ( int i = 0; i < array.length; ++i ) {
-            if ( wantedValue == array[i] ) {
-                result = true;
-                break;
-            }
+                int userPermissionSetId = service.getUserHighestPermissionSet( documentId, user.getUserId() ) ;
+                result = userPermissionSetId <= wantedPermissionSetId ;
         }
         return result;
     }
@@ -960,6 +940,20 @@ public class DocumentMapper {
             docTypesIdAndNames.put( keyId, valueName );
         }
         return docTypesIdAndNames;
+    }
+
+    public int getUsersPermissionBitsOnDocumentIfRestricted( int user_permission_set_id,
+                                                             DocumentDomainObject document ) {
+        int user_permission_set = 0;
+        if ( IMCConstants.DOC_PERM_SET_RESTRICTED_1 == user_permission_set_id
+             || IMCConstants.DOC_PERM_SET_RESTRICTED_2 == user_permission_set_id ) {
+            String sqlSelectPermissionBits = "SELECT permission_id FROM doc_permission_sets WHERE meta_id = ? AND set_id = ?";
+            String permissionBitsString = service.sqlQueryStr( sqlSelectPermissionBits, new String[]{
+                "" + document.getMetaId(), "" + user_permission_set_id
+            } );
+            user_permission_set = Integer.parseInt( permissionBitsString );
+        }
+        return user_permission_set;
     }
 
 }
