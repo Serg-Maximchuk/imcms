@@ -28,13 +28,13 @@ public class ChatLogin extends ChatBase {
         ServletContext myContext = getServletContext();
 
         // Lets get the user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+        imcode.server.user.UserDomainObject user = super.getUserObj( req );
         if ( user == null ) return;
 
         String metaId = req.getParameter( "meta_id" );
 
         int meta_id = Integer.parseInt( metaId );
-        if ( !isUserAuthorized( req, res, meta_id, user ) ) {
+        if ( !isUserAuthorized( res, meta_id, user ) ) {
             log( "user not Authorized" );
             return;
         }
@@ -55,7 +55,7 @@ public class ChatLogin extends ChatBase {
 
         if ( myChat == null ) {
             log( "OBS måste skapa en ny Chat" );
-            myChat = createChat( req, user, meta_id );
+            myChat = createChat( meta_id );
             myContext.setAttribute( "theChat" + metaId, myChat );
             session.setAttribute( "myChat", myChat );
         }
@@ -111,18 +111,17 @@ public class ChatLogin extends ChatBase {
         // Lets build the Responsepage to the loginpage
 
         //get chatname, we are using meta_headline as chatname
-        Hashtable docInfo = imcref.sqlProcedureHash( "getDocumentInfo", new String[]{"" + meta_id} );
+        Map docInfo = imcref.sqlProcedureHash( "getDocumentInfo", new String[]{"" + meta_id} );
         String[] chatName = (String[])( docInfo.get( "meta_headline" ) );
 
         //ok lets add a alias error msg
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
         String error_msg = "";
 
         if ( req.getParameter( "alias" ) != null ) {   // we only get it if the alias already exists
             Vector tags = new Vector();
             tags.add( "#ALIAS#" );
             tags.add( req.getParameter( "alias" ) );
-            String libName = getTemplateLibName( chatref, myChat.getChatId() );
+            String libName = getTemplateLibName( myChat.getChatId() );
             error_msg = imcref.parseExternalDoc( tags, "alias_error_msg.html", user, "103", libName );
         }
         //get the users username
@@ -135,20 +134,18 @@ public class ChatLogin extends ChatBase {
         tags.add( "#parent_meta_id#" );
         tags.add( "" + parentMetaId );
         tags.add( "#IMAGE_URL#" );
-        tags.add( this.getExternalImageFolder( req, res ) );
+        tags.add( this.getExternalImageFolder( req ) );
         tags.add( "#ALIAS#" );
         tags.add( ( req.getParameter( "alias" ) == null ) ? "" : req.getParameter( "alias" ) );
         tags.add( "#ALIAS_ERROR#" );
         tags.add( error_msg );
         sendHtml( req, res, tags, LOGIN_HTML, null );
 
-        return;
     }
 
     public void doPost( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
         HttpSession session = req.getSession( true );
 
@@ -156,13 +153,13 @@ public class ChatLogin extends ChatBase {
         Properties params = super.getSessionParameters( req );
 
         // Lets get the user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+        imcode.server.user.UserDomainObject user = super.getUserObj( req );
         if ( user == null ) return;
 
         String metaId = params.getProperty( "META_ID" );
         int meta_id = Integer.parseInt( metaId );
 
-        if ( !isUserAuthorized( req, res, meta_id, user ) ) {
+        if ( !isUserAuthorized( res, meta_id, user ) ) {
             return;
         }
 
@@ -210,7 +207,7 @@ public class ChatLogin extends ChatBase {
         Chat theChat = (Chat)myContext.getAttribute( "theChat" + metaId );
 
         if ( theChat == null ) {
-            theChat = createChat( req, user, meta_id );
+            theChat = createChat( meta_id );
             myContext.setAttribute( "theChat" + metaId, theChat );
             session.setAttribute( "myChat", theChat );
         }
@@ -246,7 +243,7 @@ public class ChatLogin extends ChatBase {
         ChatGroup myGroup = theChat.getChatGroup();
         myGroup.addNewGroupMember( myMember );
 
-        createEnterMessageAndAddToGroup( chatref, theChat, imcref, user, myMember, myGroup, metaId );
+        createEnterMessageAndAddToGroup( theChat, imcref, user, myMember, myGroup, metaId );
 
         myMember.addMessageHistory();
 

@@ -475,7 +475,7 @@ public class AdminUserProps extends Administrator {
 
         Properties userInfoP = new Properties();
 
-        userInfoP = this.getParameters( req, imcref, user, userToChange );
+        userInfoP = this.getParameters( req, user, userToChange );
 
         // Lets get all phonetypes from db
         String[] phonetypesA = imcref.sqlProcedure( "GetPhonetypes", new String[]{"" + user.getLangId()} );
@@ -744,7 +744,7 @@ public class AdminUserProps extends Administrator {
             }
 
             // Lets get the parameters from html page and validate them
-            Properties params = this.getParameters( req, imcref, user, null );
+            Properties params = this.getParameters( req, user, null );
 
 
             // if user has add a phone number we have to get the password from NEW_PWD1 parameter
@@ -895,7 +895,7 @@ public class AdminUserProps extends Administrator {
 
             // Lets get the parameters from html page and validate them
 
-            Properties params = this.getParameters( req, imcref, user, userToChange );
+            Properties params = this.getParameters( req, user, userToChange );
             params.setProperty( "user_id", userToChangeId );
 
 
@@ -1277,7 +1277,7 @@ public class AdminUserProps extends Administrator {
      * Collects the parameters from the request object
      */
 
-    private Properties getParameters( HttpServletRequest req, IMCServiceInterface imcref, UserDomainObject user,
+    private Properties getParameters( HttpServletRequest req, UserDomainObject user,
                                       UserDomainObject userToChange ) {
 
         Properties userInfo = new Properties();

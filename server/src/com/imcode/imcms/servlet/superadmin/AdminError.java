@@ -29,9 +29,9 @@ public class AdminError extends Administrator {
         File templateLib = super.getAdminTemplateFolder(imcref, user);
 
         HtmlGenerator htmlObj = new HtmlGenerator(templateLib, fileName);
-        String html = htmlObj.createHtmlString(tags, data, req);
+        String html = htmlObj.createHtmlString(tags, data );
         res.setContentType("text/html");
-        htmlObj.sendToBrowser(req, res, html);
+        htmlObj.sendToBrowser( res, html);
         return;
     }
 

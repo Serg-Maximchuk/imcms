@@ -11,7 +11,6 @@ import javax.servlet.http.*;
 import imcode.external.diverse.*;
 import imcode.util.Utility;
 import com.imcode.imcms.servlet.superadmin.Administrator;
-import com.imcode.imcms.servlet.superadmin.Administrator;
 
 public class ConfAdmin extends Conference {
 
@@ -38,7 +37,6 @@ public class ConfAdmin extends Conference {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         // Lets check that the user is an administrator
         if (super.userHasAdminRights(imcref, Integer.parseInt(params.getProperty("META_ID")), user) == false) {
@@ -66,7 +64,7 @@ public class ConfAdmin extends Conference {
 
             String roleName = imcref.sqlProcedureStr("RoleGetName", new String[]{selfRegRoleId});
 
-            confref.sqlUpdateProcedure("A_SelfRegRoles_AddNew", new String[]{params.getProperty("META_ID"), selfRegRoleId, roleName});
+            imcref.sqlUpdateProcedure("A_SelfRegRoles_AddNew", new String[]{params.getProperty("META_ID"), selfRegRoleId, roleName});
 
             res.sendRedirect("ConfAdmin?ADMIN_TYPE=SELF_REGISTER");
             return;
@@ -90,7 +88,7 @@ public class ConfAdmin extends Conference {
                 return;
             }
 
-            confref.sqlUpdateProcedure("A_SelfRegRoles_Delete", new String[]{params.getProperty("META_ID"), selfRegRoleId});
+            imcref.sqlUpdateProcedure("A_SelfRegRoles_Delete", new String[]{params.getProperty("META_ID"), selfRegRoleId});
             res.sendRedirect("ConfAdmin?ADMIN_TYPE=SELF_REGISTER");
             return;
         }
@@ -109,14 +107,14 @@ public class ConfAdmin extends Conference {
             newLibName = super.verifySqlText(newLibName);
 
             // Lets check if we already have a templateset with that name
-            String libNameExists = confref.sqlProcedureStr("A_FindTemplateLib", new String[]{newLibName});
+            String libNameExists = imcref.sqlProcedureStr("A_FindTemplateLib", new String[]{newLibName});
             if (!libNameExists.equalsIgnoreCase("-1")) {
                 String header = "ConfAdmin servlet. ";
                 new ConfError(req, res, header, 84);
                 return;
             }
 
-            confref.sqlUpdateProcedure("A_AddTemplateLib", new String[]{newLibName});
+            imcref.sqlUpdateProcedure("A_AddTemplateLib", new String[]{newLibName});
 
             // Lets copy the original folders to the new foldernames
             int metaId = getMetaId(req);
@@ -162,14 +160,14 @@ public class ConfAdmin extends Conference {
 
             // Lets find the selected template in the database and get its id
             // if not found, -1 will be returned
-            String templateId = confref.sqlProcedureStr("A_GetTemplateIdFromName", new String[]{newLibName});
+            String templateId = imcref.sqlProcedureStr("A_GetTemplateIdFromName", new String[]{newLibName});
             if (templateId.equalsIgnoreCase("-1")) {
                 String header = "ConfAdmin servlet. ";
                 new ConfError(req, res, header, 81);
                 return;
             }
             // Ok, lets update the conference with this new templateset.
-            confref.sqlUpdateProcedure("A_SetTemplateLib", new String[]{params.getProperty("META_ID"), templateId});
+            imcref.sqlUpdateProcedure("A_SetTemplateLib", new String[]{params.getProperty("META_ID"), templateId});
 
             res.sendRedirect("ConfAdmin?ADMIN_TYPE=META");
             return;
@@ -188,7 +186,7 @@ public class ConfAdmin extends Conference {
             // if the user wants to delete the first one then he has to delete the discussion
             if (repliesIds != null) {
                 for (int i = 0; i < repliesIds.length; i++) {
-                    confref.sqlUpdateProcedure("A_DeleteReply", new String[]{discId, repliesIds[i]});
+                    imcref.sqlUpdateProcedure("A_DeleteReply", new String[]{discId, repliesIds[i]});
                 }
             }
             res.sendRedirect("ConfAdmin?ADMIN_TYPE=REPLY");
@@ -219,7 +217,7 @@ public class ConfAdmin extends Conference {
                     newHeader = super.verifySqlText(newHeader);
                     newText = super.verifySqlText(newText);
 
-                    confref.sqlUpdateProcedure("A_UpdateReply", new String[]{repliesIds[i], newHeader, newText});
+                    imcref.sqlUpdateProcedure("A_UpdateReply", new String[]{repliesIds[i], newHeader, newText});
 
                 }
             }
@@ -236,7 +234,7 @@ public class ConfAdmin extends Conference {
             // Lets delete all the discussion and all the replies in that discussion.
             if (discIds != null) {
                 for (int i = 0; i < discIds.length; i++) {
-                    confref.sqlUpdateProcedure("A_DeleteDiscussion", new String[]{discIds[i]});
+                    imcref.sqlUpdateProcedure("A_DeleteDiscussion", new String[]{discIds[i]});
                 }
             }
             res.sendRedirect("ConfAdmin?ADMIN_TYPE=DISCUSSION");
@@ -253,15 +251,15 @@ public class ConfAdmin extends Conference {
 
             // Lets get all discussions for that forum and delete those before deleting the forum
             // GetAllDiscsInForum @aForumId int
-            String[] discs = confref.sqlProcedure("A_GetAllDiscsInForum", new String[]{aForumId});
+            String[] discs = imcref.sqlProcedure("A_GetAllDiscsInForum", new String[]{aForumId});
             if (discs != null) {
                 for (int i = 0; i < discs.length; i++) {
-                    confref.sqlUpdateProcedure("A_DeleteDiscussion", new String[]{discs[i]});
+                    imcref.sqlUpdateProcedure("A_DeleteDiscussion", new String[]{discs[i]});
                 }
             }
 
             // DeleteForum @aForumId int
-            confref.sqlUpdateProcedure("A_DeleteForum", new String[]{params.getProperty("FORUM_ID")});
+            imcref.sqlUpdateProcedure("A_DeleteForum", new String[]{params.getProperty("FORUM_ID")});
             this.doGet(req, res);
             return;
         }
@@ -277,7 +275,7 @@ public class ConfAdmin extends Conference {
 
             // Lets check if a forum with that name exists
 
-            String foundIt = confref.sqlProcedureStr("A_FindForumName", new String[]{params.getProperty("META_ID"), params.getProperty("NEW_FORUM_NAME")});
+            String foundIt = imcref.sqlProcedureStr("A_FindForumName", new String[]{params.getProperty("META_ID"), params.getProperty("NEW_FORUM_NAME")});
 
             if (!foundIt.equalsIgnoreCase("-1")) {
                 String header = "ConfAdmin servlet. ";
@@ -289,7 +287,7 @@ public class ConfAdmin extends Conference {
 
             final String archiveMode = "A";
             final String archiveTime = "30";
-            confref.sqlUpdateProcedure("A_AddNewForum", new String[]{params.getProperty("META_ID"), params.getProperty("NEW_FORUM_NAME"), archiveMode, archiveTime});
+            imcref.sqlUpdateProcedure("A_AddNewForum", new String[]{params.getProperty("META_ID"), params.getProperty("NEW_FORUM_NAME"), archiveMode, archiveTime});
             this.doGet(req, res);
             return;
         }
@@ -303,7 +301,7 @@ public class ConfAdmin extends Conference {
             // Lets verify the parameters for the sql questions.
             params = super.verifyForSql(params);
 
-            confref.sqlUpdateProcedure("A_RenameForum", new String[]{params.getProperty("FORUM_ID"), params.getProperty("NEW_FORUM_NAME")});
+            imcref.sqlUpdateProcedure("A_RenameForum", new String[]{params.getProperty("FORUM_ID"), params.getProperty("NEW_FORUM_NAME")});
             this.doGet(req, res);
             return;
         }
@@ -313,7 +311,7 @@ public class ConfAdmin extends Conference {
             // Lets get addForum parameters
             params = this.getShowDiscussionNbrParameters(req, params);
 
-            confref.sqlUpdateProcedure("A_SetNbrOfDiscsToShow", new String[]{params.getProperty("FORUM_ID"), params.getProperty("NBR_OF_DISCS_TO_SHOW")});
+            imcref.sqlUpdateProcedure("A_SetNbrOfDiscsToShow", new String[]{params.getProperty("FORUM_ID"), params.getProperty("NBR_OF_DISCS_TO_SHOW")});
 
             res.sendRedirect("ConfAdmin?ADMIN_TYPE=FORUM");
             return;
@@ -337,7 +335,6 @@ public class ConfAdmin extends Conference {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         // Lets check that the user is an administrator
         if (super.userHasAdminRights(imcref, Integer.parseInt(params.getProperty("META_ID")), user) == false) {
@@ -364,7 +361,7 @@ public class ConfAdmin extends Conference {
 
 
             // Lets get the current self register roles from DB
-            String[] sqlAnswer = confref.sqlProcedure("A_SelfRegRoles_GetAll", new String[]{params.getProperty("META_ID")});
+            String[] sqlAnswer = imcref.sqlProcedure("A_SelfRegRoles_GetAll", new String[]{params.getProperty("META_ID")});
             Vector selfRegV = super.convert2Vector(sqlAnswer);
             String selfRegList = Html.createOptionList("", selfRegV);
 
@@ -415,10 +412,10 @@ public class ConfAdmin extends Conference {
             } else {
 
                 // Lets get the current template set for this metaid
-                String currTemplateSet = confref.sqlProcedureStr("A_GetTemplateLib", new String[]{params.getProperty("META_ID")});
+                String currTemplateSet = imcref.sqlProcedureStr("A_GetTemplateLib", new String[]{params.getProperty("META_ID")});
 
                 // Lets get all current template sets
-                String[] sqlAnswer = confref.sqlProcedure("A_GetAllTemplateLibs", new String[]{});
+                String[] sqlAnswer = imcref.sqlProcedure("A_GetAllTemplateLibs", new String[]{});
                 Vector templateV = super.convert2Vector(sqlAnswer);
 
                 // Lets fill the select box	with forums
@@ -440,14 +437,14 @@ public class ConfAdmin extends Conference {
         if (adminWhat.equalsIgnoreCase("FORUM")) {
 
             // Lets get the information from DB
-            String[] sqlAnswer = confref.sqlProcedure("A_GetAllForum", new String[]{params.getProperty("META_ID")});
+            String[] sqlAnswer = imcref.sqlProcedure("A_GetAllForum", new String[]{params.getProperty("META_ID")});
             Vector forumV = super.convert2Vector(sqlAnswer);
 
             // Lets fill the select box with forums
             String forumList = Html.createOptionList("", forumV);
 
             // Lets get all the showDiscs values
-            String[] sqlAllDiscs = confref.sqlProcedure("A_GetAllNbrOfDiscsToShow", new String[]{params.getProperty("META_ID")});
+            String[] sqlAllDiscs = imcref.sqlProcedure("A_GetAllNbrOfDiscsToShow", new String[]{params.getProperty("META_ID")});
 
             Vector sqlAllDiscsV = new Vector();
             if (sqlAllDiscs != null) {
@@ -476,10 +473,10 @@ public class ConfAdmin extends Conference {
             File aHrefHtmlFile = new File(super.getExternalTemplateFolder(req), adminDiscList);
 
             // Lets get all New Discussions
-            String[][] sqlAnswerNew = confref.sqlProcedureMulti("A_GetAllNewDiscussions", new String[]{aMetaId, aForumId, aLoginDate});
+            String[][] sqlAnswerNew = imcref.sqlProcedureMulti("A_GetAllNewDiscussions", new String[]{aMetaId, aForumId, aLoginDate});
 
             // Lets get all Old Discussions
-            String[][] sqlAnswerOld = confref.sqlProcedureMulti("A_GetAllOldDiscussions", new String[]{aMetaId, aForumId, aLoginDate});
+            String[][] sqlAnswerOld = imcref.sqlProcedureMulti("A_GetAllOldDiscussions", new String[]{aMetaId, aForumId, aLoginDate});
 
             // Lets build our tags vector.
             Vector tagsV = this.buildAdminTags();
@@ -515,12 +512,12 @@ public class ConfAdmin extends Conference {
             // Lets get the replylist from DB
             String discId = params.getProperty("DISC_ID");
 
-            String[][] sqlAnswer = confref.sqlProcedureMulti("A_GetAllRepliesInDiscAdmin", new String[]{discId, userId});
+            String[][] sqlAnswer = imcref.sqlProcedureMulti("A_GetAllRepliesInDiscAdmin", new String[]{discId, userId});
 
             // Lets get the users sortorder from DB
             String metaId = params.getProperty("META_ID");
 
-            String sortOrderVal = confref.sqlProcedureStr("A_ConfUsersGetReplyOrderSel", new String[]{metaId, userId});
+            String sortOrderVal = imcref.sqlProcedureStr("A_ConfUsersGetReplyOrderSel", new String[]{metaId, userId});
             String checkBoxStr = "";
 
             if (sortOrderVal.equalsIgnoreCase("1")) checkBoxStr = "checked";

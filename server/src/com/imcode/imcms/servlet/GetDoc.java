@@ -141,7 +141,7 @@ public class GetDoc extends HttpServlet {
         }
 
         // check if external doc
-        imcode.server.ExternalDocType ex_doc = imcref.isExternalDoc( meta_id, user );
+        imcode.server.ExternalDocType ex_doc = imcref.isExternalDoc( meta_id );
         String htmlStr;
         if ( ex_doc != null ) {
             String paramStr = "?meta_id=" + meta_id + "&";
@@ -155,7 +155,7 @@ public class GetDoc extends HttpServlet {
         }
 
         if ( document instanceof UrlDocumentDomainObject ) {
-            String url_ref = imcref.isUrlDoc( meta_id, user );
+            String url_ref = imcref.isUrlDoc( meta_id );
             Perl5Util regexp = new Perl5Util();
             if ( !regexp.match( "m!^\\w+:|^[/.]!", url_ref ) ) {
                 url_ref = "http://" + url_ref;
@@ -187,7 +187,7 @@ public class GetDoc extends HttpServlet {
             trackLog.info( documentRequest );
             return null;
         } else if ( document instanceof HtmlDocumentDomainObject ) {
-            String html_str_temp = imcref.isFramesetDoc( meta_id, user );
+            String html_str_temp = imcref.isFramesetDoc( meta_id );
             if ( html_str_temp == null ) {
                 throw new RuntimeException( "Null-frameset encountered." );
             }

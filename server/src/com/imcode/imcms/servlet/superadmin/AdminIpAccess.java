@@ -50,7 +50,7 @@ public class AdminIpAccess extends Administrator {
             aRecV.setElementAt( Utility.ipLongToString( Long.parseLong( (String)aRecV.elementAt( 4 ) ) ), 4 );
             vmRec.merge( tags, aRecV );
             vmRec.addProperty( "RECORD_COUNTER", "" + counter );
-            recs += this.createHtml( req, res, vmRec, HTML_IP_SNIPPET );
+            recs += this.createHtml( req, vmRec, HTML_IP_SNIPPET );
         }
 
         // Lets generate the html page

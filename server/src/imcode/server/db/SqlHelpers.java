@@ -1,21 +1,21 @@
 package imcode.server.db;
 
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class SqlHelpers {
 
-    public static String[] sqlProcedure( ConnectionPool conPool, String procedure, String[] params, boolean trim ) {
+    public static String[] sqlProcedure( ConnectionPool conPool, String procedure, String[] params ) {
         procedure = trimAndCheckNoWhitespace(procedure) ;
 
         DBConnect dbc = new DBConnect( conPool );
-        dbc.setTrim(trim) ;
         List data = dbc.executeProcedure(procedure,params) ;
 
         return createStringArrayFromSqlResults( data );
     }
 
-    public static Hashtable sqlProcedureHash( ConnectionPool conPool, String procedure, String[] params ) {
+    public static Map sqlProcedureHash( ConnectionPool conPool, String procedure, String[] params ) {
         procedure = trimAndCheckNoWhitespace(procedure) ;
 
         DBConnect dbc = new DBConnect( conPool );
@@ -72,7 +72,7 @@ public class SqlHelpers {
         return createStringFromSqlResults(data);
     }
 
-    public static Hashtable sqlQueryHash(ConnectionPool conPool, String sqlQuery, String[] params) {
+    public static Map sqlQueryHash(ConnectionPool conPool, String sqlQuery, String[] params) {
         DBConnect dbc = new DBConnect(conPool);
         dbc.setSQLString(sqlQuery, params);
 
@@ -145,8 +145,8 @@ public class SqlHelpers {
         }
     }
 
-    private static Hashtable createHashtableOfStringArrayFromSqlResults(List data, String[] meta) {
-        Hashtable result = new Hashtable(meta.length, 0.5f);
+    private static Map createHashtableOfStringArrayFromSqlResults(List data, String[] meta) {
+        Map result = new HashMap(meta.length);
 
         if (data.size() > 0) {
 
@@ -165,7 +165,7 @@ public class SqlHelpers {
             }
             return result;
         } else {
-            return new Hashtable(1, 0.5f);
+            return new HashMap(1);
         }
     }
 

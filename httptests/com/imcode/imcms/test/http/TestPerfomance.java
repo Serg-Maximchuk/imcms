@@ -48,19 +48,19 @@ public class TestPerfomance extends TestCase {
         helloWorldHtmlPage( wc );
         textDocumentHelloWorld( wc );
         textPageWithTwoSmallTexts( wc );
-        //textPageWithOneLargerText( wc );
+        textPageWithOneLargerText( wc );
         textPageWithTreeIncludes( wc );
     }
 
-    public void helloWorldHtmlPage( WebConversation wc ) throws IOException, SAXException {
+    private void helloWorldHtmlPage( WebConversation wc ) throws IOException, SAXException {
         runRepeatingTestsAndPrintResult( "testHelloWorldHtmlPage", URL_TO_HELLOWORLD_HTML_PAGE, true, wc );
     }
 
-    public void textDocumentHelloWorld( WebConversation wc ) throws IOException, SAXException {
+    private void textDocumentHelloWorld( WebConversation wc ) throws IOException, SAXException {
         runRepeatingTestsAndPrintResult( "testTextDocumentHelloWorld", getDocUrl( HELLO_WORLD_TEXT_PAGE_ID ), true, wc );
     }
 
-    public void textPageWithTwoSmallTexts( WebConversation wc ) throws IOException, SAXException {
+    private void textPageWithTwoSmallTexts( WebConversation wc ) throws IOException, SAXException {
         runRepeatingTestsAndPrintResult( "testTextPageWithTwoSmallTexts", getDocUrl( TEXT_PAGE_WITH_TWO_SMALL_TEXTS_ID ), true, wc );
     }
 
@@ -68,7 +68,7 @@ public class TestPerfomance extends TestCase {
         runRepeatingTestsAndPrintResult( "testTextPageWithOneLargerText", getDocUrl( TEXT_PAGE_WITH_ONE_LARGER_TEXT_ID ), true, wc );
     }
 
-    public void textPageWithTreeIncludes( WebConversation wc ) throws IOException, SAXException {
+    private void textPageWithTreeIncludes( WebConversation wc ) throws IOException, SAXException {
         runRepeatingTestsAndPrintResult( "testTextPageWithThreeIncludes", getDocUrl( TEXT_PAGE_WITH_THREE_INCLUDES_ID ), true, wc );
     }
 

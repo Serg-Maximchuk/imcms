@@ -11,7 +11,7 @@ import com.imcode.imcms.servlet.superadmin.Administrator;
 
 public class AdminError2 extends Administrator {
 
-    String myErrorMessage ;
+    private String myErrorMessage ;
 
     /**
        Constructor which is used to read the error strings in the translation file. This

@@ -106,7 +106,7 @@ public class DocumentPermissionSetDomainObject {
 
     public void setFromBits( DocumentDomainObject document, DocumentPermissionSetMapper documentPermissionSetMapper,
                              int permissionBits, boolean forNewDocuments ) {
-        documentPermissionSetMapper.setDocumentPermissionSetFromBits( document, this, permissionBits) ;
+        documentPermissionSetMapper.setDocumentPermissionSetFromBits( this, permissionBits) ;
     }
 
 }

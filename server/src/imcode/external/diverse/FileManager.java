@@ -11,7 +11,7 @@ public class FileManager{
  * the errorcode.
  **/
     
-    public int copyDirectory(File srcPath, File targPath) {
+    public void copyDirectory(File srcPath, File targPath) {
         boolean okFlag = false ;
         String tmpFile = "" ;
         
@@ -25,7 +25,6 @@ public class FileManager{
                 okFlag = targetObj.mkdir() ;
                 if(okFlag == false) {
                     log("The target directory could not be created") ;
-                    //return -10 ;
                 }
             }
             String[] fileList = fileObj.list() ;
@@ -33,16 +32,12 @@ public class FileManager{
             // Lets loop through the fileList and copy the files
             for(int i = 0 ; i < fileList.length ; i++) {
                 tmpFile = fileList[i] ;
-                //log("TmpFile: " + tmpFile) ;
                 okFlag = writeFileCopy2(new File(srcPath , tmpFile).toString(), new File(targPath , tmpFile).toString()) ;
-                // log("Såhär gick det") ;
             }
             
         } catch (NullPointerException e) {
             log("No such path exists: " + srcPath) ;
-            return -1 ;
         }
-        return 0 ;
     }
 
     /**

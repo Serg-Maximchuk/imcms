@@ -55,7 +55,7 @@ public class DocumentComposer extends HttpServlet {
     public static final String PARAMETER__FILE_DOC__MIME_TYPE = "mimetype";
 
     public static final String PARAMETER__GO_TO_IMAGE_BROWSE = "browseForMenuImage";
-    public static final String PARAMETER__RETURNING_FROM_IMAGE_BROWSE = "returningFromImageBrowse";
+    private static final String PARAMETER__RETURNING_FROM_IMAGE_BROWSE = "returningFromImageBrowse";
     public static final String PARAMETER__IMAGE_BROWSE_ORIGINAL_ACTION = "imageBrowse.originalAction";
 
     public static final String PARAMETER_BUTTON__OK = "ok";
@@ -313,10 +313,10 @@ public class DocumentComposer extends HttpServlet {
                                + IMCConstants.DISPATCH_FLAG__EDIT_MENU + "&editmenu=" + menuIndex );
     }
 
-    public static void saveNewDocumentAndAddToMenuAndRemoveSessionAttribute( DocumentDomainObject newDocument,
+    private static void saveNewDocumentAndAddToMenuAndRemoveSessionAttribute( DocumentDomainObject newDocument,
                                                                              NewDocumentParentInformation newDocumentParentInformation,
                                                                              UserDomainObject user,
-                                                                             HttpServletRequest request ) throws IOException {
+                                                                             HttpServletRequest request ) {
         try {
             final IMCServiceInterface service = ApplicationServer.getIMCServiceInterface();
             final DocumentMapper documentMapper = service.getDocumentMapper();
@@ -345,8 +345,7 @@ public class DocumentComposer extends HttpServlet {
         newDocument.processNewDocumentInformation( this, newDocumentParentInformation, user, request, response );
     }
 
-    public void processNewBrowserDocumentInformation( HttpServletRequest request, HttpServletResponse response,
-                                                      UserDomainObject user ) throws IOException, ServletException {
+    public void processNewBrowserDocumentInformation( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
         forwardToBrowserDocumentComposer( request, response );
     }
 
@@ -383,14 +382,14 @@ public class DocumentComposer extends HttpServlet {
         saveNewDocumentAndAddToMenuAndRemoveSessionAttribute( externalDocument, newDocumentParentInformation, user, request );
         final IMCServiceInterface service = ApplicationServer.getIMCServiceInterface();
         DocumentMapper.sqlUpdateDocumentActivated( service, externalDocument.getId(), false );
-        redirectToExternalDocType( service, externalDocument.getId(), user, newDocumentParentInformation.parentId, response );
+        redirectToExternalDocType( service, externalDocument.getId(), newDocumentParentInformation.parentId, response );
     }
 
-    public static void redirectToExternalDocType( IMCServiceInterface imcref, int metaId,
-                                                  UserDomainObject user, int parentMetaId, HttpServletResponse res ) throws IOException {
+    private static void redirectToExternalDocType( IMCServiceInterface imcref, int metaId,
+                                                   int parentMetaId, HttpServletResponse res ) throws IOException {
         // check if external doc
         ExternalDocType ex_doc;
-        ex_doc = imcref.isExternalDoc( metaId, user );
+        ex_doc = imcref.isExternalDoc( metaId );
         String paramStr = "?meta_id=" + metaId + "&";
         paramStr += "parent_meta_id=" + parentMetaId + "&";
         paramStr += "cookie_id=" + "1A" + "&action=new";
@@ -423,7 +422,7 @@ public class DocumentComposer extends HttpServlet {
         return request.getSession().getAttribute( sessionAttributeName );
     }
 
-    public static void removeObjectFromSessionWithKeyInRequest( HttpServletRequest request,
+    private static void removeObjectFromSessionWithKeyInRequest( HttpServletRequest request,
                                                                 String requestAttributeOrParameterName ) {
         String sessionAttributeName = getSessionAttributeNameFromRequest( request, requestAttributeOrParameterName );
         request.getSession().removeAttribute( sessionAttributeName );
@@ -634,7 +633,7 @@ public class DocumentComposer extends HttpServlet {
 
         private final FileItem fileItem;
 
-        public FileItemInputStreamSource( FileItem fileItem ) {
+        private FileItemInputStreamSource( FileItem fileItem ) {
             this.fileItem = fileItem;
         }
 

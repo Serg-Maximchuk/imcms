@@ -70,7 +70,7 @@ public class Prefs {
        @return The properties in the file.
     */
 
-    static Properties getProperties (File file) throws IOException  {
+    private static Properties getProperties (File file) throws IOException  {
 	Properties prop ;
 	prop = (Properties)hash.get(file) ;
 	if (prop == null) {

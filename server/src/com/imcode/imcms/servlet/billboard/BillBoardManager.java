@@ -6,6 +6,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import imcode.external.diverse.*;
+import imcode.server.user.UserDomainObject;
+import imcode.util.Utility;
 import com.imcode.imcms.servlet.billboard.BillBoard;
 import com.imcode.imcms.servlet.billboard.BillBoardError;
 
@@ -40,18 +42,16 @@ public class BillBoardManager extends BillBoard	  //ConfManager
     public void doGet( HttpServletRequest req, HttpServletResponse res )
             throws ServletException, IOException {
 
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) return;
-
         // Lets get the standard parameters and validate them
         MetaInfo.Parameters params = MetaInfo.getParameters( req );
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) return;
 
         int testMetaId = params.getMetaId();
-        if ( !isUserAuthorized( req, res, testMetaId, user ) ) {
+        if ( !isUserAuthorized( res, testMetaId, user ) ) {
             return;
         }
 

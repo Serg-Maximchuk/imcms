@@ -31,7 +31,7 @@ public class AdminCategories extends HttpServlet {
     private static final String JSP_TEMPLATE = "category_admin.jsp";
 
     private static final String SESSION_ATTRIBUTE__FORM_DATA = "formData";
-    public static final String REQUEST_ATTR_OR_PARAM__FORM_DATA_SESSION_ATTRIBUTE_NAME = SESSION_ATTRIBUTE__FORM_DATA+".sessionAttributeName";
+    private static final String REQUEST_ATTR_OR_PARAM__FORM_DATA_SESSION_ATTRIBUTE_NAME = SESSION_ATTRIBUTE__FORM_DATA+".sessionAttributeName";
     private static final String PARAMETER__CATEGORY_TYPE_ADD = "category_type_add";
     public static final String PARAMETER__NAME = "name";
     private static final String PARAMETER__DESCRIPTION = "description";
@@ -254,7 +254,6 @@ public class AdminCategories extends HttpServlet {
         formData.setCategoryTypeToEdit(categoryTypeToEdit);
         formData.setCategoryToEdit(categoryToEdit1);
         formData.setDocumentsOfOneCategory(documentsOfOneCategory);
-        formData.setMsgToUser(msg.toString());
         categoryToEdit = categoryToEdit1;
     }
 
@@ -293,7 +292,6 @@ public class AdminCategories extends HttpServlet {
         }
         formBean.setCategoryTypeToEdit(categoryTypeToEdit);
         formBean.setNumberOfCategories(numberOfCategories);
-        formBean.setMsgToUser(msg.toString());
     }
 
     private void editCategoryType(HttpServletRequest req, CategoryTypeDomainObject categoryTypeToEdit, IMCServiceInterface service, FormData formBean) {
@@ -361,7 +359,6 @@ public class AdminCategories extends HttpServlet {
         private CategoryDomainObject categoryToEdit;
         private int numberOfCategories;
         private String[] documentsOfOneCategory;
-        private String msgToUser;
         private boolean uniqueName;
 
 
@@ -369,7 +366,7 @@ public class AdminCategories extends HttpServlet {
             return categoryToEdit;
         }
 
-        public void setCategoryToEdit(CategoryDomainObject categoryToEdit) {
+        private void setCategoryToEdit(CategoryDomainObject categoryToEdit) {
             this.categoryToEdit = categoryToEdit;
         }
 
@@ -377,7 +374,7 @@ public class AdminCategories extends HttpServlet {
             return categoryTypeToEdit;
         }
 
-        public void setCategoryTypeToEdit(CategoryTypeDomainObject categoryTypeToEdit) {
+        private void setCategoryTypeToEdit(CategoryTypeDomainObject categoryTypeToEdit) {
             this.categoryTypeToEdit = categoryTypeToEdit;
         }
 
@@ -385,7 +382,7 @@ public class AdminCategories extends HttpServlet {
             return numberOfCategories;
         }
 
-        public void setNumberOfCategories(int numberOfCategories) {
+        private void setNumberOfCategories(int numberOfCategories) {
             this.numberOfCategories = numberOfCategories;
         }
 
@@ -393,23 +390,15 @@ public class AdminCategories extends HttpServlet {
             return documentsOfOneCategory;
         }
 
-        public void setDocumentsOfOneCategory(String[] documentsOfOneCategory) {
+        private void setDocumentsOfOneCategory(String[] documentsOfOneCategory) {
             this.documentsOfOneCategory = documentsOfOneCategory;
-        }
-
-        public String getMsgToUser() {
-            return msgToUser;
-        }
-
-        public void setMsgToUser(String msgToUser) {
-            this.msgToUser = msgToUser;
         }
 
         public boolean getUniqueName() {
             return uniqueName;
         }
 
-        public void setUniqueName(boolean bool) {
+        private void setUniqueName(boolean bool) {
             uniqueName = bool;
         }
     }

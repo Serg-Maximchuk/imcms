@@ -197,13 +197,6 @@ class DBConnect {
         }
     }
 
-    /**
-     * <p>Set trim. true = trim strings, false = do not trim strings.
-     */
-    void setTrim(boolean status) {
-    }
-
-
     int executeUpdateProcedure(String procedure, String[] params) {
         procedure = addQuestionMarksToProcedureCall(procedure, params);
         setProcedure(procedure, params);

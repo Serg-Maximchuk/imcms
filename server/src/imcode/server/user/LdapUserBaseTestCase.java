@@ -11,15 +11,15 @@ import java.util.Properties;
  */
 public class LdapUserBaseTestCase extends UserBaseTestCase {
 
-    Properties ldapProperties = new Properties();
-    String ldapUrl ;
-    String ldapBindDN ;
+    private Properties ldapProperties = new Properties();
+    private String ldapUrl ;
+    private String ldapBindDN ;
     String ldapUsername ;
     String ldapPassword;
     private static final String LDAP_PROPERTIES_SYSTEM_PROPERTY = "test.ldap.properties";
     private static final String DEFAULT_LDAP_PROPERTIES_FILE = "build.properties";
 
-    protected LdapUserAndRoleMapper getLdapUserAndRoleMapper( String[] ldapAttributesMappedToRoles ) throws IOException {
+    LdapUserAndRoleMapper getLdapUserAndRoleMapper( String[] ldapAttributesMappedToRoles ) throws IOException {
         ldapProperties.load( new FileInputStream( System.getProperty( LDAP_PROPERTIES_SYSTEM_PROPERTY, DEFAULT_LDAP_PROPERTIES_FILE ) ) );
         ldapUrl = ldapProperties.getProperty( "ldap-url");
         ldapPassword = ldapProperties.getProperty( "ldap-pass" ) ;

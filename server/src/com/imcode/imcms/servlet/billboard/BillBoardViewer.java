@@ -8,6 +8,8 @@ import javax.servlet.http.*;
 import imcode.external.diverse.*;
 import imcode.server.IMCServiceInterface;
 import imcode.server.ApplicationServer;
+import imcode.server.user.UserDomainObject;
+import imcode.util.Utility;
 import com.imcode.imcms.servlet.billboard.BillBoard;
 
 /**
@@ -30,17 +32,13 @@ public class BillBoardViewer extends BillBoard {//ConfViewer
 
     public void doGet( HttpServletRequest req, HttpServletResponse res )
             throws ServletException, IOException {
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) return;
-
-        // Lets get the standard parameters and validate them
-        // Properties params = super.getParameters(req) ;
 
         // Lets get the standard SESSION parameters and validate them
         Properties params = MetaInfo.createPropertiesFromMetaInfoParameters( super.getBillBoardSessionParameters( req ) );
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) {
             log( "user = null so return" );
             return;

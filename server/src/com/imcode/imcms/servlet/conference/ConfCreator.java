@@ -44,7 +44,6 @@ public class ConfCreator extends Conference {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         // ********* NEW ********
         if ( action.equalsIgnoreCase( "ADD_CONF" ) ) {
@@ -55,7 +54,7 @@ public class ConfCreator extends Conference {
             // we have to check when we add a new conference that such an meta_id
             // doesnt already exists.
             String metaId = params.getProperty( "META_ID" );
-            String foundMetaId = confref.sqlProcedureStr( "A_FindMetaId", new String[]{metaId} );
+            String foundMetaId = imcref.sqlProcedureStr( "A_FindMetaId", new String[]{metaId} );
             if ( !foundMetaId.equals( "1" ) ) {
                 String header = "ConfCreator servlet. ";
                 ConfError err = new ConfError( req, res, header, 90 );
@@ -67,19 +66,19 @@ public class ConfCreator extends Conference {
             // AddNewConf @meta_id int, @confName varchar(255)
             String confName = confParams.getProperty( "CONF_NAME" );
             // String sortType = "1" ;	// Default value, unused so far
-            confref.sqlUpdateProcedure( "A_AddNewConf", new String[]{metaId, confName} );
+            imcref.sqlUpdateProcedure( "A_AddNewConf", new String[]{metaId, confName} );
 
             // Lets add a new forum to the conference
             final String archiveMode = "A";
             final String archiveTime = "30";
-            confref.sqlUpdateProcedure( "A_AddNewForum", new String[]{metaId, confParams.getProperty( "FORUM_NAME" ), archiveMode, archiveTime} );
+            imcref.sqlUpdateProcedure( "A_AddNewForum", new String[]{metaId, confParams.getProperty( "FORUM_NAME" ), archiveMode, archiveTime} );
 
             // Lets get the administrators user_id
             String user_id = "" + user.getId();
 
             // Lets add this user into the conference if hes not exists there before were
             // adding the discussion
-            confref.sqlUpdateProcedure( "A_ConfUsersAdd", new String[]{user_id, metaId, user.getFirstName(), user.getLastName()} );
+            imcref.sqlUpdateProcedure( "A_ConfUsersAdd", new String[]{user_id, metaId, user.getFirstName(), user.getLastName()} );
 
             // Ok, were done creating the conference. Lets tell the system to show this child.
             imcref.activateChild( Integer.parseInt( metaId ), user );
@@ -136,15 +135,6 @@ public class ConfCreator extends Conference {
         confP.setProperty( "CONF_NAME", conf_name.trim() );
         confP.setProperty( "FORUM_NAME", forum_name.trim() );
         return confP;
-    }
-
-    /**
-     * Log function, will work for both servletexec and Apache
-     */
-
-    public void log( String str ) {
-        super.log( str );
-        System.out.println( "ConfCreator: " + str );
     }
 
 } // End class

@@ -15,7 +15,6 @@ import imcode.external.diverse.MetaInfo;
 import imcode.external.diverse.ParseServlet;
 import imcode.external.diverse.VariableManager;
 import imcode.server.ApplicationServer;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentMapper;
@@ -78,7 +77,6 @@ public class ConfDisc extends Conference {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         // ********* UPDATE DISCUSSIONS ********
         if ( req.getParameter( "UPDATE" ) != null ) {
@@ -91,7 +89,7 @@ public class ConfDisc extends Conference {
 
             HttpSession session = req.getSession( false );
             if ( session != null ) {
-                String latestDiscId = confref.sqlProcedureStr( "A_GetLastDiscussionId", new String[]{
+                String latestDiscId = imcref.sqlProcedureStr( "A_GetLastDiscussionId", new String[]{
                     params.getProperty( "META_ID" ), aForumId
                 } );
 
@@ -130,14 +128,14 @@ public class ConfDisc extends Conference {
 
             // Lets get the total nbr of discs in the forum
             // RmiConf rmi = new RmiConf(user) ;
-            String nbrOfDiscsStr = confref.sqlProcedureStr( "A_GetNbrOfDiscs", new String[]{
+            String nbrOfDiscsStr = imcref.sqlProcedureStr( "A_GetNbrOfDiscs", new String[]{
                 params.getProperty( "FORUM_ID" )
             } );
             int nbrOfDiscs;
 
             // Lets get the nbr of discussions to show. If it does not contain any
             // discussions, 20 will be returned by default from db
-            String showDiscsStr = confref.sqlProcedureStr( "A_GetNbrOfDiscsToShow", new String[]{
+            String showDiscsStr = imcref.sqlProcedureStr( "A_GetNbrOfDiscsToShow", new String[]{
                 params.getProperty( "FORUM_ID" )
             } );
             int showDiscsCounter = Integer.parseInt( showDiscsStr );
@@ -166,7 +164,7 @@ public class ConfDisc extends Conference {
 
             // Lets get the nbr of discussions to show. If it does not contain any
             // discussions, 20 will be returned by default from db
-            String showDiscsStr = confref.sqlProcedureStr( "A_GetNbrOfDiscsToShow", new String[]{
+            String showDiscsStr = imcref.sqlProcedureStr( "A_GetNbrOfDiscsToShow", new String[]{
                 params.getProperty( "FORUM_ID" )
             } );
             int showDiscsCounter = Integer.parseInt( showDiscsStr );
@@ -189,7 +187,7 @@ public class ConfDisc extends Conference {
             // Lets get the forumname for the current forum
 
             String aForumId = params.getProperty( "FORUM_ID" );
-            currForum = confref.sqlProcedureStr( "A_GetForumName", new String[]{aForumId} );
+            currForum = imcref.sqlProcedureStr( "A_GetForumName", new String[]{aForumId} );
 
             //lets get metaId befor buildSearchDateParams destroys that info (happens if error in DATE_FORMAT)
             String metaId = params.getProperty( "META_ID" );
@@ -263,11 +261,11 @@ public class ConfDisc extends Conference {
                         }
                     }
                     sqlQ.append( ')' );
-                    sqlAnswer = confref.sqlQueryMulti( sqlQ.toString(), (String[])sqlParameters.toArray( new String[sqlParameters.size()] ) );
+                    sqlAnswer = imcref.sqlQueryMulti( sqlQ.toString(), (String[])sqlParameters.toArray( new String[sqlParameters.size()] ) );
                 } else {
                     // Ok, Lets build the search string
 
-                    sqlAnswer = confref.sqlProcedureMulti( "A_SearchText", new String[]{
+                    sqlAnswer = imcref.sqlProcedureMulti( "A_SearchText", new String[]{
                         metaId, aForumId, category, searchW, frDate, toDate + " 23:59:59"
                     } );
                 } // End if
@@ -320,13 +318,14 @@ public class ConfDisc extends Conference {
             int intMetaId = Integer.parseInt( metaId );
             DocumentMapper documentMapper = imcref.getDocumentMapper();
             DocumentDomainObject document = documentMapper.getDocument( intMetaId );
-            if ( documentMapper.userHasAtLeastDocumentReadPermission( user, document) && imcref.checkDocAdminRights( intMetaId, user ) ) {
+            if ( documentMapper.userHasAtLeastDocumentReadPermission( user, document )
+                 && imcref.checkDocAdminRights( intMetaId, user ) ) {
 
                 VariableManager vmButtons = new VariableManager();
                 vmButtons.addProperty( "#SERVLET_URL#", "" );
                 vmButtons.addProperty( "#IMAGE_URL#", this.getExternalImageFolder( req ) );
                 HtmlGenerator newButtonHtmlObj = new HtmlGenerator( templateLib, NEW_DISC_TEMPLATE );
-                newDiscButton = newButtonHtmlObj.createHtmlString( vmButtons, req );
+                newDiscButton = newButtonHtmlObj.createHtmlString( vmButtons );
             }
 
             vm.addProperty( "CURRENT_FORUM_NAME", currForum );
@@ -355,7 +354,6 @@ public class ConfDisc extends Conference {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         // Lets get parameters
         String aMetaId = params.getProperty( "META_ID" );
@@ -370,7 +368,7 @@ public class ConfDisc extends Conference {
         File aHrefHtmlFile = new File( super.getExternalTemplateFolder( req ), A_HREF_HTML );
 
         // Lets get all Discussions
-        String[][] sqlAnswer = confref.sqlProcedureMulti( "A_GetAllDiscussions", new String[]{
+        String[][] sqlAnswer = imcref.sqlProcedureMulti( "A_GetAllDiscussions", new String[]{
             aMetaId, aForumId, aLoginDate
         } );
 
@@ -398,7 +396,7 @@ public class ConfDisc extends Conference {
 
             // Lets get the nbr of discussions to show. If it does not contain any
             // discussions, 20 will be returned by default from db
-            String showDiscsStr = confref.sqlProcedureStr( "A_GetNbrOfDiscsToShow", new String[]{
+            String showDiscsStr = imcref.sqlProcedureStr( "A_GetNbrOfDiscsToShow", new String[]{
                 params.getProperty( "FORUM_ID" )
             } );
             showDiscsCounter = Integer.parseInt( showDiscsStr );
@@ -411,24 +409,25 @@ public class ConfDisc extends Conference {
             //lets show previousbutton if not first set of discussions
             if ( discIndexPos != 0 ) {
                 HtmlGenerator previousButtonHtmlObj = new HtmlGenerator( templateLib, PREVIOUS_DISC_LIST_TEMPLATE );
-                previousButton = previousButtonHtmlObj.createHtmlString( vmButtons, req );
+                previousButton = previousButtonHtmlObj.createHtmlString( vmButtons );
             }
             //lets show nextbutton if not last set of discussions
             if ( ( sqlAnswer.length / 8 - 1 ) > ( discIndexPos + showDiscsCounter ) ) {
                 HtmlGenerator nextButtonHtmlObj = new HtmlGenerator( templateLib, NEXT_DISC_LIST_TEMPLATE );
-                nextButton = nextButtonHtmlObj.createHtmlString( vmButtons, req );
+                nextButton = nextButtonHtmlObj.createHtmlString( vmButtons );
             }
 
         }
         // Lets get the forumname for the current forum
-        String currForum = confref.sqlProcedureStr( "A_GetForumName", new String[]{params.getProperty( "FORUM_ID" )} );
+        String currForum = imcref.sqlProcedureStr( "A_GetForumName", new String[]{params.getProperty( "FORUM_ID" )} );
 
         //lets show newdiscbutton if user has more than readrights
         DocumentMapper documentMapper = imcref.getDocumentMapper();
         DocumentDomainObject document = documentMapper.getDocument( metaId );
-        if ( documentMapper.userHasAtLeastDocumentReadPermission( user, document) && imcref.checkDocAdminRights( metaId, user ) ) {
+        if ( documentMapper.userHasAtLeastDocumentReadPermission( user, document )
+             && imcref.checkDocAdminRights( metaId, user ) ) {
             HtmlGenerator newButtonHtmlObj = new HtmlGenerator( templateLib, NEW_DISC_TEMPLATE );
-            newDiscButton = newButtonHtmlObj.createHtmlString( vmButtons, req );
+            newDiscButton = newButtonHtmlObj.createHtmlString( vmButtons );
         }
 
         VariableManager vm = new VariableManager();
@@ -466,7 +465,7 @@ public class ConfDisc extends Conference {
                 HtmlGenerator htmlObj = new HtmlGenerator( templateLib, NEW_DISC_FLAG_TEMPLATE );
                 VariableManager newFlagVM = new VariableManager();
                 newFlagVM.addProperty( "#IMAGE_URL#", imagePath );
-                String newFlag = htmlObj.createHtmlString( newFlagVM, req );
+                String newFlag = htmlObj.createHtmlString( newFlagVM );
 
                 dataV.setElementAt( newFlag, 0 );
             } else {
@@ -590,44 +589,30 @@ public class ConfDisc extends Conference {
     /**
      * Increases the current discussion index. If somethings happens, zero will be set.
      */
-    private boolean increaseDiscIndex( HttpServletRequest req, int incFactor ) {
+    private void increaseDiscIndex( HttpServletRequest req, int incFactor ) {
         HttpSession session = null;
-        try {
-            session = req.getSession( false );
-            if ( session != null ) {
-                String indexStr = (String)session.getAttribute( "Conference.disc_index" );
-                int anInt = Integer.parseInt( indexStr ) + incFactor;
-                session.setAttribute( "Conference.disc_index", "" + anInt );
-            }
-        } catch ( Exception e ) {
-            session.setAttribute( "Conference.disc_index", "0" );
-            log( "IncreaseIndex failed!" );
-            return false;
+        session = req.getSession( false );
+        if ( session != null ) {
+            String indexStr = (String)session.getAttribute( "Conference.disc_index" );
+            int anInt = Integer.parseInt( indexStr ) + incFactor;
+            session.setAttribute( "Conference.disc_index", "" + anInt );
         }
-        return true;
     }
 
     /**
      * Decreases the current discussion index. If somethings happens, zero will be set.
      */
-    private boolean decreaseDiscIndex( HttpServletRequest req, int incFactor ) {
+    private void decreaseDiscIndex( HttpServletRequest req, int incFactor ) {
         HttpSession session = null;
-        try {
-            session = req.getSession( false );
-            if ( session != null ) {
-                String indexStr = (String)session.getAttribute( "Conference.disc_index" );
-                int anInt = Integer.parseInt( indexStr ) - incFactor;
-                if ( anInt < 0 ) {
-                    anInt = 0;
-                }
-                session.setAttribute( "Conference.disc_index", "" + anInt );
+        session = req.getSession( false );
+        if ( session != null ) {
+            String indexStr = (String)session.getAttribute( "Conference.disc_index" );
+            int anInt = Integer.parseInt( indexStr ) - incFactor;
+            if ( anInt < 0 ) {
+                anInt = 0;
             }
-        } catch ( Exception e ) {
-            session.setAttribute( "Conference.disc_index", "0" );
-            log( "DecreaseIndex failed!" );
-            return false;
+            session.setAttribute( "Conference.disc_index", "" + anInt );
         }
-        return true;
     }
 
     /**
@@ -769,15 +754,6 @@ public class ConfDisc extends Conference {
         tagsV.add( "#REPLY_URL#" );
         return tagsV;
     } // End of buildstags
-
-    /**
-     * Log function, will work for both servletexec and Apache
-     */
-
-    public void log( String str ) {
-        super.log( str );
-        System.out.println( "ConfDisc: " + str );
-    }
 
     /**
      * check the Search date Parameters

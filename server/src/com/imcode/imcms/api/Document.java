@@ -17,7 +17,7 @@ public class Document {
     DocumentService documentService;
     DocumentDomainObject internalDocument;
     DocumentMapper documentMapper;
-    DocumentPermissionSetMapper documentPermissionSetMapper;
+    private DocumentPermissionSetMapper documentPermissionSetMapper;
     UserAndRoleMapper userAndRoleMapper;
     IMCServiceInterface service;
 

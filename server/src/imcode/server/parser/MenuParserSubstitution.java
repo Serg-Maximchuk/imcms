@@ -70,23 +70,21 @@ class MenuParserSubstitution implements Substitution {
         }
     }
 
-    class DocumentTypeIdNamePair {
+    private class DocumentTypeIdNamePair {
 
-        Integer id;
-        String name;
+        private Integer id;
+        private String name;
     }
 
     private String createDocumentTypesOptionList() {
-        int documentId = parserParameters.getDocumentRequest().getDocument().getId();
-        String[] docTypes = parserParameters.getDocumentRequest().getServerObject().sqlProcedure( "GetDocTypesForUser", new String[]{
-            "" + documentId, "" + parserParameters.getDocumentRequest().getUser().getId(),
-            parserParameters.getDocumentRequest().getUser().getLanguageIso639_2()
-        } );
+        DocumentDomainObject document = parserParameters.getDocumentRequest().getDocument();
+
+        UserDomainObject user = parserParameters.getDocumentRequest().getUser();
+        String[][] docTypes = parserParameters.getDocumentRequest().getServerObject().getDocumentMapper().getDocumentTypeIdsAndNamesInUsersLanguage(document ,user) ;
         List docTypesList = new ArrayList( Arrays.asList( docTypes ) );
 
         String existing_doc_name = parserParameters.getDocumentRequest().getServerObject().getAdminTemplate( "textdoc/existing_doc_name.html", parserParameters.getDocumentRequest().getUser(), null );
-        docTypesList.add( 0, "0" );
-        docTypesList.add( 1, existing_doc_name );
+        docTypesList.add( 0, new String[] { "0", existing_doc_name} );
 
         final int[] docTypesSortOrder = {
             DocumentDomainObject.DOCTYPE_TEXT,
@@ -109,8 +107,9 @@ class MenuParserSubstitution implements Substitution {
         TreeMap sortedIds = new TreeMap();
         for ( Iterator iterator = docTypesList.iterator(); iterator.hasNext(); ) {
             DocumentTypeIdNamePair documentTypeIdNamePair = new DocumentTypeIdNamePair();
-            documentTypeIdNamePair.id = new Integer( (String)iterator.next() );
-            documentTypeIdNamePair.name = (String)iterator.next();
+            String[] documentTypeIdNamePairStrings = (String[])iterator.next() ;
+            documentTypeIdNamePair.id = new Integer( documentTypeIdNamePairStrings[0] );
+            documentTypeIdNamePair.name = documentTypeIdNamePairStrings[1];
 
             Integer sortKey = (Integer)sortOrderMap.get( documentTypeIdNamePair.id );
             if ( null != sortKey ) {

@@ -1,17 +1,19 @@
 package com.imcode.imcms.servlet;
 
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.util.*;
-
-import imcode.external.diverse.*;
-import imcode.server.*;
 import com.imcode.imcms.servlet.superadmin.AdminError2;
+import com.imcode.imcms.servlet.superadmin.AdminUserProps;
 import com.imcode.imcms.servlet.superadmin.Administrator;
-import com.imcode.imcms.servlet.superadmin.AdminError2;
-import com.imcode.imcms.servlet.superadmin.AdminUserProps;
-import com.imcode.imcms.servlet.superadmin.AdminUserProps;
+import imcode.external.diverse.Html;
+import imcode.external.diverse.VariableManager;
+import imcode.server.ApplicationServer;
+import imcode.server.IMCServiceInterface;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.*;
 
 public class UserChangePrefs extends Administrator {
 
@@ -280,10 +282,10 @@ public class UserChangePrefs extends Administrator {
 
       // Get default props
       Properties p = doDefaultUser();
-      Hashtable h = imcref.sqlQueryHash( "GetUserInfo", new String[] { userId } );
-      Enumeration keys = h.keys();
-      while( keys.hasMoreElements() ) {
-         Object key = keys.nextElement();
+      Map h = imcref.sqlQueryHash( "GetUserInfo", new String[] { userId } );
+      Iterator keys = h.keySet().iterator();
+      while( keys.hasNext() ) {
+         Object key = keys.next();
          String[] values = (String[])h.get( key );
          String aValue = values[0];
          p.setProperty( key.toString(), aValue );

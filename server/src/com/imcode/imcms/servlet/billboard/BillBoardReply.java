@@ -4,10 +4,11 @@ import imcode.external.diverse.HtmlGenerator;
 import imcode.external.diverse.MetaInfo;
 import imcode.external.diverse.VariableManager;
 import imcode.server.ApplicationServer;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
+import imcode.server.user.UserDomainObject;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentMapper;
+import imcode.util.Utility;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -65,15 +66,10 @@ public class BillBoardReply extends BillBoard {//ConfReply
 
     public void doPost( HttpServletRequest req, HttpServletResponse res )
             throws ServletException, IOException {
-        //log("START BillBoardReply doPost");
-
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) {
-            return;
-        }
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) {
             return;
         }
@@ -96,12 +92,6 @@ public class BillBoardReply extends BillBoard {//ConfReply
 
     public void doGet( HttpServletRequest req, HttpServletResponse res )
             throws ServletException, IOException {
-        //log("START BillBoardReply doGet");
-
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) {
-            return;
-        }
 
         HttpSession session = req.getSession( false );
 
@@ -109,7 +99,8 @@ public class BillBoardReply extends BillBoard {//ConfReply
         Properties params = this.getParameters( req );
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) {
             return;
         }
@@ -121,7 +112,6 @@ public class BillBoardReply extends BillBoard {//ConfReply
         // Lets get serverinformation
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface billref = ApplicationServer.getIMCPoolInterface();
 
         // Lets get path to the imagefolder. http://dev.imcode.com/images/102/ConfDiscNew.gif
 
@@ -136,7 +126,7 @@ public class BillBoardReply extends BillBoard {//ConfReply
             //log("ok PREVIEW-mode");
             String addHeader = (String)billPrevData.get( header );
             String addText = (String)billPrevData.get( text );
-            String datum = billref.sqlProcedureStr( "B_GetTime", new String[]{} );
+            String datum = imcref.sqlProcedureStr( "B_GetTime", new String[]{} );
             //log(addHeader+"\n"+addText+"\n"+datum);
             String addType = req.getParameter( "ADDTYPE" );
             String addType2 = req.getParameter( "ADDTYPE" );
@@ -182,10 +172,10 @@ public class BillBoardReply extends BillBoard {//ConfReply
             return;
         }
 
-        String[][] sqlAnswer = billref.sqlProcedureMulti( "B_GetCurrentBill", new String[]{discId} );
+        String[][] sqlAnswer = imcref.sqlProcedureMulti( "B_GetCurrentBill", new String[]{discId} );
 
         // Lets get the discussion header
-        String discHeader = billref.sqlProcedureStr( "B_GetBillHeader", new String[]{discId} );//GetDiscussionHeader
+        String discHeader = imcref.sqlProcedureStr( "B_GetBillHeader", new String[]{discId} );//GetDiscussionHeader
 
         if ( discHeader == null || discId.equalsIgnoreCase( "-1" ) ) {
             discHeader = " ";
@@ -218,7 +208,7 @@ public class BillBoardReply extends BillBoard {//ConfReply
             vmButtons.addProperty( "#SERVLET_URL#", "" );
             vmButtons.addProperty( "#IMAGE_URL#", this.getExternalImageFolder( req ) );
             HtmlGenerator commentButtonHtmlObj = new HtmlGenerator( templateLib, NEW_COMMENT_TEMPLATE );
-            commentButton = commentButtonHtmlObj.createHtmlString( vmButtons, req );
+            commentButton = commentButtonHtmlObj.createHtmlString( vmButtons );
         }
 
         VariableManager vm = new VariableManager();
@@ -229,8 +219,6 @@ public class BillBoardReply extends BillBoard {//ConfReply
 
         this.sendHtml( req, res, vm, HTML_TEMPLATE );
 
-        //	log("Get är klar") ;
-        return;
     }
 
     private Vector buildTagsV() {

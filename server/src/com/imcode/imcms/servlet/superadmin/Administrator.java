@@ -69,7 +69,7 @@ public class Administrator extends HttpServlet {
      from the user and and returns the base path to the internal folder, hangs on the
      language prefix and an "/admin/" string afterwards...
      */
-    public File getAdminTemplateFolder( IMCServiceInterface imcref, imcode.server.user.UserDomainObject user ) throws IOException {
+    File getAdminTemplateFolder( IMCServiceInterface imcref, imcode.server.user.UserDomainObject user ) {
 
         // Since our templates are located into the admin folder, we'll have to hang on admin
         File templateLib = imcref.getTemplatePath();
@@ -84,8 +84,8 @@ public class Administrator extends HttpServlet {
     /**
      SendHtml. Generates the html page to the browser.
      **/
-    public String createHtml( HttpServletRequest req, HttpServletResponse res,
-                             VariableManager vm, String htmlFile) throws IOException {
+    String createHtml( HttpServletRequest req,
+                       VariableManager vm, String htmlFile ) throws IOException {
 
         // Lets get the path to the admin templates folder
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
@@ -96,7 +96,7 @@ public class Administrator extends HttpServlet {
         vm.addProperty( "SERVLET_URL", "" );
         vm.addProperty( "SERVLET_URL2", "" );
         HtmlGenerator htmlObj = new HtmlGenerator( templateLib, htmlFile );
-        String html = htmlObj.createHtmlString( vm, req );
+        String html = htmlObj.createHtmlString( vm );
         return html;
     }
 
@@ -106,9 +106,9 @@ public class Administrator extends HttpServlet {
     protected void sendHtml(HttpServletRequest req, HttpServletResponse res,
                           VariableManager vm, String htmlFile ) throws IOException {
 
-        String str = this.createHtml( req, res, vm, htmlFile );
+        String str = this.createHtml( req, vm, htmlFile );
         HtmlGenerator htmlObj = new HtmlGenerator();
-        htmlObj.sendToBrowser( req, res, str );
+        htmlObj.sendToBrowser( res, str );
     }
 
     /**

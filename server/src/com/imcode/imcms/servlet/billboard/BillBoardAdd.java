@@ -4,8 +4,8 @@ import imcode.external.diverse.MetaInfo;
 import imcode.external.diverse.VariableManager;
 import imcode.server.ApplicationServer;
 import imcode.server.HTMLConv;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
+import imcode.server.user.UserDomainObject;
 import imcode.util.Utility;
 import imcode.util.net.SMTP;
 
@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.net.ProtocolException;
 import java.util.Hashtable;
 import java.util.Properties;
-
-import com.imcode.imcms.servlet.billboard.BillBoard;
 
 /**
  * Html template in use:
@@ -56,14 +54,12 @@ public class BillBoardAdd extends BillBoard {
     public void doPost( HttpServletRequest req, HttpServletResponse res )
             throws ServletException, IOException {
 
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) return;
-
         // Lets get all parameters for this servlet
         Properties params = this.getParameters( req );
 
         // Lets get the user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) return;
 
         if ( !isUserAuthorized( req, res, user ) ) {
@@ -76,7 +72,6 @@ public class BillBoardAdd extends BillBoard {
         addType = req.getParameter( "ADDTYPE" );
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface billref = ApplicationServer.getIMCPoolInterface();
 
         int metaId = Integer.parseInt( params.getProperty( "META_ID" ) );
         if ( userHasRightToEdit( imcref, metaId, user ) ) {
@@ -227,13 +222,13 @@ public class BillBoardAdd extends BillBoard {
 
                 // Ok, Lets add the discussion to DB
                 String sqlQuest = "B_AddNewBill";
-                billref.sqlUpdateProcedure( sqlQuest, new String[]{aSectionId, userId, addHeader, addText, addEpost, req.getRemoteAddr()} );
+                imcref.sqlUpdateProcedure( sqlQuest, new String[]{aSectionId, userId, addHeader, addText, addEpost, req.getRemoteAddr()} );
 
                 // Lets add the new discussion id to the session object
                 // Ok, Lets get the last discussion in that section
                 // HttpSession session = req.getSession(false) ;
                 if ( session != null ) {
-                    String latestDiscId = billref.sqlProcedureStr( "B_GetLastDiscussionId", new String[]{params.getProperty( "META_ID" ), aSectionId} );
+                    String latestDiscId = imcref.sqlProcedureStr( "B_GetLastDiscussionId", new String[]{params.getProperty( "META_ID" ), aSectionId} );
                     session.setAttribute( "BillBoard.disc_id", latestDiscId );
                 }
 
@@ -293,14 +288,14 @@ public class BillBoardAdd extends BillBoard {
 
 
                 //ok now we have to send the mail to right email adr that we vill get from the db
-                String toEmail = billref.sqlProcedureStr( "B_GetEmail", new String[]{discId} );
+                String toEmail = imcref.sqlProcedureStr( "B_GetEmail", new String[]{discId} );
                 if ( toEmail == null ) {
                     log( "OBS! No fn email found!" );
                     return;
                 }
 
                 String sqlQuest = "B_GetSubjectStr";
-                String subjectStr = billref.sqlProcedureStr( sqlQuest, new String[]{discId, params.getProperty( "META_ID" ), params.getProperty( "SECTION_ID" )} );
+                String subjectStr = imcref.sqlProcedureStr( sqlQuest, new String[]{discId, params.getProperty( "META_ID" ), params.getProperty( "SECTION_ID" )} );
                 try {
                     this.sendReplieEmail( toEmail, addEpost, subjectStr, addText, addHeader );
                 } catch ( ProtocolException pe ) {
@@ -309,7 +304,7 @@ public class BillBoardAdd extends BillBoard {
                     return;
                 }
 
-                billref.sqlUpdateProcedure( "B_AddReply", new String[]{discId, userId, addHeader, addText, addEpost, req.getRemoteAddr()} );
+                imcref.sqlUpdateProcedure( "B_AddReply", new String[]{discId, userId, addHeader, addText, addEpost, req.getRemoteAddr()} );
 
                 // Lets redirect to the servlet which holds in us.
                 res.sendRedirect( "BillBoardDiscView?MAIL_SENT=OK" );//ConfDiscView
@@ -331,14 +326,12 @@ public class BillBoardAdd extends BillBoard {
             throws ServletException, IOException {
         //log("START BillBoardAdd doGet");
 
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) return;
-
         // Lets get all parameters for this servlet
         Properties params = this.getParameters( req );
 
         // Lets get the user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) return;
 
         if ( !isUserAuthorized( req, res, user ) ) {
@@ -348,7 +341,6 @@ public class BillBoardAdd extends BillBoard {
         // Lets get serverinformation
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface billref = ApplicationServer.getIMCPoolInterface();
 
         int metaId = Integer.parseInt( params.getProperty( "META_ID" ) );
         if ( userHasRightToEdit( imcref, metaId, user ) ) {
@@ -364,7 +356,7 @@ public class BillBoardAdd extends BillBoard {
             vm.addProperty( "ADD_TYPE", params.getProperty( "ADD_TYPE" ) );
 
             // Lets add the current forum name
-            String currSection = billref.sqlProcedureStr( "B_GetSectionName", new String[]{params.getProperty( "SECTION_ID" )} );
+            String currSection = imcref.sqlProcedureStr( "B_GetSectionName", new String[]{params.getProperty( "SECTION_ID" )} );
             vm.addProperty( "CURRENT_SECTION_NAME", currSection );
 		
             // Lets get the addtype and add it to the page

@@ -112,7 +112,7 @@ public class TemplateMapper {
         service.sqlUpdateQuery( "delete from templategroups where group_id = ?", new String[]{"" + grp_id} );
     }
 
-    public TemplateGroupDomainObject[] getAllTemplateGroups() {
+    private TemplateGroupDomainObject[] getAllTemplateGroups() {
         String[][] sprocResult = service.sqlProcedureMulti( SPROC_GET_TEMPLATE_GROUPS, new String[]{} );
         return createTemplateGroupsFromSqlResult( sprocResult );
     }
@@ -130,7 +130,7 @@ public class TemplateMapper {
         return createTemplatesFromSqlResult( queryResult );
     }
 
-    public int getCountOfDocumentsUsingTemplate( TemplateDomainObject template ) {
+    private int getCountOfDocumentsUsingTemplate( TemplateDomainObject template ) {
         String queryResult = service.sqlQueryStr(
                 "SELECT COUNT(meta_id)" + " FROM text_docs" + " WHERE template_id = ?", new String[]{
                     "" + template.getId()
@@ -223,15 +223,10 @@ public class TemplateMapper {
         }
     }
 
-    public static String[][] sprocGetTemplateGroupsForUser( IMCServiceInterface service, UserDomainObject user,
+    private static String[][] sprocGetTemplateGroupsForUser( IMCServiceInterface service, UserDomainObject user,
                                                             int meta_id ) {
         return service.sqlProcedureMulti( SPROC_GET_TEMPLATE_GROUPS_FOR_USER,
                                           new String[]{String.valueOf( meta_id ), String.valueOf( user.getId() )} );
-    }
-
-    public static List sqlSelectGroupName( IMCServiceInterface service, String group_id ) {
-        return Arrays.asList(
-                service.sqlQuery( "select group_name from templategroups where group_id = ?", new String[]{group_id} ) );
     }
 
     private TemplateDomainObject createTemplateFromSqlResultRow( String[] sqlResultRow ) {

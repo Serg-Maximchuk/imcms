@@ -1,8 +1,8 @@
 package com.imcode.imcms.servlet.billboard;
 
+import com.imcode.imcms.servlet.superadmin.Administrator;
 import imcode.external.diverse.VariableManager;
 import imcode.server.ApplicationServer;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
 import imcode.server.user.UserDomainObject;
 import imcode.util.Parser;
@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
-
-import com.imcode.imcms.servlet.superadmin.Administrator;
 
 /**
  * Lists conferences who has debates that has requared dates. (create or modified)
@@ -176,8 +174,6 @@ public class AdminBillBoard extends Administrator { //AdminConference
         // lets generate response page
         if ( noErrors ) {
 
-            IMCPoolInterface billref = ApplicationServer.getIMCPoolInterface();
-
             //lets get htmltemplate for conferencerow
             String htmlConferenceElement = imcref.getAdminTemplate( TEMPLATE_CONF_ELEMENT, user, null );
             String htmlForumElement = imcref.getAdminTemplate( TEMPLATE_FORUM_ELEMENT, user, null );
@@ -194,7 +190,7 @@ public class AdminBillBoard extends Administrator { //AdminConference
             for ( int i = 0; i < listOfBillBoards.length; i++ ) {
 
                 String metaId = listOfBillBoards[i][0];
-                String[][] arr = billref.sqlProcedureMulti( "B_AdminStatistics1", new String[]{metaId, startDate, endDate, listMode} );
+                String[][] arr = imcref.sqlProcedureMulti( "B_AdminStatistics1", new String[]{metaId, startDate, endDate, listMode} );
                 String[][] queryResultForum = arr;
 
                 //lets create sectionList for this conference
@@ -203,7 +199,7 @@ public class AdminBillBoard extends Administrator { //AdminConference
                 for ( int j = 0; j < queryResultForum.length; j++ ) {
 
                     String forumId = queryResultForum[j][0];
-                    String[][] arr1 = billref.sqlProcedureMulti( "B_AdminStatistics2", new String[]{metaId, forumId, startDate, endDate, listMode} );
+                    String[][] arr1 = imcref.sqlProcedureMulti( "B_AdminStatistics2", new String[]{metaId, forumId, startDate, endDate, listMode} );
                     String[][] queryResultDebate = arr1;
 
                     // lets create debatelist for this forum

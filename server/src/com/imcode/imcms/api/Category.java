@@ -7,7 +7,7 @@ import imcode.server.document.CategoryDomainObject;
  */
 public class Category {
 
-    CategoryDomainObject internalCategory ;
+    private CategoryDomainObject internalCategory ;
 
     Category( CategoryDomainObject internalCategory ) {
         this.internalCategory = internalCategory ;

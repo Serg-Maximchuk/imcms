@@ -6,8 +6,8 @@ package imcode.server.parser ;
 */
 public class AdminButtonParser extends imcode.util.FileTagReplacer {
 
-    protected int set_id ;
-	protected int set ;
+    private int set_id ;
+	private int set ;
 
 	/**
 		Creates an AdminButtonParser.

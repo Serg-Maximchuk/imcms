@@ -424,40 +424,23 @@ public class SaveMeta extends HttpServlet {
         return;
     }
 
-    private static void addNullForPublisherIdToSqlStringIfInvalid( Properties metaprops, List sqlUpdateColumns ) {
-        String publisher_id = metaprops.getProperty( "publisher_id" );
-        if ( null != publisher_id ) {
-            try {
-                Integer.parseInt( publisher_id );
-            } catch ( NumberFormatException nfe ) {
-                metaprops.remove( "publisher_id" );
-                sqlUpdateColumns.add( "publisher_id = NULL" );
-            }
-        }
-    }
-
-    private static Object putTemporaryPermissionSettingsInUser( UserDomainObject user, String meta_id,
+    private static void putTemporaryPermissionSettingsInUser( UserDomainObject user, String meta_id,
                                                                 Properties metaprops,
                                                                 Properties temp_permission_settings,
                                                                 String[] temp_default_templates ) {
-        return user.put( "temp_perm_settings", new Object[]{
+        user.put( "temp_perm_settings", new Object[]{
             String.valueOf( meta_id ), metaprops, temp_permission_settings, temp_default_templates
         } );
     }
 
-    public static void sprocUpdateDefaultTemplates( IMCServiceInterface imcref, String meta_id, String template1,
+    private static void sprocUpdateDefaultTemplates( IMCServiceInterface imcref, String meta_id, String template1,
                                                     String template2 ) {
         imcref.sqlUpdateProcedure( "UpdateDefaultTemplates", new String[]{meta_id, template1, template2} );
     }
 
-    public static String[][] sprocGetRolesDocPermissions( IMCServiceInterface imcref, String meta_id ) {
+    private static String[][] sprocGetRolesDocPermissions( IMCServiceInterface imcref, String meta_id ) {
         String[][] role_permissions = imcref.sqlProcedureMulti( "GetRolesDocPermissions", new String[]{meta_id} );
         return role_permissions;
-    }
-
-    static void setSectionInDbFromRequest( HttpServletRequest req, IMCServiceInterface imcref, int metaId ) {
-        String[] sectionIdStrings = req.getParameterValues( "change_section" );
-        DocumentMapper.setSectionsForDocument( imcref, metaId, sectionIdStrings );
     }
 
 }

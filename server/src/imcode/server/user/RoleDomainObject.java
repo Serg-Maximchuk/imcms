@@ -56,10 +56,6 @@ public class RoleDomainObject implements Serializable {
         return id;
     }
 
-    public int getAdminRoleId() {
-        return adminRoleId;
-    }
-
     public String toString() {
         return "(role " + id + " \"" + name + "\" " + adminRoleId + ")";
     }

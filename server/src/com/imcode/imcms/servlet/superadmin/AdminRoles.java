@@ -159,7 +159,7 @@ public class AdminRoles extends Administrator {
             }
 
             // lets get data on permissions and values
-            String permissionComponent = createPermissionComponent( req, res, permissionList );
+            String permissionComponent = createPermissionComponent( req, permissionList );
 
             VariableManager vm = new VariableManager();
             vm.addProperty( "ROLE_PERMISSIONS", permissionComponent );
@@ -218,7 +218,7 @@ public class AdminRoles extends Administrator {
             String[][] permissionList = imcref.sqlProcedureMulti( sqlQ, new String[]{roleId, languagePrefix} );
 
             // lets get data on permissions and values
-            String permissionComponent = createPermissionComponent( req, res, permissionList );
+            String permissionComponent = createPermissionComponent( req, permissionList );
 
             /* create output page */
             VariableManager vm = new VariableManager();
@@ -490,7 +490,7 @@ public class AdminRoles extends Administrator {
 
     /* create permissions tag */
     private String createPermissionComponent( HttpServletRequest req,
-                                              HttpServletResponse res, String[][] permissionList )
+                                              String[][] permissionList )
             throws IOException {
 
         /* create rows of permission */
@@ -516,7 +516,7 @@ public class AdminRoles extends Administrator {
                 vm.addProperty( "PERMISSION_CHECKED", "" );
             }
 
-            String rowString = createHtml( req, res, vm, HTML_EDIT_ROLE_TABLE_ROW );
+            String rowString = createHtml( req, vm, HTML_EDIT_ROLE_TABLE_ROW );
 
             permissionTableRows.append( rowString );
 
@@ -526,7 +526,7 @@ public class AdminRoles extends Administrator {
         VariableManager vmTable = new VariableManager();
         vmTable.addProperty( "PERMISSION_ROWS", permissionTableRows.toString() );
 
-        return createHtml( req, res, vmTable, HTML_EDIT_ROLE_TABLE );
+        return createHtml( req, vmTable, HTML_EDIT_ROLE_TABLE );
     }
 
     /* colects permmissions state*/

@@ -239,7 +239,4 @@ public class AdminSection extends Administrator {
         return buff.toString();
     }//end createOptionList
 
-    public void log(String str) {
-        super.log(str);
-    }
 }//end servlet

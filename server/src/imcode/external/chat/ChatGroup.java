@@ -1,11 +1,11 @@
 
 package imcode.external.chat;
 
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
+
 import javax.servlet.ServletException;
-import java.util.*;
 import java.io.IOException;
+import java.util.*;
 
 public class ChatGroup{
 
@@ -62,8 +62,8 @@ public class ChatGroup{
 	/**
 	*Adds a ChatNormalMessage into all members of this ChatGroup
 	*@param msg The ChatNormalMessage you want to add
-	*/
-	public synchronized void addNewMsg( ChatBase chatBase, ChatMessage msg, IMCServiceInterface imcref, IMCPoolInterface chatref) throws IOException, ServletException{
+     */
+	public synchronized void addNewMsg( ChatBase chatBase, ChatMessage msg, IMCServiceInterface imcref ) throws IOException, ServletException{
         _msgNrCounter.increment();
 		msg.setIdNumber(_msgNrCounter.getValue());
 		Iterator iter = _groupMembers.iterator();
@@ -92,7 +92,7 @@ public class ChatGroup{
             ChatSystemMessage systemMessage = new ChatSystemMessage(theMember, ChatSystemMessage.USER_TIMEDOUT_MSG) ;
             if (!theMember.isTimedOut()){
                 theMember.setTimedOut(true);
-                chatBase.createLeaveMessageAndAddToGroup( theMember, systemMessage, chatref, imcref );
+                chatBase.createLeaveMessageAndAddToGroup( theMember, systemMessage, imcref );
             }
 
             //chatBase.logOutMember(theMember, systemMessage, imcref, chatref);

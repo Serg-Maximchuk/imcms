@@ -12,7 +12,7 @@ public class TestExternalizedImcmsAuthenticatorAndUserMapper extends LdapUserBas
     private ImcmsAuthenticatorAndUserMapper imcmsAuthenticatorAndUserMapper;
     private LdapUserAndRoleMapper ldapUserAndRoleMapper;
 
-    String DEFAULT_LANGUAGE = "swe";
+    private String DEFAULT_LANGUAGE = "swe";
 
     public void testDummy() {
         assertTrue( true );

@@ -6,7 +6,6 @@ import imcode.external.chat.ChatMember;
 import imcode.external.chat.ChatSystemMessage;
 import imcode.external.diverse.MetaInfo;
 import imcode.server.ApplicationServer;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
 
 import javax.servlet.RequestDispatcher;
@@ -27,12 +26,12 @@ public class ChatManager extends ChatBase {
         //if (super.checkParameters(req, res, params) == false) return ;
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+        imcode.server.user.UserDomainObject user = super.getUserObj( req );
         if ( user == null ) return;
 
         int testMetaId = params.getMetaId();
 
-        if ( !isUserAuthorized( req, res, testMetaId, user ) ) {
+        if ( !isUserAuthorized( res, testMetaId, user ) ) {
             return;
         }
 
@@ -67,8 +66,7 @@ public class ChatManager extends ChatBase {
                 if ( theChatMember != null ) {
                     ChatSystemMessage systemMessage = new ChatSystemMessage( theChatMember, ChatSystemMessage.USER_TIMEDOUT_MSG );
                     IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-                    IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
-                    logOutMember( theChatMember, systemMessage, imcref, chatref );
+                    logOutMember( theChatMember, systemMessage, imcref );
                 }
                 // log("Ok nu sätter vi metavärdena");
                 setSessionAttributes( session, params );

@@ -104,19 +104,19 @@ public class ChatError extends ChatBase {
                                   VariableManager vm, String htmlFile ) throws IOException {
 
         // Lets get the TemplateFolder  and the foldername used for this certain metaid
-        UserDomainObject user = this.getUserObj(req,res) ;
+        UserDomainObject user = this.getUserObj(req ) ;
         File templateLib = this.getExternalTemplateFolder( req, user );
 
         // Lets get the path to the imagefolder.
-        String imagePath = this.getExternalImageFolder( req, res );
+        String imagePath = this.getExternalImageFolder( req );
 
         vm.addProperty( "IMAGE_URL", imagePath );
         vm.addProperty( "SERVLET_URL", "" );
 
         HtmlGenerator htmlObj = new HtmlGenerator( templateLib, htmlFile );
-        String html = htmlObj.createHtmlString( vm, req );
+        String html = htmlObj.createHtmlString( vm );
 
-        htmlObj.sendToBrowser( req, res, html );
+        htmlObj.sendToBrowser( res, html );
     }
 
 } // End of class

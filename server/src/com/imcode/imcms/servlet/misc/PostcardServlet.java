@@ -259,13 +259,6 @@ public class PostcardServlet extends HttpServlet {
     }
 
     /**
-     * Log function. Logs the message to the log file and console
-     */
-    public void log( String msg ) {
-        super.log( msg );
-    }
-
-    /**
      * The method to handles the mail-stuff needed
      */
     private void sendPostcardMail( HttpServletRequest req, HttpServletResponse res ) throws IOException {

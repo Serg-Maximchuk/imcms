@@ -38,7 +38,7 @@ public class BrowserDocumentDomainObject extends DocumentDomainObject {
                                                DocumentComposer.NewDocumentParentInformation newDocumentParentInformation,
                                                UserDomainObject user, HttpServletRequest request,
                                                HttpServletResponse response ) throws IOException, ServletException {
-        documentInformation.processNewBrowserDocumentInformation( request, response, user );
+        documentInformation.processNewBrowserDocumentInformation( request, response );
 
     }
 

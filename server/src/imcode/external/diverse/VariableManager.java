@@ -34,12 +34,12 @@ public class VariableManager {
         return data ;
     }
 
-    public boolean merge(Vector tagVect, Vector datVect ) {
+    public void merge(Vector tagVect, Vector datVect ) {
         
         // Lets assure that the vectors has the same size
         if(tagVect.size() != datVect.size()) {
             log("merge, inVectors differs in size!") ;
-            return false ;
+            return ;
         }
         
         Object tagObj ;
@@ -50,7 +50,6 @@ public class VariableManager {
             datObj = datVect.elementAt(i) ;
             this.addProperty(tagObj, datObj) ;
         }
-        return true ;
     }
 
     public String toString() {

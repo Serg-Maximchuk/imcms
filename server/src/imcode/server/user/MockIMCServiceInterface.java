@@ -75,7 +75,7 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
         return null;  //To change body of implemented methods use Options | File Templates.
     }
 
-    public Hashtable sqlQueryHash( String sqlStr, String[] params ) {
+    public Map sqlQueryHash( String sqlStr, String[] params ) {
         return null;  // TODO
     }
 
@@ -95,7 +95,7 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
         return null;
     }
 
-    public Hashtable sqlProcedureHash( String procedure, String[] params ) {
+    public Map sqlProcedureHash( String procedure, String[] params ) {
         return null;  // TODO
     }
 
@@ -104,17 +104,17 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
    }
 
     // check if url doc
-    public String isUrlDoc( int meta_id, UserDomainObject user ) {
+    public String isUrlDoc( int meta_id ) {
         return null;  // TODO
     }
 
     // check if url doc
-   public String isFramesetDoc( int meta_id, UserDomainObject user ) {
+   public String isFramesetDoc( int meta_id ) {
       return null;
    }
 
    // check if external doc
-   public ExternalDocType isExternalDoc( int meta_id, UserDomainObject user ) {
+   public ExternalDocType isExternalDoc( int meta_id ) {
       return null;
    }
 
@@ -126,11 +126,6 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
    public String[] sqlProcedure( String procedure, String[] params ) {
       this.sqlProcedureCalls.addActual( procedure );
       return (String[])expectedSQLResults.remove( 0 );
-   }
-
-   // Send a procedure to the database and return a string array
-   public String[] sqlProcedure( String procedure, String[] params, boolean trim ) {
-      return new String[0];
    }
 
     // Send a procedure to the database and return a string
@@ -154,23 +149,18 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
       return null;
    }
 
-    // get session counter
-   public int getCounter() {
-      return 0;
-   }
+    // set session counter
+   public void setSessionCounter( int value ) {
 
-   // set session counter
-   public int setCounter( int value ) {
-      return 0;
    }
 
     // set  session counter date
-    public void setCounterDate( Date date ) {
+    public void setSessionCounterDate( Date date ) {
         // TODO
     }
 
     // set  session counter date
-   public Date getCounterDate() {
+   public Date getSessionCounterDate() {
       return null;
    }
 
@@ -239,12 +229,7 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
       return false;
    }
 
-   //get greatest permission_set
-   public int getUserHighestPermissionSet( int meta_id, int user_id ) {
-      return 0;
-   }
-
-   // save template to disk
+    // save template to disk
    public int saveTemplate( String name, String file_name, byte[] data, boolean overwrite, String lang_prefix ) {
       return 0;
    }
@@ -264,7 +249,7 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
 
    // save demo template
    public void saveDemoTemplate( int template_id, byte[] data, String suffix ) {
-      return ;
+
    }
 
     // Send a procedure to the database and return a multistring array
@@ -356,7 +341,7 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
       return 0;
    }
 
-   public String getSessionCounterDate() {
+   public String getSessionCounterDateAsString() {
       return null;
    }
 

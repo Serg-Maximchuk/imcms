@@ -33,10 +33,22 @@ public class TextDocument extends Document {
         ((TextDocumentDomainObject)internalDocument).setText( textFieldIndexInDocument, imcmsText);
     }
 
+    /**
+     * @deprecated Use {@link #setImage(int, java.lang.String, java.lang.String, int, int, int, int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)} instead. link_target is used instead of link_targetname.
+     * @throws NoPermissionException
+     */
     public void setImage(int imageIndexInDocument, String image_src, String image_name,
                          int width, int heigth, int border, int v_space, int h_space, String align,
                          String link_target, String link_targetname, String link_href,
                          String alt_text, String low_src) throws NoPermissionException {
+        setImage( imageIndexInDocument, image_src, image_name, width, heigth, border, v_space, h_space, align, link_target, link_href, alt_text, low_src );
+
+    }
+
+    public void setImage( int imageIndexInDocument, String image_src, String image_name, int width, int heigth,
+                           int border, int v_space,
+                           int h_space, String align, String link_target, String link_href, String alt_text,
+                           String low_src ) throws NoPermissionException {
         securityChecker.hasEditPermission(this);
         TextDocumentDomainObject.Image internalImage = new TextDocumentDomainObject.Image();
 
@@ -53,7 +65,6 @@ public class TextDocument extends Document {
         internalImage.setLowResolutionUrl(low_src);
         internalImage.setLinkUrl(link_href);  // link href
         documentMapper.saveDocumentImage(this.getId(), imageIndexInDocument, internalImage, super.securityChecker.getCurrentLoggedInUser());
-
     }
 
     public Image getImage( int imageIndexInDocument ) throws NoPermissionException {
@@ -122,11 +133,10 @@ public class TextDocument extends Document {
      *                  {@link TextDocument.Menu.SORT_BY_MODIFIED_DATETIME_DESCENDING},
      *                  or {@link TextDocument.Menu.SORT_BY_MANUAL_ORDER_DESCENDING}.
      * @throws NoPermissionException if the current user lacks permission to edit this owner.
-     * @deprecated
+     * @deprecated Sort order is now per menu. Method Will be removed some time after version 1.8.4.
      */
     public void setMenuSortOrder(int sortOrder) throws NoPermissionException {
         securityChecker.hasEditPermission(this);
-        // TODO: FIXME: Set sort order of all menus on document
         //((TextDocumentDomainObject)internalDocument).setMenuSortOrder(sortOrder);
     }
 
@@ -137,7 +147,7 @@ public class TextDocument extends Document {
      *         one of {@link TextDocument.Menu.SORT_BY_HEADLINE},
      *         {@link TextDocument.Menu.SORT_BY_MODIFIED_DATETIME_DESCENDING},
      *         or {@link TextDocument.Menu.SORT_BY_MANUAL_ORDER_DESCENDING}.
-     * @deprecated
+     * @deprecated Sort order is now per menu. Method Will be removed some time after version 1.8.4.
      */
     public int getMenuSortOrder() throws NoPermissionException {
         securityChecker.hasAtLeastDocumentReadPermission(this);

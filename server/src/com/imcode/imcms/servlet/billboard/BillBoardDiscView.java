@@ -11,6 +11,7 @@ package com.imcode.imcms.servlet.billboard;
  */
 
 import imcode.server.*;
+import imcode.server.user.UserDomainObject;
 
 import java.io.*;
 import java.util.*;
@@ -18,6 +19,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import imcode.external.diverse.*;
+import imcode.util.Utility;
 
 import java.rmi.*;
 import java.rmi.registry.*;
@@ -45,14 +47,6 @@ public class BillBoardDiscView extends BillBoard {//ConfDiscView
 
     public void doGet( HttpServletRequest req, HttpServletResponse res )
             throws ServletException, IOException {
-        //log("START BillBoardDiscView doGet");
-
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) {
-            log( "checkSession = false so return" );
-            return;
-        }
-
         // Lets get the standard parameters and validate them
         // Properties params = super.getParameters(req) ;
 
@@ -60,7 +54,8 @@ public class BillBoardDiscView extends BillBoard {//ConfDiscView
         Properties params = MetaInfo.createPropertiesFromMetaInfoParameters( super.getBillBoardSessionParameters( req ) );
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) return;
 
         if ( !isUserAuthorized( req, res, user ) ) {

@@ -72,11 +72,11 @@ public class HttpUnitGeneratingFilter implements Filter {
 
         String contentType;
 
-        public ContentTypeTrackingHttpServletResponseWrapper(HttpServletResponse servletResponse) {
+        private ContentTypeTrackingHttpServletResponseWrapper(HttpServletResponse servletResponse) {
             super(servletResponse);
         }
 
-        public String getContentType() {
+        private String getContentType() {
             return contentType;
         }
 

@@ -9,7 +9,7 @@ import imcode.server.document.DocumentDomainObject;
  *             *
  */
 
-public class MenuItem {
+class MenuItem {
 
     private DocumentDomainObject document ;
     private boolean editable;

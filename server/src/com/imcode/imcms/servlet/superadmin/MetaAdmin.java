@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class MetaAdmin extends HttpServlet {
 
-    public static final String PARAMETER_BUTTON__SHOW_INTERVAL = "showinterval";
+    private static final String PARAMETER_BUTTON__SHOW_INTERVAL = "showinterval";
     private static final String PARAMETER_BUTTON__SHOW_SPAN = "showspan";
     private static final String PARAMETER__INTERVAL = "interval";
     private static final String PARAMETER__START = "start";

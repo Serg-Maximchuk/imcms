@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 public abstract class ConnectionPool {
     private static Logger log = Logger.getLogger( ConnectionPool.class);
     public abstract Connection getConnection() throws SQLException;
-    public abstract void testConnectionAndLogResultToTheErrorLog() throws SQLException;
+    protected abstract void testConnectionAndLogResultToTheErrorLog() throws SQLException;
 
     public static ConnectionPool createConnectionPool(String jdbcUrl, String host, int port, String databaseName, String jdbcDriver, String user, String password, int maxConnectionCount) {
         ConnectionPool connectionPool;

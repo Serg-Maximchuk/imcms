@@ -1,7 +1,7 @@
 package com.imcode.imcms.servlet.conference;
 
-import imcode.server.*;
 import imcode.server.user.UserDomainObject;
+import imcode.server.ApplicationServer;
 
 import java.io.*;
 import java.util.*;
@@ -10,7 +10,6 @@ import javax.servlet.http.*;
 
 import imcode.external.diverse.*;
 import imcode.util.Utility;
-import com.imcode.imcms.servlet.conference.Conference;
 
 public class ConfForum extends Conference {
 
@@ -32,11 +31,8 @@ public class ConfForum extends Conference {
         HttpSession session = req.getSession( false );
         String aMetaId = (String)session.getAttribute( "Conference.meta_id" );
 
-        // Lets get serverinformation
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
-
         // Lets get the information from DB
-        String[] sqlAnswer = confref.sqlProcedure( "A_GetAllForum", new String[]{aMetaId} );
+        String[] sqlAnswer = ApplicationServer.getIMCServiceInterface().sqlProcedure( "A_GetAllForum", new String[]{aMetaId} );
         Vector forumV = super.convert2Vector( sqlAnswer );
 
         // Lets fill the select box
@@ -48,10 +44,10 @@ public class ConfForum extends Conference {
         vm.addProperty( "ADMIN_LINK_HTML", ADMIN_LINK_TEMPLATE );
 
         this.sendHtml( req, res, vm, htmlFile );
-        return;
+
     }
 
-    public void service( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
+    public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
         this.doPost( req, res );
     }
 

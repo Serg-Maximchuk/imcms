@@ -14,8 +14,8 @@ public class SmbAuthenticator implements Authenticator {
 
     private UniAddress domainServerAddress;
     private String domainName;
-    public static final String PROPERTY__DOMAIN_SERVER = "SmbDomainServer";
-    public static final String PROPERTY__DOMAIN_NAME = "SmbDomainName";
+    private static final String PROPERTY__DOMAIN_SERVER = "SmbDomainServer";
+    private static final String PROPERTY__DOMAIN_NAME = "SmbDomainName";
 
     public SmbAuthenticator( Properties smbConfig ) {
         String domainServer = smbConfig.getProperty( PROPERTY__DOMAIN_SERVER );

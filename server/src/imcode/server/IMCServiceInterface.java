@@ -52,15 +52,15 @@ public interface IMCServiceInterface {
     //;
 
     // check if url doc
-    String isUrlDoc(int meta_id,UserDomainObject user)
+    String isUrlDoc( int meta_id )
 	;
 
     // check if url doc
-    String isFramesetDoc(int meta_id,UserDomainObject user)
+    String isFramesetDoc( int meta_id )
 	;
 
     // check if external doc
-    ExternalDocType isExternalDoc(int meta_id,UserDomainObject user)
+    ExternalDocType isExternalDoc( int meta_id )
 	;
 
     // activate child to child table
@@ -71,9 +71,6 @@ public interface IMCServiceInterface {
     public String[] sqlProcedure(String procedure, String[] params)
 	;
 
-    public String[] sqlProcedure( String procedure, String[] params, boolean trim )
-    ;
-
     // Parse doc replace variables with data, uses two vectors
     String  replaceTagsInStringWithData(String htmlStr,java.util.Vector variables,java.util.Vector data)
 	;
@@ -82,17 +79,14 @@ public interface IMCServiceInterface {
     File getExternalTemplateFolder(int meta_id, UserDomainObject user)
 	;
 
-    // get session counter
-    int getCounter()  ;
-
     // set session counter
-    int setCounter(int value)  ;
+    void setSessionCounter(int value)  ;
 
     // set  session counter date
-    void setCounterDate(Date date)  ;
+    void setSessionCounterDate(Date date)  ;
 
     // set  session counter date
-    Date getCounterDate()  ;
+    Date getSessionCounterDate()  ;
 
     // parsedoc use template
     public String getAdminTemplate( String adminTemplateName, UserDomainObject user, java.util.List tagsWithReplacements )  ;
@@ -141,10 +135,6 @@ public interface IMCServiceInterface {
 
     // checkDocAdminRights
     public boolean checkDocAdminRights(int meta_id, UserDomainObject user)
-	;
-
-    //get greatest permission_set
-    public int getUserHighestPermissionSet (int meta_id, int user_id)
 	;
 
     // save template to disk
@@ -201,7 +191,7 @@ public interface IMCServiceInterface {
 
     public int getSessionCounter();
 
-    public String getSessionCounterDate();
+    public String getSessionCounterDateAsString();
 
     /** Get all possible userflags **/
     public Map getUserFlags() ;
@@ -234,7 +224,7 @@ public interface IMCServiceInterface {
 
     String getDefaultLanguageAsIso639_2();
 
-    Hashtable sqlProcedureHash( String procedure, String[] params );
+    Map sqlProcedureHash( String procedure, String[] params );
 
     int sqlUpdateProcedure( String procedure, String[] params );
 
@@ -250,7 +240,7 @@ public interface IMCServiceInterface {
 
     String sqlQueryStr(String sqlStr, String[] params);
 
-    Hashtable sqlQueryHash(String sqlStr, String[] params);
+    Map sqlQueryHash(String sqlStr, String[] params);
 
     String[][] sqlQueryMulti(String sqlstr, String[] params);
 

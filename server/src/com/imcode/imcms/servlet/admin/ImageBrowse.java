@@ -148,11 +148,11 @@ public class ImageBrowse extends HttpServlet {
         if (counter > 0) {
             HtmlGenerator previousButtonHtmlObj = new HtmlGenerator(templatePath,
                     ImageBrowse.IMG_PREVIOUS_LIST_TEMPLATE);
-            previousButton = previousButtonHtmlObj.createHtmlString(prevButtonVm, request);
+            previousButton = previousButtonHtmlObj.createHtmlString(prevButtonVm );
         }
         if (img_numbers > counter + max) {
             HtmlGenerator nextButtonHtmlObj = new HtmlGenerator(templatePath, ImageBrowse.IMG_NEXT_LIST_TEMPLATE);
-            nextButton = nextButtonHtmlObj.createHtmlString(nextButtonVm, request);
+            nextButton = nextButtonHtmlObj.createHtmlString(nextButtonVm );
         }
 
         //*lets create the image folder option list
@@ -272,8 +272,6 @@ public class ImageBrowse extends HttpServlet {
 
         formData.setMetaId(meta_id);
         formData.setImageNumber(img_no);
-        formData.setImageList(img_preset);
-        formData.setDirListPreset(img_dir_preset);
         formData.setFolders(folderOptions.toString());
         formData.setImagePreview(img_tag);
         formData.setLabel(label);
@@ -332,8 +330,6 @@ public class ImageBrowse extends HttpServlet {
         private String metaId;
         private String imageNumber;
         private String label;
-        private String imageList;
-        private String dirListPreset;
         private String folders;
         private String imagePreview;
         private String options;
@@ -355,39 +351,23 @@ public class ImageBrowse extends HttpServlet {
             return label;
         }
 
-        public String getImageList() {
-            return imageList;
-        }
-
-        public String getDirListPreset() {
-            return dirListPreset;
-        }
-
-        public void setMetaId(String metaId) {
+        private void setMetaId(String metaId) {
             this.metaId = metaId;
         }
 
-        public void setImageNumber(String imageNumber) {
+        private void setImageNumber(String imageNumber) {
             this.imageNumber = imageNumber;
         }
 
-        public void setLabel(String label) {
+        private void setLabel(String label) {
             this.label = label;
-        }
-
-        public void setImageList(String imageList) {
-            this.imageList = imageList;
-        }
-
-        public void setDirListPreset(String dirListPreset) {
-            this.dirListPreset = dirListPreset;
         }
 
         public String getFolders() {
             return folders;
         }
 
-        public void setFolders(String folders) {
+        private void setFolders(String folders) {
             this.folders = folders;
         }
 
@@ -395,7 +375,7 @@ public class ImageBrowse extends HttpServlet {
             return imagePreview;
         }
 
-        public void setImagePreview(String imagePreview) {
+        private void setImagePreview(String imagePreview) {
             this.imagePreview = imagePreview;
         }
 
@@ -403,7 +383,7 @@ public class ImageBrowse extends HttpServlet {
             return options;
         }
 
-        public void setOptions(String options) {
+        private void setOptions(String options) {
             this.options = options;
         }
 
@@ -411,7 +391,7 @@ public class ImageBrowse extends HttpServlet {
             return nextButton;
         }
 
-        public void setNextButton(String nextButton) {
+        private void setNextButton(String nextButton) {
             this.nextButton = nextButton;
         }
 
@@ -419,7 +399,7 @@ public class ImageBrowse extends HttpServlet {
             return previousButton;
         }
 
-        public void setPreviousButton(String previousButton) {
+        private void setPreviousButton(String previousButton) {
             this.previousButton = previousButton;
         }
 
@@ -427,11 +407,11 @@ public class ImageBrowse extends HttpServlet {
             return maxNumber;
         }
 
-        public void setMaxNumber(String maxNumber) {
+        private void setMaxNumber(String maxNumber) {
             this.maxNumber = maxNumber;
         }
 
-        public void setCaller(String caller) {
+        private void setCaller(String caller) {
             this.caller = caller;
         }
 

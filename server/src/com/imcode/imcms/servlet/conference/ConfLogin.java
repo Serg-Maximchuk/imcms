@@ -6,7 +6,6 @@ import imcode.external.diverse.Html;
 import imcode.external.diverse.MetaInfo;
 import imcode.external.diverse.VariableManager;
 import imcode.server.ApplicationServer;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentMapper;
@@ -76,7 +75,7 @@ public class ConfLogin extends Conference {
 
         int testMetaId = params.getMetaId();
         UserDomainObject user = Utility.getLoggedOnUser( req );
-        if ( !isUserAuthorized( req, res, testMetaId, user ) ) {
+        if ( !isUserAuthorized( res, testMetaId, user ) ) {
             return;
         }
 
@@ -85,7 +84,6 @@ public class ConfLogin extends Conference {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         // ******** ADD USER PAGE *********
         // Lets generate the adduser page
@@ -110,7 +108,7 @@ public class ConfLogin extends Conference {
             }
 
             // Lets get all users in this conference from db
-            String[] usersArr = confref.sqlProcedure( "A_GetAllConfUsersInList", new String[]{"" + params.getMetaId()} );
+            String[] usersArr = imcref.sqlProcedure( "A_GetAllConfUsersInList", new String[]{"" + params.getMetaId()} );
             Vector usersV = super.convert2Vector( usersArr );
             VariableManager vm = new VariableManager();
             String usersOption = Html.createOptionList( "", usersV );
@@ -156,7 +154,7 @@ public class ConfLogin extends Conference {
 
         int testMetaId = params.getMetaId();
         UserDomainObject user = Utility.getLoggedOnUser( req );
-        if ( !isUserAuthorized( req, res, testMetaId, user ) ) {
+        if ( !isUserAuthorized( res, testMetaId, user ) ) {
             return;
         }
 
@@ -165,7 +163,6 @@ public class ConfLogin extends Conference {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         // ************* VERIFY LOGIN TO CONFERENCE **************
         // Ok, the user wants to login
@@ -193,7 +190,7 @@ public class ConfLogin extends Conference {
 
             // Ok, we found the user, lets verify that the user is a member of this conference
             // MemberInConf	@meta_id int,	@user_id int
-            String foundUserInConf = confref.sqlProcedureStr( "A_MemberInConf", new String[]{
+            String foundUserInConf = imcref.sqlProcedureStr( "A_MemberInConf", new String[]{
                 params.getMetaId() + ", " + userId
             } );
 
@@ -329,7 +326,7 @@ public class ConfLogin extends Conference {
 
             // Ok, lets get the roles the user will get when he is selfregistering  and
             // add those roles to the user
-            String[] sqlAnswer = confref.sqlProcedure( "A_SelfRegRoles_GetAll2", new String[]{"" + params.getMetaId()} );
+            String[] sqlAnswer = imcref.sqlProcedure( "A_SelfRegRoles_GetAll2", new String[]{"" + params.getMetaId()} );
 
             // First, get the langprefix
             String langPrefix = user.getLanguageIso639_2();
@@ -375,7 +372,7 @@ public class ConfLogin extends Conference {
             String fName = userParams.getProperty( "first_name" );
             String lName = userParams.getProperty( "last_name" );
 
-            confref.sqlUpdateProcedure( "A_ConfUsersAdd", new String[]{newUserId, "" + metaId, fName, lName} );
+            imcref.sqlUpdateProcedure( "A_ConfUsersAdd", new String[]{newUserId, "" + metaId, fName, lName} );
 
             String header = "ConfLogin servlet.";
             new ConfError( req, res, header, 55, ADD_USER_OK_HTML );
@@ -401,7 +398,7 @@ public class ConfLogin extends Conference {
             String[] userInfo = imcref.sqlProcedure( "GetUserInfo", new String[]{userId} );
 
             // Lets get the selected users userlevel
-            String level = confref.sqlProcedureStr( "A_ConfUsersGetUserLevel", new String[]{
+            String level = imcref.sqlProcedureStr( "A_ConfUsersGetUserLevel", new String[]{
                 "" + params.getMetaId(), userId
             } );
             String levelStatus = "";
@@ -452,7 +449,7 @@ public class ConfLogin extends Conference {
 
             // Lets add the new information into the conf user db
 
-            confref.sqlUpdateProcedure( "A_ConfUsersSetUserLevel", new String[]{
+            imcref.sqlUpdateProcedure( "A_ConfUsersSetUserLevel", new String[]{
                 "" + params.getMetaId(), userId, userLevel
             } );
 

@@ -2,6 +2,7 @@ package com.imcode.imcms.servlet.billboard;
 
 import imcode.external.diverse.MetaInfo;
 import imcode.server.user.UserDomainObject;
+import imcode.util.Utility;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,20 +26,17 @@ public class BillBoardLogin extends BillBoard {//ConfLogin
 
     public void doGet( HttpServletRequest req, HttpServletResponse res )
             throws ServletException, IOException {
-        //log("START BillBoardLogin doGet");
-
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) return;
 
         // Lets get the standard parameters and validate them
         MetaInfo.Parameters params = super.getBillBoardSessionParameters( req );
 
         // Lets get the user object
-        UserDomainObject user = super.getUserObj( req, res );
+
+        UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) return;
 
         int testMetaId = params.getMetaId() ;
-        if ( !isUserAuthorized( req, res, testMetaId, user ) ) {
+        if ( !isUserAuthorized( res, testMetaId, user ) ) {
             return;
         }
 
@@ -71,21 +69,17 @@ public class BillBoardLogin extends BillBoard {//ConfLogin
 
     public void doPost( HttpServletRequest req, HttpServletResponse res )
             throws ServletException, IOException {
-        //log("START BillBoardLogin doPost");
-
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) return;
 
         // Lets get the standard parameters and validate them
         MetaInfo.Parameters params = super.getBillBoardSessionParameters( req );
-        if ( true == false ) return;
 
         // Lets get the user object
-        UserDomainObject user = super.getUserObj( req, res );
+
+        UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) return;
 
         int testMetaId = params.getMetaId();
-        if ( !isUserAuthorized( req, res, testMetaId, user ) ) {
+        if ( !isUserAuthorized( res, testMetaId, user ) ) {
             return;
         }
 

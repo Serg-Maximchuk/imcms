@@ -35,6 +35,10 @@ public class ImcmsSetupFilter implements Filter {
         initRequestWithImcmsSystemAPI( user, request );
 
         NDC.setMaxDepth(0);
+        String contextPath = ((HttpServletRequest)request).getContextPath() ;
+        if (!"".equals( contextPath )) {
+            NDC.push( contextPath );
+        }
         NDC.push(StringUtils.substringAfterLast(((HttpServletRequest)request).getRequestURI(), "/")) ;
         chain.doFilter( request, response );
         NDC.setMaxDepth(0);
@@ -56,7 +60,7 @@ public class ImcmsSetupFilter implements Filter {
     /**
      * Ip login  - check if user exist in ip-table
      */
-    public static UserDomainObject getUserUserOrIpLoggedInUser( String remote_ip ) {
+    private static UserDomainObject getUserUserOrIpLoggedInUser( String remote_ip ) {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
         UserDomainObject user;
 

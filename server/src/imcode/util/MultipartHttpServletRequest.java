@@ -20,7 +20,7 @@ import java.util.*;
 public class MultipartHttpServletRequest extends HttpServletRequestWrapper {
     private static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
 
-    MultiMap fileItemMap;
+    private MultiMap fileItemMap;
 
     public MultipartHttpServletRequest( HttpServletRequest request ) throws IOException {
         super( request );
@@ -56,7 +56,7 @@ public class MultipartHttpServletRequest extends HttpServletRequestWrapper {
         return null;
     }
 
-    public FileItem[] getParameterFileItems( String key ) {
+    private FileItem[] getParameterFileItems( String key ) {
         if ( null == fileItemMap ) {
             return null;
         }
@@ -127,7 +127,7 @@ public class MultipartHttpServletRequest extends HttpServletRequestWrapper {
 
     private class BaseNameFileItem extends FileItemWrapper {
 
-        public BaseNameFileItem( FileItem fileItem ) {
+        private BaseNameFileItem( FileItem fileItem ) {
             super( fileItem );
         }
 
@@ -143,7 +143,7 @@ public class MultipartHttpServletRequest extends HttpServletRequestWrapper {
 
     private class FileItemWrapper implements FileItem {
 
-        protected FileItem fileItem;
+        FileItem fileItem;
 
         public FileItemWrapper( FileItem fileItem ) {
             this.fileItem = fileItem;

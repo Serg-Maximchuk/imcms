@@ -3,7 +3,7 @@ package imcode.server.document;
 import java.util.*;
 
 public class TreeKeyDomainObject {
-    String treeSortIndex;
+    private String treeSortIndex;
     public TreeKeyDomainObject( String treeSortIndex ) {
         this.treeSortIndex = treeSortIndex;
     }

@@ -39,7 +39,6 @@ public class DocumentMapper {
     private static final String SPROC_UPDATE_PARENTS_DATE_MODIFIED = "UpdateParentsDateModified";
     private static final String SPROC_SECTION_GET_ALL = "SectionGetAll";
     private static final String SPROC_GET_DOC_TYPES_FOR_USER = "GetDocTypesForUser";
-    private static final String SPROC_INHERIT_PERMISSONS = "InheritPermissions";
 
     private ImcmsAuthenticatorAndUserMapper imcmsAAUM;
 
@@ -1058,13 +1057,6 @@ public class DocumentMapper {
         sprocSetInclude( service, includingMetaId, includeIndex, includedMetaId );
     }
 
-    public static void setSectionsForDocument( IMCServiceInterface imcref, int metaId, String[] sectionIdStrings ) {
-        removeAllSectionsFromDocument( imcref, metaId );
-        for (int i = 0; null != sectionIdStrings && i < sectionIdStrings.length; i++) {
-            addSectionToDocument( imcref, metaId, sectionIdStrings[i] );
-        }
-    }
-
     public static void sprocDeleteInclude( IMCServiceInterface imcref, int including_meta_id, int include_id ) {
         imcref.sqlUpdateProcedure( "DeleteInclude", new String[]{"" + including_meta_id, "" + include_id} );
     }
@@ -1180,15 +1172,6 @@ public class DocumentMapper {
             document.addCategory( category );
         }
 
-    }
-
-    private static void addSectionToDocument( IMCServiceInterface imcref, int metaId, String sectionIdString ) {
-        try {
-            int sectionId = Integer.parseInt( sectionIdString );
-            addSectionToDocument( imcref, metaId, sectionId );
-        } catch (NumberFormatException nfe) {
-            // do nothing, illegal section-id, or none chosen.
-        }
     }
 
     private static void addSectionToDocument( IMCServiceInterface imcref, int metaId, int sectionId ) {
@@ -1350,7 +1333,7 @@ public class DocumentMapper {
 
     private String[] sprocGetText( int meta_id, int no ) {
         String[] params = new String[]{"" + meta_id, "" + no};
-        String[] results = service.sqlProcedure( SPROC_GET_TEXT, params, false );
+        String[] results = service.sqlProcedure( SPROC_GET_TEXT, params );
         return results;
     }
 
@@ -1390,7 +1373,7 @@ public class DocumentMapper {
     public Map getTexts( int meta_id ) {
 
         // Now we'll get the texts from the db.
-        String[] texts = service.sqlProcedure( "GetTexts", new String[]{String.valueOf( meta_id )}, false );
+        String[] texts = service.sqlProcedure( "GetTexts", new String[]{String.valueOf( meta_id )});
         Map textMap = new HashMap();
         Iterator it = Arrays.asList( texts ).iterator();
         while (it.hasNext()) {
@@ -1708,7 +1691,7 @@ public class DocumentMapper {
 
     public static class DocumentAlreadyInMenuException extends Exception {
 
-        DocumentAlreadyInMenuException( String message ) {
+        private DocumentAlreadyInMenuException( String message ) {
             super( message );
         }
     }
@@ -1717,7 +1700,7 @@ public class DocumentMapper {
 
         private final File file;
 
-        public FileInputStreamSource( File file ) {
+        private FileInputStreamSource( File file ) {
             this.file = file;
         }
 
@@ -1743,6 +1726,13 @@ public class DocumentMapper {
         }
         String statusIconTemplate = service.getAdminTemplate( statusIconTemplateName, user, null );
         return statusIconTemplate;
+    }
+
+    public String[][] getDocumentTypeIdsAndNamesInUsersLanguage( DocumentDomainObject document, UserDomainObject user ) {
+        return service.sqlProcedureMulti( SPROC_GET_DOC_TYPES_FOR_USER, new String[]{
+                                                        "" + document.getId(), "" + user.getId(),
+                                                        user.getLanguageIso639_2()
+                                                    } );
     }
 
 }

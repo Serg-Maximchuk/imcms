@@ -141,7 +141,7 @@ public class LdapUserAndRoleMapper implements Authenticator, UserAndRoleMapper {
 
     private void setupInitialDirContext() throws LdapInitException {
         try {
-            ctx = staticGetInitialDirContext( ldapURL, ldapAuthenticationType, ldapUserName, ldapPassword );
+            ctx = loginAndGetInitialDirContext( ldapURL, ldapAuthenticationType, ldapUserName, ldapPassword );
         } catch ( AuthenticationException ex ) {
             throw new LdapInitException(
                     "Authentication failed, using login: '" + ldapUserName + "', password: '" + ldapPassword + "'", ex );
@@ -154,7 +154,7 @@ public class LdapUserAndRoleMapper implements Authenticator, UserAndRoleMapper {
 
     public class LdapInitException extends Exception {
 
-        LdapInitException( String message, Throwable cause ) {
+        private LdapInitException( String message, Throwable cause ) {
             super( message, cause );
         }
     }
@@ -169,16 +169,12 @@ public class LdapUserAndRoleMapper implements Authenticator, UserAndRoleMapper {
                 String userDistinguishedName = (String)userAttributes.get( LDAP_ATTRIBUTE_DISTINGUISHED_NAME );
 
                 if ( null != userDistinguishedName ) {
-                    staticGetInitialDirContext( ldapURL,
+                    loginAndGetInitialDirContext( ldapURL,
                                                 ldapAuthenticationType,
                                                 userDistinguishedName,
                                                 password );
                     userAuthenticates = true;
-                } else {
-                    userAuthenticates = false;
                 }
-            } else {
-                userAuthenticates = false;
             }
         } catch ( AuthenticationException ex ) {
             userAuthenticates = false;
@@ -209,6 +205,15 @@ public class LdapUserAndRoleMapper implements Authenticator, UserAndRoleMapper {
         NamingEnumeration attribEnum = searchResult.getAttributes().getAll();
 
         Map ldapAttributeValues = new HashMap();
+        try {
+            if(!attribEnum.hasMore()){
+              String dn = searchResult.getName();
+              ldapAttributeValues.put(LDAP_ATTRIBUTE_DISTINGUISHED_NAME,dn);
+            }
+        } catch ( NamingException e ) {
+            log.error( e );
+        }
+
         while ( attribEnum.hasMoreElements() ) {
             Attribute attribute = (Attribute)attribEnum.nextElement();
             String attributeName1 = attribute.getID();
@@ -302,7 +307,7 @@ public class LdapUserAndRoleMapper implements Authenticator, UserAndRoleMapper {
         return value;
     }
 
-    private static DirContext staticGetInitialDirContext( String ldapURL, String ldapAuthenticationType,
+    private static DirContext loginAndGetInitialDirContext( String ldapURL, String ldapAuthenticationType,
                                                           String ldapUserName, String ldapPassword )
             throws NamingException {
         String ContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";

@@ -7,6 +7,7 @@ import imcode.server.parser.ParserParameters;
 import imcode.server.user.UserDomainObject;
 import imcode.util.Parser;
 import imcode.util.Utility;
+import org.apache.commons.lang.ObjectUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -14,11 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Stack;
-import java.util.Vector;
-
-import org.apache.commons.lang.ObjectUtils;
+import java.util.*;
 
 public class AdminDoc extends HttpServlet {
 
@@ -153,7 +150,7 @@ public class AdminDoc extends HttpServlet {
                 if (req == null || res == null) {
                     throw new NullPointerException("Request or response cannot be null for external docs.");
                 }
-                imcode.server.ExternalDocType ex_doc = imcref.isExternalDoc(meta_id, user);
+                imcode.server.ExternalDocType ex_doc = imcref.isExternalDoc(meta_id );
                 if (ex_doc != null) {
                     String paramStr = "?meta_id=" + meta_id + "&";
                     paramStr += "parent_meta_id=" + parent_meta_id + "&";
@@ -220,7 +217,7 @@ public class AdminDoc extends HttpServlet {
             case DocumentDomainObject.DOCTYPE_BROWSER:
                 Vector vec = new Vector();
                 String sqlStr = "select name,browsers.browser_id,to_meta_id from browser_docs join browsers on browsers.browser_id = browser_docs.browser_id where meta_id = ? order by value desc,name asc";
-                Hashtable hash = imcref.sqlQueryHash(sqlStr, new String[]{"" + meta_id});
+                Map hash = imcref.sqlQueryHash(sqlStr, new String[]{"" + meta_id});
                 String[] b_id = (String[]) hash.get("browser_id");
                 String[] nm = (String[]) hash.get("name");
                 String[] to = (String[]) hash.get("to_meta_id");
@@ -288,7 +285,7 @@ public class AdminDoc extends HttpServlet {
                     }
                     optStr += "<option value=" + tmp + ">" + mime_name[i] + "</option>";
                 }
-                Vector d = new Vector();
+                List d = new ArrayList(10);
                 d.add("#file#");
                 d.add(fileName);
                 d.add("#mime#");

@@ -1,7 +1,6 @@
 package com.imcode.imcms.servlet.chat;
 
 import imcode.external.diverse.VariableManager;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
 import imcode.server.ApplicationServer;
 import imcode.server.user.UserDomainObject;
@@ -68,7 +67,7 @@ public class ChatAdmin extends Administrator {
 
         // Lets verify that the user who tries to add a new user is an admin
         UserDomainObject user = Utility.getLoggedOnUser(request);
-        if (imcref.checkAdminRights(user) == false) {
+        if (!imcref.checkAdminRights(user)) {
             sendErrorMessage(imcref, eMailServerMaster, user, ERROR_HEADER, 2, response);
             return;
         }
@@ -117,7 +116,6 @@ public class ChatAdmin extends Administrator {
      */
     private void listChats(HttpServletRequest request, HttpServletResponse response, UserDomainObject user) throws IOException {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
         String eMailServerMaster = Utility.getDomainPref("servermaster_email");
         boolean noErrors = true;
@@ -188,7 +186,7 @@ public class ChatAdmin extends Administrator {
             for (int i = 0; i < listOfChats.length; i++) {
 
                 String metaId = listOfChats[i][0];
-                String[][] queryResultForum = chatref.sqlProcedureMulti("C_AdminStatistics1", new String[]{metaId, startDate, endDate, listMode});
+                String[][] queryResultForum = imcref.sqlProcedureMulti("C_AdminStatistics1", new String[]{metaId, startDate, endDate, listMode});
 
 //lets create forumList for this chat
                 StringBuffer forumList = new StringBuffer();
@@ -196,7 +194,7 @@ public class ChatAdmin extends Administrator {
                 for (int j = 0; j < queryResultForum.length; j++) {
 
                     String forumId = queryResultForum[j][0];
-                    String[][] queryResultDebate = chatref.sqlProcedureMulti("C_AdminStatistics2", new String[]{metaId, forumId, startDate, endDate, listMode});
+                    String[][] queryResultDebate = imcref.sqlProcedureMulti("C_AdminStatistics2", new String[]{metaId, forumId, startDate, endDate, listMode});
 
                     // lets create debatelist for this forum
                     StringBuffer debateList = new StringBuffer();

@@ -25,12 +25,12 @@ public class MenuDomainObject {
         this.documentMapper = documentMapper;
     }
 
-    public MenuItemDomainObject[] getMenuItems() throws NoPermissionException {
+    public MenuItemDomainObject[] getMenuItems() {
         MenuItemDomainObject[] menuItemsDomainObjects = documentMapper.getMenuItemsForDocument( ownerDocument.getId(), menuIndex );
         return menuItemsDomainObjects;
     }
 
-     public void addDocument( DocumentDomainObject documentToAdd, UserDomainObject user ) throws NoPermissionException, DocumentAlreadyInMenuException {
+     public void addDocument( DocumentDomainObject documentToAdd, UserDomainObject user ) throws DocumentAlreadyInMenuException {
          try {
              documentMapper.addDocumentToMenu( user, ownerDocument, menuIndex, documentToAdd );
          } catch (DocumentMapper.DocumentAlreadyInMenuException e) {
@@ -38,7 +38,7 @@ public class MenuDomainObject {
          }
      }
 
-     public void removeDocument( DocumentDomainObject documentToRemove, UserDomainObject user ) throws NoPermissionException {
+     public void removeDocument( DocumentDomainObject documentToRemove, UserDomainObject user ) {
          documentMapper.removeDocumentFromMenu( user, ownerDocument, menuIndex, documentToRemove);
      }
 

@@ -24,7 +24,7 @@ public class ChatViewer extends ChatBase {
 		Properties params = super.getSessionParameters(req) ;
 
 		// Lets get an user object
-		imcode.server.user.UserDomainObject user = super.getUserObj(req,res) ;
+		imcode.server.user.UserDomainObject user = super.getUserObj(req ) ;
 		if(user == null) return ;
 
 		if ( !isUserAuthorized( req, res, user ) ){

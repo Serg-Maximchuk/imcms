@@ -33,6 +33,7 @@ public abstract class ChatMessage {
         return dateFormat.format(dateTime) ;
     }
 
-    public abstract String getLine( boolean showPrivateMessages, ChatMember myMember, StringBuffer sendMsgString, IMCServiceInterface imcref, UserDomainObject user, String libName ) ;
+    public abstract String getLine( boolean showPrivateMessages, ChatMember myMember, IMCServiceInterface imcref,
+                                    UserDomainObject user, String libName ) ;
 
 }

@@ -53,7 +53,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
     private SystemData sysData;
 
     private ExternalDocType[] externalDocumentTypes;
-    private String sessionCounterDate = "";
+    private Date sessionCounterDate;
     private int sessionCounter = 0;
     private FileCache fileCache = new FileCache();
 
@@ -119,8 +119,8 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
     private void initSessionCounter() {
         try {
-            sessionCounter = Integer.parseInt( this.sqlProcedureStr( "GetCurrentSessionCounter", new String[0] ) );
-            sessionCounterDate = this.sqlProcedureStr( "GetCurrentSessionCounterDate", new String[0] );
+            sessionCounter = getSessionCounterFromDb();
+            sessionCounterDate = getSessionCounterDateFromDb();
         } catch ( NumberFormatException ex ) {
             log.fatal( "Failed to get SessionCounter from db.", ex );
             throw ex;
@@ -128,6 +128,20 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
         log.info( "SessionCounter: " + sessionCounter );
         log.info( "SessionCounterDate: " + sessionCounterDate );
+    }
+
+    private Date getSessionCounterDateFromDb() {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat( DateConstants.DATE_FORMAT_STRING );
+            return dateFormat.parse( this.sqlProcedureStr( "GetCurrentSessionCounterDate", new String[0] ) );
+        } catch ( ParseException ex ) {
+            log.fatal( "Failed to get SessionCounterDate from db.", ex );
+            throw new RuntimeException( ex );
+        }
+    }
+
+    private int getSessionCounterFromDb() {
+        return Integer.parseInt( this.sqlProcedureStr( "GetCurrentSessionCounter", new String[0] ) );
     }
 
     private void initExternalDocTypes( Properties props ) {
@@ -151,7 +165,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
         if ( "swe".equals( LanguageIso639_2 ) ) {
             try {
                 langproperties_swe = Prefs.getProperties( "swe.properties" );
-                ;
             } catch ( IOException e ) {
                 log.fatal( "Failed to initialize swe.properties", e );
             }
@@ -159,7 +172,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
         if ( "eng".equals( LanguageIso639_2 ) ) {
             try {
                 langproperties_eng = Prefs.getProperties( "eng.properties" );
-                ;
             } catch ( IOException e ) {
                 log.fatal( "Failed to initialize eng.properties", e );
             }
@@ -238,8 +250,10 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
         return sessionCounter;
     }
 
-    public String getSessionCounterDate() {
-        return sessionCounterDate;
+    public String getSessionCounterDateAsString() {
+        DateFormat dateFormat = new SimpleDateFormat( DateConstants.DATE_FORMAT_STRING );
+
+        return dateFormat.format( sessionCounterDate );
     }
 
     /**
@@ -254,8 +268,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
         if ( userAuthenticates ) {
             result = user;
             if ( "user".equalsIgnoreCase( user.getLoginName() ) ) {
-                sessionCounter += 1;
-                sqlUpdateProcedure( "IncSessionCounter", new String[0] );
+                incrementSessionCounter();
             }
             mainLog.info( "->User '" + login + "' successfully logged in." );
         } else if ( null == user ) {
@@ -268,6 +281,11 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
         NDC.pop();
         return result;
+    }
+
+    private void incrementSessionCounter() {
+        sqlUpdateProcedure( "IncSessionCounter", new String[0] );
+        sessionCounter = getSessionCounterFromDb() ;
     }
 
     private UserAndRoleMapper initExternalUserAndRoleMapper( String externalUserAndRoleMapperName,
@@ -488,7 +506,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
     /**
      * Check if url doc.
      */
-    public String isUrlDoc( int meta_id, UserDomainObject user ) {
+    public String isUrlDoc( int meta_id ) {
         String url_ref = null;
         if ( DocumentDomainObject.DOCTYPE_URL == getDocType( meta_id ) ) {
             String sqlStr = "select url_ref from url_docs where meta_id = ?";
@@ -508,7 +526,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
     /**
      * Check if frameset doc.                                                                        *
      */
-    public String isFramesetDoc( int meta_id, UserDomainObject user ) {
+    public String isFramesetDoc( int meta_id ) {
 
         String htmlStr = null;
         if ( DocumentDomainObject.DOCTYPE_HTML == getDocType( meta_id ) ) {
@@ -522,7 +540,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
     /**
      * Check if external doc.
      */
-    public ExternalDocType isExternalDoc( int meta_id, UserDomainObject user ) {
+    public ExternalDocType isExternalDoc( int meta_id ) {
         ExternalDocType external_doc = null;
 
         int doc_type = getDocType( meta_id );
@@ -574,8 +592,8 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
         return sqlProcedure( procedure, params, true );
     }
 
-    public String[] sqlProcedure( String procedure, String[] params, boolean trim ) {
-        return SqlHelpers.sqlProcedure( m_conPool, procedure, params, trim );
+    private String[] sqlProcedure( String procedure, String[] params, boolean trim ) {
+        return SqlHelpers.sqlProcedure( m_conPool, procedure, params );
     }
 
     /**
@@ -775,47 +793,42 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
     }
 
     /**
-     * Get session counter.
-     */
-    public int getCounter() {
-        return sessionCounter;
-    }
-
-    /**
      * Set session counter.
      */
-    public int setCounter( int value ) {
-        sessionCounter = value;
+    public void setSessionCounter( int value ) {
+        setSessionCounterInDb( value );
+        sessionCounter = getSessionCounterFromDb();
+    }
+
+    private void setSessionCounterInDb( int value ) {
         this.sqlUpdateProcedure( "SetSessionCounterValue", new String[]{"" + value} );
-        return sessionCounter;
     }
 
     /**
      * Set session counter date.
      */
-    public void setCounterDate( Date date ) {
+    public void setSessionCounterDate( Date date ) {
+        setSessionCounterDateInDb( date );
+        sessionCounterDate = getSessionCounterDateFromDb();
+    }
+
+    private void setSessionCounterDateInDb( Date date ) {
         DateFormat dateFormat = new SimpleDateFormat( DateConstants.DATE_FORMAT_STRING );
-        sessionCounterDate = dateFormat.format( date );
-        this.sqlUpdateProcedure( "SetSessionCounterDate", new String[]{sessionCounterDate} );
+        this.sqlUpdateProcedure( "SetSessionCounterDate", new String[]{dateFormat.format( date )} );
     }
 
     /**
      * Get session counter date.
      */
-    public Date getCounterDate() {
-        DateFormat dateFormat = new SimpleDateFormat( DateConstants.DATE_FORMAT_STRING );
-        try {
-            return dateFormat.parse( sessionCounterDate );
-        } catch ( ParseException pe ) {
-            return null;
-        }
+    public Date getSessionCounterDate() {
+        return sessionCounterDate;
     }
 
-    public Hashtable sqlQueryHash( String sqlQuery, String[] params ) {
+    public Map sqlQueryHash( String sqlQuery, String[] params ) {
         return SqlHelpers.sqlQueryHash( m_conPool, sqlQuery, params );
     }
 
-    public Hashtable sqlProcedureHash( String procedure, String[] params ) {
+    public Map sqlProcedureHash( String procedure, String[] params ) {
         return SqlHelpers.sqlProcedureHash( m_conPool, procedure, params );
     }
 
@@ -925,41 +938,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
             }
         } catch ( RuntimeException ex ) {
             log.error( "Exception in checkDocAdminRights(int,User,int)", ex );
-            throw ex;
-        }
-    }
-
-    /**
-     * Gets the users most privileged permission_set for the document.
-     *
-     * @param meta_id The document-id
-     * @param user_id The user_id
-     * @return the most privileged permission_set a user has for the document.
-     */
-    public int getUserHighestPermissionSet( int meta_id, int user_id ) {
-        try {
-            String[] perms = sqlProcedure( "GetUserPermissionSet",
-                                           new String[]{String.valueOf( meta_id ), String.valueOf( user_id )} );
-
-            if ( perms.length == 0 ) {
-                return IMCConstants.DOC_PERM_SET_NONE;//nothing was returned so give no rights at all.
-            }
-
-            int set_id = Integer.parseInt( perms[0] );
-
-            switch ( set_id ) {
-                case IMCConstants.DOC_PERM_SET_FULL:         // User has full permission for this document
-                case IMCConstants.DOC_PERM_SET_RESTRICTED_1: // User has restricted 1 permission for this document
-                case IMCConstants.DOC_PERM_SET_RESTRICTED_2: // User has restricted 2 permission for this document
-                case IMCConstants.DOC_PERM_SET_READ:         // User has only read permission for this document
-                    return set_id;                          // We have a valid permission-set-id. Return it.
-
-                default:                                     // We didn't get a valid permission-set-id.
-                    return DOC_PERM_SET_NONE;               // User has no permission at all for this document
-            }
-
-        } catch ( RuntimeException ex ) {
-            log.error( "Exception in getUserHighestPermissionSet(int,int)", ex );
             throw ex;
         }
     }
@@ -1391,7 +1369,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
         try {
             return Collator.getInstance( new Locale( LanguageMapper.convert639_2to639_1( defaultLanguageAsIso639_2 ) ) );
         } catch ( LanguageMapper.LanguageNotSupportedException e ) {
-            throw new RuntimeException( e ) ;
+            throw new RuntimeException( e );
         }
     }
 

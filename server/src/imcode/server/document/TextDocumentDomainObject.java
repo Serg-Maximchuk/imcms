@@ -42,7 +42,7 @@ public class TextDocumentDomainObject extends DocumentDomainObject {
 
     private LazilyLoadedTextDocumentAttributes lazilyLoadedTextDocumentAttributes = null;
 
-    public synchronized LazilyLoadedTextDocumentAttributes getLazilyLoadedTextDocumentAttributes() {
+    private synchronized LazilyLoadedTextDocumentAttributes getLazilyLoadedTextDocumentAttributes() {
         if ( null == lazilyLoadedTextDocumentAttributes ) {
             lazilyLoadedTextDocumentAttributes = new LazilyLoadedTextDocumentAttributes();
             DocumentMapper documentMapper = ApplicationServer.getIMCServiceInterface().getDocumentMapper();
@@ -167,8 +167,8 @@ public class TextDocumentDomainObject extends DocumentDomainObject {
 
     public static class Text implements Serializable {
 
-        protected String text;
-        protected int type;
+        String text;
+        int type;
 
         /* Text-types. */
 
@@ -371,9 +371,6 @@ public class TextDocumentDomainObject extends DocumentDomainObject {
 
         public void setTarget( String target ) {
             this.target = target;
-        }
-
-        public void setTargetName( String target_name ) {
         }
 
         public void setLinkUrl( String image_ref_link ) {

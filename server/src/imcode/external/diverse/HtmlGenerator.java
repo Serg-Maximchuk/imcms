@@ -24,7 +24,7 @@ public class HtmlGenerator {
         HTML_TEMPLATE = null;
     }
 
-    public void sendToBrowser(HttpServletRequest req, HttpServletResponse res, String str)
+    public void sendToBrowser( HttpServletResponse res, String str )
              throws IOException {
 
         // Lets send settings to a browser
@@ -36,20 +36,18 @@ public class HtmlGenerator {
     /**
      *  Creates an html string from a Variable Manager object
      */
-    public String createHtmlString(VariableManager vMan, HttpServletRequest req)
-             throws IOException {
+    public String createHtmlString( VariableManager vMan ) {
 
         Vector htmlTags = vMan.getAllProps();
         Vector data = vMan.getAllValues();
-        return createHtmlString(htmlTags, data, req);
+        return createHtmlString(htmlTags, data );
     }
 
 
     /**
      *  Creates an html string from 2 vector object
      */
-    public String createHtmlString(Vector htmlTags, Vector data, HttpServletRequest req)
-             throws IOException {
+    public String createHtmlString( Vector htmlTags, Vector data ) {
 
         // Lets validate the input data, if input data is not correct
         if (htmlTags.isEmpty() || data.isEmpty()) {

@@ -18,12 +18,12 @@ import java.util.ArrayList;
  */
 public class SMTP {
 
-    protected PrintStream out;
-    protected BufferedReader in;
-    protected Socket sock;
-    String host;
-    int port;
-    int timeout;
+    private PrintStream out;
+    private BufferedReader in;
+    private Socket sock;
+    private String host;
+    private int port;
+    private int timeout;
 
     /**
      * Connects to an SMTP-server
@@ -94,7 +94,7 @@ public class SMTP {
      *
      * @deprecated Use {@link #sendMail(imcode.util.net.SMTP.Mail)} instead.
      */
-    public void sendMailWait( String from, String to, String subject, String msg ) throws ProtocolException, IOException {
+    public void sendMailWait( String from, String to, String subject, String msg ) throws IOException {
         sendMailWait( from, to.split( "\\s,"), subject, msg );
     }
 
@@ -115,7 +115,7 @@ public class SMTP {
      *
      * @deprecated Use {@link #sendMail(imcode.util.net.SMTP.Mail)} instead.
      */
-    public void sendMailWait( String from, String[] to, String subject, String body ) throws ProtocolException, IOException {
+    public void sendMailWait( String from, String[] to, String subject, String body ) throws IOException {
         Mail mail = new Mail(from, to, subject, body) ;
         sendMail( mail );
     }

@@ -49,7 +49,7 @@ public class TextDocumentParser implements imcode.server.IMCConstants {
     }
 
     private IMCServiceInterface service;
-    public static final int EXPECTED_CONTENT_BLOAT = 16384;
+    private static final int EXPECTED_CONTENT_BLOAT = 16384;
 
     public TextDocumentParser( IMCServiceInterface serverobject ) {
         this.service = serverobject;
@@ -224,7 +224,7 @@ public class TextDocumentParser implements imcode.server.IMCConstants {
         // Put tags and corresponding data in Properties
         tags.setProperty( "#userName#", user.getFullName() );
         tags.setProperty( "#session_counter#", String.valueOf( service.getSessionCounter() ) );
-        tags.setProperty( "#session_counter_date#", service.getSessionCounterDate() );
+        tags.setProperty( "#session_counter_date#", service.getSessionCounterDateAsString() );
         tags.setProperty( "#lastDate#", datetimeFormatWithSeconds.format( document.getModifiedDatetime() ) );
         tags.setProperty( "#metaHeadline#", document.getHeadline() );
         tags.setProperty( "#metaText#", document.getMenuText() );

@@ -1,7 +1,6 @@
 package com.imcode.imcms.servlet.conference;
 
 import imcode.external.diverse.VariableManager;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
 import imcode.server.ApplicationServer;
 import imcode.server.user.UserDomainObject;
@@ -177,8 +176,6 @@ public class AdminConference extends Administrator {
         // lets generate response page
         if ( noErrors ) {
 
-            IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
-
             //lets get htmltemplate for conferencerow
             String htmlConferenceElement = imcref.getAdminTemplate( TEMPLATE_CONF_ELEMENT, user, null );
             String htmlForumElement = imcref.getAdminTemplate( TEMPLATE_FORUM_ELEMENT, user, null );
@@ -196,7 +193,7 @@ public class AdminConference extends Administrator {
 
                 String metaId = listOfConferences[i][0];
 
-                String[][] queryResultForum = confref.sqlProcedureMulti( "A_AdminStatistics1", new String[]{ metaId,startDate,endDate,listMode } );
+                String[][] queryResultForum = imcref.sqlProcedureMulti( "A_AdminStatistics1", new String[]{ metaId,startDate,endDate,listMode } );
 
                 //lets create forumList for this conference
                 StringBuffer forumList = new StringBuffer();
@@ -205,7 +202,7 @@ public class AdminConference extends Administrator {
 
                     String forumId = queryResultForum[j][0];
 
-                    String[][] arr1 = confref.sqlProcedureMulti( "A_AdminStatistics2", new String[]{metaId, forumId, startDate, endDate, listMode} );
+                    String[][] arr1 = imcref.sqlProcedureMulti( "A_AdminStatistics2", new String[]{metaId, forumId, startDate, endDate, listMode} );
                     String[][] queryResultDebate = arr1;
 
                     // lets create debatelist for this forum

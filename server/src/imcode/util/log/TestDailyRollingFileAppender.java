@@ -90,7 +90,7 @@ public class TestDailyRollingFileAppender extends TestCase {
     }
 
     private class MockLogger extends Logger {
-        public MockLogger(String name) {
+        private MockLogger(String name) {
             super(name) ;
         }
     }

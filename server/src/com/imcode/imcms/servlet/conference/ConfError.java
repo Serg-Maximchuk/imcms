@@ -167,11 +167,11 @@ public class ConfError extends Conference {
         vm.addProperty( "SERVLET_URL", "" );
 
         HtmlGenerator htmlObj = new HtmlGenerator( templateLib, htmlFile );
-        String html = htmlObj.createHtmlString( vm, req );
+        String html = htmlObj.createHtmlString( vm );
         log( html );
         log( htmlFile );
 
-        htmlObj.sendToBrowser( req, res, html );
+        htmlObj.sendToBrowser( res, html );
     }
 
 } // End of class

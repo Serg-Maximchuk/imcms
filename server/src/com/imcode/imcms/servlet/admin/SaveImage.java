@@ -21,10 +21,6 @@ import java.util.Vector;
 
 public class SaveImage extends HttpServlet implements imcode.server.IMCConstants {
 
-    public void init( ServletConfig config ) throws ServletException {
-        super.init( config );
-    }
-
     public void doPost( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
 
         String okParameter = req.getParameter( "ok" );

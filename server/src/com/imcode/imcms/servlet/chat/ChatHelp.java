@@ -25,7 +25,7 @@ public class ChatHelp extends ChatBase {
 	Properties params = this.getParameters(req) ;
 
 	// Lets get the user object
-	imcode.server.user.UserDomainObject user = super.getUserObj(req,res) ;
+	imcode.server.user.UserDomainObject user = super.getUserObj(req ) ;
 	if(user == null) return ;
 
 	if ( isUserAuthorized( req, res, user ) ) {

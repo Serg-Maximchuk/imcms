@@ -178,7 +178,7 @@ class ImcmsTagSubstitution implements Substitution, IMCConstants {
      * @param attributes The attributes of the include tag
      * @param patMat     A pattern matcher.
      */
-    public String tagInclude( Properties attributes, PatternMatcher patMat ) {
+    private String tagInclude( Properties attributes, PatternMatcher patMat ) {
         int no = 0;
         String attributevalue;
 
@@ -522,7 +522,7 @@ class ImcmsTagSubstitution implements Substitution, IMCConstants {
      *                   type attribute defines what date to get they can bee
      *                   now, created, modified, activated, archived
      */
-    public String tagDatetime( Properties attributes ) {
+    private String tagDatetime( Properties attributes ) {
         String format = attributes.getProperty( "format" ) == null
                         ? DateConstants.DATETIME_FORMAT_NO_SECONDS_FORMAT_STRING : attributes.getProperty( "format" );
         String type = attributes.getProperty( "type" );
@@ -570,7 +570,7 @@ class ImcmsTagSubstitution implements Substitution, IMCConstants {
     /**
      * Handle a <?imcms:user who='...' get='xxxxxxx'?> tag.
      */
-    public String tagUser( Properties attributes ) {
+    private String tagUser( Properties attributes ) {
 
         UserDomainObject user = null;
         String who = attributes.getProperty( "who" );

@@ -32,7 +32,7 @@ public abstract class DocumentDomainObject implements Cloneable, Serializable {
     public static final int STATUS_PUBLICATION_DISAPPROVED = 1;
     public static final int STATUS_PUBLICATION_APPROVED = 2;
 
-    protected Attributes attributes;
+    private Attributes attributes;
 
     protected DocumentDomainObject() {
         attributes = new Attributes();
@@ -336,7 +336,7 @@ public abstract class DocumentDomainObject implements Cloneable, Serializable {
         return attributes.id ;
     }
 
-    public boolean isArchivedAtTime( Date time ) {
+    private boolean isArchivedAtTime( Date time ) {
         Attributes documentProperties = this.attributes;
         return ( documentProperties.archivedDatetime != null && documentProperties.archivedDatetime.before( time ) );
     }
@@ -416,7 +416,7 @@ public abstract class DocumentDomainObject implements Cloneable, Serializable {
         return attributes;
     }
 
-    public synchronized Attributes.LazilyLoadedDocumentAttributes getLazilyLoadedDocumentAttributes() {
+    private synchronized Attributes.LazilyLoadedDocumentAttributes getLazilyLoadedDocumentAttributes() {
         if ( null == attributes.lazilyLoadedDocumentAttributes ) {
             attributes.lazilyLoadedDocumentAttributes = new Attributes.LazilyLoadedDocumentAttributes();
             DocumentMapper documentMapper = ApplicationServer.getIMCServiceInterface().getDocumentMapper();
@@ -425,7 +425,7 @@ public abstract class DocumentDomainObject implements Cloneable, Serializable {
         return attributes.lazilyLoadedDocumentAttributes;
     }
 
-    public synchronized Attributes.LazilyLoadedDocumentCategories getLazilyLoadedDocumentCategories() {
+    private synchronized Attributes.LazilyLoadedDocumentCategories getLazilyLoadedDocumentCategories() {
         if ( null == attributes.lazilyLoadedDocumentCategories ) {
             attributes.lazilyLoadedDocumentCategories = new Attributes.LazilyLoadedDocumentCategories();
             DocumentMapper documentMapper = ApplicationServer.getIMCServiceInterface().getDocumentMapper();
@@ -434,7 +434,7 @@ public abstract class DocumentDomainObject implements Cloneable, Serializable {
         return attributes.lazilyLoadedDocumentCategories;
     }
 
-    public synchronized Attributes.LazilyLoadedRolesMappedToDocumentPermissionSetIds getLazilyLoadedRolesMappedToDocumentPermissionSetIds() {
+    private synchronized Attributes.LazilyLoadedRolesMappedToDocumentPermissionSetIds getLazilyLoadedRolesMappedToDocumentPermissionSetIds() {
         if ( null == attributes.lazilyLoadedRolesMappedToDocumentPermissionSetIds ) {
             attributes.lazilyLoadedRolesMappedToDocumentPermissionSetIds = new Attributes.LazilyLoadedRolesMappedToDocumentPermissionSetIds();
             DocumentMapper documentMapper = ApplicationServer.getIMCServiceInterface().getDocumentMapper();

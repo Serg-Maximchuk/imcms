@@ -155,7 +155,7 @@ public class GetExistingDoc extends HttpServlet {
 
         } else {
             // ************** Lets add a document ***********************
-            addDocument( user, req, imcref, meta_id, doc_menu_no, res, out );
+            addDocument( user, req, imcref, meta_id, doc_menu_no, res );
 
         }
     }
@@ -191,8 +191,7 @@ public class GetExistingDoc extends HttpServlet {
     }
 
     private void addDocument( imcode.server.user.UserDomainObject user, HttpServletRequest req,
-                              IMCServiceInterface imcref, int meta_id, int menuIndex, HttpServletResponse res,
-                              Writer out ) throws IOException {
+                              IMCServiceInterface imcref, int meta_id, int menuIndex, HttpServletResponse res ) throws IOException {
         String[] values;
         int existing_meta_id;
         user.put( "flags", new Integer( IMCConstants.PERM_EDIT_TEXT_DOCUMENT_MENUS ) );
@@ -207,30 +206,29 @@ public class GetExistingDoc extends HttpServlet {
         for ( int m = 0; m < values.length; m++ ) {
             existing_meta_id = Integer.parseInt( values[m] );
 
+            DocumentMapper documentMapper = imcref.getDocumentMapper();
+            DocumentDomainObject parentDocument = documentMapper.getDocument( meta_id );
+
             // Fetch all doctypes from the db and put them in an option-list
             // First, get the doc_types the current user may use.
-            String[] user_dt = imcref.sqlProcedure( "GetDocTypesForUser",
-                                                    new String[]{
-                                                        "" + meta_id, "" + user.getId(),
-                                                        user.getLanguageIso639_2()
-                                                    } );
+            String[][] user_dt = documentMapper.getDocumentTypeIdsAndNamesInUsersLanguage(parentDocument,user) ;
+
             Set user_doc_types = new HashSet();
 
             // I'll fill a HashSet with all the doc-types the current user may use,
             // for easy retrieval.
-            for ( int i = 0; i < user_dt.length; i += 2 ) {
-                user_doc_types.add( user_dt[i] );
+            for ( int i = 0; i < user_dt.length; i ++ ) {
+                user_doc_types.add( user_dt[i][0] );
             }
 
             int doc_type = DocumentMapper.sqlGetDocTypeFromMeta( imcref, existing_meta_id );
 
-            DocumentMapper documentMapper = imcref.getDocumentMapper();
             DocumentDomainObject existingDocument = documentMapper.getDocument( existing_meta_id );
             // Add the document in menu if user is admin for the document OR the document is shared.
             boolean sharePermission = documentMapper.userHasPermissionToAddDocumentToMenu( user, existingDocument );
             if ( user_doc_types.contains( "" + doc_type ) && sharePermission ) {
                 try {
-                    documentMapper.addDocumentToMenu( user, documentMapper.getDocument( meta_id ), menuIndex, existingDocument );
+                    documentMapper.addDocumentToMenu( user, parentDocument, menuIndex, existingDocument );
                 } catch ( DocumentMapper.DocumentAlreadyInMenuException e ) {
                     //ok, already in menu
                 }

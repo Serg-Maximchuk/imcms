@@ -1,6 +1,7 @@
 package com.imcode.imcms.servlet.billboard;
 
 import imcode.server.*;
+import imcode.server.user.UserDomainObject;
 
 import java.io.*;
 import java.util.*;
@@ -8,7 +9,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import imcode.external.diverse.*;
-import com.imcode.imcms.servlet.billboard.BillBoard;
+import imcode.util.Utility;
 
 /**
  * Html template in use:
@@ -39,10 +40,6 @@ public class BillBoardCreator extends BillBoard {//BillBoardCreator
 
     public void doPost( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
 
-        //log("START BillBoardCreator doPost");
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) return;
-
         // Lets get the standard parameters and validate them
         Properties params = MetaInfo.createPropertiesFromMetaInfoParameters( super.getBillBoardSessionParameters( req ) );
 
@@ -50,7 +47,8 @@ public class BillBoardCreator extends BillBoard {//BillBoardCreator
         Properties confParams = this.getNewConfParameters( req );
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) return;
 
         if ( !isUserAuthorized( req, res, user ) ) {
@@ -69,7 +67,6 @@ public class BillBoardCreator extends BillBoard {//BillBoardCreator
         // Lets get serverinformation
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface billref = ApplicationServer.getIMCPoolInterface();
 
         // ********* NEW ********
         if ( action.equalsIgnoreCase( "ADD_BILLBOARD" ) ) {
@@ -80,7 +77,7 @@ public class BillBoardCreator extends BillBoard {//BillBoardCreator
             // we have to check when we add a new billboard that such an meta_id
             // doesnt already exists.
             String metaId = params.getProperty( "META_ID" );
-            String foundMetaId = billref.sqlProcedureStr( "B_FindMetaId", new String[]{metaId} );
+            String foundMetaId = imcref.sqlProcedureStr( "B_FindMetaId", new String[]{metaId} );
             if ( !foundMetaId.equals( "1" ) ) {
                 action = "";
                 String header = "BillBoardCreator servlet. ";
@@ -96,7 +93,7 @@ public class BillBoardCreator extends BillBoard {//BillBoardCreator
 
             String subject = confParams.getProperty( "SUBJECT_NAME" );
 
-            billref.sqlUpdateProcedure( "B_AddNewBillBoard", new String[]{metaId, confName, subject} );
+            imcref.sqlUpdateProcedure( "B_AddNewBillBoard", new String[]{metaId, confName, subject} );
 
             // Lets add a new section to the billBoard
             // B_AddNewSection @meta_id int, @section_name varchar(255), @archive_mode char, @archive_time int
@@ -104,7 +101,7 @@ public class BillBoardCreator extends BillBoard {//BillBoardCreator
             final String archiveMode = "A";
             final String archiveTime = "30";
             final String daysToShow = "14";
-            billref.sqlUpdateProcedure( "B_AddNewSection", new String[]{metaId, confParams.getProperty( "SECTION_NAME" ), archiveMode, archiveTime, daysToShow} );
+            imcref.sqlUpdateProcedure( "B_AddNewSection", new String[]{metaId, confParams.getProperty( "SECTION_NAME" ), archiveMode, archiveTime, daysToShow} );
 
             // Ok, were done creating the billBoard. Lets tell Janus system to show this child.
             imcref.activateChild( Integer.parseInt( metaId ), user );
@@ -123,12 +120,10 @@ public class BillBoardCreator extends BillBoard {//BillBoardCreator
      */
 
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
-        //log("START BillBoardCreator doGet");
-        // Lets validate the session, e.g has the user logged in to Janus?
-        if ( super.checkSession( req, res ) == false ) return;
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj( req, res );
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( user == null ) return;
 
         if ( !isUserAuthorized( req, res, user ) ) {

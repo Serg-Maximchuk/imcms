@@ -2,7 +2,6 @@ package com.imcode.imcms.servlet.conference;
 
 import imcode.external.diverse.*;
 import imcode.server.ApplicationServer;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
 import imcode.server.document.DocumentMapper;
 import imcode.server.document.DocumentDomainObject;
@@ -103,7 +102,7 @@ public class Conference extends HttpServlet {
      * Gives the folder to the root external folder
      */
 
-    File getExternalTemplateRootFolder( HttpServletRequest req ) throws IOException {
+    File getExternalTemplateRootFolder( HttpServletRequest req ) {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
 
         int metaId = this.getMetaId( req );
@@ -118,25 +117,23 @@ public class Conference extends HttpServlet {
      * name of the folder which contains the templates for a certain meta id
      */
 
-    File getExternalTemplateFolder( HttpServletRequest req )
-            throws IOException {
+    File getExternalTemplateFolder( HttpServletRequest req ) {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
         int metaId = this.getMetaId( req );
 
         File extFolder = imcref.getExternalTemplateFolder( metaId, user);
-        return new File( extFolder, this.getTemplateLibName( confref, metaId ) );
+        return new File( extFolder, this.getTemplateLibName( metaId ) );
     }
 
     /**
      * Returns the foldername where the templates are situated for a certain metaid.
      */
-    private String getTemplateLibName( IMCPoolInterface confref, int meta_id ) {
-        String libName = confref.sqlProcedureStr( "A_GetTemplateLib", new String[]{"" + meta_id} );
+    private String getTemplateLibName( int meta_id ) {
+        String libName = ApplicationServer.getIMCServiceInterface().sqlProcedureStr( "A_GetTemplateLib", new String[]{"" + meta_id} );
         if ( libName == null ) {
             libName = "original";
         }
@@ -185,21 +182,11 @@ public class Conference extends HttpServlet {
 
         // log("Before HTmlgenerator: ") ;
         HtmlGenerator htmlObj = new HtmlGenerator( templateLib, htmlFile );
-        String html = htmlObj.createHtmlString( vm, req );
+        String html = htmlObj.createHtmlString( vm );
         //log("Before sendToBrowser: ") ;
 
-        htmlObj.sendToBrowser( req, res, html );
+        htmlObj.sendToBrowser( res, html );
         //log("after sendToBrowser: ") ;
-
-    }
-
-    /**
-     * Log function. Logs the message to the log file and console
-     */
-
-    public void log( String msg ) {
-        super.log( msg );
-        System.out.println( "Conference: " + msg );
 
     }
 
@@ -221,15 +208,13 @@ public class Conference extends HttpServlet {
     boolean prepareUserForConf( HttpServletRequest req, HttpServletResponse res,
                                 MetaInfo.Parameters params, String loginUserId ) throws IOException {
 
+        IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface() ;
         // Lets get userparameters
         String metaId = "" + params.getMetaId();
 
-        // Lets get serverinformation
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
-
         // Ok, Lets prepare the user for the conference.
         // Lets get his lastLoginDate and update it to today
-        String lastLoginDate = confref.sqlProcedureStr( "A_GetLastLoginDate2", new String[]{metaId, loginUserId} );
+        String lastLoginDate = imcref.sqlProcedureStr( "A_GetLastLoginDate2", new String[]{metaId, loginUserId} );
         String firstName;
         String lastName;
 
@@ -243,10 +228,10 @@ public class Conference extends HttpServlet {
             firstName = user.getFirstName();
             lastName = user.getLastName();
 
-            confref.sqlUpdateProcedure( "A_ConfUsersAdd", new String[]{loginUserId, metaId, firstName, lastName} );
+            imcref.sqlUpdateProcedure( "A_ConfUsersAdd", new String[]{loginUserId, metaId, firstName, lastName} );
 
             // Ok, try to get the lastLoginDate now and validate it
-            lastLoginDate = confref.sqlProcedureStr( "A_GetLastLoginDate2", new String[]{} );
+            lastLoginDate = imcref.sqlProcedureStr( "A_GetLastLoginDate2", new String[]{} );
 
             if ( lastLoginDate == null ) {
                 String header = "ConfManager servlet. ";
@@ -264,12 +249,12 @@ public class Conference extends HttpServlet {
             // Ok, the user has logged in to the conference by the loginpage
             // for the conference, he has a logindate. Lets get his names
             // Lets get the users first and last names
-            firstName = confref.sqlProcedureStr( "A_GetConfLoginNames", new String[]{metaId, loginUserId, "1"} );
-            lastName = confref.sqlProcedureStr( "A_GetConfLoginNames", new String[]{metaId, loginUserId, "2"} );
+            firstName = imcref.sqlProcedureStr( "A_GetConfLoginNames", new String[]{metaId, loginUserId, "1"} );
+            lastName = imcref.sqlProcedureStr( "A_GetConfLoginNames", new String[]{metaId, loginUserId, "2"} );
         } // end else
 
         // Lets update his logindate and usernames
-        confref.sqlUpdateProcedure( "A_ConfUsersUpdate", new String[]{metaId, loginUserId, firstName, lastName} );
+        imcref.sqlUpdateProcedure( "A_ConfUsersUpdate", new String[]{metaId, loginUserId, firstName, lastName} );
         // Lets store some values in his session object
         HttpSession session = req.getSession( false );
         if ( session != null ) {
@@ -282,11 +267,11 @@ public class Conference extends HttpServlet {
 
             // Ok, we need to catch a forum_id. Lets get the first one for this meta_id.
             // if not a forumid exists, the sp will return -1
-            String aForumId = confref.sqlProcedureStr( "A_GetFirstForum", new String[]{"" + params.getMetaId()} );
+            String aForumId = imcref.sqlProcedureStr( "A_GetFirstForum", new String[]{"" + params.getMetaId()} );
             session.setAttribute( "Conference.forum_id", aForumId );
 
             // Ok, Lets get the last discussion in that forum
-            String aDiscId = confref.sqlProcedureStr( "A_GetLastDiscussionId", new String[]{"" + params.getMetaId(), aForumId} );
+            String aDiscId = imcref.sqlProcedureStr( "A_GetLastDiscussionId", new String[]{"" + params.getMetaId(), aForumId} );
 
             // Lets get the lastdiscussionid for that forum
             // if not a aDiscId exists, then the  sp will return -1
@@ -307,12 +292,11 @@ public class Conference extends HttpServlet {
      * name of the folder which contains the templates for a certain meta id
      */
 
-    String getExternalImageFolder( HttpServletRequest req ) throws IOException {
+    String getExternalImageFolder( HttpServletRequest req ) {
         int metaId = this.getMetaId( req );
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
         String lang_prefix = imcref.getDefaultLanguageAsIso639_2();
@@ -323,7 +307,7 @@ public class Conference extends HttpServlet {
 
         String extFolder = RmiConf.getExternalImageFolder( imcref, metaId, lang_prefix);
 
-        return extFolder += this.getTemplateLibName( confref, metaId );
+        return extFolder += this.getTemplateLibName( metaId );
     }
 
 
@@ -360,13 +344,13 @@ public class Conference extends HttpServlet {
             //lets create adminbuttonhtml
             File templateLib = this.getExternalTemplateFolder( req );
             HtmlGenerator htmlObj = new HtmlGenerator( templateLib, ADMIN_BUTTON_TEMPLATE );
-            String adminBtn = htmlObj.createHtmlString( adminButtonVM, req );
+            String adminBtn = htmlObj.createHtmlString( adminButtonVM );
 
             //lets create adminlink
             adminLinkVM.addProperty( "ADMIN_BUTTON", adminBtn );
             if ( !adminLinkFile.equals( "" ) ) {
                 HtmlGenerator linkHtmlObj = new HtmlGenerator( templateLib, adminLinkFile );
-                adminLink = linkHtmlObj.createHtmlString( adminLinkVM, req );
+                adminLink = linkHtmlObj.createHtmlString( adminLinkVM );
             }
         }
         //log("After getAdminRights") ;
@@ -398,13 +382,13 @@ public class Conference extends HttpServlet {
             //lets create unadminbuttonhtml
             File templateLib = this.getExternalTemplateFolder( req );
             HtmlGenerator htmlObj = new HtmlGenerator( templateLib, UNADMIN_BUTTON_TEMPLATE );
-            String unAdminBtn = htmlObj.createHtmlString( unAdminButtonVM, req );
+            String unAdminBtn = htmlObj.createHtmlString( unAdminButtonVM );
 
             //lets create unadminlink
             unAdminLinkVM.addProperty( "UNADMIN_BUTTON", unAdminBtn );
             if ( !unAdminLinkFile.equals( "" ) ) {
                 HtmlGenerator linkHtmlObj = new HtmlGenerator( templateLib, unAdminLinkFile );
-                unAdminLink = linkHtmlObj.createHtmlString( unAdminLinkVM, req );
+                unAdminLink = linkHtmlObj.createHtmlString( unAdminLinkVM );
             }
         }
         return unAdminLink;
@@ -471,7 +455,7 @@ public class Conference extends HttpServlet {
             res.sendRedirect( startUrl );
         } else {
             int metaId = Integer.parseInt( stringMetaId );
-            authorized = isUserAuthorized( req, res, metaId, user );
+            authorized = isUserAuthorized( res, metaId, user );
         }
 
         return authorized;
@@ -480,12 +464,12 @@ public class Conference extends HttpServlet {
     /**
      * checks if user is authorized
      *
-     * @param req    is used for collecting serverinfo and session
      * @param res    is used if error (send user to conference_starturl )
      * @param metaId conference metaId
      * @param user
      */
-    boolean isUserAuthorized( HttpServletRequest req, HttpServletResponse res, int metaId, imcode.server.user.UserDomainObject user )
+    boolean isUserAuthorized( HttpServletResponse res, int metaId,
+                              imcode.server.user.UserDomainObject user )
             throws IOException {
 
         // Lets get serverinformation

@@ -50,7 +50,7 @@ public class Html {
         return htmlStr.toString();
     }
 
-    public static String createOptionList( List allValues, Object selectedValue,
+    private static String createOptionList( List allValues, Object selectedValue,
                                            Transformer objectToStringPairTransformer ) {
         return createOptionList( allValues, Arrays.asList(new Object[] {selectedValue}), objectToStringPairTransformer) ;
     }

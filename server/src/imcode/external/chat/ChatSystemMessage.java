@@ -27,7 +27,8 @@ public class ChatSystemMessage extends ChatMessage {
         return member;
     }
 
-    public String getLine( boolean showPrivateMessages, ChatMember lineViewer, StringBuffer sendMsgString, IMCServiceInterface imcref, UserDomainObject user, String libName ) {
+    public String getLine( boolean showPrivateMessages, ChatMember lineViewer, IMCServiceInterface imcref,
+                           UserDomainObject user, String libName ) {
         if (!lineViewer.isShowEnterAndLeaveMessagesEnabled() && (message == ENTER_MSG || message == LEAVE_MSG)) {
             return "" ;
         }

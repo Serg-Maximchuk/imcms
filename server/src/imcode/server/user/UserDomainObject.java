@@ -54,7 +54,7 @@ public class UserDomainObject extends Hashtable {
 
     private LazilyLoadedUserAttributes lazilyLoadedUserAttributes = null ;
 
-    public LazilyLoadedUserAttributes getLazilyLoadedUserAttributes() {
+    private LazilyLoadedUserAttributes getLazilyLoadedUserAttributes() {
         if (null == lazilyLoadedUserAttributes) {
             lazilyLoadedUserAttributes = new LazilyLoadedUserAttributes() ;
             ImcmsAuthenticatorAndUserMapper imcmsAuthenticatorAndUserMapper = ApplicationServer.getIMCServiceInterface().getImcmsAuthenticatorAndUserAndRoleMapper() ;

@@ -10,7 +10,7 @@ import java.util.Comparator;
 
 public class ComparatorWrapper extends ChainableReversibleNullComparator {
 
-    protected Comparator wrappedComparator;
+    Comparator wrappedComparator;
 
     public ComparatorWrapper(Comparator comparator) {
         this.wrappedComparator = comparator;

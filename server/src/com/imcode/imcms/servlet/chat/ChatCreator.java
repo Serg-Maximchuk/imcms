@@ -29,8 +29,6 @@ public class ChatCreator extends ChatBase {
     private static final String MSG_TYPE_ASKS = "102";
     private static final int MAX_REFRESH_TIME = 180;
 
-    private final static Logger log = Logger.getLogger("ChatCreator");
-
     /**
      * The POST method creates the html page when this side has been
      * redirected from somewhere else.
@@ -42,7 +40,7 @@ public class ChatCreator extends ChatBase {
         HttpSession session = req.getSession(false);
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj(req, res);
+        imcode.server.user.UserDomainObject user = super.getUserObj(req );
         if (user == null) return;
         if (!isUserAuthorized(req, res, user)) {
             log("isUserAuthorized==false");
@@ -61,7 +59,7 @@ public class ChatCreator extends ChatBase {
         //peter jobbar här
         Chat myChat = (Chat) session.getAttribute("myChat");
         if (myChat == null) {
-            myChat = createChat(req, user, getMetaId(req));
+            myChat = createChat( getMetaId(req));
         }
         int metaId = myChat.getChatId();
 
@@ -100,11 +98,10 @@ public class ChatCreator extends ChatBase {
             }
 
             IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-            IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
             //lets save to db
             if (req.getParameter("okChat") != null) {
-                createChat(metaId, myChat, chatref, imcref, user, res);
+                createChat(metaId, myChat, imcref, user, res);
                 return;
 
             }//end if(action.equalsIgnoreCase("okChat"))
@@ -120,14 +117,14 @@ public class ChatCreator extends ChatBase {
                         return;
                     }
                     // Lets check if we already have a templateset with that name
-                    String libNameExists = chatref.sqlProcedureStr("C_FindTemplateLib", new String[]{newLibName});
+                    String libNameExists = imcref.sqlProcedureStr("C_FindTemplateLib", new String[]{newLibName});
                     if (!libNameExists.equalsIgnoreCase("-1")) {
                         String header = "ChatCreator servlet. ";
                         new ChatError(req, res, header, 84);//obs kolla om rätt nr
                         return;
                     }
                     log("lang_prefix for External Template Folder = " + user.getLanguageIso639_2());
-                    chatref.sqlUpdateProcedure("C_AddTemplateLib", new String[]{newLibName});
+                    imcref.sqlUpdateProcedure("C_AddTemplateLib", new String[]{newLibName});
                     // Lets copy the original folders to the new foldernames
                     FileManager fileObj = new FileManager();
                     File templateSrc = new File(imcref.getExternalTemplateFolder(metaId, user), "original");
@@ -151,7 +148,7 @@ public class ChatCreator extends ChatBase {
                     }
                     // Lets find the selected template in the database and get its id
                     // if not found, -1 will be returned
-                    String templateId = chatref.sqlProcedureStr("C_GetTemplateIdFromName", new String[]{newLibName});
+                    String templateId = imcref.sqlProcedureStr("C_GetTemplateIdFromName", new String[]{newLibName});
                     if (templateId.equalsIgnoreCase("-1")) {
                         String header = "ChatCreator servlet. ";
                         new ChatError(req, res, header, 81);
@@ -159,9 +156,9 @@ public class ChatCreator extends ChatBase {
                     }
                     // Ok, lets update the chat with this new templateset.
                     //but first lets delete the old one.
-                    chatref.sqlUpdateProcedure("C_deleteChatTemplateset", new String[]{"" + metaId});
+                    imcref.sqlUpdateProcedure("C_deleteChatTemplateset", new String[]{"" + metaId});
 
-                    chatref.sqlUpdateProcedure("C_SetNewTemplateLib", new String[]{"" + metaId, newLibName});
+                    imcref.sqlUpdateProcedure("C_SetNewTemplateLib", new String[]{"" + metaId, newLibName});
                 }
                 if (req.getParameter("UPLOAD_CHAT") != null) {
                     log("UPLOAD_CHAT");
@@ -188,12 +185,12 @@ public class ChatCreator extends ChatBase {
             if (req.getParameter("adminTemplates") != null) {
                 log("adminTemplates");
                 //ok now lets get the template set name
-                String templateSetName = chatref.sqlProcedureStr("C_GetTemplateLib", new String[]{"" + metaId});
+                String templateSetName = imcref.sqlProcedureStr("C_GetTemplateLib", new String[]{"" + metaId});
                 if (templateSetName == null) {
                     templateSetName = "";
                 }
                 //ok lets get all the template set there is
-                String[] templateLibs = chatref.sqlProcedure("C_GetAllTemplateLibs", new String[]{});
+                String[] templateLibs = imcref.sqlProcedure("C_GetAllTemplateLibs", new String[]{});
                 Vector vect = new Vector();
                 if (templateLibs != null) {
                     vect = super.convert2Vector(templateLibs);
@@ -211,39 +208,39 @@ public class ChatCreator extends ChatBase {
         }//end if(action.equalsIgnoreCase("ADD_CHAT"))
         log("default köret");
         sendHtml(req, res, createTaggs(myChat, user), HTML_TEMPLATE, myChat);
-        return;
 
     } // End POST
 
-    private void createChat(int metaId, Chat myChat, IMCPoolInterface chatref, IMCServiceInterface imcref, UserDomainObject user, HttpServletResponse res) throws IOException {
+    private void createChat( int metaId, Chat myChat, IMCServiceInterface imcref,
+                             UserDomainObject user, HttpServletResponse res ) throws IOException {
         log("okChat");
 
-        chatref.sqlUpdateProcedure("C_AddNewChat", new String[]{"" + metaId, myChat.getChatName(), "3"});
+        imcref.sqlUpdateProcedure("C_AddNewChat", new String[]{"" + metaId, myChat.getChatName(), "3"});
 
-        chatref.sqlUpdateProcedure("C_Delete_MsgTypes", new String[]{"" + metaId});
+        imcref.sqlUpdateProcedure("C_Delete_MsgTypes", new String[]{"" + metaId});
 
         //lets connect the standard msgTypes with the chat
-        String[] tempTypes = chatref.sqlProcedure("C_GetBaseMsgTypes", new String[]{});
+        String[] tempTypes = imcref.sqlProcedure("C_GetBaseMsgTypes", new String[]{});
         for (int i = 0; i < tempTypes.length; i++) {
-            String tempTypeId = chatref.sqlProcedureStr("C_GetMsgTypeId", new String[]{tempTypes[i]});
+            String tempTypeId = imcref.sqlProcedureStr("C_GetMsgTypeId", new String[]{tempTypes[i]});
             /*TODO
             This is only a temporary blocking of standard message types
             we only select message type " säger till" and "frågar"
             */
             if (MSG_TYPE_SAYS_TO.equals(tempTypeId) || MSG_TYPE_ASKS.equals(tempTypeId)) {
-                chatref.sqlUpdateProcedure("C_AddNewChatMsg", new String[]{tempTypeId, "" + metaId});
+                imcref.sqlUpdateProcedure("C_AddNewChatMsg", new String[]{tempTypeId, "" + metaId});
             }
         }
 
         // Lets add the new msgTypes to the db /ugly but it works
         Vector msgV = myChat.getMsgTypes();
         for (int i = 0; i < msgV.size(); i += 2) {
-            chatref.sqlUpdateProcedure("C_AddMessageType", new String[]{"" + metaId, "" + msgV.get(i), "" + msgV.get(i + 1)});
+            imcref.sqlUpdateProcedure("C_AddMessageType", new String[]{"" + metaId, "" + msgV.get(i), "" + msgV.get(i + 1)});
         }
 
         //	Vector valuesV = new Vector();
 
-        chatref.sqlUpdateProcedure("C_AddChatParams", new String[]{
+        imcref.sqlUpdateProcedure("C_AddChatParams", new String[]{
             "" + metaId,
             "" + myChat.getRefreshTime(),
             "" + myChat.isAutoRefreshEnabled(),
@@ -255,15 +252,15 @@ public class ChatCreator extends ChatBase {
 
 
         // lets delete all authorization for one meta
-        chatref.sqlUpdateProcedure("C_DeleteAuthorizations", new String[]{"" + metaId});
+        imcref.sqlUpdateProcedure("C_DeleteAuthorizations", new String[]{"" + metaId});
 
         //ok lets add the authorization types
         Vector autoV = myChat.getSelectedAuto();
         for (int i = 0; i < autoV.size(); i++) {
-            chatref.sqlUpdateProcedure("C_ChatAutoTypes", new String[]{"" + autoV.elementAt(i), "" + metaId});
+            imcref.sqlUpdateProcedure("C_ChatAutoTypes", new String[]{"" + autoV.elementAt(i), "" + metaId});
         }
         //ok now we have saved the stuff to the db so lets set up the chat and put it in the context
-        String[][] messages = chatref.sqlProcedureMulti("C_GetMsgTypes", new String[]{"" + metaId});
+        String[][] messages = imcref.sqlProcedureMulti("C_GetMsgTypes", new String[]{"" + metaId});
         if (messages != null) {
             myChat.setMsgTypes(convert2Vector(messages));
         }
@@ -276,8 +273,6 @@ public class ChatCreator extends ChatBase {
         // Ok, we're done adding the chat, Lets log in to it!
 
         res.sendRedirect("ChatLogin?login_type=login&meta_id=" + metaId);
-
-        return;
     }
 
     /**
@@ -293,7 +288,7 @@ public class ChatCreator extends ChatBase {
         HttpSession session = req.getSession(false);
 
         // Lets get an user object
-        imcode.server.user.UserDomainObject user = super.getUserObj(req, res);
+        imcode.server.user.UserDomainObject user = super.getUserObj(req );
         if (user == null) return;
 
         if (!isUserAuthorized(req, res, user)) {
@@ -318,7 +313,7 @@ public class ChatCreator extends ChatBase {
 
             //skapa en temp chat
             int meta_id = Integer.parseInt((String) session.getAttribute("Chat.meta_id"));
-            Chat myChat = createChat(req, user, meta_id);
+            Chat myChat = createChat( meta_id);
             session.setAttribute("myChat", myChat);
             // Lets build the Responsepage to the loginpage
             Vector vect = createTaggs(myChat, user);
@@ -358,14 +353,13 @@ public class ChatCreator extends ChatBase {
 
     } // End doGet
 
-    private String getTemplateButtonHtml(int metaId, UserDomainObject user) throws IOException {
+    private String getTemplateButtonHtml(int metaId, UserDomainObject user) {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
-        return imcref.parseExternalDoc(null, HTML_TEMPLATES_BUTTON, user, "103", getTemplateLibName(chatref, metaId));
+        return imcref.parseExternalDoc(null, HTML_TEMPLATES_BUTTON, user, "103", getTemplateLibName( metaId));
     }
 
     //peter keep
-    private Vector createTaggs(Chat chat, UserDomainObject user) throws IOException {
+    private Vector createTaggs(Chat chat, UserDomainObject user) {
 
         Vector bv = new Vector();
         bv.add("1");
@@ -404,17 +398,6 @@ public class ChatCreator extends ChatBase {
             vect.add(i + "");
         }
         return vect;
-    }
-
-    //peter keep
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        log("init");
-    } // End of INIT
-
-    //peter keep
-    public void log(String str) {
-        log.debug(str);
     }
 
 } // End class

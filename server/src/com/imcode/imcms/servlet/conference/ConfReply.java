@@ -16,14 +16,12 @@ import imcode.external.diverse.ParseServlet;
 import imcode.external.diverse.VariableManager;
 import imcode.server.ApplicationServer;
 import imcode.server.HTMLConv;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
-import imcode.server.document.DocumentMapper;
 import imcode.server.document.DocumentDomainObject;
+import imcode.server.document.DocumentMapper;
 import imcode.server.user.UserDomainObject;
 import imcode.util.Utility;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,8 +31,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
-
-import com.imcode.imcms.servlet.conference.Conference;
 
 /**
  * Html template in use:
@@ -56,8 +52,8 @@ public class ConfReply extends Conference {
     private final static String NEW_COMMENT_TEMPLATE = "Conf_Reply_New_Comment.htm";
     private final static String ADMIN_LINK_TEMPLATE = "Conf_Reply_Admin_Link.htm";
 
-    private String HTML_TEMPLATE;
-    private String RECS_HTML;
+    private final static String HTML_TEMPLATE = "Conf_Reply.htm";
+    private final static String RECS_HTML = "Conf_reply_list.htm";
 
     /**
      * DoPost
@@ -72,9 +68,6 @@ public class ConfReply extends Conference {
         if ( !isUserAuthorized( req, res, user ) ) {
             return;
         }
-
-        // Lets get serverinformation
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
         // ********* UPDATE DISCUSSIONS ********
         if ( req.getParameter( "UPDATE" ) != null ) {
@@ -95,7 +88,7 @@ public class ConfReply extends Conference {
             String ascSortOrder = ( req.getParameter( "SORT_ORDER" ) == null ) ? "0" : ( req.getParameter( "SORT_ORDER" ) );
 
             // Ok, Lets set the users sortorder preference
-            confref.sqlUpdateProcedure( "A_ConfUsersSetReplyOrder", new String[]{metaId, userId, ascSortOrder} );
+            ApplicationServer.getIMCServiceInterface().sqlUpdateProcedure( "A_ConfUsersSetReplyOrder", new String[]{metaId, userId, ascSortOrder} );
             this.doGet( req, res );
             return;
         }
@@ -128,12 +121,11 @@ public class ConfReply extends Conference {
 
         // Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface confref = ApplicationServer.getIMCPoolInterface();
 
-        String[][] sqlAnswer = confref.sqlProcedureMulti( "A_GetAllRepliesInDisc", new String[]{discId, userId} );
+        String[][] sqlAnswer = imcref.sqlProcedureMulti( "A_GetAllRepliesInDisc", new String[]{discId, userId} );
 
         // Lets get the discussion header
-        String discHeader = confref.sqlProcedureStr( "A_GetDiscussionHeader", new String[]{discId} );
+        String discHeader = imcref.sqlProcedureStr( "A_GetDiscussionHeader", new String[]{discId} );
         if ( discHeader == null || discId.equalsIgnoreCase( "-1" ) )
             discHeader = " ";
 
@@ -141,7 +133,7 @@ public class ConfReply extends Conference {
         // UsersSortOrderRadioButtons
         String metaId = params.getProperty( "META_ID" );
         int intMetaId = Integer.parseInt( metaId );
-        String sortOrderValue = confref.sqlProcedureStr( "A_ConfUsersGetReplyOrderSel", new String[]{metaId, userId} );
+        String sortOrderValue = imcref.sqlProcedureStr( "A_ConfUsersGetReplyOrderSel", new String[]{metaId, userId} );
         String ascState = "";
         String descState = "";
         String ascVal = "0";
@@ -190,7 +182,7 @@ public class ConfReply extends Conference {
             vmButtons.addProperty( "#SERVLET_URL#", "" );
             vmButtons.addProperty( "#IMAGE_URL#", this.getExternalImageFolder( req ) );
             HtmlGenerator commentButtonHtmlObj = new HtmlGenerator( templateLib, NEW_COMMENT_TEMPLATE );
-            commentButton = commentButtonHtmlObj.createHtmlString( vmButtons, req );
+            commentButton = commentButtonHtmlObj.createHtmlString( vmButtons );
         }
 
         VariableManager vm = new VariableManager();
@@ -203,8 +195,6 @@ public class ConfReply extends Conference {
         vm.addProperty( "ADMIN_LINK_HTML", ADMIN_LINK_TEMPLATE );
 
         this.sendHtml( req, res, vm, HTML_TEMPLATE );
-
-        return;
     }
 
     /**
@@ -336,22 +326,4 @@ public class ConfReply extends Conference {
         return reqParams;
     }
 
-    /**
-     * Detects paths and filenames.
-     */
-
-    public void init( ServletConfig config ) throws ServletException {
-        super.init( config );
-        RECS_HTML = "Conf_reply_list.htm";
-        HTML_TEMPLATE = "Conf_Reply.htm";
-    }
-
-    /**
-     * Log function, will work for both servletexec and Apache
-     */
-
-    public void log( String str ) {
-        super.log( str );
-        // System.out.println("ConfReply: " + str ) ;
-    }
 } // End of class

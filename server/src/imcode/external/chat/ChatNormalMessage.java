@@ -75,7 +75,8 @@ public class ChatNormalMessage extends ChatMessage {
         return _sender;
     }
 
-    public String getLine( boolean showPrivateMessages, ChatMember myMember, StringBuffer sendMsgString, IMCServiceInterface imcref, UserDomainObject user, String libName ) {
+    public String getLine( boolean showPrivateMessages, ChatMember myMember, IMCServiceInterface imcref,
+                           UserDomainObject user, String libName ) {
         Vector vLine = new Vector();
         vLine.add( "#size#" );
         vLine.add( "" + myMember.getFontSize() );

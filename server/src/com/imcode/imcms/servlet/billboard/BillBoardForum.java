@@ -1,6 +1,7 @@
 package com.imcode.imcms.servlet.billboard;
 
 import imcode.server.*;
+import imcode.server.user.UserDomainObject;
 
 import java.io.*;
 import java.util.*;
@@ -8,6 +9,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import imcode.external.diverse.*;
+import imcode.util.Utility;
 import com.imcode.imcms.servlet.billboard.BillBoard;
 
 /**
@@ -37,16 +39,12 @@ public class BillBoardForum extends BillBoard {//ConfForum
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
-		// Lets validate the session, e.g has the user logged in to Janus?
-		if (super.checkSession(req,res) == false)	return ;
-
 		String htmlFile = HTML_TEMPLATE ;
 		if(req.getParameter("advancedView") != null) htmlFile = HTML_TEMPLATE_EXT ;
 
-		// 	log("Parametrar var: " + params.toString()) ;
-
 		// Lets get an user object
-		imcode.server.user.UserDomainObject user = super.getUserObj(req,res) ;
+
+        imcode.server.user.UserDomainObject user = Utility.getLoggedOnUser( req ) ;
 		if(user == null) return ;
 
 		if ( !isUserAuthorized( req, res, user ) ) {
@@ -56,11 +54,8 @@ public class BillBoardForum extends BillBoard {//ConfForum
 		HttpSession session = req.getSession(false) ;
 		String aMetaId = (String) session.getAttribute("BillBoard.meta_id") ;
 
-		// Lets get serverinformation
-        IMCPoolInterface billref = ApplicationServer.getIMCPoolInterface();
-
 		// Lets get the information from DB
-        String[] sqlAnswer = billref.sqlProcedure("B_GetAllSection", new String[]{aMetaId});
+        String[] sqlAnswer = ApplicationServer.getIMCServiceInterface().sqlProcedure("B_GetAllSection", new String[]{aMetaId});
 		Vector sectionV = super.convert2Vector(sqlAnswer) ;
 
 		// Lets fill the select box

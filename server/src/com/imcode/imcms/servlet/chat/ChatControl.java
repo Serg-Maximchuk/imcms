@@ -41,7 +41,7 @@ public class ChatControl extends ChatBase {
         Properties params = this.getSessionParameters(req);
 
         // Lets get the user object
-        UserDomainObject user = getUserObj(req, res);
+        UserDomainObject user = getUserObj(req );
         if (user == null) {
             log("RETURN usern is null");
             return;
@@ -140,13 +140,12 @@ public class ChatControl extends ChatBase {
     } //**** end doGet ***** end doGet ***** end doGet ******
 
 
-    private String settingsButton(imcode.external.chat.Chat chat, UserDomainObject user) throws IOException {
+    private String settingsButton(imcode.external.chat.Chat chat, UserDomainObject user) {
         if (chat.settingsPage()) {
             IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-            IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
             int metaId = chat.getChatId();
-            return imcref.parseExternalDoc(null, SETTINGS_BUTTON, user, "103", getTemplateLibName(chatref, metaId));
+            return imcref.parseExternalDoc(null, SETTINGS_BUTTON, user, "103", getTemplateLibName( metaId));
         } else {
             return "&nbsp;";
         }
@@ -163,7 +162,7 @@ public class ChatControl extends ChatBase {
         Properties params = this.getSessionParameters(req);
 
         // Lets get the user object
-        UserDomainObject user = getUserObj(req, res);
+        UserDomainObject user = getUserObj(req );
         if (user == null) {
             log("user is null return");
             return;
@@ -174,7 +173,6 @@ public class ChatControl extends ChatBase {
         }
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
         // Lets get parameters
         String metaId = params.getProperty("META_ID");
@@ -190,9 +188,9 @@ public class ChatControl extends ChatBase {
 
         if (req.getParameter("sendMsg") != null) {//**** ok the user wants to send a message ****
             if (myMember.isTimedOut()) {
-                String result = ChatControl.getParsedChatLeavePage(myMember, chatref, imcref, CHAT_AUTOLOGOUT_TEMPLATE);
+                String result = ChatControl.getParsedChatLeavePage(myMember, imcref, CHAT_AUTOLOGOUT_TEMPLATE);
                 res.getWriter().write(result);
-                super.logOutMember(myMember, null, imcref, chatref);
+                super.logOutMember(myMember, null, imcref );
                 return;
             }
             sendMessage(myMember, req, myChat, myGroup, res, metaId);
@@ -205,9 +203,9 @@ public class ChatControl extends ChatBase {
             requestDispatcher.forward(req, res);
             return;
         } else if (req.getParameter("logOut") != null) {
-            logOut(session, res, imcref, chatref);
+            logOut(session, res, imcref );
         } else if (req.getParameter("kickOut") != null && userHasAdminRights(imcref, meta_Id, user)) {
-            kickOut(req, myChat, myGroup, myMember, chatref, imcref, user, metaId, res);
+            kickOut(req, myChat, myGroup, imcref, user, metaId, res);
             return;
         } else {
             log.error("Fallthrough in ChatControl");
@@ -215,19 +213,20 @@ public class ChatControl extends ChatBase {
         }
     } // DoPost
 
-    private void logOut(HttpSession session, HttpServletResponse res, IMCServiceInterface imcref, IMCPoolInterface chatref) throws ServletException, IOException {
+    private void logOut( HttpSession session, HttpServletResponse res, IMCServiceInterface imcref ) throws ServletException, IOException {
 
         ChatMember myMember = (ChatMember) session.getAttribute("theChatMember");
         ChatSystemMessage systemMessage = new ChatSystemMessage(myMember, ChatSystemMessage.LEAVE_MSG);
-        logOutMember(myMember, systemMessage, imcref, chatref);
-        String result = getParsedChatLeavePage(myMember, chatref, imcref, CHAT_LOGOUT_TEMPLATE);
+        logOutMember(myMember, systemMessage, imcref );
+        String result = getParsedChatLeavePage(myMember, imcref, CHAT_LOGOUT_TEMPLATE);
         res.getWriter().write(result);
         return;
     }
 
-    static String getParsedChatLeavePage(ChatMember myMember, IMCPoolInterface chatref, IMCServiceInterface imcref, String leaveTemplate) {
+    static String getParsedChatLeavePage( ChatMember myMember, IMCServiceInterface imcref,
+                                          String leaveTemplate ) {
         int chatMetaId = myMember.getParent().getChatId();
-        String templateSetName = getTemplateLibName(chatref, chatMetaId);
+        String templateSetName = getTemplateLibName( chatMetaId);
         List tags = new ArrayList();
         tags.add("#chat_return_meta_id#");
         tags.add(myMember.getReferrerMetaId() + "");
@@ -237,33 +236,33 @@ public class ChatControl extends ChatBase {
         return result;
     }
 
-    private void kickOut(HttpServletRequest req, Chat myChat, ChatGroup myGroup, ChatMember myMember, IMCPoolInterface chatref, IMCServiceInterface imcref, UserDomainObject user, String metaId, HttpServletResponse res) throws ServletException, IOException {
+    private void kickOut( HttpServletRequest req, Chat myChat, ChatGroup myGroup,
+                          IMCServiceInterface imcref, UserDomainObject user, String metaId,
+                          HttpServletResponse res ) throws ServletException, IOException {
 
         //lets get the membernumber
         String memberNrStr = (req.getParameter("recipient") == null ? "" : req.getParameter("recipient").trim());
 
         int idNr = Integer.parseInt(memberNrStr);
-        kickOutMemberFromGroup(myChat, idNr, myGroup, chatref, imcref, user, myMember, metaId);
+        kickOutMemberFromGroup(myChat, idNr, myGroup, imcref, user, metaId);
 
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("ChatViewer");
         requestDispatcher.forward(req, res);
         return;
     }
 
-    private void kickOutMemberFromGroup(Chat myChat, int idNr, ChatGroup myGroup, IMCPoolInterface chatref, IMCServiceInterface imcref, UserDomainObject user, ChatMember myMember, String metaId) throws ServletException, IOException {
-        ChatMember personToKickOut = myChat.getChatMember(idNr);
+    private void kickOutMemberFromGroup( Chat myChat, int memberToKickOutId, ChatGroup myGroup, IMCServiceInterface imcref,
+                                         UserDomainObject user, String metaId ) throws ServletException, IOException {
+        ChatMember personToKickOut = myChat.getChatMember(memberToKickOutId);
         if (personToKickOut != null) {
             personToKickOut.setKickedOut(true);
-            //HttpSession session = ChatSessionsSingleton.getSession(personToKickOut);
-            //cleanUpSessionParams(session);
-            createKickOutMessageAndAddToGroup(personToKickOut, chatref, myChat, imcref, user, myMember, myGroup, metaId);
+            createKickOutMessageAndAddToGroup(personToKickOut, myChat, imcref, user, myGroup, metaId);
             myGroup.removeGroupMember(personToKickOut);
         }
     }
 
     private void sendMessage(ChatMember myMember, HttpServletRequest req, Chat myChat, ChatGroup myGroup, HttpServletResponse res, String metaId) throws ServletException, IOException {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
         //lets get the message and all the needed params add it into the msgpool
         String newMessage = (req.getParameter("msg") == null ? "" : req.getParameter("msg").trim());
@@ -319,7 +318,7 @@ public class ChatControl extends ChatBase {
                 return;
             } else {
                 ChatNormalMessage newChatMsg = new ChatNormalMessage(newMessage, myMember, recieverNr, recieverStr, msgTypeNr, msgTypeStr);
-                myMember.getGroup().addNewMsg(this, newChatMsg, imcref, chatref);
+                myMember.getGroup().addNewMsg(this, newChatMsg, imcref );
                 chatlog(metaId, newChatMsg.getLogMsg());
             }
         }
@@ -338,12 +337,11 @@ public class ChatControl extends ChatBase {
         Vector vect = new Vector();
         File templetUrl = super.getExternalTemplateFolder(req, user);
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
         String[] arr;
         if (true)//(checkboxText == null)
         {
             //we dont have them so we have to get them from db
-            arr = chatref.sqlProcedure("C_GetChatParameters", new String[]{"" + metaId});
+            arr = imcref.sqlProcedure("C_GetChatParameters", new String[]{"" + metaId});
             if (arr.length != 7) {
                 return;
             }
@@ -426,7 +424,7 @@ public class ChatControl extends ChatBase {
             vect.add(font);
         }
         this.sendHtml(req, res, vect, SETTINGS_TEMPLATE, null);
-        return;
+
     }//end createSettingsPage
 
 
@@ -439,7 +437,7 @@ public class ChatControl extends ChatBase {
         //lets create adminbuttonhtml
         File templateLib = super.getExternalTemplateFolder(req, user);
         HtmlGenerator htmlObj = new HtmlGenerator(templateLib, template);
-        return htmlObj.createHtmlString(vm, req);
+        return htmlObj.createHtmlString(vm );
     }
 
     /**

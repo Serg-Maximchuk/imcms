@@ -174,7 +174,7 @@ public class PollHandler extends HttpServlet {
 		res.sendRedirect(forwardTo) ;
 	
 		if(textAnswers != null && textAnswers.size() > 0 && poll_param[8] != null ){
-			sendMail( imcref, req, poll_param, meta_id, textQuestions, textAnswers );
+			sendMail( imcref, poll_param, meta_id, textQuestions, textAnswers );
 		} 
 	}
 	
@@ -182,7 +182,8 @@ public class PollHandler extends HttpServlet {
 
     
 
-    private void sendMail (IMCServiceInterface imcref, HttpServletRequest req, String[] poll_param, String meta_id, TreeMap textQuestions, TreeMap textAnswers) throws IOException {
+    private void sendMail ( IMCServiceInterface imcref, String[] poll_param, String meta_id,
+                            TreeMap textQuestions, TreeMap textAnswers ) throws IOException {
 
 
 		

@@ -1,15 +1,14 @@
 package imcode.external.chat;
 
 import imcode.external.diverse.RmiConf;
-import imcode.server.IMCPoolInterface;
+import imcode.server.ApplicationServer;
 import imcode.server.IMCServiceInterface;
 import imcode.server.WebAppGlobalConstants;
-import imcode.server.ApplicationServer;
-import imcode.server.document.DocumentMapper;
 import imcode.server.document.DocumentDomainObject;
+import imcode.server.document.DocumentMapper;
 import imcode.server.user.UserDomainObject;
-import imcode.util.log.DailyRollingFileAppender;
 import imcode.util.Utility;
+import imcode.util.log.DailyRollingFileAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -18,7 +17,10 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -42,8 +44,6 @@ public class ChatBase extends HttpServlet implements ChatConstants {
 
     private static final String DATE_PATTERN = ".yyyy-MM-dd"; // chatlog rotate pattern
 
-    private static File absoluteWebAppPath = WebAppGlobalConstants.getInstance().getAbsoluteWebAppPath();
-
     private static final int CHAT_PROPERTY_USER_MAY_CHOOSE = 3;
     private static final int CHAT_PROPERTY_DISABLED = 2;
 
@@ -62,7 +62,7 @@ public class ChatBase extends HttpServlet implements ChatConstants {
     }
 
     private static File getLogFile( String metaId ) {
-        File filePath = new File( absoluteWebAppPath + "/WEB-INF/logs/", "chat-" + metaId + ".log" );
+        File filePath = new File( WebAppGlobalConstants.getInstance().getAbsoluteWebAppPath() + "/WEB-INF/logs/", "chat-" + metaId + ".log" );
         return filePath;
     }
 
@@ -80,15 +80,15 @@ public class ChatBase extends HttpServlet implements ChatConstants {
     }
 
     //peter keep
-    protected Chat createChat( HttpServletRequest req, imcode.server.user.UserDomainObject user, int metaId ) throws IOException {
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
+    protected Chat createChat( int metaId ) {
 
+        IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface() ;
         //lets get the standard stuff
-        Vector msgTypes = convert2Vector( chatref.sqlProcedureMulti( "C_GetTheMsgTypesBase", new String[0] ) );
-        Vector autTypes = convert2Vector( chatref.sqlProcedureMulti( "C_GetAuthorizationTypes", new String[0] ) );
+        Vector msgTypes = convert2Vector( imcref.sqlProcedureMulti( "C_GetTheMsgTypesBase", new String[0] ) );
+        Vector autTypes = convert2Vector( imcref.sqlProcedureMulti( "C_GetAuthorizationTypes", new String[0] ) );
         Chat myChat = new Chat( metaId, autTypes, msgTypes );
 
-        String[] selAuto = chatref.sqlProcedure( "C_GetChatAutoTypes", new String[]{"" + metaId} );
+        String[] selAuto = imcref.sqlProcedure( "C_GetChatAutoTypes", new String[]{"" + metaId} );
         if ( selAuto == null ) {
             selAuto = new String[1];
             selAuto[0] = "1";
@@ -98,7 +98,7 @@ public class ChatBase extends HttpServlet implements ChatConstants {
         }
         myChat.setSelectedAuto( selAuto );
 
-        String[][] messages = chatref.sqlProcedureMulti( "C_GetMsgTypes", new String[]{"" + metaId} );
+        String[][] messages = imcref.sqlProcedureMulti( "C_GetMsgTypes", new String[]{"" + metaId} );
         if ( messages != null ) {
             if ( messages.length > 0 ) {
                 myChat.setMsgTypes( convert2Vector( messages ) );
@@ -107,7 +107,7 @@ public class ChatBase extends HttpServlet implements ChatConstants {
 
 
         //updateTime,reload,inOut,privat,publik,dateTime,font
-        String[] params = chatref.sqlProcedure( "C_GetChatParameters ", new String[]{"" + metaId} );
+        String[] params = imcref.sqlProcedure( "C_GetChatParameters ", new String[]{"" + metaId} );
         if ( params != null ) {
             if ( params.length == 7 ) {
                 myChat.setRefreshTime( Integer.parseInt( params[0] ) );
@@ -194,8 +194,7 @@ public class ChatBase extends HttpServlet implements ChatConstants {
      * Returns an user object. If an error occurs, an errorpage will be generated.
      */
 
-    protected imcode.server.user.UserDomainObject getUserObj( HttpServletRequest req,
-                                             HttpServletResponse res ) throws IOException {
+    protected imcode.server.user.UserDomainObject getUserObj( HttpServletRequest req ) {
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
         return user;
@@ -234,7 +233,7 @@ public class ChatBase extends HttpServlet implements ChatConstants {
      * object with the extended paramters, otherwise we will create one.
      */
 
-    protected Properties getExtSessionParameters( HttpServletRequest req, Properties params ) {
+    protected void getExtSessionParameters( HttpServletRequest req, Properties params ) {
 
         // Get the session
         HttpSession session = req.getSession( true );
@@ -245,13 +244,12 @@ public class ChatBase extends HttpServlet implements ChatConstants {
             params = new Properties();
         params.setProperty( "FORUM_ID", forumId );
         params.setProperty( "DISC_ID", discId );
-        return params;
     }
 
     /**
      * Gives the folder to the root external folder
      */
-    File getExternalTemplateRootFolder( HttpServletRequest req ) throws IOException {
+    File getExternalTemplateRootFolder( HttpServletRequest req ) {
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
         UserDomainObject user = Utility.getLoggedOnUser( req );
@@ -266,13 +264,12 @@ public class ChatBase extends HttpServlet implements ChatConstants {
      * This method will call its helper method getTemplateLibName to get the
      * name of the folder which contains the templates for a certain meta id
      */
-    protected File getExternalTemplateFolder(HttpServletRequest req, UserDomainObject user) throws IOException {
+    protected File getExternalTemplateFolder(HttpServletRequest req, UserDomainObject user) {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
         int metaId = getMetaId( req );
         // Lets get serverinformation
-        return new File( imcref.getExternalTemplateFolder( metaId, user ), getTemplateLibName( chatref, metaId ) );
+        return new File( imcref.getExternalTemplateFolder( metaId, user ), getTemplateLibName( metaId ) );
     }
 
     /**
@@ -283,8 +280,8 @@ public class ChatBase extends HttpServlet implements ChatConstants {
      * peter uses this
      */
     //peter uses this
-    protected static String getTemplateLibName( IMCPoolInterface chatref, int meta_id ) {
-        String libName = chatref.sqlProcedureStr( "C_GetTemplateLib", new String[]{"" + meta_id} );
+    protected static String getTemplateLibName( int meta_id ) {
+        String libName = ApplicationServer.getIMCServiceInterface().sqlProcedureStr( "C_GetTemplateLib", new String[]{"" + meta_id} );
         if ( libName == null ) {
             libName = "original";
         }
@@ -304,14 +301,8 @@ public class ChatBase extends HttpServlet implements ChatConstants {
                              Vector vect, String template, Chat chat ) throws IOException {
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
-
-        String lang_prefix = imcref.getDefaultLanguageAsIso639_2();
-        if(user != null){
-            lang_prefix = user.getLanguageIso639_2();
-        }
 
         int metaId;
         if ( chat != null ) {
@@ -320,7 +311,7 @@ public class ChatBase extends HttpServlet implements ChatConstants {
             metaId = this.getMetaId( req );
         }
         // Lets get the TemplateFolder  and the foldername used for this certain metaid
-        String templateSet = getTemplateLibName( chatref, metaId );
+        String templateSet = getTemplateLibName( metaId );
 
         res.setContentType( "text/html" );
         ServletOutputStream out = res.getOutputStream();
@@ -360,9 +351,8 @@ public class ChatBase extends HttpServlet implements ChatConstants {
      * name of the folder which contains the templates for a certain meta id
      */
 
-    protected String getExternalImageFolder( HttpServletRequest req, HttpServletResponse res ) throws IOException {
+    protected String getExternalImageFolder( HttpServletRequest req ) {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
 
@@ -374,7 +364,7 @@ public class ChatBase extends HttpServlet implements ChatConstants {
         int metaId = getMetaId( req );
 
         String extFolder = RmiConf.getExternalImageFolder( imcref, metaId, lang_prefix);
-        return extFolder += getTemplateLibName( chatref, metaId );
+        return extFolder += getTemplateLibName( metaId );
     }
 
     /**
@@ -406,7 +396,7 @@ public class ChatBase extends HttpServlet implements ChatConstants {
             res.sendRedirect( startUrl );
         } else {
             int metaId = Integer.parseInt( stringMetaId );
-            authorized = isUserAuthorized( req, res, metaId, user );
+            authorized = isUserAuthorized( res, metaId, user );
         }
 
         return authorized;
@@ -415,12 +405,12 @@ public class ChatBase extends HttpServlet implements ChatConstants {
     /**
      * checks if user is authorized
      *
-     * @param req    is used for collecting serverinfo and session
      * @param res    is used if error (send user to conference_starturl )
      * @param metaId conference metaId
      * @param user
      */
-    protected boolean isUserAuthorized( HttpServletRequest req, HttpServletResponse res, int metaId, UserDomainObject user )
+    protected boolean isUserAuthorized( HttpServletResponse res, int metaId,
+                                        UserDomainObject user )
             throws IOException {
 
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
@@ -585,8 +575,6 @@ public class ChatBase extends HttpServlet implements ChatConstants {
 
             myGroup.removeGroupMember( myMember );
             myChat.removeChatMember( senderNr );
-        } else {
-            System.out.println( "theChat null so it doesn't rock at all" );
         }
 
         //lets clear old session attribute
@@ -603,44 +591,49 @@ public class ChatBase extends HttpServlet implements ChatConstants {
         }
     }
 
-    void createLeaveMessageAndAddToGroup( ChatMember myMember, ChatSystemMessage systemMessage, IMCPoolInterface chatref, IMCServiceInterface imcref ) throws ServletException, IOException {
+    void createLeaveMessageAndAddToGroup( ChatMember myMember, ChatSystemMessage systemMessage,
+                                          IMCServiceInterface imcref ) throws ServletException, IOException {
         Chat theChat = myMember.getParent();
         UserDomainObject user = myMember.getUser();
         ChatGroup myGroup = myMember.getGroup();
         String metaId = "" + theChat.getChatId();
         //lets send the message
-        myGroup.addNewMsg( this, systemMessage, imcref, chatref );
-        String libName = getTemplateLibName( chatref, theChat.getChatId() );
+        myGroup.addNewMsg( this, systemMessage, imcref );
+        String libName = getTemplateLibName( theChat.getChatId() );
         chatlog( metaId, systemMessage.getLogMsg( imcref, user, libName ) );
     }
 
-    protected void createEnterMessageAndAddToGroup( IMCPoolInterface chatref, Chat theChat, IMCServiceInterface imcref, UserDomainObject user, ChatMember myMember, ChatGroup myGroup, String metaId ) throws ServletException, IOException {
+    protected void createEnterMessageAndAddToGroup( Chat theChat, IMCServiceInterface imcref,
+                                                    UserDomainObject user, ChatMember myMember, ChatGroup myGroup,
+                                                    String metaId ) throws ServletException, IOException {
 
         ChatSystemMessage systemMessage = new ChatSystemMessage( myMember, ChatSystemMessage.ENTER_MSG );
         //lets send the message
-        myGroup.addNewMsg( this, systemMessage, imcref, chatref );
-        String libName = getTemplateLibName( chatref, theChat.getChatId() );
+        myGroup.addNewMsg( this, systemMessage, imcref );
+        String libName = getTemplateLibName( theChat.getChatId() );
 
         chatlog( metaId, systemMessage.getLogMsg( imcref, user, libName ) );
     }
 
-    protected void createKickOutMessageAndAddToGroup( ChatMember kickedOutPerson, IMCPoolInterface chatref, Chat myChat, IMCServiceInterface imcref, UserDomainObject user, ChatMember kicker, ChatGroup myGroup, String metaId ) throws ServletException, IOException {
+    protected void createKickOutMessageAndAddToGroup( ChatMember kickedOutPerson,
+                                                      Chat myChat, IMCServiceInterface imcref, UserDomainObject user,
+                                                      ChatGroup myGroup, String metaId ) throws ServletException, IOException {
 
         ChatSystemMessage systemMessage = new ChatSystemMessage( kickedOutPerson, ChatSystemMessage.KICKOUT_MSG );
-        myGroup.addNewMsg( this, systemMessage, imcref, chatref );
-        String libName = getTemplateLibName( chatref, myChat.getChatId() );
+        myGroup.addNewMsg( this, systemMessage, imcref );
+        String libName = getTemplateLibName( myChat.getChatId() );
 
         chatlog( metaId, systemMessage.getLogMsg( imcref, user, libName ) );
     }
 
-    protected void logOutMember( ChatMember myMember, ChatSystemMessage systemMessage, IMCServiceInterface imcref, IMCPoolInterface chatref ) throws IOException, ServletException {
+    protected void logOutMember( ChatMember myMember, ChatSystemMessage systemMessage, IMCServiceInterface imcref ) throws IOException, ServletException {
 
         HttpSession session = ChatSessionsSingleton.removeSession( myMember );
 
         if ( session != null ) {
             cleanUpSessionParams( session );
             if ( systemMessage != null ) {
-                createLeaveMessageAndAddToGroup( myMember, systemMessage, chatref, imcref );
+                createLeaveMessageAndAddToGroup( myMember, systemMessage, imcref );
             }
         }
 

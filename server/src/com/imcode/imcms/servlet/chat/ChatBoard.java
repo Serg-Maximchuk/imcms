@@ -2,7 +2,6 @@ package com.imcode.imcms.servlet.chat;
 
 import imcode.external.chat.*;
 import imcode.server.ApplicationServer;
-import imcode.server.IMCPoolInterface;
 import imcode.server.IMCServiceInterface;
 import imcode.util.Utility;
 
@@ -27,7 +26,7 @@ public class ChatBoard extends ChatBase {
         Utility.setNoCache(res);
 
 	// Lets get the user object
-	imcode.server.user.UserDomainObject user = getUserObj(req,res) ;
+	imcode.server.user.UserDomainObject user = getUserObj(req ) ;
 	if(user == null) return ;
 
 	if ( !isUserAuthorized( req, res, user ) ){
@@ -37,13 +36,12 @@ public class ChatBoard extends ChatBase {
 
 	// Lets get serverinformation
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface() ;
-        IMCPoolInterface chatref = ApplicationServer.getIMCPoolInterface();
 
         ChatMember myMember = getChatMember( req );
 
         if ( myMember.isKickedOut()){
 
-            String result = ChatControl.getParsedChatLeavePage(myMember,chatref, imcref, CHAT_KICKOUT_TEMPLATE);
+            String result = ChatControl.getParsedChatLeavePage(myMember, imcref, CHAT_KICKOUT_TEMPLATE);
             res.getWriter().write(result);
 
             HttpSession session = ChatSessionsSingleton.getSession(myMember );
@@ -57,7 +55,7 @@ public class ChatBoard extends ChatBase {
 
         Chat myChat = myMember.getParent();
 
-        String libName = getTemplateLibName( chatref, myChat.getChatId());
+        String libName = getTemplateLibName( myChat.getChatId());
 
         boolean showPrivateMessages = myMember.isShowPrivateMessagesEnabled();
         boolean autoReload = myMember.isAutoRefreshEnabled();
@@ -73,12 +71,12 @@ public class ChatBoard extends ChatBase {
             ChatMessage message = (ChatMessage)msgIter.next();
 
             if ( lastMsgInt == message.getIdNumber() ) {
-                sendMsgString.append( imcref.parseExternalDoc( null, HTML_HR, user, "103", getTemplateLibName( chatref, myChat.getChatId() ) ) );
+                sendMsgString.append( imcref.parseExternalDoc( null, HTML_HR, user, "103", getTemplateLibName( myChat.getChatId() ) ) );
                 //sendMsgString.append( "<hr>\n" );
 
 		    }
 
-            sendMsgString.append(message.getLine( showPrivateMessages, myMember, sendMsgString, imcref, user, libName ));
+            sendMsgString.append(message.getLine( showPrivateMessages, myMember, imcref, user, libName ));
 	    }//end while loop
 
         Vector tags = new Vector();

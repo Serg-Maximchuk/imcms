@@ -36,7 +36,7 @@ public class AdminCounter extends Administrator {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
-        if (imcref.checkAdminRights(user) == false) {
+        if (!imcref.checkAdminRights(user)) {
             String header = "Error in AdminCounter.";
             Properties langproperties = imcref.getLangProperties( user );
             String msg = langproperties.getProperty("error/servlet/global/no_administrator")+ "<BR>";
@@ -52,7 +52,7 @@ public class AdminCounter extends Administrator {
         }
 
         // ***** SET COUNTER *****
-        if (req.getParameter("setCounter") != null) {
+        if (req.getParameter("setSessionCounter") != null) {
             // Lets get the parameter and validate it
             Properties props = this.getParameters(req);
             String userVal = props.getProperty("COUNTER_VALUE");
@@ -70,7 +70,7 @@ public class AdminCounter extends Administrator {
                 ok = false;
             }
 
-            if (ok) imcref.setCounter(theUserInt);
+            if (ok) imcref.setSessionCounter(theUserInt);
 
         }
 
@@ -78,7 +78,7 @@ public class AdminCounter extends Administrator {
 
         // Lets get the servers startdate
         String errormsg = "";
-        Date currentDate = imcref.getCounterDate();
+        Date currentDate = imcref.getSessionCounterDate();
         DateFormat dateFormat = new SimpleDateFormat(DateConstants.DATE_FORMAT_STRING);
         String newDateStr = dateFormat.format(currentDate);
 
@@ -95,7 +95,7 @@ public class AdminCounter extends Administrator {
                     errormsg = langproperties.getProperty("error/servlet/AdminCounter/no_valid_date");
                     newDateStr = dateStr;
                 }else{
-                    imcref.setCounterDate(date);
+                    imcref.setSessionCounterDate(date);
                 }
 
             }catch (ParseException pe){
@@ -105,8 +105,8 @@ public class AdminCounter extends Administrator {
             }
         }
 
-        String counterValue = "" + imcref.getCounter();
-        currentDate = imcref.getCounterDate();
+        String counterValue = "" + imcref.getSessionCounter();
+        currentDate = imcref.getSessionCounterDate();
 
         // Lets generate the html page
         VariableManager vm = new VariableManager();
@@ -131,15 +131,6 @@ public class AdminCounter extends Administrator {
         reqParams.setProperty("COUNTER_VALUE", counterVal);
 
         return reqParams;
-    }
-
-    /**
-     * Log function, will work for both servletexec and Apache
-     */
-
-    public void log(String str) {
-        super.log(str);
-        System.out.println("AdminCounter: " + str);
     }
 
 } // End of class

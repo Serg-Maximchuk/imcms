@@ -128,7 +128,7 @@ public class LanguageMapper {
         return iso639_2to639_1map.containsKey( isoCode639_2 );
     }
 
-    public static String getAsIso639_2( String langStr ) throws LanguageNotSupportedException {
+    private static String getAsIso639_2( String langStr ) throws LanguageNotSupportedException {
         if( 2 == langStr.length() ) {
                 langStr = convert639_1to639_2( langStr );
         }
@@ -137,7 +137,7 @@ public class LanguageMapper {
 
     public static class LanguageNotSupportedException extends Exception {
 
-        LanguageNotSupportedException( String message ) {
+        private LanguageNotSupportedException( String message ) {
             super( message );
         }
     }

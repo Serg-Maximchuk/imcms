@@ -23,7 +23,7 @@ public class DocumentPermissionSetMapper {
         int bit;
         boolean hasPermission;
 
-        public PermissionPair( int permissionBit, boolean hasPermission ) {
+        private PermissionPair( int permissionBit, boolean hasPermission ) {
             this.hasPermission = hasPermission;
             this.bit = permissionBit;
         }
@@ -262,7 +262,7 @@ public class DocumentPermissionSetMapper {
     void setTextDocumentPermissionSetFromBits( DocumentDomainObject document,
                                                TextDocumentPermissionSetDomainObject textDocumentPermissionSet,
                                                int permissionBits, boolean forNewDocuments ) {
-        setDocumentPermissionSetFromBits( document, textDocumentPermissionSet, permissionBits );
+        setDocumentPermissionSetFromBits( textDocumentPermissionSet, permissionBits );
         textDocumentPermissionSet.setEditImages( 0 != ( permissionBits & EDIT_TEXT_DOCUMENT_IMAGES_PERMISSION_ID ) );
         textDocumentPermissionSet.setEditMenus( 0 != ( permissionBits & EDIT_TEXT_DOCUMENT_MENUS_PERMISSION_ID ) );
         textDocumentPermissionSet.setEditIncludes( 0 != ( permissionBits & EDIT_TEXT_DOCUMENT_INCLUDES_PERMISSION_ID ) );
@@ -279,8 +279,7 @@ public class DocumentPermissionSetMapper {
         }
     }
 
-    void setDocumentPermissionSetFromBits( DocumentDomainObject document,
-                                           DocumentPermissionSetDomainObject documentPermissionSet, int permissionBits ) {
+    void setDocumentPermissionSetFromBits( DocumentPermissionSetDomainObject documentPermissionSet, int permissionBits ) {
         documentPermissionSet.setEditDocumentInformation( 0 != ( permissionBits & EDIT_DOCINFO_PERMISSION_ID ) );
         documentPermissionSet.setEditPermissions( 0 != ( permissionBits & EDIT_PERMISSIONS_PERMISSION_ID ) );
         documentPermissionSet.setEdit( 0 != ( permissionBits & EDIT_DOCUMENT_PERMISSION_ID ) );

@@ -250,7 +250,7 @@ public class ChangeImage extends HttpServlet {
     }
 
 
-    public StringBuffer createImageFolderOptionList( List imageFolders, File image_path) throws IOException {
+    private StringBuffer createImageFolderOptionList( List imageFolders, File image_path) throws IOException {
 
         // create the image folder option list
 
