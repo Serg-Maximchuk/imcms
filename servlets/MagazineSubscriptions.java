@@ -47,6 +47,7 @@ public class MagazineSubscriptions extends HttpServlet {
 
 	List flags = Arrays.asList(emptyIfNull(req.getParameterValues("flag"))) ;
 
+	boolean addedToMail = false ;
 	for (Iterator it = flags.iterator(); it.hasNext();) {
 	    String currentFlagName = (String)it.next() ;
 
@@ -63,10 +64,13 @@ public class MagazineSubscriptions extends HttpServlet {
 
 		Object object = allFlags.get(currentFlagName) ;
 		addToMail(theMail, (UserFlag)object, flagSet) ;
+		addedToMail = true ;
 	    }
 	}
 
-	sendMail(theMail) ;
+	if (addedToMail) {
+	    sendMail(theMail) ;
+	}
 
 	/* Where to go next */
 	String forwardTo = req.getParameter("next_url") ;
