@@ -170,12 +170,22 @@ public class Readrunner extends HttpServlet {
 	    rrUserData.setExpiryDateWarningSent(true) ;
 	}
 
+	String expiryDateString =
+	    null == rrUserData.getExpiryDate()
+	    ? ""
+	    : new SimpleDateFormat("yyyy-MM-dd").format(rrUserData.getExpiryDate()) ;
+
+	String expiryDateWarningThreshold =
+	    null == expiry_date_warning_threshold
+	    ? ""
+	    : new SimpleDateFormat("yyyy-MM-dd").format(expiry_date_warning_threshold) ;
+
 	if (null == theMailTemplate) {
 	    log.debug("No need to send warning-mail. Uses: "+rrUserData.getUses()+
 		      " Max-uses: "+rrUserData.getMaxUses()+
 		      " Uses-threshold: "+max_uses_warning_threshold+
-		      " Expiry-date: "+new SimpleDateFormat("yyyy-MM-dd").format(rrUserData.getExpiryDate())+
-		      " Date-threshold: "+new SimpleDateFormat("yyyy-MM-dd").format(expiry_date_warning_threshold)
+		      " Expiry-date: "+expiryDateString+
+		      " Date-threshold: "+expiryDateWarningThreshold
 		      ) ;
 	    return ;
 	}
@@ -208,11 +218,6 @@ public class Readrunner extends HttpServlet {
 	    } catch (NumberFormatException ignored) {
 		// Do nothing, let mailtimeout stay at default.
 	    }
-
-	    String expiryDateString =
-		null != rrUserData.getExpiryDate()
-		? new SimpleDateFormat("yyyy-MM-dd").format(rrUserData.getExpiryDate())
-		: "" ;
 
 	    Vector tags = new Vector() ;
 	    tags.add("#user_first_name#") ;               tags.add(user.getFirstName()) ;
