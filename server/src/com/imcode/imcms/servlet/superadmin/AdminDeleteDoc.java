@@ -89,7 +89,7 @@ public class AdminDeleteDoc extends Administrator {
             // Ok, Lets delete the meta id
             log("Nu försöker vi ta bort ett meta id");
             DocumentMapper documentMapper = imcref.getDocumentMapper();
-            DocumentDomainObject document = documentMapper.getDocument( metaId )
+            DocumentDomainObject document = documentMapper.getDocument( metaId ) ;
             documentMapper.deleteDocument( document, user);
             this.doGet(req, res);
             //this.goAdminUsers(req, res) ;
