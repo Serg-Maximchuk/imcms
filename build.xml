@@ -97,6 +97,7 @@
 
     <!-- Defines global filters. -->
     <target name="global-filters"
+            depends="check-build-properties"
 	    description="Defines global filters.">
 
 	<!-- Global filters -->
@@ -238,7 +239,7 @@
 	<copy todir="${WEB-INF}" file="install/web.xml"/>
 
 	<!-- Write version.txt -->
-	<echo message="${version}" file="build/WEB-INF/version.txt"/>
+	<echo message="${version}" file="${WEB-INF}/version.txt"/>
 
     </target>
 
