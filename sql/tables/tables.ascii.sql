@@ -94,6 +94,14 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_new_doc
 ALTER TABLE [dbo].[new_doc_permission_sets_ex] DROP CONSTRAINT FK_new_doc_permission_sets_ex_permission_sets
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_poll_answers_poll_questions]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE [dbo].[poll_answers] DROP CONSTRAINT FK_poll_answers_poll_questions
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_poll_questions_polls]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE [dbo].[poll_questions] DROP CONSTRAINT FK_poll_questions_polls
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_roles_rights_roles]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
 ALTER TABLE [dbo].[roles_rights] DROP CONSTRAINT FK_roles_rights_roles
 GO
@@ -268,6 +276,18 @@ GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[phonetypes]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 drop table [dbo].[phonetypes]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[poll_answers]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[poll_answers]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[poll_questions]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[poll_questions]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[polls]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[polls]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[readrunner_user_data]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
@@ -614,6 +634,38 @@ CREATE TABLE [dbo].[phonetypes] (
 ) ON [PRIMARY]
 GO
 
+CREATE TABLE [dbo].[poll_answers] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[question_id] [int] NOT NULL ,
+	[text_id] [int] NOT NULL ,
+	[option_number] [int] NOT NULL ,
+	[answer_count] [int] NOT NULL ,
+	[option_point] [int] NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[poll_questions] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[poll_id] [int] NOT NULL ,
+	[question_number] [int] NOT NULL ,
+	[text_id] [int] NOT NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[polls] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[name] [int] NULL ,
+	[description] [int] NULL ,
+	[meta_id] [int] NOT NULL ,
+	[popup_freq] [int] NOT NULL ,
+	[set_cookie] [bit] NOT NULL ,
+	[hide_result] [bit] NOT NULL ,
+	[confirmation_text] [int] NULL ,
+	[email_recipients] [int] NULL ,
+	[result_template] [int] NULL 
+) ON [PRIMARY]
+GO
+
 CREATE TABLE [dbo].[readrunner_user_data] (
 	[user_id] [int] NOT NULL ,
 	[uses] [int] NULL ,
@@ -857,6 +909,27 @@ ALTER TABLE [dbo].[phonetypes] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
+ALTER TABLE [dbo].[poll_answers] WITH NOCHECK ADD 
+	CONSTRAINT [PK_poll_answers] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[poll_questions] WITH NOCHECK ADD 
+	CONSTRAINT [PK_poll_questions] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[polls] WITH NOCHECK ADD 
+	CONSTRAINT [PK_polls] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
 ALTER TABLE [dbo].[readrunner_user_data] WITH NOCHECK ADD 
 	 PRIMARY KEY  CLUSTERED 
 	(
@@ -958,7 +1031,7 @@ GO
  CREATE  CLUSTERED  INDEX [roles_rights_meta_id] ON [dbo].[roles_rights]([meta_id], [role_id], [set_id]) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[browser_docs] ADD 
+ALTER TABLE [dbo].[browser_docs] WITH NOCHECK ADD 
 	CONSTRAINT [DF_browser_docs_browser_id] DEFAULT (0) FOR [browser_id],
 	CONSTRAINT [PK_browser_docs] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -968,7 +1041,7 @@ ALTER TABLE [dbo].[browser_docs] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[browsers] ADD 
+ALTER TABLE [dbo].[browsers] WITH NOCHECK ADD 
 	CONSTRAINT [DF_browsers_value] DEFAULT (1) FOR [value],
 	CONSTRAINT [PK_browsers] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -979,7 +1052,7 @@ GO
  CREATE  INDEX [IX_browsers] ON [dbo].[browsers]([value]) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[childs] ADD 
+ALTER TABLE [dbo].[childs] WITH NOCHECK ADD 
 	CONSTRAINT [PK_childs] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -988,14 +1061,14 @@ ALTER TABLE [dbo].[childs] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[classification] ADD 
+ALTER TABLE [dbo].[classification] WITH NOCHECK ADD 
 	CONSTRAINT [PK_classification] PRIMARY KEY  NONCLUSTERED 
 	(
 		[class_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[doc_permission_sets] ADD 
+ALTER TABLE [dbo].[doc_permission_sets] WITH NOCHECK ADD 
 	CONSTRAINT [PK_doc_permission_sets] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1003,7 +1076,7 @@ ALTER TABLE [dbo].[doc_permission_sets] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[doc_permission_sets_ex] ADD 
+ALTER TABLE [dbo].[doc_permission_sets_ex] WITH NOCHECK ADD 
 	CONSTRAINT [PK_permission_sets_ex] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1013,7 +1086,7 @@ ALTER TABLE [dbo].[doc_permission_sets_ex] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[doc_permissions] ADD 
+ALTER TABLE [dbo].[doc_permissions] WITH NOCHECK ADD 
 	CONSTRAINT [PK_doc_permissions] PRIMARY KEY  NONCLUSTERED 
 	(
 		[permission_id],
@@ -1022,7 +1095,7 @@ ALTER TABLE [dbo].[doc_permissions] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[doc_types] ADD 
+ALTER TABLE [dbo].[doc_types] WITH NOCHECK ADD 
 	CONSTRAINT [DF_doc_types_lang_prefix] DEFAULT ('se') FOR [lang_prefix],
 	CONSTRAINT [PK_doc_types] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -1037,21 +1110,21 @@ if (@@microsoftversion > 0x07000000 )
 EXEC ('CREATE STATISTICS [Statistic_type] ON [dbo].[doc_types] ([type]) ')
 GO
 
-ALTER TABLE [dbo].[fileupload_docs] ADD 
+ALTER TABLE [dbo].[fileupload_docs] WITH NOCHECK ADD 
 	CONSTRAINT [PK_fileupload_docs] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[frameset_docs] ADD 
+ALTER TABLE [dbo].[frameset_docs] WITH NOCHECK ADD 
 	CONSTRAINT [PK_frameset_docs] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[images] ADD 
+ALTER TABLE [dbo].[images] WITH NOCHECK ADD 
 	CONSTRAINT [PK_images] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1059,14 +1132,14 @@ ALTER TABLE [dbo].[images] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[lang_prefixes] ADD 
+ALTER TABLE [dbo].[lang_prefixes] WITH NOCHECK ADD 
 	CONSTRAINT [PK_lang_prefixes] PRIMARY KEY  NONCLUSTERED 
 	(
 		[lang_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[languages] ADD 
+ALTER TABLE [dbo].[languages] WITH NOCHECK ADD 
 	CONSTRAINT [PK_languages] PRIMARY KEY  NONCLUSTERED 
 	(
 		[lang_prefix],
@@ -1074,14 +1147,14 @@ ALTER TABLE [dbo].[languages] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[meta] ADD 
+ALTER TABLE [dbo].[meta] WITH NOCHECK ADD 
 	CONSTRAINT [PK_meta] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[meta_classification] ADD 
+ALTER TABLE [dbo].[meta_classification] WITH NOCHECK ADD 
 	CONSTRAINT [PK_meta_classification] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1089,7 +1162,7 @@ ALTER TABLE [dbo].[meta_classification] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[mime_types] ADD 
+ALTER TABLE [dbo].[mime_types] WITH NOCHECK ADD 
 	CONSTRAINT [DF_mime_types_lang_prefix] DEFAULT ('se') FOR [lang_prefix],
 	CONSTRAINT [PK_mime_types] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -1098,7 +1171,7 @@ ALTER TABLE [dbo].[mime_types] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[new_doc_permission_sets] ADD 
+ALTER TABLE [dbo].[new_doc_permission_sets] WITH NOCHECK ADD 
 	CONSTRAINT [PK_new_doc_permission_sets] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1106,7 +1179,7 @@ ALTER TABLE [dbo].[new_doc_permission_sets] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[new_doc_permission_sets_ex] ADD 
+ALTER TABLE [dbo].[new_doc_permission_sets_ex] WITH NOCHECK ADD 
 	CONSTRAINT [PK_new_doc_permission_sets_ex] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1116,14 +1189,14 @@ ALTER TABLE [dbo].[new_doc_permission_sets_ex] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[permission_sets] ADD 
+ALTER TABLE [dbo].[permission_sets] WITH NOCHECK ADD 
 	CONSTRAINT [PK_permission_types] PRIMARY KEY  NONCLUSTERED 
 	(
 		[set_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[permissions] ADD 
+ALTER TABLE [dbo].[permissions] WITH NOCHECK ADD 
 	CONSTRAINT [DF_permissions_lang_prefix] DEFAULT ('se') FOR [lang_prefix],
 	CONSTRAINT [PK_permissions] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -1132,7 +1205,7 @@ ALTER TABLE [dbo].[permissions] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[phones] ADD 
+ALTER TABLE [dbo].[phones] WITH NOCHECK ADD 
 	CONSTRAINT [DF_phones_phonetype_id] DEFAULT (0) FOR [phonetype_id],
 	CONSTRAINT [PK_phones] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -1141,11 +1214,44 @@ ALTER TABLE [dbo].[phones] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[readrunner_user_data] ADD 
+ALTER TABLE [dbo].[poll_answers] WITH NOCHECK ADD 
+	CONSTRAINT [DF_poll_answers_ans_count] DEFAULT (0) FOR [answer_count],
+	CONSTRAINT [IX_poll_answers] UNIQUE  NONCLUSTERED 
+	(
+		[question_id],
+		[text_id]
+	)  ON [PRIMARY] ,
+	CONSTRAINT [IX_poll_answers_1] UNIQUE  NONCLUSTERED 
+	(
+		[question_id],
+		[option_number]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[poll_questions] WITH NOCHECK ADD 
+	CONSTRAINT [IX_poll_questions] UNIQUE  NONCLUSTERED 
+	(
+		[poll_id],
+		[question_number]
+	)  ON [PRIMARY] ,
+	CONSTRAINT [IX_poll_questions_1] UNIQUE  NONCLUSTERED 
+	(
+		[poll_id],
+		[text_id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[polls] WITH NOCHECK ADD 
+	CONSTRAINT [DF_polls_popup_freq] DEFAULT (0) FOR [popup_freq],
+	CONSTRAINT [DF_polls_enable_cookie] DEFAULT (0) FOR [set_cookie],
+	CONSTRAINT [DF_polls_showresult] DEFAULT (0) FOR [hide_result]
+GO
+
+ALTER TABLE [dbo].[readrunner_user_data] WITH NOCHECK ADD 
 	CONSTRAINT [DF_readrunner_user_data_expiry_date_warning_sent] DEFAULT (0) FOR [expiry_date_warning_sent]
 GO
 
-ALTER TABLE [dbo].[roles] ADD 
+ALTER TABLE [dbo].[roles] WITH NOCHECK ADD 
 	CONSTRAINT [DF_roles_permissions] DEFAULT (0) FOR [permissions],
 	CONSTRAINT [DF_roles_admin_role] DEFAULT (0) FOR [admin_role],
 	CONSTRAINT [PK_roles] PRIMARY KEY  NONCLUSTERED 
@@ -1154,7 +1260,7 @@ ALTER TABLE [dbo].[roles] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[roles_permissions] ADD 
+ALTER TABLE [dbo].[roles_permissions] WITH NOCHECK ADD 
 	CONSTRAINT [PK_roles_permissions] PRIMARY KEY  NONCLUSTERED 
 	(
 		[permission_id],
@@ -1162,7 +1268,7 @@ ALTER TABLE [dbo].[roles_permissions] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[roles_rights] ADD 
+ALTER TABLE [dbo].[roles_rights] WITH NOCHECK ADD 
 	CONSTRAINT [PK_roles_rights] PRIMARY KEY  NONCLUSTERED 
 	(
 		[role_id],
@@ -1173,7 +1279,7 @@ GO
  CREATE  INDEX [roles_rights_role_id] ON [dbo].[roles_rights]([role_id]) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[sys_data] ADD 
+ALTER TABLE [dbo].[sys_data] WITH NOCHECK ADD 
 	CONSTRAINT [PK_sys_data] PRIMARY KEY  NONCLUSTERED 
 	(
 		[sys_id],
@@ -1181,14 +1287,14 @@ ALTER TABLE [dbo].[sys_data] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[sys_types] ADD 
+ALTER TABLE [dbo].[sys_types] WITH NOCHECK ADD 
 	CONSTRAINT [PK_sys_types] PRIMARY KEY  NONCLUSTERED 
 	(
 		[type_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[templategroups] ADD 
+ALTER TABLE [dbo].[templategroups] WITH NOCHECK ADD 
 	CONSTRAINT [PK_templategroups] PRIMARY KEY  NONCLUSTERED 
 	(
 		[group_id]
@@ -1199,7 +1305,7 @@ ALTER TABLE [dbo].[templategroups] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[templates] ADD 
+ALTER TABLE [dbo].[templates] WITH NOCHECK ADD 
 	CONSTRAINT [PK_templates] PRIMARY KEY  NONCLUSTERED 
 	(
 		[template_id]
@@ -1211,7 +1317,7 @@ ALTER TABLE [dbo].[templates] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[templates_cref] ADD 
+ALTER TABLE [dbo].[templates_cref] WITH NOCHECK ADD 
 	CONSTRAINT [PK_templates_cref] PRIMARY KEY  NONCLUSTERED 
 	(
 		[group_id],
@@ -1219,7 +1325,7 @@ ALTER TABLE [dbo].[templates_cref] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[text_docs] ADD 
+ALTER TABLE [dbo].[text_docs] WITH NOCHECK ADD 
 	CONSTRAINT [DF_text_docs_group_id] DEFAULT (1) FOR [group_id],
 	CONSTRAINT [DF__text_docs__defau__0D44F85C] DEFAULT ((-1)) FOR [default_template_1],
 	CONSTRAINT [DF__text_docs__defau__0E391C95] DEFAULT ((-1)) FOR [default_template_2],
@@ -1232,7 +1338,7 @@ GO
  CREATE  INDEX [IX_texts] ON [dbo].[texts]([meta_id]) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[url_docs] ADD 
+ALTER TABLE [dbo].[url_docs] WITH NOCHECK ADD 
 	CONSTRAINT [PK_url_docs] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1240,14 +1346,14 @@ ALTER TABLE [dbo].[url_docs] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[user_flags] ADD 
+ALTER TABLE [dbo].[user_flags] WITH NOCHECK ADD 
 	CONSTRAINT [IX_user_flags] UNIQUE  NONCLUSTERED 
 	(
 		[name]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[user_rights] ADD 
+ALTER TABLE [dbo].[user_rights] WITH NOCHECK ADD 
 	CONSTRAINT [PK_user_rights] PRIMARY KEY  NONCLUSTERED 
 	(
 		[user_id],
@@ -1256,7 +1362,7 @@ ALTER TABLE [dbo].[user_rights] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[user_roles_crossref] ADD 
+ALTER TABLE [dbo].[user_roles_crossref] WITH NOCHECK ADD 
 	CONSTRAINT [PK_user_roles_crossref] PRIMARY KEY  NONCLUSTERED 
 	(
 		[user_id],
@@ -1264,7 +1370,7 @@ ALTER TABLE [dbo].[user_roles_crossref] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[user_types] ADD 
+ALTER TABLE [dbo].[user_types] WITH NOCHECK ADD 
 	CONSTRAINT [PK_user_types] PRIMARY KEY  NONCLUSTERED 
 	(
 		[user_type],
@@ -1272,7 +1378,7 @@ ALTER TABLE [dbo].[user_types] ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[users] ADD 
+ALTER TABLE [dbo].[users] WITH NOCHECK ADD 
 	CONSTRAINT [DF_users_title] DEFAULT ('') FOR [title],
 	CONSTRAINT [DF_users_company] DEFAULT ('') FOR [company],
 	CONSTRAINT [DF_users_user_type] DEFAULT (1) FOR [user_type],
@@ -1515,6 +1621,24 @@ ALTER TABLE [dbo].[phonetypes] ADD
 		[lang_id]
 	) REFERENCES [dbo].[lang_prefixes] (
 		[lang_id]
+	)
+GO
+
+ALTER TABLE [dbo].[poll_answers] ADD 
+	CONSTRAINT [FK_poll_answers_poll_questions] FOREIGN KEY 
+	(
+		[question_id]
+	) REFERENCES [dbo].[poll_questions] (
+		[id]
+	)
+GO
+
+ALTER TABLE [dbo].[poll_questions] ADD 
+	CONSTRAINT [FK_poll_questions_polls] FOREIGN KEY 
+	(
+		[poll_id]
+	) REFERENCES [dbo].[polls] (
+		[id]
 	)
 GO
 

@@ -26,7 +26,8 @@
     <property name="user"                  value="${webroot}/user"/>
     <property name="javascript"            value="${webroot}/javascript"/>
     <property name="adminbuttons"          value="${imcmsimages}/admin"/>
-    <property name="shop"	           value="${webroot}/shop"/>
+    <property name="shop"	           	   value="${webroot}/shop"/>
+	<property name="poll"	           	   value="${webroot}/poll"/>
     <property name="magazinesubscriptions" value="${webroot}/magazinesubscriptions"/>
 
     <!-- 'WEB-INF' - Everything put here is private to the webapp -->
@@ -60,6 +61,7 @@
     <property name="imcmsimageurl"            value="${rooturl}/imcmsimages"/>
     <property name="adminbuttonsurl"          value="${imcmsimageurl}/admin"/>
     <property name="shopurl"                  value="${rooturl}/shop"/>
+	<property name="pollurl"                  value="${rooturl}/poll"/>
     <property name="magazinesubscriptionsurl" value="${rooturl}/magazinesubscriptions"/>
 
 
@@ -412,6 +414,7 @@
 	<mkdir dir="${imcmsimages}"/>
 
 	<copy file="templates/login/index.html" todir="${login}" filtering="true"/>
+
 	<copy todir="${images}">
 	    <fileset dir="install/htdocs/images">
 		<patternset>
@@ -420,6 +423,7 @@
 	    </fileset>
 	    <fileset dir="install/htdocs/sv/resource"/>
 	</copy>
+
 	<copy todir="${webroot}" filtering="true">
 	    <fileset dir="templates">
 		<patternset>
@@ -434,8 +438,21 @@
 		<include name="css/**"/>
 		<include name="inc/**"/>
 		<include name="shop/**"/>
+		<include name="poll/**"/>
+		<exclude name="**/*.gif"/>
+
+		
 	    </fileset>
 	</copy>
+	
+	<copy todir="${poll}/images" >
+		<fileset dir="install/htdocs/sv/poll/images">
+		<patternset>
+		    <include name="*.gif"/>
+		</patternset>
+		</fileset>
+	</copy>
+	
 
 	<!-- Copy swedish navigation buttons for imagebrowse -->
 	<copy todir="${images}/se/admin">

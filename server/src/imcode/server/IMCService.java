@@ -21,6 +21,7 @@ import imcode.server.parser.* ;
 import imcode.util.FileCache ;
 import imcode.util.fortune.* ;
 import imcode.util.shop.* ;
+import imcode.util.poll.*;
 
 import imcode.readrunner.* ;
 
@@ -409,14 +410,45 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	return getMenuButtons(String.valueOf(meta_id),user) ;
     }
 
+
     /**
-       Store the given IMCText in the DB.
-       @param user    The user
-       @param meta_id The id of the page
-       @param txt_no  The id of the text in the page.
-       @param text    The text.
+	   Store the given IMCText in the DB.
+       @param user    		The user
+       @param meta_id 		The id of the page
+       @param txt_no  		The id of the text in the page.
+       @param text    		The text.
+	   @param text_type		The text_type 
+	   
+	     Supported text_types is:
+	   			
+		 pollquestion-n     		      where n represent the questíon number in this document  
+
+		 pollanswer-n-m  		          where n represent the questíon number in this document
+		 						          and m represent the answer number in question number n  
+										  
+		 pollpointanswer-n-m			  where n represent the questíon number in this document
+		 						          and m represent the answer number in question number n 
+								
+		 pollparameter-popup_frequency    default(0) when > 0 show this poll as a popup on every new session that is a multiple
+		 								  of the frequens.
+		 								  				
+		 pollparameter-cookie 			  default(0) user is allowed to fill in the poll more then once.
+		 								  (1) = set cookie, if cookie exist on client don't allow more answers from that computer.
+		 
+		 pollparameter-hideresults 		  default(0) if 1 then we don't send result to browser only a confimation text.
+		  	
+		 pollparameter-confirmation_text  message to send back to browser as confirmation of poll participation.
+		  
+		 pollparameter-email_recipients   email adress to reciver of result from free-text answers.
+		 
+		 pollparameter-result_template    template to use when return the result
+		 
+		 pollparameter-name 			  name for this poll
+		 pollparameter-description		  description for this poll	
+				 
     **/
-    public void saveText(imcode.server.User user,int meta_id,int txt_no,IMCText text) {
+	
+    public void saveText(imcode.server.User user,int meta_id,int txt_no,IMCText text, String text_type) {
 
 	org.apache.oro.text.perl.Perl5Util perl5util = new org.apache.oro.text.perl.Perl5Util() ;
 
@@ -430,8 +462,19 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
 	this.updateLogs("Text " + txt_no +	" in  " + "[" + meta_id + "] modified by user: [" +
 			user.getFullName() + "]") ;
-
+			
+	if ( !("").equals(text_type) ){
+		
+		if ( text_type.startsWith("poll") ) {
+			PollHandlingSystem poll = getPollHandlingSystem(); 
+			poll.savePollparameter(text_type, meta_id, txt_no, textstring);
+		}
+	}
+	
     }
+	
+	
+	
 
     /**
        Retrieve a text from the db.
@@ -3015,9 +3058,17 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	}
 	return theFlags ;
     }
+	
+	
+	
+	
+	public PollHandlingSystem getPollHandlingSystem(){
+		return new PollHandlingSystemImpl(this);
+	}
 
     public ShoppingOrderSystem getShoppingOrderSystem() {
 	return new ShoppingOrderSystemImpl(this) ;
     }
+
 
 }

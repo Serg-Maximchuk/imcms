@@ -1024,4 +1024,160 @@ GO
 
 -- 2003-03-12 kreiger
 
-print' OBS!!!  Glöm inte att du MÅSTE köra hela sprocs.sql efter detta script vid uppgradering  OBS!!'
+
+
+CREATE TABLE [dbo].[poll_answers] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[question_id] [int] NOT NULL ,
+	[text_id] [int] NOT NULL ,
+	[option_number] [int] NOT NULL ,
+	[answer_count] [int] NOT NULL ,
+	[option_point] [int] NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[poll_questions] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[poll_id] [int] NOT NULL ,
+	[question_number] [int] NOT NULL ,
+	[text_id] [int] NOT NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[polls] (
+	[id] [int] IDENTITY (1, 1) NOT NULL ,
+	[name] [int] NULL ,
+	[description] [int] NULL ,
+	[meta_id] [int] NOT NULL ,
+	[popup_freq] [int] NOT NULL ,
+	[set_cookie] [bit] NOT NULL ,
+	[hide_result] [bit] NOT NULL ,
+	[confirmation_text] [int] NULL ,
+	[email_recipients] [int] NULL ,
+	[result_template] [int] NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[poll_answers] WITH NOCHECK ADD 
+	CONSTRAINT [PK_poll_answers] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[poll_questions] WITH NOCHECK ADD 
+	CONSTRAINT [PK_poll_questions] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[polls] WITH NOCHECK ADD 
+	CONSTRAINT [PK_polls] PRIMARY KEY  CLUSTERED 
+	(
+		[id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[poll_answers] WITH NOCHECK ADD 
+	CONSTRAINT [DF_poll_answers_ans_count] DEFAULT (0) FOR [answer_count],
+	CONSTRAINT [IX_poll_answers] UNIQUE  NONCLUSTERED 
+	(
+		[question_id],
+		[text_id]
+	)  ON [PRIMARY] ,
+	CONSTRAINT [IX_poll_answers_1] UNIQUE  NONCLUSTERED 
+	(
+		[question_id],
+		[option_number]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[poll_questions] WITH NOCHECK ADD 
+	CONSTRAINT [IX_poll_questions] UNIQUE  NONCLUSTERED 
+	(
+		[poll_id],
+		[question_number]
+	)  ON [PRIMARY] ,
+	CONSTRAINT [IX_poll_questions_1] UNIQUE  NONCLUSTERED 
+	(
+		[poll_id],
+		[text_id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[polls] WITH NOCHECK ADD 
+	CONSTRAINT [DF_polls_popup_freq] DEFAULT (0) FOR [popup_freq],
+	CONSTRAINT [DF_polls_enable_cookie] DEFAULT (0) FOR [set_cookie],
+	CONSTRAINT [DF_polls_showresult] DEFAULT (0) FOR [hide_result]
+GO
+
+ALTER TABLE [dbo].[poll_answers] ADD 
+	CONSTRAINT [FK_poll_answers_poll_questions] FOREIGN KEY 
+	(
+		[question_id]
+	) REFERENCES [dbo].[poll_questions] (
+		[id]
+	)
+GO
+
+ALTER TABLE [dbo].[poll_questions] ADD 
+	CONSTRAINT [FK_poll_questions_polls] FOREIGN KEY 
+	(
+		[poll_id]
+	) REFERENCES [dbo].[polls] (
+		[id]
+	)
+GO
+
+
+
+--lets create new templategroup for Example-templates
+declare @example_groupId int
+select @example_groupId = max(group_id)+1 from templategroups
+
+insert into templategroups(group_id, group_name)
+values(@example_groupId,'Example-templates')
+
+
+--lets add default example template and then connect it to a templategroup
+declare @poll_form_templateId int
+select @poll_form_templateId = max(template_id)+1 from templates
+INSERT INTO templates ( template_id , template_name , simple_name , lang_prefix , no_of_txt , no_of_img , no_of_url )
+	values (@poll_form_templateId,'poll_form_template.html','poll_form_template','se',0,0,0)
+INSERT INTO templates_cref(group_id, template_id)
+	values (@example_groupId, poll_form_templateId)
+	
+--lets add default example template and then connect it to a templategroup
+declare @poll_result_default_templateId int
+select @poll_result_default_templateId = max(template_id)+1 from templates
+INSERT INTO templates ( template_id , template_name , simple_name , lang_prefix , no_of_txt , no_of_img , no_of_url )
+	values (@poll_result_default_templateId,'poll_result_default_template.html','poll_result_default_template','se',0,0,0)
+INSERT INTO templates_cref(group_id, template_id)
+	values (@example_groupId, poll_result_default_templateId)
+
+--lets add default example template and then connect it to a templategroup
+declare @poll_confirmation_templateId int
+select @poll_confirmation_templateId = max(template_id)+1 from templates
+INSERT INTO templates ( template_id , template_name , simple_name , lang_prefix , no_of_txt , no_of_img , no_of_url )
+	values (@poll_confirmation_templateId,'poll_confirmation_template.html','poll_confirmation_template','se',0,0,0)
+INSERT INTO templates_cref(group_id, template_id)
+	values (@example_groupId, poll_confirmation_templateId)
+	
+GO
+
+-- 2003-03-13  Lennart Å
+
+
+print ' OBS !!!!! '
+print 'Följande åtgärder behöver genomföras efter detta script '
+print ''
+print '1. Du MÅSTE köra hela "sprocs.sql" som finns i "dist" katalogen'
+print ''
+print '2. Kopiera poll templates från mappen /poll/templates till WEB-INF/templates/text
+print 'och byt namn på dem enligt följande:'
+print 'poll_form_template.html  till ' + convert (varchar(5), @poll_form_templateId) + '.html'
+print 'poll_result_default_template.html  till ' + convert (varchar(5), @poll_result_default_templateId) + '.html'
+print 'poll_confirmation_template.html  till ' + convert (varchar(5), @poll_confirmation_templateId) + '.html'
+
+

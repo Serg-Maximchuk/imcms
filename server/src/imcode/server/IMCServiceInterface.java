@@ -32,7 +32,7 @@ public interface IMCServiceInterface {
     /**
        Save a text field
     **/
-    void saveText(imcode.server.User user,int meta_id,int txt_no,IMCText text)
+    void saveText(imcode.server.User user,int meta_id,int txt_no,IMCText text, String text_type)
 	;
 
     /**
@@ -396,6 +396,10 @@ public interface IMCServiceInterface {
     public void setUserFlag(User user, String flagName);
 
     public void unsetUserFlag(User user, String flagName);
+	
+	
+	/** Get an interface to the poll handling system **/
+	public imcode.util.poll.PollHandlingSystem getPollHandlingSystem();
 
     /** Get an interface to the shopping order system **/
     public imcode.util.shop.ShoppingOrderSystem getShoppingOrderSystem() ;
