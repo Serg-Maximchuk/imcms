@@ -293,6 +293,9 @@ public class PutInShoppingCart extends HttpServlet {
 	mailStringMap.put("#user_first_name#",     user.getFirstName()) ;
 	mailStringMap.put("#user_last_name#",      user.getLastName()) ;
 	mailStringMap.put("#user_email#",          user.getEmailAddress()) ;
+	mailStringMap.put("#user_workphone#",      user.getWorkPhone()) ;
+	mailStringMap.put("#user_mobilephone#",    user.getMobilePhone()) ;	
+	//mailStringMap.put("#user_homephone#",      user.getHomePhone()) ;	
 	mailStringMap.put("#user_company#",        user.getCompany()) ;
 	mailStringMap.put("#user_address#",        user.getAddress()) ;
 	mailStringMap.put("#user_zip#",            user.getZip()) ;

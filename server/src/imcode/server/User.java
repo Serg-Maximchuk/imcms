@@ -24,6 +24,9 @@ public class User extends Hashtable {
     private String country;			//varchar 30
     private String county_council;	//varchar 30
     private String emailAddress;	//varchar 50
+	private String workPhone;       //varchar 25
+	private String mobilePhone;     //varchar 25
+	private String homePhone;       //varchar 25
     private int lang_id;			//int
     private int user_type;			//int
     private boolean active ;		//int
@@ -33,6 +36,8 @@ public class User extends Hashtable {
 
     private int template_group = -1 ;
     private String loginType ;
+	
+	private IMCServiceInterface serverObject;
 
     /**
        get user-id
@@ -228,6 +233,49 @@ public class User extends Hashtable {
     public void setEmailAddress(String emailAddress) {
 	this.emailAddress = emailAddress ;
     }
+	
+	
+	/**
+		Get the users workphone 
+	**/
+	public String getWorkPhone(){
+	return this.workPhone;
+	}
+	
+	/**
+		Set the users workphone 
+	**/
+	public void setWorkPhone(String workphone){
+	this.workPhone = workphone; 
+	}
+	
+	/**
+		Get the users mobilephone 
+	**/
+	public String getMobilePhone(){
+	return this.mobilePhone;
+	}
+	
+	/**
+		Set the users mobilephone 
+	**/
+	public void setMobilePhone(String mobilephone){
+	this.mobilePhone = mobilephone; 
+	}
+	
+	/**
+		Get the users homephone 
+	**/
+	public String getHomePhone(){
+	return this.homePhone;
+	}
+	
+	/**
+		Set the users homepohne 
+	**/
+	public void setHomePhone(String homephone){
+	this.homePhone = homephone; 
+	}
 
 
     /**

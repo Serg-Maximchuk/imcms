@@ -459,26 +459,12 @@ public class ImcmsTagSubstitution implements Substitution, IMCConstants {
 	    }else if ( attrib.equals("city") ) {
 		result = user.getCity() ;
 	    }else if ( attrib.equals("workphone") ) {
-		int userId = documentRequest.getUser().getUserId() ;
-		String [][] phoneNbr = serverObject.sqlProcedureMulti("GetUserPhoneNumbers " + userId) ;
-		if ( phoneNbr != null ){
-		    for (int i=0; i < phoneNbr.length; i++) {
-			if ( ("2").equals( phoneNbr[i][3] ) ){
-			    result = phoneNbr[i][1];
-			}
-		    }
-		}
-	    }else if ( attrib.equals("mobilephone") ) {
-		int userId = documentRequest.getUser().getUserId() ;
-		String [][] phoneNbr = serverObject.sqlProcedureMulti("GetUserPhoneNumbers " + userId) ;
-		if ( phoneNbr != null ){
-		    for (int i=0; i < phoneNbr.length; i++) {
-			if ( ("3").equals( phoneNbr[i][3] ) ){
-			    result = phoneNbr[i][1];
-			}
-		    }
-		}
-	    }else if ( attrib.equals("email") ) {
+		result = user.getWorkPhone() ;
+		}else if ( attrib.equals("mobilephone") ) {
+		result = user.getMobilePhone() ;
+		}else if ( attrib.equals("homephone") ) {
+		result = user.getHomePhone() ;
+		}else if ( attrib.equals("email") ) {
 		result = user.getEmailAddress() ;
 	    }
 	}

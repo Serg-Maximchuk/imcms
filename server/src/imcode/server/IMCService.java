@@ -196,7 +196,10 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	       private String zip;				//varchar 15
 	       private String country;			//varchar 30
 	       private String county_council;	//varchar 30
-	       private String emailAddress;	//varchar 50
+		   private String emailAddress;	    //varchar 50
+		   private String workPhone;       //varchar 25
+		   private String mobilePhone;     //varchar 25
+		   private String homePhone;       //varchar 25
 	       private int lang_id;			
 	       private int user_type;			
 	       private boolean active ;		//int
@@ -228,8 +231,30 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	    user.setActive       	( 0 != Integer.parseInt( user_data[16] ) ) ;
 	    user.setCreateDate   	( user_data[17] ) ;
 	    user.setLangPrefix   	( user_data[14] ) ;
-			
-	    String login_password_from_db = user.getPassword() ;
+		
+		String [][] phoneNbr = sqlProcedureMulti("GetUserPhoneNumbers " + user_data[0]) ;
+		String workPhone = "";
+		String mobilePhone = "";
+		String homePhone = "";
+		
+		if ( phoneNbr != null ){
+		    for (int i=0; i < phoneNbr.length; i++) {
+				if ( ("2").equals( phoneNbr[i][3] ) ){
+				    workPhone = phoneNbr[i][1];
+				}
+				else if ( ("3").equals( phoneNbr[i][3] ) ){
+			    	mobilePhone = phoneNbr[i][1];
+				}
+				else if ( ("1").equals( phoneNbr[i][3] ) ){
+			    	homePhone = phoneNbr[i][1];
+				}
+		    }
+		}
+		user.setWorkPhone		( workPhone );	
+		user.setMobilePhone		( mobilePhone );	
+		user.setHomePhone		( homePhone );	
+		
+		String login_password_from_db = user.getPassword() ;
 	    String login_password_from_form = password ;
 
 	    if ( login_password_from_db.equals(login_password_from_form) && user.isActive()){
