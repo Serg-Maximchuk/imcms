@@ -12,6 +12,7 @@ if ( (user=Check.userLoggedOn(request,response,"@loginurl@/"))==null ) {
 IMCServiceInterface imcref = IMCServiceRMI.getIMCServiceInterface(request) ;
 ShoppingOrderSystem shoppingOrderSystem = imcref.getShoppingOrderSystem() ;
 List orders = shoppingOrderSystem.getShoppingOrdersForUser(user) ;
+Collections.reverse(orders) ;
 
 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd (HH:mm)") ;
 boolean odd = false ;
