@@ -2,11 +2,14 @@
 import="java.util.*, java.text.*, imcode.server.*, imcode.util.*, imcode.util.poll.*"
 %><%
 
-final String image_url = "@rooturl@/poll/images/blue_animation.gif";
+final String IMAGE_NAME = "blue_animation.gif";
+final String IMAGE_DIR = "@rooturl@/poll/images/" ;
 
 // Get parameters from request
-String image_height = request.getParameter("imageHeight") != null ? request.getParameter("imageHeight") : "15" ;
-String diagram_width = request.getParameter("diagramWidth") != null ? request.getParameter("diagramWidth") : "350";
+String image_url = request.getParameter("imageName") != null ? IMAGE_DIR + request.getParameter("imageName") : IMAGE_DIR + IMAGE_NAME ;
+String image_height = request.getParameter("imageHeight") != null ? request.getParameter("imageHeight") : "10" ;
+String diagram_width = request.getParameter("diagramWidth") != null ? request.getParameter("diagramWidth") : "250";
+String lable_width = request.getParameter("lableWidth") != null ? request.getParameter("lableWidth") : "25";
 String meta_id = request.getHeader("X-Meta-Id");
 
 // Get a reference to IMCServiceInterface //
@@ -39,7 +42,7 @@ if ( meta_id != null ){
 				
 				//lets show the result if question textstring not is empty   
 				if ( !("").equals(question_text) ){
-					out.write( getQuestionResult(imcref, poll, Integer.parseInt(meta_id), question_id, question_no, question_text, Integer.parseInt(diagram_width), image_height, image_url ).toString() );
+					out.write( getQuestionResult(imcref, poll, Integer.parseInt(meta_id), question_id, question_no, question_text, Integer.parseInt(diagram_width), image_height, image_url, lable_width ).toString() );
 				}
 			}
 		}
@@ -53,7 +56,7 @@ if ( meta_id != null ){
 
 
 <%!
-private StringBuffer getQuestionResult(IMCServiceInterface imcref, PollHandlingSystem poll, int meta_id, int question_id, int question_no, String question_text, int diagram_width, String image_height, String image_url ){
+private StringBuffer getQuestionResult(IMCServiceInterface imcref, PollHandlingSystem poll, int meta_id, int question_id, int question_no, String question_text, int diagram_width, String image_height, String image_url, String lable_width ){
 
 	
 	String[][] allAnswers = poll.getAllPollAnswers(""+ question_id);
@@ -83,8 +86,8 @@ private StringBuffer getQuestionResult(IMCServiceInterface imcref, PollHandlingS
 			 int width = getWidth( total_votes, option_count, diagram_width); // calculate the animation width
 			 String vote_percent = total_votes > 0 ? ( option_count * 100 / total_votes ) + "%" : "0%";
 		
-		 	oStr.append( "<tr><td valign='bottom' width='15%'>" + option_text + "</td>\n" +
-			 "<td >&nbsp;&nbsp;<img src='" + image_url + "' height='" +  image_height + "' width='" + width + "' >&nbsp;" + vote_percent + " (" + option_count + ")</td></tr>\n");
+		 	oStr.append( "<tr><td valign='bottom' width='" + lable_width + "%'>" + option_text + "</td>\n" +
+			 "<td >&nbsp;&nbsp;<img src='" + image_url + "' height='" +  image_height + "' width='" + width + "' >&nbsp;" + vote_percent + " (" + option_count + ")</td></tr><tr><td colspan='2' width='100%'>&nbsp;</td></tr>\n");
 		}	
 		oStr.append("</table></td></tr>\n" );
 	    oStr.append("<tr><td><br>Totalt antal röster: " + total_votes + "</td></tr>\n" );

@@ -438,6 +438,7 @@
 		<include name="shop/**"/>
 		<include name="poll/**"/>
 		<exclude name="**/*.gif"/>
+		<exclude name="**/*.jpg"/>
 	    </fileset>
 	</copy>
 	
@@ -445,6 +446,7 @@
 		<fileset dir="install/htdocs/sv/poll/images">
 		<patternset>
 		    <include name="*.gif"/>
+			<include name="*.jpg"/>
 		</patternset>
 		</fileset>
 	</copy>
