@@ -38,7 +38,7 @@ boolean isSent = (request.getParameter("sent") != null) ? true : false ;
 <head>
 <title>Allers Annonssajt</title>
 
-<%@ include file="/inc/style.htm"%>
+<%@ include file="@rooturl@/inc/style.htm"%>
 
 <style type="text/css">
 <!-- 
@@ -81,17 +81,17 @@ function isSent() {
 	<td colspan="7" class="dark_beigebg" valign="top" height="26">
 	<table border="0" cellspacing="0" cellpadding="0" widht="100%">
 	<tr>
-		<td colspan="2"><img src="/images/clear.gif" width="1" height="6" alt="" border="0"></td></tr>
+		<td colspan="2"><img src="@imageurl@/clear.gif" width="1" height="6" alt="" border="0"></td></tr>
 	<tr>
-		<td><img src="/images/clear.gif" width="10" height="1" alt="" border="0"></td>
+		<td><img src="@imageurl@/clear.gif" width="10" height="1" alt="" border="0"></td>
 		<td valing="top" class="liten_vit_rub">FÖRFRÅGNINGSLISTA - <%= dateString %></td>
 	</tr>
 	</table></td>
 </tr>
 <tr>
-	<td><img src="/images/clear.gif" width="1" height="15" alt="" border="0"></td>
-	<td colspan="5"><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
-	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="15" alt="" border="0"></td>
+	<td colspan="5"><img src="@imageurl@/clear.gif" width="1" height="1" alt="" border="0"></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="1" alt="" border="0"></td>
 </tr>
 <tr>
 	<td>&nbsp;</td>
@@ -115,7 +115,7 @@ for (int i = 0; i < items.length; ++i) {
 	<tr<% if (i % 2 == 0) { %> class="greybg"<% } %>>
 		<td height="24" nowrap>&nbsp;<%= desc.get(new Integer(1)) %></td>
 		<td nowrap align="right"><%= desc.get(new Integer(2)) %></td>
-		<td nowrap><img src="/images/clear.gif" width="10" height="1" alt="" border="0"></td>
+		<td nowrap><img src="@imageurl@/clear.gif" width="10" height="1" alt="" border="0"></td>
 		<td nowrap><%= desc.get(new Integer(4)) %></td>
 		<td align="center"><input type="text" name="number_<%= i %>" value="<%= itemCount %>" size="2"></td>
 		<td nowrap align="right"><%= priceFormat.format(itemPrice) %>:-</td>
@@ -129,49 +129,49 @@ for (int i = 0; i < items.length; ++i) {
 	<input type="hidden" name="price_<%= i %>" value="<%= priceFormat.format(itemPrice) %>"><%
 } %>
 	<tr>
-		<td colspan="7"><img src="/images/clear.gif" width="1" height="10" alt="" border="0"></td>
+		<td colspan="7"><img src="@imageurl@/clear.gif" width="1" height="10" alt="" border="0"></td>
 	</tr>
 	<tr>
-		<td colspan="2"><input type="image" src="/images/knapp_spara_andringar_shop.gif" border="0" alt=""></td>
-		<td colspan="4" align="right" class="liten_svart_rub">SUMMA<img src="/images/clear.gif" width="16" height="1" alt="" border="0"><%= priceFormat.format(totalPrice) %>:-</td>
+		<td colspan="2"><input type="image" src="@imageurl@/knapp_spara_andringar_shop.gif" border="0" alt=""></td>
+		<td colspan="4" align="right" class="liten_svart_rub">SUMMA<img src="@imageurl@/clear.gif" width="16" height="1" alt="" border="0"><%= priceFormat.format(totalPrice) %>:-</td>
 		<td>&nbsp;</td>
 	</tr>
 	</table></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="/images/clear.gif" width="1" height="11" alt="" border="0"></td>
-	<td colspan="5"><img src="/images/dots_472px.gif" width="472" height="1" alt="" border="0"></td>
-	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="11" alt="" border="0"></td>
+	<td colspan="5"><img src="@imageurl@/dots_472px.gif" width="472" height="1" alt="" border="0"></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="1" alt="" border="0"></td>
 </tr>
 <tr>
-	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
-	<td colspan="2"><a href="javascript: doClose();"><img src="/images/knapp_stang_fortsatt.gif" alt="" border="0"></a></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="1" alt="" border="0"></td>
+	<td colspan="2"><a href="javascript: doClose();"><img src="@imageurl@/knapp_stang_fortsatt.gif" alt="" border="0"></a></td>
 	<td colspan="3" align="right"><input type="image" name="send" value="1"
-		src="/images/knapp_skicka_bokning.gif" alt="" border="0"<%
+		src="@imageurl@/knapp_skicka_bokning.gif" alt="" border="0"<%
 		if (!isLoggedIn) {
-			%> onClick="document.location = '/shop/login.jsp'; return false"<%
+			%> onClick="document.location = '@rooturl@/shop/login.jsp'; return false"<%
 		} %>><img
-		src="/images/clear.gif" width="5" height="1" alt="" border="0"></td>
-	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
+		src="@imageurl@/clear.gif" width="5" height="1" alt="" border="0"></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="1" alt="" border="0"></td>
 </tr>
 <tr>
-	<td colspan="7"><img src="/images/clear.gif" width="1" height="6" alt="" border="0"></td>
+	<td colspan="7"><img src="@imageurl@/clear.gif" width="1" height="6" alt="" border="0"></td>
 </tr>
 <tr>
-	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="1" alt="" border="0"></td>
 	<td colspan="5" class="greytext">Bokningsförfrågan kommer att skickas iväg till en säljare som kontaktar dig.<br>
 	Förfrågan är ej bindande.</td>
-	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="1" alt="" border="0"></td>
 </tr>
 <tr>
-	<td width="11"><img src="/images/clear.gif" width="11" height="1" alt="" border="0"></td>
-	<td width="155""><img src="/images/clear.gif" width="155" height="1" alt="" border="0"></td>
-	<td width="89"><img src="/images/clear.gif" width="79" height="1" alt="" border="0"></td>
-	<td width="114"><img src="/images/clear.gif" width="120" height="1" alt="" border="0"></td>
-	<td width="76"><img src="/images/clear.gif" width="76" height="1" alt="" border="0"></td>
-	<td width="42"><img src="/images/clear.gif" width="42" height="1" alt="" border="0"></td>
-	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
+	<td width="11"><img src="@imageurl@/clear.gif" width="11" height="1" alt="" border="0"></td>
+	<td width="155""><img src="@imageurl@/clear.gif" width="155" height="1" alt="" border="0"></td>
+	<td width="89"><img src="@imageurl@/clear.gif" width="79" height="1" alt="" border="0"></td>
+	<td width="114"><img src="@imageurl@/clear.gif" width="120" height="1" alt="" border="0"></td>
+	<td width="76"><img src="@imageurl@/clear.gif" width="76" height="1" alt="" border="0"></td>
+	<td width="42"><img src="@imageurl@/clear.gif" width="42" height="1" alt="" border="0"></td>
+	<td><img src="@imageurl@/clear.gif" width="1" height="1" alt="" border="0"></td>
 </tr>
 </form>
 </table>

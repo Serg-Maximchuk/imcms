@@ -26,9 +26,7 @@
     <property name="user"                  value="${webroot}/user"/>
     <property name="javascript"            value="${webroot}/javascript"/>
     <property name="adminbuttons"          value="${imcmsimages}/admin"/>
-	<property name="shop"	           	   value="${webroot}/shop"/>
-	<property name="poll"	           	   value="${webroot}/poll"/>
-	<property name="magazinesubscriptions" value="${webroot}/magazinesubscriptions"/>
+    <property name="poll"	           value="${webroot}/poll"/>
 
     <!-- 'WEB-INF' - Everything put here is private to the webapp -->
     <property name="WEB-INF"        value="${webroot}/WEB-INF"/>
@@ -60,9 +58,6 @@
     <property name="postcardsurl"             value="${rooturl}/postcards"/>
     <property name="imcmsimageurl"            value="${rooturl}/imcmsimages"/>
     <property name="adminbuttonsurl"          value="${imcmsimageurl}/admin"/>
-    <property name="shopurl"                  value="${rooturl}/shop"/>
-	<property name="pollurl"                  value="${rooturl}/poll"/>
-    <property name="magazinesubscriptionsurl" value="${rooturl}/magazinesubscriptions"/>
 
 
     <!-- Locations for the final packages -->
@@ -443,8 +438,6 @@
 		<include name="shop/**"/>
 		<include name="poll/**"/>
 		<exclude name="**/*.gif"/>
-
-		
 	    </fileset>
 	</copy>
 	

@@ -33,8 +33,8 @@ if (it.hasNext()) {
 		ShoppingOrder order = (ShoppingOrder)it.next() ; %>
 		<tr<%= (odd = !odd) ? " bgcolor=\"#EAE4DA\"" : "" %>>
 			<td height="16"><img src="@imageurl@/1x1.gif" width="1" height="1"></td>
-			<td><a href="javascript: openPopup('@shopurl@/order.jsp?id=<%= order.getId() %>',1);"><%= dateFormat.format(order.getDatetime()) %></a></td>
-			<td align="right"><a href="javascript: openPopup('@shopurl@/order.jsp?id=<%= order.getId() %>',1);"><%= order.countItems() %></a></td>
+			<td><a href="javascript: openPopup('@rooturl@/shop/order.jsp?id=<%= order.getId() %>',1);"><%= dateFormat.format(order.getDatetime()) %></a></td>
+			<td align="right"><a href="javascript: openPopup('@rooturl@/shop/order.jsp?id=<%= order.getId() %>',1);"><%= order.countItems() %></a></td>
 			<td><img src="@imageurl@/1x1.gif" width="1" height="1"></td>
 		</tr><%
 	} %>
