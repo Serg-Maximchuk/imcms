@@ -1,0 +1,124 @@
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+/* SNIFFER */
+
+var platf = navigator.platform;
+var ua = navigator.userAgent;
+
+var is_NS = (document.layers) ? 1 : 0;
+var is_IE = (document.all) ? 1 : 0;
+var is_Moz = (document.getElementById) ? 1 : 0;
+
+var is_Gecko = inStr(ua,'Gecko');
+var is_Opera = inStr(ua,'Opera');
+var is_Windows = inStr(platf,'Win32');
+var is_Mac = inStr(platf,'Mac');
+
+function inStr(str,val,cas) {
+	var ret;
+	if (cas) { /* Case sensitive */
+		ret = (str.indexOf(val) != -1) ? true : false;
+	} else { /* Not Case sensitive */
+		str = str.toUpperCase();
+		val = val.toUpperCase();
+		ret = (str.indexOf(val) != -1) ? true : false;
+	}
+	return ret;
+}
+
+/* WRITE CSS */
+
+var inputSize, strCSS, strJS;
+
+if (is_Windows && (is_IE || is_Moz)) {
+	strCSS = '<LI'+'NK REL="Stylesheet" TYPE="text/css" HREF="/css/style_win_ie.css">';
+	strJS = '<scr'+'ipt language="JavaScript" src="/inc/include.js" type="text\/javascript"><\/scr'+'ipt>';
+	inputSize = (is_Moz) ? 20 : 24;
+} else if (!is_Windows && !is_IE) {
+	strCSS = '<LI'+'NK REL="Stylesheet" TYPE="text/css" HREF="/css/style_mac_ns.css">';
+	strJS = '<scr'+'ipt language="JavaScript" src="/inc/include_mac.js" type="text\/javascript"><\/scr'+'ipt>';
+	inputSize = (is_Moz) ? 20 : 15;
+} else if (!is_Windows && is_IE) {
+	strCSS = '<LI'+'NK REL="Stylesheet" TYPE="text/css" HREF="/css/style_mac_ie.css">';
+	strJS = '<scr'+'ipt language="JavaScript" src="/inc/include_mac.js" type="text\/javascript"><\/scr'+'ipt>';
+	inputSize = 17;
+} else {
+	strCSS = '<LI'+'NK REL="Stylesheet" TYPE="text/css" HREF="/css/style_win_ns.css">';
+	strJS = '<scr'+'ipt language="JavaScript" src="/inc/include.js" type="text\/javascript"><\/scr'+'ipt>';
+	inputSize = 12;
+}
+
+document.writeln(strJS);
+document.writeln(strCSS);
+
+//document.write(strCSS.replace(/\</gi, '&lt;'));
+//document.title += ' - CSS : ' + strCSS.substring(50,66);
+
+/* CHANGE INPUT-FIELDS */
+
+function initInputSize() {
+	if (!is_NS) {
+		for (var theForm = 0; theForm < 3; theForm++) {
+			if (document.forms[theForm]) {
+				if (document.forms[theForm].elements) {
+					var f = document.forms[theForm];
+					var objAllElements = f.elements;
+					var nrOfElements = objAllElements.length;
+					for (var i = 0; i < nrOfElements; i++) {
+						if (f.elements[i]) {
+							if (f.elements[i].tagName) {
+								if (f.elements[i].tagName.toString().indexOf('INPUT') != -1) {
+									if (f.elements[i].size == 12) f.elements[i].size = inputSize;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* POPUP - GENERIC - CENTERED */
+
+function popWin(url,winName,width,height,scroll) {
+	if(is_NS || is_IE || is_Moz) {
+		var window_width = width;
+		var window_height = height;
+		if(screen.height < 700){ 
+			var window_top = 0;
+			var window_left = (screen.width-window_width)/2;
+		} else { 
+			var window_top = (screen.height-window_height)/2;
+			var window_left = (screen.width-window_width)/2;
+		}
+		popWindow = window.open(url,winName,'statusbar=no,resizable=no,menubar=0,scrollbars=' + scroll + ',width=' + window_width + ',height=' + window_height + ',top=' + window_top + ',left=' + window_left + '');
+		popWindow.focus();
+	} else {
+		window.open(url,winName,'resizable=yes,menubar=' + menu + ',scrollbars=' + scroll + ',width=300,height=120,top=0,left=0');
+	}
+}
+
+/* DEFAULT ALLER POPUP */
+
+function openPopup(theUrl,scroll) {
+	if (scroll == '') scroll = 0;
+	popWin(theUrl,'AllerPopup',520,268,scroll);
+}
+
+/* INIT */
+
+function init(nr) {
+	if (document.forms.leftMenuForm) {
+		if (nr != '') {
+			startup(nr);
+		} else {
+			startup('0');
+		}
+	}
+	initInputSize();
+}
+//-->
+</SCRIPT><noscript><LINK REL="Stylesheet" TYPE="text/css" HREF="style_win_ns.css"></noscript>
+

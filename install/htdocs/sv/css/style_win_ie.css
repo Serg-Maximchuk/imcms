@@ -1,0 +1,50 @@
+
+BODY { font-family: verdana, arial, geneva, helvetica; font-size: 10px; line-height: 13px; color: #000; }
+TD { font-family: verdana, arial, geneva, helvetica; font-size: 10px; line-height: 13px; color: #000; }
+A { font-family: verdana, arial, geneva, helvetica; font-size: 10px; line-height: 13px; color: #000; }
+.vitLink, .vitLink A { font-family: verdana, arial, geneva, helvetica; font-size: 10px; color: #fff;}
+.bigredLink {font-family: verdana, arial, geneva, helvetica; font-size: 14px; line-height: 16px; color: #DD0002; text-decoration: underline;}
+INPUT { font-family: verdana, arial, geneva, helvetica; font-size: 10px; color: #000;}
+SELECT { font-family: verdana, arial, geneva, helvetica; font-size: 10px; color: #000; WIDTH: 162px;}
+.vitbg { BACKGROUND-COLOR: #ffffff }
+.light_beigebg { BACKGROUND-COLOR: #DBD0B9 }
+.dark_beigebg { BACKGROUND-COLOR: #B4A585 }
+.greybg{BACKGROUND-COLOR: #EAE4DA}
+.redbg { BACKGROUND-COLOR: #DD0002 }
+.grey1 { BACKGROUND-COLOR: #D9D2C2 }
+.grey2 { BACKGROUND-COLOR: #CFC4AF }
+.rodtext {font-family: verdana, arial, geneva, helvetica; font-size: 10px; color: #DD0002; font-weight: bold }
+.vit { font-family: verdana, arial, geneva, helvetica; font-size: 10px; color: #fff; }
+
+.title {position: absolute; width: 270px; height: 20px; left: 26px; font-family: Trebuchet MS,verdana, helvetica, sans-serif; font-weight: bold; font-size: 10px; color: #666666; z-index: 8;visibility: visible;}
+.zubm {position: absolute; left: 25px; width: 260px; font-family: Trebuchet MS, verdana, helvetica, sans-serif; font-size: 10px; color: #666666; visibility: hidden; z-index: 6;}
+.top {position: absolute; left: 0px; width: 200px; font-family: Trebuchet MS, verdana, helvetica, sans-serif; font-size: 10px; color: #666666; visibility: visible; z-index: 99;}
+.stjarna{position: absolute; top:495px; left:671px;color: #DBD0B9; visibility: visible; z-index: 3;}
+.hideLine{position: absolute;left:26px; width:179px;color: #DBD0B9; visibility: hidden; z-index: 9;}
+
+.brodtext{ font-family: verdana, arial, geneva, helvetica; font-size: 10px; line-height: 16px; color: #000; }
+.greytext { font-family: verdana, arial, geneva, helvetica; font-size: 10px; color: #887855; }
+.datum { font-family: verdana, arial, geneva, helvetica; font-size: 10px; line-height: 14px; color: #8B7D60; font-weight: bold; }
+.rodrub {font-family: verdana, arial, geneva, helvetica; font-size: 13px; color: #DD0002; font-weight: bold; }
+.stor_rodrub {font-family: verdana, arial, geneva, helvetica; font-size: 14px; color: #DD0002; font-weight: bold; }
+.greyrub {font-family: verdana, arial, geneva, helvetica; font-size: 11px; color: #8B7D60; font-weight: bold; }
+.stor_grey_rub {font-family: verdana, arial, geneva, helvetica; line-height: 17px; font-size: 14px; color: #B4A585; font-weight: bold; }
+.liten_grey_rub { font-family: verdana, arial, geneva, helvetica; font-size: 13px; color: #887855;font-weight: bold }
+.liten_svart_rub {font-family: verdana, arial, geneva, helvetica; font-size: 13px; color: #000000; font-weight: bold;line-height: 20px; }
+.mellan_svart_rub {font-family:Trebuchet MS,  verdana, arial, geneva, helvetica; font-size: 20px; color: #000000;line-height: 25px; }
+.liten_vit_rub {font-family: verdana, arial, geneva, helvetica; font-size: 13px; color: #fff;}
+.svartrub {font-family: verdana, arial, geneva, helvetica; line-height: 17px; font-size: 14px; color: #000; font-weight: bold; }
+.vitrub {font-family: verdana, arial, geneva, helvetica; font-size: 17px; line-height: 23px; color: #FFF; font-weight: bold; }
+.vitrub A {font-family: verdana, arial, geneva, helvetica; font-size: 17px; line-height: 23px; color: #000000; font-weight: bold; text-decoration:underline; }
+.rubrik { font-family: Trebuchet MS, verdana, arial, geneva, helvetica; line-height: 34px; font-size: 32px; color: #000;}
+.stor_vit_rub { font-family: Trebuchet MS, verdana, arial, geneva, helvetica; line-height: 34px; font-size: 32px; color: #fff;}
+
+
+/* imCMS label. Ändra utseende om så önskas. */
+
+A.imcms_label:link, A.imcms_label:visited {
+	font: bold 10px Verdana; color:#00bb00; text-decoration:none; background-color:#f5f5f5; padding: 0 0 0 5;
+}
+A.imcms_label:active, A.imcms_label:hover {
+	font: bold 10px Verdana; color:#000099; text-decoration:underline; background-color:#f5f5f5; padding: 0 0 0 5;
+}

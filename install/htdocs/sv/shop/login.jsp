@@ -22,8 +22,14 @@ if (parent.opener) {
 
 <%@ include file="/inc/style.htm"%>
 
+<style type="text/css">
+<!-- 
+body { overflow:auto }
+-->
+</style>
+
 </head>
-<body leftmargin=0 marginheight="0" topmargin=0 marginwidth="0" onLoad="initInputSize();">
+<body leftmargin=0 marginheight="0" topmargin=0 marginwidth="0" bgcolor="#ffffff" onLoad="initInputSize();">
 
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%">

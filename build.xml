@@ -26,7 +26,6 @@
     <property name="user"                  value="${webroot}/user"/>
     <property name="javascript"            value="${webroot}/javascript"/>
     <property name="adminbuttons"          value="${imcmsimages}/admin"/>
-    <property name="readrunner"	           value="${webroot}/readrunner"/>
     <property name="shop"	           value="${webroot}/shop"/>
     <property name="magazinesubscriptions" value="${webroot}/magazinesubscriptions"/>
 
@@ -62,11 +61,6 @@
     <property name="adminbuttonsurl"          value="${imcmsimageurl}/admin"/>
     <property name="shopurl"                  value="${rooturl}/shop"/>
     <property name="magazinesubscriptionsurl" value="${rooturl}/magazinesubscriptions"/>
-
-    <property name="readrunnerurl"	  value="${rooturl}/readrunner"/>
-    <property name="readrunnerimagesurl"  value="${readrunnerurl}/images"/>
-    <property name="readrunnercssurl"     value="${readrunnerurl}/css"/>
-    <property name="readrunnerjsurl"      value="${readrunnerurl}/javascript"/>
 
 
     <!-- Locations for the final packages -->
@@ -111,11 +105,6 @@
 	<filter token="imcmsimageurl"       value="${imcmsimageurl}"/>
 	<filter token="javascripturl"       value="${javascripturl}"/>
 
-	<filter token="readrunnerurl"       value="${readrunnerurl}"/>
-	<filter token="readrunnerimagesurl" value="${readrunnerimagesurl}"/>
-	<filter token="readrunnercssurl"    value="${readrunnercssurl}"/>
-	<filter token="readrunnerjsurl"     value="${readrunnerjsurl}"/>
-
 	<filter token="db-host"             value="${db-host}"/>
 	<filter token="db-port"             value="${db-port}"/>
 	<filter token="db-name"             value="${db-name}"/>
@@ -147,8 +136,6 @@
 	<property name="admintemplates"       value="${languagetemplates}/admin"/>
 	<property name="searchtemplates"      value="${admintemplates}/search/original"/>
 
-	<property name="readrunnertemplates"  value="${admintemplates}/readrunner"/>
-
 	<!-- Paths for templates for the plugins -->
 	<property name="conference-templates" value="${languagetemplates}/102"/>
 	<property name="chat-templates"       value="${languagetemplates}/103"/>
@@ -162,7 +149,8 @@
 
     <!-- Checks that build.properties is up-to-date. -->
     <target name="check-build-properties"
-	    description="Checks that ${build.properties} is up-to-date.">
+	    description="Checks that ${build.properties} is up-to-date."
+	    unless="build-properties-up-to-date">
 
 	<uptodate targetfile="${build.properties}" property="build-properties-up-to-date">
 	    <srcfiles dir="${basedir}" includes="${build.properties}.template"/>
@@ -232,8 +220,7 @@
 		     libraries,
 		     web,conf,dir,sql,
 		     conference,chat,billboard,postcard,
-		     help,fortune,readrunner,calender,
-		     shop,magazinesubscriptions"
+		     help,fortune,calender"
 	    description="Builds everything.">
 
 	<copy todir="${WEB-INF}" file="install/web.xml"/>
@@ -413,7 +400,7 @@
 
     <!-- Creates the directories and copies the files that are to be public. -->
     <target name="web"
-	    depends="init,imagebrowse-images,adminbutton-images"
+	    depends="init"
 	    description="Creates the public web">
 	<mkdir dir="${images}"/>
 	<mkdir dir="${login}"/>
@@ -439,72 +426,27 @@
 		    <include name="*.jsp"/>
 		</patternset>
 	    </fileset>
+
+	    <!-- Copy swedish text-files -->
+	    <fileset dir="install/htdocs/sv">
+		<include name="css/**"/>
+		<include name="inc/**"/>
+		<include name="shop/**"/>
+	    </fileset>
 	</copy>
-	<copy todir="${css}">
-	    <fileset dir="install/htdocs/css"/>
+
+	<!-- Copy swedish navigation buttons for imagebrowse -->
+	<copy todir="${images}/se/admin">
+	    <fileset dir="install/htdocs/sv/imagebrowse"/>
 	</copy>
 
-    </target>
-
-
-    <!-- Copies the adminbutton images. -->
-    <target name="adminbutton-images"
-	    depends="init"
-	    description="Copies the adminbutton images.">
-
-	<antcall target="adminbutton-images-lang">
-	    <param name="srclanguage" value="sv"/>
-	    <param name="language" value="sv"/>
-	</antcall>
-
-	<!-- antcall target="adminbutton-images-lang">
-	    <param name="srclanguage" value="en"/>
-	    <param name="language" value="en"/>
-	</antcall -->
-
-    </target>
-
-
-    <!-- Copies the adminbutton images for one language. -->
-    <target name="adminbutton-images-lang"
-	    depends="language-properties"
-	    description="Copies the adminbutton images for one language.">
-
-	<copy todir="${adminbuttons}/${language}">
-	    <fileset dir="install/htdocs/${srclanguage}/adminbuttons">
+	<!-- Copy swedish adminbuttons -->
+	<copy todir="${adminbuttons}/sv">
+	    <fileset dir="install/htdocs/sv/adminbuttons">
 		<patternset>
 		    <include name="*.gif"/>
 		</patternset>
 	    </fileset>
-	</copy>
-
-    </target>
-
-    <!-- Copies the imagebrowse images. -->
-    <target name="imagebrowse-images"
-	    depends="init"
-	    description="Copies the imagebrowse images.">
-
-	<antcall target="imagebrowse-images-lang">
-	    <param name="srclanguage" value="sv"/>
-	    <param name="language" value="se"/>
-	</antcall>
-
-	<!-- antcall target="imagebrowse-images-lang">
-	    <param name="srclanguage" value="en"/>
-	    <param name="language" value="en"/>
-	</antcall -->
-
-    </target>
-
-
-    <!-- Copies the imagebrowse images for one language. -->
-    <target name="imagebrowse-images-lang"
-	    depends="language-properties"
-	    description="Copies the image-browse images for one language.">
-
-	<copy todir="${images}/${language}/admin">
-	    <fileset dir="install/htdocs/${srclanguage}/imagebrowse"/>
 	</copy>
 
     </target>
@@ -582,10 +524,6 @@
 
 	<copy todir="${searchtemplates}" filtering="true">
 	    <fileset dir="templates/${srclanguage}/search"/>
-	</copy>
-
-	<copy todir="${readrunnertemplates}" filtering="true">
-	    <fileset dir="templates/${srclanguage}/readrunner"/>
 	</copy>
 
 	<copy todir="${admintemplates}/shop" filtering="true">
@@ -1013,34 +951,11 @@
 
 
     <!-- Copies the files for the online-help. -->
-    <target name="help" depends="init,help-images"/>
-
-
-    <!-- The images for the online-help. -->
-    <target name="help-images"
-	    depends="init,web"
-	    description="Copies the help-images.">
-
-	<antcall target="help-images-lang">
-	    <param name="srclanguage" value="sv"/>
-	    <param name="language"    value="se"/>
-	</antcall>
-
-	<!-- antcall target="help-images-lang">
-	    <param name="srclanguage" value="en"/>
-	    <param name="language"    value="en"/>
-	</antcall -->
-
-    </target>
-
-
-    <!-- The images for the online-help for one language. -->
-    <target name="help-images-lang"
-	    depends="language-properties"
-	    description="Copies the help-images for one language.">
-
-	<copy todir="${images}/${language}/helpimages">
-	    <fileset dir="install/htdocs/${srclanguage}/helpimages" includes="*"/>
+    <target name="help" depends="init">
+    
+	<!-- Copy the swedish images for the online-help -->
+	<copy todir="${images}/se/helpimages">
+	    <fileset dir="install/htdocs/sv/helpimages" includes="*"/>
 	</copy>
 
     </target>
@@ -1087,81 +1002,6 @@
 
 	<copy todir="${fortune-templates}" filtering="true">
 	    <fileset dir="templates/${srclanguage}/fortunes"/>
-	</copy>
-
-    </target>
-
-
-    <!-- Copies the files for readrunner -->
-    <target name="readrunner"
-	    depends="init,global-filters"
-	    description="Copies the files for readrunner."
-	    if="build-readrunner">
-
-	<!-- First the images, since they aren't to be filtered. -->
-	<copy todir="${readrunner}/images">
-	    <fileset dir="install/htdocs/sv/readrunner/images"/>
-	</copy>
-
-	<copy todir="${readrunner}" filtering="true">
-	    <fileset dir="install/htdocs/sv/readrunner" excludes="*.jpg,*.gif"/>
-	</copy>
-
-	<copy todir="${templates}/se/admin" filtering="true"
-	      file="templates/sv/readrunner/AdminUserResp.htm"
-	      overwrite="yes"/>
-
-	<mkdir dir="${readrunner}/preparsed"/>
-    </target>
-
-
-    <!-- Copies the shop files. -->
-    <target name="shop"
-	    depends="init"
-	    description="Copies the shop files."
-	    if="build-shop">
-
-	<antcall target="shop-lang">
-	    <param name="srclanguage" value="sv"/>
-	    <param name="language" value="sv"/>
-	</antcall>
-
-    </target>
-
-
-    <!-- The shop-files for one language. -->
-    <target name="shop-lang"
-	    depends="global-filters,language-properties"
-	    description="Copies the help-images for one language.">
-
-	<copy todir="${shop}" filtering="true">
-	    <fileset dir="install/htdocs/${srclanguage}/shop" includes="*"/>
-	</copy>
-
-    </target>
-
-
-    <!-- Copies the magazinesubscription files. -->
-    <target name="magazinesubscriptions"
-	    depends="init"
-	    description="Copies the magazinesubscription files."
-	    if="build-magazinesubscriptions">
-
-	<antcall target="magazinesubscriptions-lang">
-	    <param name="srclanguage" value="sv"/>
-	    <param name="language" value="sv"/>
-	</antcall>
-
-    </target>
-
-
-    <!-- The magazine-subscription files for one language. -->
-    <target name="magazinesubscriptions-lang"
-	    depends="global-filters,language-properties"
-	    description="Copies the magazinesubscription files for one language.">
-
-	<copy todir="${magazinesubscriptions}" filtering="true">
-	    <fileset dir="install/htdocs/${srclanguage}/magazinesubscriptions" includes="*"/>
 	</copy>
 
     </target>

@@ -99,6 +99,5 @@ build-chat
 build-conference
 build-fortune
 build-postcard
-build-readrunner
-#build-shop
+build-shop
 build-magazinesubscriptions

@@ -4,6 +4,12 @@
 
 <%@ include file="/inc/style.htm"%>
 
+<style type="text/css">
+<!-- 
+body { overflow:auto }
+-->
+</style>
+
 <script language="JavaScript">
 <!--
 var isAddPage = 1; // add or change page
@@ -12,7 +18,7 @@ var isAddPage = 1; // add or change page
 <script language="JavaScript" src="/inc/include_validate_user.js"></script>
 
 </head>
-<body leftmargin=0 marginheight="0" topmargin=0 marginwidth="0" onLoad="initInputSize();">
+<body leftmargin=0 marginheight="0" topmargin=0 marginwidth="0" bgcolor="#ffffff" onLoad="initInputSize();">
 
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%">

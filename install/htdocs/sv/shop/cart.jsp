@@ -29,6 +29,10 @@ double totalPrice = 0 ;
 
 User loggedIn = (User) session.getAttribute("logon.isDone") ;
 boolean isLoggedIn = (loggedIn != null && !"user".equals(loggedIn.getLoginName())) ? true : false ;
+
+/* is the mail sent and the user needs to know about it */
+
+boolean isSent = (request.getParameter("sent") != null) ? true : false ;
 %>
 <html>
 <head>
@@ -36,27 +40,36 @@ boolean isLoggedIn = (loggedIn != null && !"user".equals(loggedIn.getLoginName()
 
 <%@ include file="/inc/style.htm"%>
 
+<style type="text/css">
+<!-- 
+body { overflow:auto }
+-->
+</style>
+
 <script language="JavaScript">
 <!--
-function doSend() {<%
-	if (isLoggedIn) { %>
-	document.forms[0].submit();<%
-	} else { %>
-	document.location = '/shop/login.jsp';<%
-	} %>
-}
-
 function doClose() {
 	if (confirm('Vill du stänga fönstret?')) {
 		window.close();
 		if (parent.opener) parent.opener.history.go(0);
 	}
-}
+}<%
+
+if (isSent) { %>
+
+function isSent() {
+	if (confirm('Din förfrågningslista har blivit skickad!\n\nVill du stänga fönstret?')) {
+		window.close();
+		if (parent.opener) parent.opener.history.go(0);
+	}
+}<%
+
+} %>
 //-->
 </script>
 
 </head>
-<body leftmargin=0 marginheight="0" topmargin=0 marginwidth="0" onLoad="initInputSize();">
+<body leftmargin=0 marginheight="0" topmargin=0 marginwidth="0" bgcolor="#ffffff" onLoad="initInputSize();<% if (isSent) { %> isSent();<% } %>">
 
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
@@ -108,12 +121,12 @@ for (int i = 0; i < items.length; ++i) {
 		<td nowrap align="right"><%= priceFormat.format(itemPrice) %>:-</td>
 		<td nowrap align="center"><input type="checkbox" value="1" name="remove_<%= i %>"></td>
 	</tr>
-	<input type="hidden" value="<%= desc.get(new Integer(1)) %>" name="desc1_<%= i %>">
-	<input type="hidden" value="<%= desc.get(new Integer(2)) %>" name="desc2_<%= i %>">
-	<input type="hidden" value="<%= desc.get(new Integer(3)) %>" name="desc3_<%= i %>">
-	<input type="hidden" value="<%= desc.get(new Integer(4)) %>" name="desc4_<%= i %>">
-	<input type="hidden" value="<%= desc.get(new Integer(5)) %>" name="desc5_<%= i %>">
-	<input type="hidden" value="<%= priceFormat.format(itemPrice) %>" name="price_<%= i %>"><%
+	<input type="hidden" name="desc1_<%= i %>" value="<%= desc.get(new Integer(1)) %>">
+	<input type="hidden" name="desc2_<%= i %>" value="<%= desc.get(new Integer(2)) %>">
+	<input type="hidden" name="desc3_<%= i %>" value="<%= desc.get(new Integer(3)) %>">
+	<input type="hidden" name="desc4_<%= i %>" value="<%= desc.get(new Integer(4)) %>">
+	<input type="hidden" name="desc5_<%= i %>" value="<%= desc.get(new Integer(5)) %>">
+	<input type="hidden" name="price_<%= i %>" value="<%= priceFormat.format(itemPrice) %>"><%
 } %>
 	<tr>
 		<td colspan="7"><img src="/images/clear.gif" width="1" height="10" alt="" border="0"></td>
@@ -134,8 +147,11 @@ for (int i = 0; i < items.length; ++i) {
 <tr>
 	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
 	<td colspan="2"><a href="javascript: doClose();"><img src="/images/knapp_stang_fortsatt.gif" alt="" border="0"></a></td>
-	<td colspan="3" align="right"><input type="image" name="send"
-		src="/images/knapp_skicka_bokning.gif" alt="" border="0" onClick="doSend(); return false"><img
+	<td colspan="3" align="right"><input type="image" name="send" value="1"
+		src="/images/knapp_skicka_bokning.gif" alt="" border="0"<%
+		if (!isLoggedIn) {
+			%> onClick="document.location = '/shop/login.jsp'; return false"<%
+		} %>><img
 		src="/images/clear.gif" width="5" height="1" alt="" border="0"></td>
 	<td><img src="/images/clear.gif" width="1" height="1" alt="" border="0"></td>
 </tr>
