@@ -13,10 +13,10 @@ String meta_id = request.getHeader("X-Meta-Id");
 
 //Get PollParameters from db 
 String[] poll_param;
-if ( meta_id !=null){
+if ( meta_id !=null ){
 	poll_param = poll.getPollParameters(meta_id); 
 	
-	if ( poll_param != null && poll_param.length !=0 ){
+	if ( poll_param != null && poll_param.length !=0 && poll_param[7] != null){
 		out.write( imcref.getText( Integer.parseInt(meta_id), Integer.parseInt(poll_param[7]) ).getText() );
 	}
 }

@@ -48,15 +48,7 @@ public class PollHandler extends HttpServlet {
 	int hide_result = Integer.parseInt( poll_param[6] );
 
 	
-	// get poll name
-	IMCText poll_name = new IMCText("",0);
 		
-	if ( poll_param != null && poll_param.length !=0 ){
-		int text_no = Integer.parseInt( poll_param[1] );
-		poll_name = imcref.getText(Integer.parseInt(meta_id), text_no);
-	}
-	
-	
 	// Get the session, creating a new one if needed //
 	HttpSession session = req.getSession(true) ;
 	
@@ -178,8 +170,8 @@ public class PollHandler extends HttpServlet {
 		// Forward the request to the given location //
 		res.sendRedirect(forwardTo) ;
 	
-		if(textAnswers != null && textAnswers.size() > 0 ){
-			sendMail( req, poll_param, meta_id, textQuestions, textAnswers );
+		if(textAnswers != null && textAnswers.size() > 0 && poll_param[8] != null ){
+			sendMail( imcref, req, poll_param, meta_id, textQuestions, textAnswers );
 		} 
 	}
 	
@@ -187,11 +179,10 @@ public class PollHandler extends HttpServlet {
 
     
 
-    private void sendMail (HttpServletRequest req, String[] poll_param, String meta_id, TreeMap textQuestions, TreeMap textAnswers) throws IOException {
+    private void sendMail (IMCServiceInterface imcref, HttpServletRequest req, String[] poll_param, String meta_id, TreeMap textQuestions, TreeMap textAnswers) throws IOException {
 
 		String host = req.getHeader("Host") ;
-		IMCServiceInterface imcref = IMCServiceRMI.getIMCServiceInterface(req) ;
-
+		
 		String mailServer = Utility.getDomainPref( "smtp_server", host );
 		String stringMailPort = Utility.getDomainPref( "smtp_port", host );
 		String stringMailtimeout = Utility.getDomainPref( "smtp_timeout", host );
@@ -212,20 +203,22 @@ public class PollHandler extends HttpServlet {
 		}
 
 		String mailFromAddress = Prefs.get("mail-from-address", POLL_CONFIG) ;
-		String mailToAddress = getText( imcref, Integer.parseInt(meta_id), Integer.parseInt(poll_param[8]) ); // comma-separated string;
+		String mailToAddress   = getText( imcref, Integer.parseInt(meta_id), Integer.parseInt(poll_param[8]) ); // comma-separated string;
 		String mailSubject     = Prefs.get("mail-subject",      POLL_CONFIG) ;
 		//String mailFormat      = imcref.parseDoc(null, MAIL_FORMAT, imcref.getLanguage()) ;
 		//String mailItemFormat  = imcref.parseDoc(null, MAIL_ITEM_FORMAT, imcref.getLanguage()) ;
 		
-			
-		// lete get poll name
-		String poll_name = "";
-		if ( poll_param != null && poll_param.length !=0 ){
+		
+		
+		// get poll name
+		IMCText poll_name = new IMCText("",0);
+		
+		if ( poll_param != null && poll_param.length !=0 && poll_param[1] != null ){
 			int text_no = Integer.parseInt( poll_param[1] );
-			poll_name = getText( imcref, Integer.parseInt(meta_id), text_no );
+			poll_name = imcref.getText(Integer.parseInt(meta_id), text_no);
 		}
-		
-		
+			
+				
 		// Create the mail body
 		StringBuffer mail = new StringBuffer();
 		
