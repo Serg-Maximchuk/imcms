@@ -16,6 +16,8 @@ import imcode.util.IdNamePair;
 import imcode.util.InputStreamSource;
 import imcode.util.Utility;
 import imcode.util.poll.PollHandlingSystem;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
@@ -1478,20 +1480,56 @@ public class DocumentMapper {
     }
 
     private void updateTextDocumentMenus( TextDocumentDomainObject textDocument ) {
-        deleteTextDocumentMenus( textDocument );
-        insertTextDocumentMenus( textDocument );
-    }
-
-    private void insertTextDocumentMenus( TextDocumentDomainObject textDocument ) {
-        Map menus = textDocument.getMenus();
-        for ( Iterator iterator = menus.entrySet().iterator(); iterator.hasNext(); ) {
+        Map menuMap = textDocument.getMenus();
+        for ( Iterator iterator = menuMap.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry entry = (Map.Entry)iterator.next();
             Integer menuIndex = (Integer)entry.getKey();
             MenuDomainObject menu = (MenuDomainObject)entry.getValue();
-            sqlInsertMenu( textDocument, menuIndex.intValue(), menu );
-            insertTextDocumentMenuItems( menu );
+            updateTextDocumentMenu( textDocument, menuIndex, menu );
         }
+        deleteUnusedMenus( textDocument );
+    }
 
+    private void deleteUnusedMenus( TextDocumentDomainObject textDocument ) {
+        Collection menus = textDocument.getMenus().values();
+        if ( !menus.isEmpty() ) {
+            Collection menuIds = CollectionUtils.collect( menus, new Transformer() {
+                public Object transform( Object input ) {
+                    return new Integer( ( (MenuDomainObject)input ).getId() );
+                }
+            } );
+            String sqlInMenuIds = StringUtils.join( menuIds.iterator(), "," );
+            log.debug( sqlInMenuIds );
+
+            String whereClause = "menu_id NOT IN (" + sqlInMenuIds + ")";
+            String sqlDeleteUnusedMenuItems = "DELETE FROM childs WHERE menu_id IN (SELECT menu_id FROM menus WHERE meta_id = ?) AND " + whereClause;
+            service.sqlUpdateQuery( sqlDeleteUnusedMenuItems, new String[] {""+textDocument.getId()}  );
+            String sqlDeleteUnusedMenus = "DELETE FROM menus WHERE meta_id = ? AND " + whereClause;
+            service.sqlUpdateQuery( sqlDeleteUnusedMenus, new String[] { ""+textDocument.getId() } );
+        }
+    }
+
+    private void updateTextDocumentMenu( TextDocumentDomainObject textDocument, Integer menuIndex,
+                                         MenuDomainObject menu ) {
+        deleteTextDocumentMenu( textDocument, menuIndex );
+        insertTextDocumentMenu( textDocument, menuIndex, menu );
+    }
+
+    private void insertTextDocumentMenu( TextDocumentDomainObject textDocument, Integer menuIndex,
+                                         MenuDomainObject menu ) {
+        sqlInsertMenu( textDocument, menuIndex.intValue(), menu );
+        insertTextDocumentMenuItems( menu );
+    }
+
+    private void deleteTextDocumentMenu( TextDocumentDomainObject textDocument, Integer menuIndex ) {
+        deleteTextDocumentMenuItems( textDocument, menuIndex );
+        String sqlDeleteMenu = "DELETE FROM menus WHERE meta_id = ? AND menu_index = ?";
+        service.sqlUpdateQuery( sqlDeleteMenu, new String[]{""+textDocument.getId(), ""+menuIndex} );
+    }
+
+    private void deleteTextDocumentMenuItems( TextDocumentDomainObject textDocument, Integer menuIndex ) {
+        String sqlDeleteMenuItems = "DELETE FROM childs WHERE menu_id IN (SELECT menu_id FROM menus WHERE meta_id = ? AND menu_index = ?)";
+        service.sqlUpdateQuery( sqlDeleteMenuItems, new String[]{"" + textDocument.getId(), ""+menuIndex} );
     }
 
     private void insertTextDocumentMenuItems( MenuDomainObject menu ) {
@@ -1523,13 +1561,6 @@ public class DocumentMapper {
         } );
         int menuId = Integer.parseInt( menuIdString );
         menu.setId( menuId );
-    }
-
-    private void deleteTextDocumentMenus( TextDocumentDomainObject textDocument ) {
-        String sqlDeleteMenuItems = "DELETE FROM childs WHERE menu_id IN (SELECT menu_id FROM menus WHERE meta_id = ?)";
-        service.sqlUpdateQuery( sqlDeleteMenuItems, new String[]{"" + textDocument.getId()} );
-        String sqlDeleteMenus = "DELETE FROM menus WHERE meta_id = ?";
-        service.sqlUpdateQuery( sqlDeleteMenus, new String[]{"" + textDocument.getId()} );
     }
 
     private void updateTextDocumentTexts( TextDocumentDomainObject textDocument ) {
@@ -1640,7 +1671,7 @@ public class DocumentMapper {
         // Create a db connection and execte sp DocumentDelete on meta_id
         service.sqlUpdateProcedure( "DocumentDelete", new String[]{"" + document.getId()} );
         service.updateLogs( "Document  " + "[" + document.getId() + "] ALL deleted by user: [" +
-                         user.getFullName() + "]" );
+                            user.getFullName() + "]" );
 
     }
 
