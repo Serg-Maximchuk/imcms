@@ -7,27 +7,17 @@ import imcode.util.* ;
 
 public class ReDirecter extends HttpServlet {
 
-    private final static int METAID_OFFSET_FROM_REDIRECT_STRING=2;
-    private final static String REDIRECT_STRING="RD";
+    private final static int METAID_OFFSET=1;
 
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
-    {
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 	String host = req.getHeader("host");
 	String servlet_url	= Utility.getDomainPref( "servlet_url",host );
-	String reqa=req.getRequestURI();
-	String[] sURI=split(reqa,'/',false);
+	String[] pathElements = split(req.getPathInfo(),'/',false);
 
-	for (int i=1; i<sURI.length; i++ ){
-	    if (sURI[i].equals(REDIRECT_STRING) ){
-		if (sURI.length<=i+METAID_OFFSET_FROM_REDIRECT_STRING)
-		    {
-			res.sendRedirect(servlet_url + "StartDoc");
-			break;
-		    }else{
-			res.sendRedirect(servlet_url + "GetDoc?meta_id=" + sURI[i+METAID_OFFSET_FROM_REDIRECT_STRING]);
-			break;
-		    }
-	    }
+	if (pathElements.length > METAID_OFFSET) {
+	    res.sendRedirect(servlet_url + "GetDoc?meta_id=" + pathElements[METAID_OFFSET]);
+	} else {
+	    res.sendRedirect(servlet_url + "StartDoc");
 	}
     }
 
