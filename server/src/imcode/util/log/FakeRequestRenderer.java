@@ -53,8 +53,10 @@ public class FakeRequestRenderer implements ObjectRenderer {
 
 	StringBuffer result = new StringBuffer() ;
 	result.append('/') ;
-	if (null != section) {
+	if (null != section && !"".equals(section)) {
 	    result.append(lossyUrlEncode(section)) ;
+	} else {
+	    result.append('+') ;
 	}
 	result.append('/') ;
 	result.append(metaId) ;
