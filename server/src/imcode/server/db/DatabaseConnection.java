@@ -27,14 +27,14 @@ public class DatabaseConnection {
             PreparedStatement preparedStatement = this.connection.prepareStatement( sql );
             setPreparedStatementParameters( preparedStatement, parameters );
             preparedStatement.execute();
-            String result = null ;
-            if (preparedStatement.getMoreResults()) {
+            String result = null;
+            if ( preparedStatement.getMoreResults() ) {
                 ResultSet resultSet = preparedStatement.getResultSet();
-                if (resultSet.next()) {
-                    result = resultSet.getString( 1 ) ;
+                if ( resultSet.next() ) {
+                    result = resultSet.getString( 1 );
                 }
             }
-            return result ;
+            return result;
         } catch ( SQLException se ) {
             throw new UnhandledException( se );
         }
@@ -46,11 +46,11 @@ public class DatabaseConnection {
             setPreparedStatementParameters( preparedStatement, parameters );
             preparedStatement.executeUpdate();
             ResultSet generatedKeysResultSet = preparedStatement.getGeneratedKeys();
-            Number result = null ;
+            Number result = null;
             if ( generatedKeysResultSet.next() ) {
                 result = (Number)generatedKeysResultSet.getObject( 1 );
             }
-            return result ;
+            return result;
         } catch ( SQLException se ) {
             throw new UnhandledException( se );
         }
