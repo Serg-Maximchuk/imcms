@@ -56,7 +56,7 @@ public class FakeRequestRenderer implements ObjectRenderer {
 	if (null != section && !"".equals(section)) {
 	    result.append(lossyUrlEncode(section)) ;
 	} else {
-	    result.append('+') ;
+	    result.append('_') ;
 	}
 	result.append('/') ;
 	result.append(metaId) ;
@@ -78,8 +78,8 @@ public class FakeRequestRenderer implements ObjectRenderer {
 	for (int i = 0; i < url.length(); ++i) {
 	    char c = url.charAt(i) ;
 	    if (' ' == c) {
-		// Spaces convert to '+'
-		result.append('+') ;
+		// Spaces convert to '_'
+		result.append('_') ;
 	    } else if (',' == c || '.' == c || '-' == c || '_' == c) {
 		// We explicitly allow some punctuation that are known safe url-characters.
 		// Everything else is likely to break somewhere, somehow.
