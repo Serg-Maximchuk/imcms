@@ -430,9 +430,8 @@ DROP PROCEDURE SearchDocsIndex
 -- 2004-03-05 Kreiger
 -- 1_8_2-RELEASE
 
-print ' OBS !!!!! '
-print 'Följande åtgärder behöver genomföras efter detta script '
+print ' PLEASE NOTE !!!!! '
 print ''
-print '1. Du MÅSTE köra hela "sprocs.sql" som finns i "dist" katalogen'
+print 'You have to run the sql script "imcms-sprocs-1.8.2.sql" on imCMS database '
 print ''
 GO

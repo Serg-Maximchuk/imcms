@@ -7,10 +7,9 @@ GO
 -- 2003-11-28 Lennart
 -- 1_7_5-RELEASE
 
-print ' OBS !!!!! '
-print 'Följande åtgärder behöver genomföras efter detta script '
-print ''
-print '1. Du MÅSTE köra hela "sprocs.sql" som finns i "dist" katalogen'
-print ''
 
+print ' PLEASE NOTE !!!!! '
+print ''
+print 'You have to run the sql script "sprocs.sql" on imCMS database '
+print ''
 GO

@@ -31,10 +31,9 @@ where sort_by_id = 3 AND lang_id = 2
 -- 1_8_0-RELEASE
 
 
-print ' OBS !!!!! '
-print 'Följande åtgärder behöver genomföras efter detta script '
+print ' PLEASE NOTE !!!!! '
 print ''
-print '1. Du MÅSTE köra hela "sprocs.sql" som finns i "dist" katalogen'
+print 'You have to run the sql script "imcms-sprocs-1.8.0.sql" on imCMS database '
 print ''
 
 GO
