@@ -143,18 +143,14 @@ public class MagazineSubscriptions extends HttpServlet {
 
     private String urlEncodeParameters(String[] flags, String[] setFlags, String next_url) {
 	StringBuffer result = new StringBuffer() ;
-	try {
-	    for (int i = 0; i < flags.length; ++i) {
-		result.append("flag=").append(URLEncoder.encode(flags[i],"UTF-8")).append('&') ;
-	    }
-	    for (int i = 0; i < setFlags.length; ++i) {
-		result.append("setflag=").append(URLEncoder.encode(setFlags[i],"UTF-8")).append('&') ;
-	    }
-	    if (null != next_url) {
-		result.append("next_url=").append(URLEncoder.encode(next_url,"UTF-8")) ;
-	    }
-	} catch (UnsupportedEncodingException uee) {
-	    /* WTF isn't UnsupportedEncodingException a RuntimeException? */
+	for (int i = 0; i < flags.length; ++i) {
+	    result.append("flag=").append(URLEncoder.encode(flags[i])).append('&') ;
+	}
+	for (int i = 0; i < setFlags.length; ++i) {
+	    result.append("setflag=").append(URLEncoder.encode(setFlags[i])).append('&') ;
+	}
+	if (null != next_url) {
+	    result.append("next_url=").append(URLEncoder.encode(next_url)) ;
 	}
 	return result.toString() ;
     }
