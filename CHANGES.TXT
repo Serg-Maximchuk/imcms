@@ -1,3 +1,20 @@
+Version 1.9.3:
+
+* Only show links to documents which the user has at least read permission on,
+  or which are visible to non-authorized users. (Bug 2387)
+
+
+Version 1.9.2:
+
+* Fixed exception when adding documents to a menu sorted by "manual" order. (Bug 2390)
+* Remove documents from the index when deleted. (Bug 2365)
+
+
+Version 1.9.1:
+
+* Made the indexing a little more robust. (Bugs 2354, 2361, 2362)
+
+
 Version 1.9.0:
 
 = Of interest to users:
