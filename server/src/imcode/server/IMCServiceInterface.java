@@ -32,8 +32,7 @@ import java.util.* ;
 public interface IMCServiceInterface extends java.rmi.Remote {
 
 	// Verify a Internet/Intranet user. Data from any SQL Database.
-	imcode.server.User verifyUser(imcode.server.LoginUser login_user,String fieldNames[])
-	throws java.rmi.RemoteException ;
+	imcode.server.User verifyUser(String username, String password)	throws java.rmi.RemoteException ;
 
 	// Read an Imcode admin template file and output a HTML String object.
 	String interpretAdminTemplate(int meta_id,imcode.server.User user,String template_name,int index,
