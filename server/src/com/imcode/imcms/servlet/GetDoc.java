@@ -57,7 +57,6 @@ public class GetDoc extends HttpServlet {
             throws IOException {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
 
-        File file_path = Utility.getDomainPrefPath( "file_path" );
 
         Vector vec = new Vector();
         SystemData sysData = imcref.getSystemData();
@@ -66,12 +65,6 @@ public class GetDoc extends HttpServlet {
         vec.add( eMailServerMaster );
 
         HttpSession session = req.getSession( true );
-        if ( session.getAttribute( "open poll popup" ) != null ) {
-            String poll_meta_id = (String)session.getAttribute( "open poll popup" );
-            session.removeAttribute( "open poll popup" );
-            res.sendRedirect( "../popup.jsp?meta_id=" + meta_id + "&popup_meta_id=" + poll_meta_id );
-            return null;
-        }
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
         Stack history = (Stack)user.get( "history" );
