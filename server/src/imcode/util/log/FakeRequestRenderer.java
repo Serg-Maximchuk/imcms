@@ -21,8 +21,6 @@ public class FakeRequestRenderer implements ObjectRenderer {
 
 	DocumentRequest docReq = (DocumentRequest) o ;
 
-	HttpServletRequest httpServletRequest = docReq.getHttpServletRequest() ;
-
 	Document document = docReq.getDocument() ;
 	Document referrer = docReq.getReferrer() ;
 	Revisits revisits ;
@@ -37,9 +35,9 @@ public class FakeRequestRenderer implements ObjectRenderer {
 	if (null != revisits.getRevisitsDate()) {
 		result.append(revisits.getRevisitsDate()) ;
 	}
-	result.append(' ').append(httpServletRequest.getContextPath()).append(REDIRECT_PREFIX).append(renderDocument(document)) ;
+	result.append(' ').append(docReq.getContextPath()).append(REDIRECT_PREFIX).append(renderDocument(document)) ;
 	if (null != referrer) {
-	    result.append(' ').append(httpServletRequest.getContextPath()).append(REDIRECT_PREFIX).append(renderDocument(referrer)) ;
+	    result.append(' ').append(docReq.getContextPath()).append(REDIRECT_PREFIX).append(renderDocument(referrer)) ;
 	}
 
 	return result.toString() ;

@@ -14,6 +14,7 @@ public class DocumentRequest {
     private String   sessionId ;
     private String   userAgent ;
     private String   hostName ;
+    private String   contextPath ;
 
     private User     user ;
     private Document document ;
@@ -22,8 +23,6 @@ public class DocumentRequest {
     private IMCServiceInterface serverObject ;
     private Revisits revisits ;
     private Cookie[] cookies;
-
-    private HttpServletRequest httpServletRequest ;
 
     public DocumentRequest(IMCServiceInterface serverObject, String remoteAddr, String sessionId, User user, int metaId, Document referrer) {
 	this.serverObject = serverObject ;
@@ -92,12 +91,12 @@ public class DocumentRequest {
 	return this.hostName;
     }
 
-    public void setHttpServletRequest(HttpServletRequest req) {
-	this.httpServletRequest = req ;
+    public void setContextPath(String contextPath) {
+	this.contextPath = contextPath ;
     }
 
-    public HttpServletRequest getHttpServletRequest() {
-	return httpServletRequest ;
+    public String getContextPath() {
+	return contextPath ;
     }
 
 }

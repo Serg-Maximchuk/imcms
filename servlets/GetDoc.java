@@ -148,7 +148,7 @@ public class GetDoc extends HttpServlet {
 	}
 	try {
 	    documentRequest = new DocumentRequest(imcref,req.getRemoteAddr(),session.getId(), user,meta_id,referringDocument) ;
-	    documentRequest.setHttpServletRequest(req) ;
+	    documentRequest.setContextPath(req.getContextPath()) ;
 	    documentRequest.setUserAgent(req.getHeader("User-agent")) ;
 	    documentRequest.setHostName(req.getHeader("Host"));
 
