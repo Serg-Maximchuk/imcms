@@ -109,25 +109,23 @@ public class GetDoc extends HttpServlet {
 
 	    // get type of browser
 	    String value = req.getHeader( "User-Agent" ) ;
-  
+
 	    if ( value == null ) {
 		value = "" ;
 	    }
 	    session.setAttribute("browser_id",value) ;
 
 	    StartDoc.incrementSessionCounter(imcref,user,req) ;
-		
-		
-	}
-	
-	if (session.getAttribute("open poll popup") != null) {
-			String poll_meta_id = (String)session.getAttribute("open poll popup");
-			session.removeAttribute("open poll popup");
-	    	res.sendRedirect("../popup.jsp?meta_id="+ meta_id + "&popup_meta_id="+poll_meta_id) ;
-	    	return null ;
-	}
-	
 
+
+	}
+
+	if (session.getAttribute("open poll popup") != null) {
+	    String poll_meta_id = (String)session.getAttribute("open poll popup");
+	    session.removeAttribute("open poll popup");
+	    res.sendRedirect("../popup.jsp?meta_id="+ meta_id + "&popup_meta_id="+poll_meta_id) ;
+	    return null ;
+	}
 
 	String[] emp_ary = req.getParameterValues("emp") ;
 	if (emp_ary != null) {
@@ -147,27 +145,28 @@ public class GetDoc extends HttpServlet {
 	    } catch (IndexOutOfBoundsException ex) {
 		referringDocument = null ;
 	    }
- 	}
+	}
 	try {
 	    documentRequest = new DocumentRequest(imcref,req.getRemoteAddr(),session.getId(), user,meta_id,referringDocument) ;
+	    documentRequest.setHttpServletRequest(req) ;
 	    documentRequest.setUserAgent(req.getHeader("User-agent")) ;
-		documentRequest.setHostName(req.getHeader("Host"));
-	    revisits = new Revisits() ;
+	    documentRequest.setHostName(req.getHeader("Host"));
 
-	    // Get all cookies from request 
-		Cookie[] cookies = req.getCookies() ;
-		
-		// add all cookies to documentRequest
-		documentRequest.setCookies(cookies) ;
-		
+	    // Get all cookies from request
+	    Cookie[] cookies = req.getCookies() ;
+
+	    // add all cookies to documentRequest
+	    documentRequest.setCookies(cookies) ;
 
 	    // Find cookies and put in hash.
 	    Hashtable cookieHash = new Hashtable() ;
 
 	    for (int i = 0; cookies != null && i < cookies.length; ++i) {
-			Cookie currentCookie=cookies[i] ;
-			cookieHash.put(currentCookie.getName(), currentCookie.getValue()) ;
+		Cookie currentCookie=cookies[i] ;
+		cookieHash.put(currentCookie.getName(), currentCookie.getValue()) ;
 	    }
+
+	    revisits = new Revisits() ;
 
 	    if (cookieHash.get("imVisits")==null)
 		{

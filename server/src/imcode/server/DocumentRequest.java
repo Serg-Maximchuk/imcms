@@ -1,7 +1,9 @@
 package imcode.server ;
 
-import imcode.server.parser.* ;
 import javax.servlet.http.Cookie ;
+import javax.servlet.http.HttpServletRequest ;
+
+import imcode.server.parser.* ;
 
 /**
    This class exists to store data about requests for documents in.
@@ -11,7 +13,7 @@ public class DocumentRequest {
     private String   remoteAddr ;
     private String   sessionId ;
     private String   userAgent ;
-	private String   hostName ;
+    private String   hostName ;
 
     private User     user ;
     private Document document ;
@@ -19,8 +21,9 @@ public class DocumentRequest {
 
     private IMCServiceInterface serverObject ;
     private Revisits revisits ;
-	private Cookie[] cookies;
-	
+    private Cookie[] cookies;
+
+    private HttpServletRequest httpServletRequest ;
 
     public DocumentRequest(IMCServiceInterface serverObject, String remoteAddr, String sessionId, User user, int metaId, Document referrer) {
 	this.serverObject = serverObject ;
@@ -29,8 +32,8 @@ public class DocumentRequest {
 	this.user         = user ;
 	this.document     = serverObject.getDocument(metaId) ;
 	this.referrer     = referrer ;
-	 
-	}
+
+    }
 
     public IMCServiceInterface getServerObject() {
 	return this.serverObject ;
@@ -70,23 +73,31 @@ public class DocumentRequest {
 
     public String getUserAgent() {
 	return this.userAgent ;
-	}
-	
-	
-	public void setCookies(Cookie[] cookies){
-		this.cookies = cookies;
-	}
-	
-	public Cookie[] getCookies() {
+    }
+
+
+    public void setCookies(Cookie[] cookies){
+	this.cookies = cookies;
+    }
+
+    public Cookie[] getCookies() {
 	return this.cookies;
-	}
-	
-	public void setHostName(String hostName){
-		this.hostName = hostName;
-	}
-	
-	public String getHostName() {
+    }
+
+    public void setHostName(String hostName){
+	this.hostName = hostName;
+    }
+
+    public String getHostName() {
 	return this.hostName;
-	}
-	
+    }
+
+    public void setHttpServletRequest(HttpServletRequest req) {
+	this.httpServletRequest = req ;
+    }
+
+    public HttpServletRequest getHttpServletRequest() {
+	return httpServletRequest ;
+    }
+
 }
