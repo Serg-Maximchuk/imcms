@@ -66,9 +66,8 @@ public class SaveFileUpload extends HttpServlet {
 			bytes_read += in.read(buffer,bytes_read,length-bytes_read) ;
 		}
 
-		String contentType = req.getContentType() ;
+		String contentType = "multipart/form-data" ; // We might as well do this, because we are screwed anyway if the content-type isn't this one.
 		MultipartFormdataParser mp = new MultipartFormdataParser(new String(buffer,"8859_1"),contentType) ;
-
 
 		String meta_id = mp.getParameter("meta_id") ;
 		int meta_id_int = Integer.parseInt(meta_id) ;
