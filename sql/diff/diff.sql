@@ -1163,8 +1163,6 @@ INSERT INTO templates ( template_id , template_name , simple_name , lang_prefix 
 INSERT INTO templates_cref(group_id, template_id)
 	values (@example_groupId, @poll_confirmation_templateId)
 
-
-
 print ' OBS !!!!! '
 print 'Följande åtgärder behöver genomföras efter detta script '
 print ''
@@ -1174,10 +1172,93 @@ print 'poll_form_template.html  till ' + convert (varchar(5), @poll_form_templat
 print 'poll_result_default_template.html  till ' + convert (varchar(5), @poll_result_default_templateId) + '.html'
 print 'poll_confirmation_template.html  till ' + convert (varchar(5), @poll_confirmation_templateId) + '.html'
 
--- 2003-03-13  Lennart Å
-
 GO
 
+-- 2003-03-13  Lennart Å
+
+/* Add columns email_from and email_subject to polls table */
+
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+ALTER TABLE dbo.polls
+	DROP CONSTRAINT DF_polls_popup_freq
+GO
+ALTER TABLE dbo.polls
+	DROP CONSTRAINT DF_polls_enable_cookie
+GO
+ALTER TABLE dbo.polls
+	DROP CONSTRAINT DF_polls_showresult
+GO
+CREATE TABLE dbo.Tmp_polls
+	(
+	id int NOT NULL IDENTITY (1, 1),
+	name int NULL,
+	description int NULL,
+	meta_id int NOT NULL,
+	popup_freq int NOT NULL,
+	set_cookie bit NOT NULL,
+	hide_result bit NOT NULL,
+	confirmation_text int NULL,
+	email_recipients int NULL,
+	email_from int NULL,
+	email_subject int NULL,
+	result_template int NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE dbo.Tmp_polls ADD CONSTRAINT
+	DF_polls_popup_freq DEFAULT (0) FOR popup_freq
+GO
+ALTER TABLE dbo.Tmp_polls ADD CONSTRAINT
+	DF_polls_enable_cookie DEFAULT (0) FOR set_cookie
+GO
+ALTER TABLE dbo.Tmp_polls ADD CONSTRAINT
+	DF_polls_showresult DEFAULT (0) FOR hide_result
+GO
+SET IDENTITY_INSERT dbo.Tmp_polls ON
+GO
+IF EXISTS(SELECT * FROM dbo.polls)
+	 EXEC('INSERT INTO dbo.Tmp_polls (id, name, description, meta_id, popup_freq, set_cookie, hide_result, confirmation_text, email_recipients, result_template)
+		SELECT id, name, description, meta_id, popup_freq, set_cookie, hide_result, confirmation_text, email_recipients, result_template FROM dbo.polls TABLOCKX')
+GO
+SET IDENTITY_INSERT dbo.Tmp_polls OFF
+GO
+ALTER TABLE dbo.poll_questions
+	DROP CONSTRAINT FK_poll_questions_polls
+GO
+DROP TABLE dbo.polls
+GO
+EXECUTE sp_rename N'dbo.Tmp_polls', N'polls', 'OBJECT'
+GO
+ALTER TABLE dbo.polls ADD CONSTRAINT
+	PK_polls PRIMARY KEY CLUSTERED 
+	(
+	id
+	) ON [PRIMARY]
+
+GO
+COMMIT
+BEGIN TRANSACTION
+ALTER TABLE dbo.poll_questions WITH NOCHECK ADD CONSTRAINT
+	FK_poll_questions_polls FOREIGN KEY
+	(
+	poll_id
+	) REFERENCES dbo.polls
+	(
+	id
+	)
+GO
+COMMIT
+
+-- 2003-05-20 Kreiger
 
 print ' OBS !!!!! '
 print 'Följande åtgärder behöver genomföras efter detta script '
