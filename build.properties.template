@@ -30,7 +30,7 @@ db-pass =
 db-maxconnections = 20
 
 db-driver = com.microsoft.jdbc.sqlserver.SQLServerDriver
-db-url-without-db-name = jdbc:microsoft:sqlserver://${db-host}:${db-port};SelectMethod=direct;ProgramName=imCMS
+db-url-without-db-name = jdbc:microsoft:sqlserver://${db-host}:${db-port};SelectMethod=cursor;ProgramName=imCMS
 db-url = ${db-url-without-db-name};DatabaseName=${db-name}
 
 
@@ -118,7 +118,7 @@ log4j-config = log4j-nodebug.xml
 tomcat-admin-username = admin
 tomcat-admin-password =
 tomcat-webapp-manager-url = http://localhost:8080/manager
-tomcat-deployroot-local-directory = 
+tomcat-deployroot-local-directory =
 
 
 # If you want to include an addon under addons/ in the build, name the directory here.

@@ -4,7 +4,7 @@ import com.mockobjects.ExpectationList;
 import com.mockobjects.MockObject;
 import imcode.server.IMCServiceInterface;
 import imcode.server.SystemData;
-import imcode.server.db.ConnectionPool;
+import imcode.server.db.Database;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentMapper;
 import imcode.server.document.TemplateMapper;
@@ -69,10 +69,6 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
 
     public void saveTreeSortIndex( int meta_id, UserDomainObject user, List childs, List sort_no, int menuNumber ) {
         // TODO
-    }
-
-    public ConnectionPool getConnectionPool() {
-        return null;  //To change body of implemented methods use Options | File Templates.
     }
 
     public String sqlQueryStr( String sqlStr, String[] params ) {
@@ -339,6 +335,10 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
     }
 
     public VelocityContext getVelocityContext( UserDomainObject user ) {
+        return null;  // TODO
+    }
+
+    public Database getDatabase() {
         return null;  // TODO
     }
 

@@ -1,10 +1,10 @@
 package imcode.server;
 
 import imcode.server.db.ConnectionPool;
-import imcode.server.db.SqlHelpers;
+import imcode.server.db.Database;
 import imcode.server.document.*;
-import imcode.server.document.textdocument.TextDomainObject;
 import imcode.server.document.textdocument.ImageDomainObject;
+import imcode.server.document.textdocument.TextDomainObject;
 import imcode.server.parser.ParserParameters;
 import imcode.server.parser.TextDocumentParser;
 import imcode.server.user.*;
@@ -15,8 +15,8 @@ import imcode.util.poll.PollHandlingSystem;
 import imcode.util.poll.PollHandlingSystemImpl;
 import imcode.util.shop.ShoppingOrderSystem;
 import imcode.util.shop.ShoppingOrderSystemImpl;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.NullArgumentException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 import org.apache.oro.text.perl.Perl5Util;
@@ -24,19 +24,12 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import java.io.*;
-import java.text.Collator;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
 
 final public class IMCService implements IMCServiceInterface {
 
-    public ConnectionPool getConnectionPool() {
-        return m_conPool;
-    }
-
-    private final ConnectionPool m_conPool;
+    private Database database;
     private TextDocumentParser textDocParser;
 
     private File templatePath;           // template home
@@ -80,7 +73,7 @@ final public class IMCService implements IMCServiceInterface {
      * Contructs an IMCService object.
      */
     public IMCService( ConnectionPool conPool, Properties props ) {
-        m_conPool = conPool;
+        database = new Database( conPool );
         initMemberFields( props );
         initAuthenticatorsAndUserAndRoleMappers( props );
         initDocumentMapper();
@@ -465,18 +458,18 @@ final public class IMCService implements IMCServiceInterface {
     }
 
     public String[] sqlQuery( String sqlQuery, String[] parameters ) {
-        return SqlHelpers.sqlQuery( m_conPool, sqlQuery, parameters );
+        return database.sqlQuery( sqlQuery, parameters );
     }
 
     public String sqlQueryStr( String sqlStr, String[] params ) {
-        return SqlHelpers.sqlQueryStr( m_conPool, sqlStr, params );
+        return database.sqlQueryStr( sqlStr, params );
     }
 
     /**
      * Send a sql update query to the database
      */
     public int sqlUpdateQuery( String sqlStr, String[] params ) {
-        return SqlHelpers.sqlUpdateQuery( m_conPool, sqlStr, params );
+        return database.sqlUpdateQuery( sqlStr, params );
     }
 
     /**
@@ -487,7 +480,7 @@ final public class IMCService implements IMCServiceInterface {
      * @param params    The parameters of the procedure
      */
     public String[] sqlProcedure( String procedure, String[] params ) {
-        return SqlHelpers.sqlProcedure( m_conPool, procedure, params );
+        return database.sqlProcedure( procedure, params );
     }
 
     /**
@@ -498,11 +491,11 @@ final public class IMCService implements IMCServiceInterface {
      * @return updateCount or -1 if error
      */
     public int sqlUpdateProcedure( String procedure, String[] params ) {
-        return SqlHelpers.sqlUpdateProcedure( m_conPool, procedure, params );
+        return database.sqlUpdateProcedure( procedure, params );
     }
 
     public String sqlProcedureStr( String procedure, String[] params ) {
-        return SqlHelpers.sqlProcedureStr( m_conPool, procedure, params );
+        return database.sqlProcedureStr( procedure, params );
     }
 
     public DocumentMapper getDocumentMapper() {
@@ -635,6 +628,10 @@ final public class IMCService implements IMCServiceInterface {
         return context;
     }
 
+    public Database getDatabase() {
+        return database ;
+    }
+
     /**
      * @deprecated Ugly use {@link IMCServiceInterface#getTemplateFromDirectory(String,imcode.server.user.UserDomainObject,java.util.List,String)}
      *             or something else instead.
@@ -728,22 +725,22 @@ final public class IMCService implements IMCServiceInterface {
     }
 
     public Map sqlQueryHash( String sqlQuery, String[] params ) {
-        return SqlHelpers.sqlQueryHash( m_conPool, sqlQuery, params );
+        return database.sqlQueryHash( sqlQuery, params );
     }
 
     public Map sqlProcedureHash( String procedure, String[] params ) {
-        return SqlHelpers.sqlProcedureHash( m_conPool, procedure, params );
+        return database.sqlProcedureHash( procedure, params );
     }
 
     /**
      * Send a procedure to the database and return a multi string array
      */
     public String[][] sqlProcedureMulti( String procedure, String[] params ) {
-        return SqlHelpers.sqlProcedureMulti( m_conPool, procedure, params );
+        return database.sqlProcedureMulti( procedure, params );
     }
 
     public String[][] sqlQueryMulti( String sqlQuery, String[] params ) {
-        return SqlHelpers.sqlQueryMulti( m_conPool, sqlQuery, params );
+        return database.sqlQueryMulti( sqlQuery, params );
     }
 
     /**

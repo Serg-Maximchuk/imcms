@@ -1,20 +1,23 @@
 package imcode.server ;
 
-import java.io.* ;
-import java.util.* ;
-import java.text.Collator;
-
-import imcode.server.parser.ParserParameters ;
-import imcode.server.user.*;
+import imcode.server.db.ConnectionPool;
+import imcode.server.db.Database;
+import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentMapper;
 import imcode.server.document.TemplateMapper;
-import imcode.server.document.DocumentDomainObject;
-import imcode.server.document.textdocument.TextDomainObject;
 import imcode.server.document.textdocument.ImageDomainObject;
-import imcode.server.db.ConnectionPool;
+import imcode.server.document.textdocument.TextDomainObject;
+import imcode.server.parser.ParserParameters;
+import imcode.server.user.ImcmsAuthenticatorAndUserMapper;
+import imcode.server.user.UserDomainObject;
 import imcode.util.net.SMTP;
-import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.Collator;
+import java.util.*;
 
 /**
  * Interface for the Imcode Net Server.
@@ -113,7 +116,7 @@ public interface IMCServiceInterface {
 	;
 
     // get language prefix by id
-    public String getLanguagePrefixByLangId ( int lang_id ); 
+    public String getLanguagePrefixByLangId ( int lang_id );
 
     // get language prefix for user
     public String getUserLangPrefixOrDefaultLanguage( UserDomainObject user )
@@ -202,8 +205,6 @@ public interface IMCServiceInterface {
 
     void updateLogs( String logMessage );
 
-    ConnectionPool getConnectionPool();
-
     DocumentMapper getDocumentMapper();
 
     ImcmsAuthenticatorAndUserMapper getImcmsAuthenticatorAndUserAndRoleMapper();
@@ -245,4 +246,6 @@ public interface IMCServiceInterface {
     VelocityEngine getVelocityEngine(UserDomainObject user);
 
     VelocityContext getVelocityContext( UserDomainObject user );
+
+    Database getDatabase();
 }
