@@ -3,7 +3,7 @@ package imcode.server ;
 import java.util.* ;
 
 public class User extends Hashtable {
-	//Hashtable userTable = new Hashtable(10,0.5f) ;
+
 	boolean admin_mode = false ;
 	int archive_mode = 0 ;
 	String browser_info[] = new String[3] ;
@@ -11,9 +11,6 @@ public class User extends Hashtable {
 	String last_request = "" ;
 	String login_type = "verify" ;
 	int template_group = -1 ;
-
-
-
 
 	public User() {
 		super(10,0.5f) ;

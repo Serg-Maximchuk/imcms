@@ -5,7 +5,6 @@ SOURCE  = \
         DBConnect.java \
         Preference.java \
         InetPoolManager.java \
-        LoginUser.java \
         User.java \
         IMCPoolInterface.java \
         IMCPool.java \
