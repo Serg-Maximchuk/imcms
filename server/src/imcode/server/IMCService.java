@@ -3016,4 +3016,8 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	return theFlags ;
     }
 
+    public ShoppingOrderSystem getShoppingOrderSystem() {
+	return new ShoppingOrderSystemImpl(this) ;
+    }
+
 }

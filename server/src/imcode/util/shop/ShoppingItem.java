@@ -5,13 +5,13 @@ import java.util.* ;
 /**
    Class representing one ShoppingItem
 **/
-public class ShoppingItem {
+public class ShoppingItem implements Comparable {
 
     /** The price of the item **/
     private double price = 0 ;
 
     /** The descriptions of the item, maps Integer to String **/
-    private Map descriptions = new HashMap() ;
+    private Map descriptions = new TreeMap() ;
 
     /**
        get-method for price
@@ -66,6 +66,41 @@ public class ShoppingItem {
 
     public int hashCode() {
 	return (new Double(price)).hashCode() ^ descriptions.hashCode() ;
+    }
+
+    /** Compare a ShoppingItem to another. **/
+    public int compareTo(Object o) {
+	ShoppingItem item = (ShoppingItem)o ;
+	if (equals(item)) {
+	    return 0 ;
+	}
+
+	/* Compare descriptions. */
+	Iterator it1 = descriptions.entrySet().iterator() ;
+	Iterator it2 = item.descriptions.entrySet().iterator() ;
+	while (it1.hasNext() || it2.hasNext()) {
+	    if (it1.hasNext() && it2.hasNext()) {
+		Map.Entry desc1 = (Map.Entry)it1.next() ;
+		Map.Entry desc2 = (Map.Entry)it2.next() ;
+		int descCompare = ((Integer)desc1.getKey()).compareTo(desc2.getKey()) ;
+		if (0 != descCompare) {
+		    return descCompare ;
+		}
+		descCompare = ((String)desc1.getValue()).compareTo(desc2.getValue()) ;
+		if (0 != descCompare) {
+		    return descCompare ;
+		}
+	    } else {
+		return it1.hasNext() ? 1 : -1 ; // Does it1 have more descriptions?
+	    }
+	}
+	/* Compare price */
+	if (price < item.price) {
+	    return -1 ;
+	} else if (price > item.price) {
+	    return +1 ;
+	}
+	return 0 ;
     }
 
 }

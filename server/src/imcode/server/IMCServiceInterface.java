@@ -397,4 +397,6 @@ public interface IMCServiceInterface {
 
     public void unsetUserFlag(User user, String flagName);
 
+    /** Get an interface to the shopping order system **/
+    public imcode.util.shop.ShoppingOrderSystem getShoppingOrderSystem() ;
 }

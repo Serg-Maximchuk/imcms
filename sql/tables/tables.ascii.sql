@@ -110,6 +110,14 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_meta_se
 ALTER TABLE [dbo].[meta_section] DROP CONSTRAINT FK_meta_section_section
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_shopping_order_item_descriptions_shopping_order_items]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE [dbo].[shopping_order_item_descriptions] DROP CONSTRAINT FK_shopping_order_item_descriptions_shopping_order_items
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_shopping_order_items_shopping_orders]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE [dbo].[shopping_order_items] DROP CONSTRAINT FK_shopping_order_items_shopping_orders
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_display_name_sort_by]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
 ALTER TABLE [dbo].[display_name] DROP CONSTRAINT FK_display_name_sort_by
 GO
@@ -280,6 +288,18 @@ GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[sections]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 drop table [dbo].[sections]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[shopping_order_item_descriptions]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[shopping_order_item_descriptions]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[shopping_order_items]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[shopping_order_items]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[shopping_orders]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[shopping_orders]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[sort_by]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
@@ -633,6 +653,28 @@ CREATE TABLE [dbo].[sections] (
 ) ON [PRIMARY]
 GO
 
+CREATE TABLE [dbo].[shopping_order_item_descriptions] (
+	[item_id] [int] NOT NULL ,
+	[number] [int] NOT NULL ,
+	[description] [varchar] (100) NOT NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[shopping_order_items] (
+	[item_id] [int] IDENTITY (1, 1) NOT NULL ,
+	[order_id] [int] NOT NULL ,
+	[quantity] [int] NOT NULL ,
+	[price] [money] NOT NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[shopping_orders] (
+	[order_id] [int] IDENTITY (1, 1) NOT NULL ,
+	[order_datetime] [datetime] NOT NULL ,
+	[user_id] [int] NOT NULL 
+) ON [PRIMARY]
+GO
+
 CREATE TABLE [dbo].[sort_by] (
 	[sort_by_id] [int] IDENTITY (1, 1) NOT NULL ,
 	[sort_by_type] [varchar] (30) NOT NULL 
@@ -829,6 +871,28 @@ ALTER TABLE [dbo].[sections] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
+ALTER TABLE [dbo].[shopping_order_item_descriptions] WITH NOCHECK ADD 
+	CONSTRAINT [PK_shopping_order_item_descriptions] PRIMARY KEY  CLUSTERED 
+	(
+		[item_id],
+		[number]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[shopping_order_items] WITH NOCHECK ADD 
+	CONSTRAINT [PK_shopping_order_items] PRIMARY KEY  CLUSTERED 
+	(
+		[item_id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[shopping_orders] WITH NOCHECK ADD 
+	CONSTRAINT [PK_shopping_orders] PRIMARY KEY  CLUSTERED 
+	(
+		[order_id]
+	)  ON [PRIMARY] 
+GO
+
 ALTER TABLE [dbo].[sort_by] WITH NOCHECK ADD 
 	CONSTRAINT [PK_sort_by] PRIMARY KEY  CLUSTERED 
 	(
@@ -894,7 +958,7 @@ GO
  CREATE  CLUSTERED  INDEX [roles_rights_meta_id] ON [dbo].[roles_rights]([meta_id], [role_id], [set_id]) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[browser_docs] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[browser_docs] ADD 
 	CONSTRAINT [DF_browser_docs_browser_id] DEFAULT (0) FOR [browser_id],
 	CONSTRAINT [PK_browser_docs] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -904,7 +968,7 @@ ALTER TABLE [dbo].[browser_docs] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[browsers] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[browsers] ADD 
 	CONSTRAINT [DF_browsers_value] DEFAULT (1) FOR [value],
 	CONSTRAINT [PK_browsers] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -915,7 +979,7 @@ GO
  CREATE  INDEX [IX_browsers] ON [dbo].[browsers]([value]) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[childs] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[childs] ADD 
 	CONSTRAINT [PK_childs] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -924,14 +988,14 @@ ALTER TABLE [dbo].[childs] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[classification] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[classification] ADD 
 	CONSTRAINT [PK_classification] PRIMARY KEY  NONCLUSTERED 
 	(
 		[class_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[doc_permission_sets] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[doc_permission_sets] ADD 
 	CONSTRAINT [PK_doc_permission_sets] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -939,7 +1003,7 @@ ALTER TABLE [dbo].[doc_permission_sets] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[doc_permission_sets_ex] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[doc_permission_sets_ex] ADD 
 	CONSTRAINT [PK_permission_sets_ex] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -949,7 +1013,7 @@ ALTER TABLE [dbo].[doc_permission_sets_ex] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[doc_permissions] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[doc_permissions] ADD 
 	CONSTRAINT [PK_doc_permissions] PRIMARY KEY  NONCLUSTERED 
 	(
 		[permission_id],
@@ -958,7 +1022,7 @@ ALTER TABLE [dbo].[doc_permissions] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[doc_types] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[doc_types] ADD 
 	CONSTRAINT [DF_doc_types_lang_prefix] DEFAULT ('se') FOR [lang_prefix],
 	CONSTRAINT [PK_doc_types] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -973,21 +1037,21 @@ if (@@microsoftversion > 0x07000000 )
 EXEC ('CREATE STATISTICS [Statistic_type] ON [dbo].[doc_types] ([type]) ')
 GO
 
-ALTER TABLE [dbo].[fileupload_docs] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[fileupload_docs] ADD 
 	CONSTRAINT [PK_fileupload_docs] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[frameset_docs] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[frameset_docs] ADD 
 	CONSTRAINT [PK_frameset_docs] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[images] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[images] ADD 
 	CONSTRAINT [PK_images] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -995,14 +1059,14 @@ ALTER TABLE [dbo].[images] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[lang_prefixes] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[lang_prefixes] ADD 
 	CONSTRAINT [PK_lang_prefixes] PRIMARY KEY  NONCLUSTERED 
 	(
 		[lang_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[languages] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[languages] ADD 
 	CONSTRAINT [PK_languages] PRIMARY KEY  NONCLUSTERED 
 	(
 		[lang_prefix],
@@ -1010,14 +1074,14 @@ ALTER TABLE [dbo].[languages] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[meta] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[meta] ADD 
 	CONSTRAINT [PK_meta] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[meta_classification] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[meta_classification] ADD 
 	CONSTRAINT [PK_meta_classification] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1025,7 +1089,7 @@ ALTER TABLE [dbo].[meta_classification] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[mime_types] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[mime_types] ADD 
 	CONSTRAINT [DF_mime_types_lang_prefix] DEFAULT ('se') FOR [lang_prefix],
 	CONSTRAINT [PK_mime_types] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -1034,7 +1098,7 @@ ALTER TABLE [dbo].[mime_types] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[new_doc_permission_sets] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[new_doc_permission_sets] ADD 
 	CONSTRAINT [PK_new_doc_permission_sets] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1042,7 +1106,7 @@ ALTER TABLE [dbo].[new_doc_permission_sets] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[new_doc_permission_sets_ex] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[new_doc_permission_sets_ex] ADD 
 	CONSTRAINT [PK_new_doc_permission_sets_ex] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1052,14 +1116,14 @@ ALTER TABLE [dbo].[new_doc_permission_sets_ex] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[permission_sets] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[permission_sets] ADD 
 	CONSTRAINT [PK_permission_types] PRIMARY KEY  NONCLUSTERED 
 	(
 		[set_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[permissions] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[permissions] ADD 
 	CONSTRAINT [DF_permissions_lang_prefix] DEFAULT ('se') FOR [lang_prefix],
 	CONSTRAINT [PK_permissions] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -1068,7 +1132,7 @@ ALTER TABLE [dbo].[permissions] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[phones] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[phones] ADD 
 	CONSTRAINT [DF_phones_phonetype_id] DEFAULT (0) FOR [phonetype_id],
 	CONSTRAINT [PK_phones] PRIMARY KEY  NONCLUSTERED 
 	(
@@ -1077,11 +1141,11 @@ ALTER TABLE [dbo].[phones] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[readrunner_user_data] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[readrunner_user_data] ADD 
 	CONSTRAINT [DF_readrunner_user_data_expiry_date_warning_sent] DEFAULT (0) FOR [expiry_date_warning_sent]
 GO
 
-ALTER TABLE [dbo].[roles] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[roles] ADD 
 	CONSTRAINT [DF_roles_permissions] DEFAULT (0) FOR [permissions],
 	CONSTRAINT [DF_roles_admin_role] DEFAULT (0) FOR [admin_role],
 	CONSTRAINT [PK_roles] PRIMARY KEY  NONCLUSTERED 
@@ -1090,7 +1154,7 @@ ALTER TABLE [dbo].[roles] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[roles_permissions] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[roles_permissions] ADD 
 	CONSTRAINT [PK_roles_permissions] PRIMARY KEY  NONCLUSTERED 
 	(
 		[permission_id],
@@ -1098,7 +1162,7 @@ ALTER TABLE [dbo].[roles_permissions] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[roles_rights] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[roles_rights] ADD 
 	CONSTRAINT [PK_roles_rights] PRIMARY KEY  NONCLUSTERED 
 	(
 		[role_id],
@@ -1109,7 +1173,7 @@ GO
  CREATE  INDEX [roles_rights_role_id] ON [dbo].[roles_rights]([role_id]) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[sys_data] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[sys_data] ADD 
 	CONSTRAINT [PK_sys_data] PRIMARY KEY  NONCLUSTERED 
 	(
 		[sys_id],
@@ -1117,14 +1181,14 @@ ALTER TABLE [dbo].[sys_data] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[sys_types] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[sys_types] ADD 
 	CONSTRAINT [PK_sys_types] PRIMARY KEY  NONCLUSTERED 
 	(
 		[type_id]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[templategroups] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[templategroups] ADD 
 	CONSTRAINT [PK_templategroups] PRIMARY KEY  NONCLUSTERED 
 	(
 		[group_id]
@@ -1135,7 +1199,7 @@ ALTER TABLE [dbo].[templategroups] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[templates] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[templates] ADD 
 	CONSTRAINT [PK_templates] PRIMARY KEY  NONCLUSTERED 
 	(
 		[template_id]
@@ -1147,7 +1211,7 @@ ALTER TABLE [dbo].[templates] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[templates_cref] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[templates_cref] ADD 
 	CONSTRAINT [PK_templates_cref] PRIMARY KEY  NONCLUSTERED 
 	(
 		[group_id],
@@ -1155,7 +1219,7 @@ ALTER TABLE [dbo].[templates_cref] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[text_docs] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[text_docs] ADD 
 	CONSTRAINT [DF_text_docs_group_id] DEFAULT (1) FOR [group_id],
 	CONSTRAINT [DF__text_docs__defau__0D44F85C] DEFAULT ((-1)) FOR [default_template_1],
 	CONSTRAINT [DF__text_docs__defau__0E391C95] DEFAULT ((-1)) FOR [default_template_2],
@@ -1168,7 +1232,7 @@ GO
  CREATE  INDEX [IX_texts] ON [dbo].[texts]([meta_id]) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[url_docs] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[url_docs] ADD 
 	CONSTRAINT [PK_url_docs] PRIMARY KEY  NONCLUSTERED 
 	(
 		[meta_id],
@@ -1176,14 +1240,14 @@ ALTER TABLE [dbo].[url_docs] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[user_flags] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[user_flags] ADD 
 	CONSTRAINT [IX_user_flags] UNIQUE  NONCLUSTERED 
 	(
 		[name]
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[user_rights] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[user_rights] ADD 
 	CONSTRAINT [PK_user_rights] PRIMARY KEY  NONCLUSTERED 
 	(
 		[user_id],
@@ -1192,7 +1256,7 @@ ALTER TABLE [dbo].[user_rights] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[user_roles_crossref] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[user_roles_crossref] ADD 
 	CONSTRAINT [PK_user_roles_crossref] PRIMARY KEY  NONCLUSTERED 
 	(
 		[user_id],
@@ -1200,7 +1264,7 @@ ALTER TABLE [dbo].[user_roles_crossref] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[user_types] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[user_types] ADD 
 	CONSTRAINT [PK_user_types] PRIMARY KEY  NONCLUSTERED 
 	(
 		[user_type],
@@ -1208,7 +1272,7 @@ ALTER TABLE [dbo].[user_types] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[users] WITH NOCHECK ADD 
+ALTER TABLE [dbo].[users] ADD 
 	CONSTRAINT [DF_users_title] DEFAULT ('') FOR [title],
 	CONSTRAINT [DF_users_company] DEFAULT ('') FOR [company],
 	CONSTRAINT [DF_users_user_type] DEFAULT (1) FOR [user_type],
@@ -1466,6 +1530,24 @@ ALTER TABLE [dbo].[roles_rights] ADD
 		[role_id]
 	) REFERENCES [dbo].[roles] (
 		[role_id]
+	)
+GO
+
+ALTER TABLE [dbo].[shopping_order_item_descriptions] ADD 
+	CONSTRAINT [FK_shopping_order_item_descriptions_shopping_order_items] FOREIGN KEY 
+	(
+		[item_id]
+	) REFERENCES [dbo].[shopping_order_items] (
+		[item_id]
+	)
+GO
+
+ALTER TABLE [dbo].[shopping_order_items] ADD 
+	CONSTRAINT [FK_shopping_order_items_shopping_orders] FOREIGN KEY 
+	(
+		[order_id]
+	) REFERENCES [dbo].[shopping_orders] (
+		[order_id]
 	)
 GO
 

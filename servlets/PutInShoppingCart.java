@@ -130,7 +130,7 @@ public class PutInShoppingCart extends HttpServlet {
 	    session.setAttribute(ShoppingCart.SESSION_NAME, cart) ;
 	}
 
-	/* For each of the ShoppingItemQuantities in our tempory storage
+	/* For each of the ShoppingItemQuantities in our temporary storage
 	   of items from the webpage...	*/
 	Iterator formItemsIterator = formItems.values().iterator() ;
 	while (formItemsIterator.hasNext()) {
@@ -165,6 +165,14 @@ public class PutInShoppingCart extends HttpServlet {
 		return ;
 	    }
 	    sendMail(req,user) ;
+
+	    ShoppingOrderSystem shoppingOrderSystem = imcref.getShoppingOrderSystem() ;
+
+	    ShoppingOrder theOrder = new ShoppingOrder(cart) ;
+
+	    /* Store the order in the database */
+	    shoppingOrderSystem.addShoppingOrder(theOrder) ;
+
 	    /* Replace the ShoppingCart in the session */
 	    session.setAttribute(ShoppingCart.SESSION_NAME, new ShoppingCart()) ;
 	    forwardTo = req.getParameter("send_next") ;
@@ -294,8 +302,8 @@ public class PutInShoppingCart extends HttpServlet {
 	mailStringMap.put("#user_last_name#",      user.getLastName()) ;
 	mailStringMap.put("#user_email#",          user.getEmailAddress()) ;
 	mailStringMap.put("#user_workphone#",      user.getWorkPhone()) ;
-	mailStringMap.put("#user_mobilephone#",    user.getMobilePhone()) ;	
-	//mailStringMap.put("#user_homephone#",      user.getHomePhone()) ;	
+	mailStringMap.put("#user_mobilephone#",    user.getMobilePhone()) ;
+	//mailStringMap.put("#user_homephone#",      user.getHomePhone()) ;
 	mailStringMap.put("#user_company#",        user.getCompany()) ;
 	mailStringMap.put("#user_address#",        user.getAddress()) ;
 	mailStringMap.put("#user_zip#",            user.getZip()) ;

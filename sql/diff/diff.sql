@@ -960,4 +960,68 @@ GO
 
 -- 2003-02-07 kreiger
 
+CREATE TABLE [dbo].[shopping_order_item_descriptions] (
+	[item_id] [int] NOT NULL ,
+	[number] [int] NOT NULL ,
+	[description] [varchar] (100) COLLATE Finnish_Swedish_CI_AS NOT NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[shopping_order_items] (
+	[item_id] [int] IDENTITY (1, 1) NOT NULL ,
+	[order_id] [int] NOT NULL ,
+	[quantity] [int] NOT NULL ,
+	[price] [money] NOT NULL 
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[shopping_orders] (
+	[order_id] [int] IDENTITY (1, 1) NOT NULL ,
+	[order_datetime] [datetime] NOT NULL ,
+	[user_id] [int] NOT NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[shopping_order_item_descriptions] WITH NOCHECK ADD 
+	CONSTRAINT [PK_shopping_order_item_descriptions] PRIMARY KEY  CLUSTERED 
+	(
+		[item_id],
+		[number]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[shopping_order_items] WITH NOCHECK ADD 
+	CONSTRAINT [PK_shopping_order_items] PRIMARY KEY  CLUSTERED 
+	(
+		[item_id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[shopping_orders] WITH NOCHECK ADD 
+	CONSTRAINT [PK_shopping_orders] PRIMARY KEY  CLUSTERED 
+	(
+		[order_id]
+	)  ON [PRIMARY] 
+GO
+
+ALTER TABLE [dbo].[shopping_order_item_descriptions] ADD 
+	CONSTRAINT [FK_shopping_order_item_descriptions_shopping_order_items] FOREIGN KEY 
+	(
+		[item_id]
+	) REFERENCES [dbo].[shopping_order_items] (
+		[item_id]
+	)
+GO
+
+ALTER TABLE [dbo].[shopping_order_items] ADD 
+	CONSTRAINT [FK_shopping_order_items_shopping_orders] FOREIGN KEY 
+	(
+		[order_id]
+	) REFERENCES [dbo].[shopping_orders] (
+		[order_id]
+	)
+GO
+
+-- 2003-03-12 kreiger
+
 print' OBS!!!  Glöm inte att du MÅSTE köra hela sprocs.sql efter detta script vid uppgradering  OBS!!'
