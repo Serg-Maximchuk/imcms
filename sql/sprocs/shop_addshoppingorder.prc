@@ -15,6 +15,8 @@ CREATE PROCEDURE Shop_AddShoppingOrder @user_id INT, @datetime DATETIME AS
 INSERT INTO	shopping_orders	(user_id, order_datetime)
 VALUES			(@user_id, @datetime)
 
+SELECT @@IDENTITY
+
 GO
 SET QUOTED_IDENTIFIER OFF 
 GO

@@ -105,7 +105,6 @@ public class ShoppingOrderSystemImpl implements ShoppingOrderSystem {
 	    throw new NullPointerException("null == datetime") ;
 	}
 
-
 	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
 
 	String orderIdStr = imcref.sqlProcedureStr("Shop_AddShoppingOrder", new String[] {""+theOrder.getUser().getUserId(), dateFormat.format(theOrder.getDatetime()) } ) ;
