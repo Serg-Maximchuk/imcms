@@ -13,7 +13,7 @@ public class StartDoc extends HttpServlet {
 
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
         int meta_id = ApplicationServer.getIMCServiceInterface().getSystemData().getStartDocument();
-        Utility.redirect( req, res, "GetDoc?meta_id=" + meta_id );
+        res.sendRedirect( "GetDoc?meta_id=" + meta_id );
     }
     
 }

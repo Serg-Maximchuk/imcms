@@ -298,7 +298,7 @@ public class AdminFortuneFile extends Administrator {
 		values.add(options);
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
-		String parsed = imcref.parseExternalDoc( values, "AdminFortuneFile.htm" , user, "admin");
+		String parsed = imcref.getAdminTemplate( "AdminFortuneFile.htm", user, values );
 		out.print(parsed);
 		return;
 

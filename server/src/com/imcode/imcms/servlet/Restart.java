@@ -22,7 +22,7 @@ public class Restart extends HttpServlet {
         // Is user superadmin?
         if ( !user.isSuperAdmin() ) {
             String start_url = imcref.getStartUrl();
-            Utility.redirect( req, res, start_url );
+            res.sendRedirect( start_url );
             return;
         }
 

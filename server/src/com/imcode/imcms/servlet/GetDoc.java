@@ -57,7 +57,6 @@ public class GetDoc extends HttpServlet {
             throws IOException {
         IMCServiceInterface imcref = ApplicationServer.getIMCServiceInterface();
 
-
         Vector vec = new Vector();
         SystemData sysData = imcref.getSystemData();
         String eMailServerMaster = sysData.getServerMasterAddress();
@@ -128,7 +127,7 @@ public class GetDoc extends HttpServlet {
 
         // String no_permission_url = Utility.getDomainPref("no_permission_url");
         String no_permission_url = imcref.getImcmsUrl() + user.getLanguageIso639_2() + "/login/" + NO_PERMISSION_URL;
-        if ( !documentMapper.userHasAtLeastDocumentReadPermission( user, document) ) {
+        if ( !documentMapper.userHasAtLeastDocumentReadPermission( user, document ) ) {
             session.setAttribute( "login.target",
                                   req.getRequestURL().append( "?" ).append( req.getQueryString() ).toString() );
             String redirect = no_permission_url;
@@ -140,21 +139,13 @@ public class GetDoc extends HttpServlet {
             return imcref.getAdminTemplate( NO_ACTIVE_DOCUMENT_URL, user, null );
         }
 
-        // check if external doc
-        imcode.server.ExternalDocType ex_doc = imcref.isExternalDoc( meta_id );
-        String htmlStr;
-        if ( ex_doc != null ) {
-            String paramStr = "?meta_id=" + meta_id + "&";
-            paramStr += "parent_meta_id=" + parent_meta_id + "&";
-            paramStr += "cookie_id=" + "1A" + "&";
-            paramStr += "action=view";
-            Utility.redirect( req, res, ex_doc.getCallServlet() + paramStr );
+        if ( document instanceof FormerExternalDocument ) {
+            redirectToExternalDocumentTypeWithAction( document, res, "view" );
             // Log to accesslog
             trackLog.info( documentRequest );
             return null;
-        }
 
-        if ( document instanceof UrlDocumentDomainObject ) {
+        } else if ( document instanceof UrlDocumentDomainObject ) {
             String url_ref = imcref.isUrlDoc( meta_id );
             Perl5Util regexp = new Perl5Util();
             if ( !regexp.match( "m!^\\w+:|^[/.]!", url_ref ) ) {
@@ -178,11 +169,11 @@ public class GetDoc extends HttpServlet {
             if ( tmp != null && ( !"".equals( tmp ) ) ) {
                 meta_id = Integer.parseInt( tmp );
             } else {
-                Map browserDocumentIdMap = ((BrowserDocumentDomainObject)document).getBrowserDocumentIdMap();
-                meta_id = ((Integer)browserDocumentIdMap.get( BrowserDocumentDomainObject.Browser.DEFAULT )).intValue() ;
+                Map browserDocumentIdMap = ( (BrowserDocumentDomainObject)document ).getBrowserDocumentIdMap();
+                meta_id = ( (Integer)browserDocumentIdMap.get( BrowserDocumentDomainObject.Browser.DEFAULT ) ).intValue();
             }
 
-            Utility.redirect( req, res, "GetDoc?meta_id=" + meta_id + "&parent_meta_id=" + parent_meta_id );
+            res.sendRedirect( "GetDoc?meta_id=" + meta_id + "&parent_meta_id=" + parent_meta_id );
             // Log to accesslog
             trackLog.info( documentRequest );
             return null;
@@ -191,20 +182,19 @@ public class GetDoc extends HttpServlet {
             if ( html_str_temp == null ) {
                 throw new RuntimeException( "Null-frameset encountered." );
             }
-            htmlStr = html_str_temp;
+            String htmlStr = html_str_temp;
             // Log to accesslog
             trackLog.info( documentRequest );
             return htmlStr;
         } else if ( document instanceof FileDocumentDomainObject ) {
-            FileDocumentDomainObject fileDocument = (FileDocumentDomainObject)document ;
-            String filename = fileDocument.getFilename() ;
-            String mimetype = fileDocument.getMimeType() ;
+            FileDocumentDomainObject fileDocument = (FileDocumentDomainObject)document;
+            String filename = fileDocument.getFilename();
+            String mimetype = fileDocument.getMimeType();
             InputStream fr;
             try {
-                fr = new BufferedInputStream( ((FileDocumentDomainObject)document).getInputStreamSource().getInputStream() );
+                fr = new BufferedInputStream( ( (FileDocumentDomainObject)document ).getInputStreamSource().getInputStream() );
             } catch ( IOException ex ) {
-                htmlStr = imcref.getAdminTemplate( NO_PAGE_URL, user, vec );
-                return htmlStr;
+                return imcref.getAdminTemplate( NO_PAGE_URL, user, vec );
             }
             int len = fr.available();
             ServletOutputStream out = res.getOutputStream();
@@ -261,5 +251,22 @@ public class GetDoc extends HttpServlet {
             trackLog.info( documentRequest );
             return result;
         }
+    }
+
+    public static void redirectToExternalDocumentTypeWithAction( DocumentDomainObject document,
+                                                                 HttpServletResponse res,
+                                                                 String action ) throws IOException {
+        String externalDocumentTypeServlet = "";
+        if ( document instanceof ConferenceDocumentDomainObject ) {
+            externalDocumentTypeServlet = "ConfManager";
+        } else if ( document instanceof ChatDocumentDomainObject ) {
+            externalDocumentTypeServlet = "ChatManager";
+        } else if ( document instanceof BillboardDocumentDomainObject) {
+            externalDocumentTypeServlet = "BillBoardManager";
+        }
+
+        String paramStr = "?meta_id=" + document.getId() + "&";
+        paramStr += "cookie_id=1A&action=" + action;
+        res.sendRedirect( externalDocumentTypeServlet + paramStr );
     }
 }

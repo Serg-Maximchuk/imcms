@@ -29,7 +29,7 @@ public class TemplateChange extends HttpServlet {
         UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( !imcref.checkAdminRights( user ) ) {
             String start_url = imcref.getStartUrl();
-            Utility.redirect( req, res, start_url );
+            res.sendRedirect( start_url );
             return;
         }
 
@@ -40,7 +40,7 @@ public class TemplateChange extends HttpServlet {
         String htmlStr = null;
         String lang = req.getParameter( "language" );
         if ( req.getParameter( "cancel" ) != null ) {
-            Utility.redirect( req, res, "TemplateAdmin" );
+            res.sendRedirect( "TemplateAdmin" );
         } else if ( req.getParameter( "template_get" ) != null ) {
             downloadTemplate( req, imcref, res, out );
         } else if ( req.getParameter( "template_delete_cancel" ) != null ) {
@@ -287,7 +287,7 @@ public class TemplateChange extends HttpServlet {
                                  String lang, String htmlStr, UserDomainObject user ) throws IOException {
         String meta_id = req.getParameter( "templates_doc" );
         if ( meta_id != null ) {
-            Utility.redirect( req, res, "AdminDoc?meta_id=" + meta_id );
+            res.sendRedirect( "AdminDoc?meta_id=" + meta_id );
         } else {
             htmlStr = createDocumentsUsingTemplateDialog( imcref, user, null, lang ) ;
         }

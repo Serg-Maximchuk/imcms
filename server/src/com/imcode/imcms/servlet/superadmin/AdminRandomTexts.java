@@ -70,7 +70,7 @@ public class AdminRandomTexts extends Administrator implements imcode.server.IMC
         values.add("#options#");
         values.add(options.toString());
 
-        out.write(imcref.parseExternalDoc(values, HTML_TEMPLATE, user, DocumentDomainObject.DOCTYPE_FORTUNES + ""));
+        out.write(imcref.getAdminTemplateFromDirectory( HTML_TEMPLATE, user, values, DocumentDomainObject.DOCTYPE_FORTUNES + ""));
 
     } // End doGet
 
@@ -133,7 +133,7 @@ public class AdminRandomTexts extends Administrator implements imcode.server.IMC
             values.add(buff.toString());
 
             UserDomainObject user = Utility.getLoggedOnUser(req);
-            out.write(imcref.parseExternalDoc(values, HTML_TEMPLATE_ADMIN, user, DocumentDomainObject.DOCTYPE_FORTUNES + ""));
+            out.write(imcref.getAdminTemplateFromDirectory( HTML_TEMPLATE_ADMIN, user, values, DocumentDomainObject.DOCTYPE_FORTUNES + ""));
             session.setAttribute("lines", lines);
             return;
         }

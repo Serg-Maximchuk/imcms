@@ -30,7 +30,7 @@ public class TemplateAdmin extends HttpServlet {
         UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( !imcref.checkAdminRights( user ) ) {
             String start_url = imcref.getStartUrl();
-            Utility.redirect( req, res, start_url );
+            res.sendRedirect( start_url );
             return;
         }
 
@@ -49,7 +49,7 @@ public class TemplateAdmin extends HttpServlet {
         UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( !imcref.checkAdminRights( user ) ) {
             String start_url = imcref.getStartUrl();
-            Utility.redirect( req, res, start_url );
+            res.sendRedirect( start_url );
             return;
         }
 
@@ -60,7 +60,7 @@ public class TemplateAdmin extends HttpServlet {
         String htmlStr = null;
         TemplateMapper templateMapper = imcref.getTemplateMapper();
         if ( req.getParameter( "cancel" ) != null ) {
-            Utility.redirect( req, res, "AdminManager" );
+            res.sendRedirect( "AdminManager" );
             return;
         } else if ( req.getParameter( "add_template" ) != null ) {
             htmlStr = createUploadTemplateDialog( templateMapper, lang, imcref, user );

@@ -45,26 +45,6 @@ public class Utility {
     }
 
     /**
-     Redirects to a local URI. Considered relative unless prefixed with "/".
-     @param req The request to get the redirect data from.
-     @param res The response to use for redirecting.
-     @param uri The URI to redirect to. Relative unless prefixed with "/".
-     */
-    public static void redirect( HttpServletRequest req, HttpServletResponse res, String uri ) throws IOException {
-        StringBuffer requrl = HttpUtils.getRequestURL( req );
-        if ( uri.startsWith( "/" ) ) {
-            int slash = requrl.toString().indexOf( "://" ) + 3;
-            slash = requrl.toString().indexOf( "/", slash );
-            requrl.replace( slash, requrl.length(), uri );
-        } else {
-            int slash = requrl.toString().lastIndexOf( "/" ) + 1;
-            requrl.replace( slash, requrl.length(), uri );
-        }
-        res.sendRedirect( requrl.toString() );
-    }
-
-
-    /**
      * Transforms a long containing an ip into a String.
      */
     public static String ipLongToString( long ip ) {

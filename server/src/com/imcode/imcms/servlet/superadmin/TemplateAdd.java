@@ -19,7 +19,7 @@ public class TemplateAdd extends HttpServlet {
 
         UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( !imcref.checkAdminRights( user ) ) {
-            Utility.redirect( req, res, start_url );
+            res.sendRedirect( start_url );
             return;
         }
 
@@ -70,7 +70,7 @@ public class TemplateAdd extends HttpServlet {
         UserDomainObject user = Utility.getLoggedOnUser( req );
         if ( !imcref.checkAdminRights( user ) ) {
             String start_url = imcref.getStartUrl();
-            Utility.redirect( req, res, start_url );
+            res.sendRedirect( start_url );
             return;
         }
 
@@ -90,7 +90,7 @@ public class TemplateAdd extends HttpServlet {
         MultipartFormdataParser mp = new MultipartFormdataParser( buffer, contentType );
 
         if ( mp.getParameter( "cancel" ) != null ) {
-            Utility.redirect( req, res, "TemplateAdmin" );
+            res.sendRedirect( "TemplateAdmin" );
             return;
         }
 

@@ -87,11 +87,11 @@ public class AdminConference extends Administrator {
 
             // go to AdminManager
         } else if ( request.getParameter( "CANCEL" ) != null ) {
-            Utility.redirect( request, response, "AdminManager" );
+            response.sendRedirect( "AdminManager" );
 
             // go to htmlpage for listing conferences
         } else if ( request.getParameter( "CANCEL_CONF_LIST" ) != null ) {
-            Utility.redirect( request, response, "AdminConference" );
+            response.sendRedirect( "AdminConference" );
 
             // go to AdminConference page
         } else {

@@ -113,11 +113,6 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
       return null;
    }
 
-   // check if external doc
-   public ExternalDocType isExternalDoc( int meta_id ) {
-      return null;
-   }
-
     // activate child to child table
    public void activateChild( int meta_id, UserDomainObject user ) {
    }
@@ -170,12 +165,14 @@ class MockIMCServiceInterface extends MockObject implements IMCServiceInterface 
    }
 
     // parseExternaldoc use template
-    public String parseExternalDoc(List variables, String external_template_name, UserDomainObject user, String doc_type) {
+    public String getAdminTemplateFromDirectory( String adminTemplateName, UserDomainObject user, List variables,
+                                                 String directory ) {
         return null;  // TODO
     }
 
     // parseExternaldoc use template
-    public String parseExternalDoc(List variables, String external_template_name, UserDomainObject user, String doc_type, String templateSet) {
+    public String getAdminTemplateFromSubDirectoryOfDirectory( String adminTemplateName, UserDomainObject user, List variables,
+                                                               String directory, String subDirectory ) {
         return null;  // TODO
     }
 

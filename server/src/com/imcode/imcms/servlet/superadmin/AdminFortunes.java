@@ -66,7 +66,7 @@ public class AdminFortunes extends Administrator {
         values.add("");
 
 
-        String parsed = imcref.parseExternalDoc(values, "AdminFortunes.htm", user, "admin");
+        String parsed = imcref.getAdminTemplate("AdminFortunes.htm", user, values);
         out.print(parsed);
 
 
@@ -136,7 +136,7 @@ public class AdminFortunes extends Administrator {
                 values.add(options);
 
 
-                String parsed = imcref.parseExternalDoc(values, "ShowQuestions.htm", user, "admin");
+                String parsed = imcref.getAdminTemplate("ShowQuestions.htm", user, values);
                 out.print(parsed);
 
                 session.setAttribute("results", results);
@@ -193,7 +193,7 @@ public class AdminFortunes extends Administrator {
             values.add(options);
 
 
-            String parsed = imcref.parseExternalDoc(values, "AdminFortuneFile.htm", user, "admin");
+            String parsed = imcref.getAdminTemplate("AdminFortuneFile.htm", user, values);
             out.print(parsed);
 
             session.setAttribute("lines", lines);
@@ -203,15 +203,5 @@ public class AdminFortunes extends Administrator {
 
 
     }
-
-    /**
-     * Log function, will work for both servletexec and Apache
-     */
-
-    public void log(String str) {
-        super.log(str);
-        System.out.println("AdminFortunes: " + str);
-    }
-
 
 } // End of class

@@ -84,10 +84,10 @@ public class ChatAdmin extends Administrator {
             listChats(request, response, user);
             // go to AdminManager
         } else if (request.getParameter("CANCEL") != null) {
-            Utility.redirect(request, response, "AdminManager");
+            response.sendRedirect( "AdminManager" );
             // go to htmlpage for listing Chats
         } else if (request.getParameter("CANCEL_CHAT_LIST") != null) {
-            Utility.redirect(request, response, "ChatAdmin");
+            response.sendRedirect( "ChatAdmin" );
             // go to AdminChat page
         } else {
             sendHtml(request, response, vm, TEMPLATE_CONF);

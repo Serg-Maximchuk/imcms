@@ -28,7 +28,7 @@ public class FileAdmin extends HttpServlet {
 
         UserDomainObject user = Utility.getLoggedOnUser( req ) ;
         if ( !imcref.checkAdminRights( user ) ) {
-            Utility.redirect( req, res, start_url );
+            res.sendRedirect( start_url );
             return;
         }
 
@@ -71,7 +71,7 @@ public class FileAdmin extends HttpServlet {
 
         UserDomainObject user = Utility.getLoggedOnUser( req ) ;
         if ( !imcref.checkAdminRights( user ) ) {
-            Utility.redirect( req, res, start_url );
+            res.sendRedirect( start_url );
             return;
         }
 
@@ -80,7 +80,7 @@ public class FileAdmin extends HttpServlet {
         MultipartFormdataParser mp = getMultiPartFormDataParserForRequest( req );
 
         if ( mp.getParameter( "cancel" ) != null ) {
-            Utility.redirect( req, res, "AdminManager" );
+            res.sendRedirect( "AdminManager" );
             return;
         }
 

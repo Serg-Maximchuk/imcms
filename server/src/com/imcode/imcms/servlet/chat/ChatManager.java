@@ -89,7 +89,6 @@ public class ChatManager extends ChatBase {
 
     private void setSessionAttributes( HttpSession session, MetaInfo.Parameters params ) {
         session.setAttribute( "Chat.meta_id", "" + params.getMetaId() );
-        session.setAttribute( "Chat.parent_meta_id", "" + params.getParentMetaId() );
     }
 
 } // End of class

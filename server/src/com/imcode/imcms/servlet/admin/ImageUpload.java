@@ -52,7 +52,7 @@ public class ImageUpload extends HttpServlet {
         if ( folder == null ) folder = "";
         //submitted with Browse Images button, no ImageUpload (M Wallin)
         if ( mp.getParameter( "browse_images" ) != null ) { // Browse Image Library
-            Utility.redirect( req, res, "ImageBrowse" );
+            res.sendRedirect( "ImageBrowse" );
         }
 
         if ( mp.getParameter( "ok" ) == null ) {

@@ -26,7 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-final public class IMCService implements IMCServiceInterface, IMCConstants {
+final public class IMCService implements IMCServiceInterface {
 
     public ConnectionPool getConnectionPool() {
         return m_conPool;
@@ -52,7 +52,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
     private SystemData sysData;
 
-    private ExternalDocType[] externalDocumentTypes;
     private Date sessionCounterDate;
     private int sessionCounter = 0;
     private FileCache fileCache = new FileCache();
@@ -110,7 +109,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
         }
         log.info( "DefaultLanguage: " + defaultLanguageAsIso639_2 );
 
-        initExternalDocTypes( props );
         initSessionCounter();
 
         textDocParser = new TextDocumentParser( this );
@@ -142,22 +140,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
     private int getSessionCounterFromDb() {
         return Integer.parseInt( this.sqlProcedureStr( "GetCurrentSessionCounter", new String[0] ) );
-    }
-
-    private void initExternalDocTypes( Properties props ) {
-
-        String externalDocTypes = getPropertyAndLogIt( props, "ExternalDoctypes" );
-
-        StringTokenizer doc_types = new StringTokenizer( externalDocTypes, ";", false );
-        externalDocumentTypes = new ExternalDocType[doc_types.countTokens()];
-        for ( int doc_count = 0; doc_types.hasMoreTokens(); ++doc_count ) {
-            StringTokenizer tempStr = new StringTokenizer( doc_types.nextToken(), ":", false );
-            String[] items = new String[tempStr.countTokens()];
-            for ( int i = 0; tempStr.hasMoreTokens(); ++i ) {
-                items[i] = tempStr.nextToken();
-            }
-            externalDocumentTypes[doc_count] = new ExternalDocType( Integer.parseInt( items[0] ), items[1] );
-        }
     }
 
     private void initLangProperties( String LanguageIso639_2 ) {
@@ -285,7 +267,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
     private void incrementSessionCounter() {
         sqlUpdateProcedure( "IncSessionCounter", new String[0] );
-        sessionCounter = getSessionCounterFromDb() ;
+        sessionCounter = getSessionCounterFromDb();
     }
 
     private UserAndRoleMapper initExternalUserAndRoleMapper( String externalUserAndRoleMapperName,
@@ -538,23 +520,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
     }
 
     /**
-     * Check if external doc.
-     */
-    public ExternalDocType isExternalDoc( int meta_id ) {
-        ExternalDocType external_doc = null;
-
-        int doc_type = getDocType( meta_id );
-        if ( doc_type > 100 ) {
-            for ( int i = 0; i < externalDocumentTypes.length && externalDocumentTypes[i] != null; i++ ) {
-                if ( externalDocumentTypes[i].getDocType() == doc_type ) {
-                    external_doc = externalDocumentTypes[i];
-                }
-            }
-        }
-        return external_doc;
-    }
-
-    /**
      * Activate child to child-table.
      */
     public void activateChild( int meta_id, imcode.server.user.UserDomainObject user ) {
@@ -645,82 +610,50 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
      */
     public String getAdminTemplate( String adminTemplateName, UserDomainObject user,
                                     java.util.List tagsWithReplacements ) {
-        // FIXME Fugly workaround
-        String langPrefix = getUserLangPrefixOrDefaultLanguage( user );
-        String htmlStr;
-        try {
-            if ( "logged_out.html".equals( adminTemplateName ) ) {
-                htmlStr = fileCache.getCachedFileString( new File( imcmsPath, langPrefix + "/login/"
-                                                                              + adminTemplateName ) );
-            } else {
-                htmlStr = fileCache.getCachedFileString( new File( templatePath, langPrefix + "/admin/"
-                                                                                 + adminTemplateName ) );
-            }
-
-            if ( tagsWithReplacements == null ) {
-                return htmlStr;
-            }
-            String[] foo = new String[tagsWithReplacements.size()];
-            return imcode.util.Parser.parseDoc( htmlStr, (String[])tagsWithReplacements.toArray( foo ) );
-        } catch ( IOException ex ) {
-            log.error( ex.toString(), ex );
-            return "";
-        }
+        return getAdminTemplateFromDirectory( adminTemplateName, user, tagsWithReplacements, "admin" );
     }
 
     /**
      * Parse doc replace variables with data , use template
      */
-    public String parseExternalDoc( java.util.List variables, String external_template_name, UserDomainObject user,
-                                    String doc_type ) {
+    public String getAdminTemplateFromDirectory( String adminTemplateName, UserDomainObject user, List variables,
+                                                 String directory ) {
         // FIXME Fugly workaround
         String langPrefix = getUserLangPrefixOrDefaultLanguage( user );
-        try {
-            String htmlStr = fileCache.getCachedFileString( new File( templatePath, langPrefix + "/" + doc_type + "/"
-                                                                                    + external_template_name ) );
-            if ( variables == null ) {
-                return htmlStr;
-            }
-            String[] foo = new String[variables.size()];
-            return imcode.util.Parser.parseDoc( htmlStr, (String[])variables.toArray( foo ) );
-        } catch ( RuntimeException e ) {
-            log.error( "parseExternalDoc(List, String, String, String): RuntimeException", e );
-            throw e;
-        } catch ( IOException e ) {
-            log.error( "parseExternalDoc(List, String, String, String): IOException", e );
-            return "";
-        }
+        File file = new File( templatePath, langPrefix + "/" + directory + "/"
+                                            + adminTemplateName );
+        return getAndParseCachedFile( file, variables );
     }
 
     /**
      * Parse doc replace variables with data , use template
      */
-    public String parseExternalDoc( java.util.List variables, String external_template_name, UserDomainObject user,
-                                    String doc_type, String templateSet ) {
+    public String getAdminTemplateFromSubDirectoryOfDirectory( String adminTemplateName, UserDomainObject user, List variables,
+                                                               String directory, String subDirectory ) {
 
         String langPrefix = this.getUserLangPrefixOrDefaultLanguage( user );
 
+        File file = new File( templatePath,
+                              langPrefix + "/" + directory + "/" + subDirectory
+                              + "/"
+                              + adminTemplateName );
+        return getAndParseCachedFile( file, variables );
+    }
+
+    private String getAndParseCachedFile( File file, List variables ) {
         try {
-            String htmlStr = fileCache.getCachedFileString( new File( templatePath,
-                                                                      langPrefix + "/" + doc_type + "/" + templateSet
-                                                                      + "/"
-                                                                      + external_template_name ) );
+            String htmlStr = fileCache.getCachedFileString( file );
             if ( variables == null ) {
                 return htmlStr;
             }
-            String[] foo = new String[variables.size()];
-            return imcode.util.Parser.parseDoc( htmlStr, (String[])variables.toArray( foo ) );
-        } catch ( RuntimeException e ) {
-            log.error( "parseExternalDoc(List, String, String, String): RuntimeException", e );
-            throw e;
+            return Parser.parseDoc( htmlStr, (String[])variables.toArray( new String[variables.size()] ) );
         } catch ( IOException e ) {
-            log.error( "parseExternalDoc(List, String, String, String): IOException", e );
-            throw new RuntimeException( e );
+            throw new RuntimeException( e ) ;
         }
     }
 
     /**
-     * @deprecated Ugly use {@link IMCServiceInterface#parseExternalDoc(java.util.List,String,UserDomainObject,String)}
+     * @deprecated Ugly use {@link IMCServiceInterface#getAdminTemplateFromDirectory(String,imcode.server.user.UserDomainObject,java.util.List,String)}
      *             or something else instead.
      */
     public File getExternalTemplateFolder( int meta_id, UserDomainObject user ) {

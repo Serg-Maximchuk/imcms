@@ -73,7 +73,7 @@ public class AdminQuestions extends Administrator implements imcode.server.IMCCo
         values.add("#options#");
         values.add(options.toString());
 
-        String parsed = imcref.parseExternalDoc(values, ADMIN_QUESTION, user, DocumentDomainObject.DOCTYPE_FORTUNES + "");
+        String parsed = imcref.getAdminTemplateFromDirectory( ADMIN_QUESTION, user, values, DocumentDomainObject.DOCTYPE_FORTUNES + "");
         out.write(parsed);
 
     } // End doGet
@@ -138,19 +138,19 @@ public class AdminQuestions extends Administrator implements imcode.server.IMCCo
                 values.add("#options#");
                 values.add(buff.toString());
 
-                String parsed = imcref.parseExternalDoc(values, QUESTION_RESULT, user, DocumentDomainObject.DOCTYPE_FORTUNES + "");
+                String parsed = imcref.getAdminTemplateFromDirectory( QUESTION_RESULT, user, values, DocumentDomainObject.DOCTYPE_FORTUNES + "");
                 out.print(parsed);
 
                 session.setAttribute("results", list);
                 return;
             } catch (NoSuchElementException ex) {
                 StringBuffer buff2 = new StringBuffer("<option>");
-                buff.append(imcref.parseExternalDoc(null, RESULT_ERR_MSG, user, DocumentDomainObject.DOCTYPE_FORTUNES + ""));
+                buff.append(imcref.getAdminTemplateFromDirectory( RESULT_ERR_MSG, user, null, DocumentDomainObject.DOCTYPE_FORTUNES + ""));
                 buff2.append("</option>");
                 Vector values = new Vector();
                 values.add("#options#");
                 values.add(buff2.toString());
-                String parsed = imcref.parseExternalDoc(values, QUESTION_RESULT, user, DocumentDomainObject.DOCTYPE_FORTUNES + "");
+                String parsed = imcref.getAdminTemplateFromDirectory( QUESTION_RESULT, user, values, DocumentDomainObject.DOCTYPE_FORTUNES + "");
                 out.print(parsed);
                 return;
             }
@@ -188,7 +188,7 @@ public class AdminQuestions extends Administrator implements imcode.server.IMCCo
             values.add(buff.toString());
 
 
-            String parsed = imcref.parseExternalDoc(values, ADMIN_QUESTION_FILE, user, DocumentDomainObject.DOCTYPE_FORTUNES + "");
+            String parsed = imcref.getAdminTemplateFromDirectory( ADMIN_QUESTION_FILE, user, values, DocumentDomainObject.DOCTYPE_FORTUNES + "");
             out.print(parsed);
 
             session.setAttribute("lines", lines);

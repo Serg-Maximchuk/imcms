@@ -31,6 +31,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.imcode.imcms.servlet.GetDoc;
+
 public class DocumentComposer extends HttpServlet {
 
     final static String URL_I15D_PAGE__PREFIX = "/imcms/";
@@ -382,18 +384,12 @@ public class DocumentComposer extends HttpServlet {
         saveNewDocumentAndAddToMenuAndRemoveSessionAttribute( externalDocument, newDocumentParentInformation, user, request );
         final IMCServiceInterface service = ApplicationServer.getIMCServiceInterface();
         DocumentMapper.sqlUpdateDocumentActivated( service, externalDocument.getId(), false );
-        redirectToExternalDocType( service, externalDocument.getId(), newDocumentParentInformation.parentId, response );
+        redirectToExternalDocType( externalDocument, response );
     }
 
-    private static void redirectToExternalDocType( IMCServiceInterface imcref, int metaId,
-                                                   int parentMetaId, HttpServletResponse res ) throws IOException {
-        // check if external doc
-        ExternalDocType ex_doc;
-        ex_doc = imcref.isExternalDoc( metaId );
-        String paramStr = "?meta_id=" + metaId + "&";
-        paramStr += "parent_meta_id=" + parentMetaId + "&";
-        paramStr += "cookie_id=" + "1A" + "&action=new";
-        res.sendRedirect( ex_doc.getCallServlet() + paramStr );
+    private static void redirectToExternalDocType( DocumentDomainObject document,
+                                                   HttpServletResponse res ) throws IOException {
+        GetDoc.redirectToExternalDocumentTypeWithAction( document, res, "new" );
     }
 
     public void processNewUrlDocumentInformation( HttpServletRequest request, HttpServletResponse response,

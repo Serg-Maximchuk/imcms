@@ -73,7 +73,7 @@ public class AdminCategories extends HttpServlet {
         }
 
         if (null != req.getParameter(PARAMETER_BUTTON__CANCEL) && null != req.getParameter(PARAMETER_MODE__DEFAULT)) {
-            Utility.redirect(req, res, "AdminManager");
+            res.sendRedirect( "AdminManager" );
             return;
         }
 

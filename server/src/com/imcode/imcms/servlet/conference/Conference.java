@@ -66,12 +66,10 @@ public class Conference extends HttpServlet {
         // Get the session
         HttpSession session = req.getSession( true );
         String metaIdStr = ( (String)session.getAttribute( "Conference.meta_id" ) == null ) ? "" : ( (String)session.getAttribute( "Conference.meta_id" ) );
-        String parentIdStr = ( (String)session.getAttribute( "Conference.parent_meta_id" ) == null ) ? "" : ( (String)session.getAttribute( "Conference.parent_meta_id" ) );
 
         int metaId = Integer.parseInt( metaIdStr );
-        int parentMetaId = Integer.parseInt( parentIdStr );
 
-        return new MetaInfo.Parameters( metaId, parentMetaId );
+        return new MetaInfo.Parameters( metaId );
     }
 
     /**
@@ -531,7 +529,6 @@ public class Conference extends HttpServlet {
 
     void setSessionAttributes( HttpSession session, MetaInfo.Parameters params ) {
         session.setAttribute( "Conference.meta_id", "" + params.getMetaId() );
-        session.setAttribute( "Conference.parent_meta_id", "" + params.getParentMetaId() );
     }
 
 } // End class

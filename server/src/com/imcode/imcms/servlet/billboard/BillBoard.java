@@ -49,13 +49,10 @@ public class BillBoard extends HttpServlet {
         HttpSession session = req.getSession( true );
         String metaIdStr = ( (String)session.getAttribute( "BillBoard.meta_id" ) == null )
                            ? "" : ( (String)session.getAttribute( "BillBoard.meta_id" ) );//Conference.meta_id
-        String parentIdStr = ( (String)session.getAttribute( "BillBoard.parent_meta_id" ) == null )
-                             ? "" : ( (String)session.getAttribute( "BillBoard.parent_meta_id" ) );//Conference.parent_meta_id
 
         int metaId = Integer.parseInt( metaIdStr );
-        int parentMetaId = Integer.parseInt( parentIdStr );
 
-        return new MetaInfo.Parameters( metaId, parentMetaId );
+        return new MetaInfo.Parameters( metaId );
     }
 
     /**
@@ -463,7 +460,6 @@ public class BillBoard extends HttpServlet {
 
     void setBillBoardSessionAttributes( HttpSession session, MetaInfo.Parameters params ) {
         session.setAttribute( "BillBoard.meta_id", "" + params.getMetaId() );
-        session.setAttribute( "BillBoard.parent_meta_id", "" + params.getParentMetaId() );
     }
 
 } // End class

@@ -18,9 +18,8 @@ public class MetaInfo extends HttpServlet {
 
         // Lets get the META ID PARAMETERS
         String metaId = ( req.getParameter( "meta_id" ) == null ) ? "" : ( req.getParameter( "meta_id" ) );
-        String parentId = ( req.getParameter( "parent_meta_id" ) == null ) ? "" : ( req.getParameter( "parent_meta_id" ) );
 
-        Parameters metaInfoParameters = new Parameters(Integer.parseInt(metaId), Integer.parseInt(parentId)) ;
+        Parameters metaInfoParameters = new Parameters(Integer.parseInt(metaId) ) ;
 
         return metaInfoParameters ;
     }
@@ -31,21 +30,18 @@ public class MetaInfo extends HttpServlet {
      **/
 
     public static String passMeta( Parameters params ) {
-        String args = "meta_id=" + params.getMetaId() + "&"
-                + "parent_meta_id=" + params.getParentMetaId() ;
+        String args = "meta_id=" + params.getMetaId();
         return args;
     }
 
     public static String passMeta( Properties params ) {
-        String args = "meta_id=" + params.getProperty("META_ID") + "&"
-                + "parent_meta_id=" + params.getProperty("PARENT_META_ID") ;
+        String args = "meta_id=" + params.getProperty("META_ID");
         return args;
     }
 
     public static Properties createPropertiesFromMetaInfoParameters( Parameters metaParams ) {
         Properties params = new Properties() ;
         params.setProperty("META_ID", ""+metaParams.getMetaId()) ;
-        params.setProperty("PARENT_META_ID", ""+metaParams.getParentMetaId()) ;
         return params;
     }
 
@@ -53,20 +49,15 @@ public class MetaInfo extends HttpServlet {
     public static class Parameters {
 
         private int metaId;
-        private int parentMetaId;
 
-        public Parameters( int metaId, int parentMetaId ) {
+        public Parameters( int metaId ) {
             this.metaId = metaId;
-            this.parentMetaId = parentMetaId;
         }
 
         public int getMetaId() {
             return metaId;
         }
 
-        public int getParentMetaId() {
-            return parentMetaId;
-        }
     }
 
 

@@ -59,10 +59,6 @@ public interface IMCServiceInterface {
     String isFramesetDoc( int meta_id )
 	;
 
-    // check if external doc
-    ExternalDocType isExternalDoc( int meta_id )
-	;
-
     // activate child to child table
     void activateChild(int meta_id,UserDomainObject user)
 	;
@@ -92,11 +88,13 @@ public interface IMCServiceInterface {
     public String getAdminTemplate( String adminTemplateName, UserDomainObject user, java.util.List tagsWithReplacements )  ;
 
     // parseExternaldoc use template
-    public String parseExternalDoc(java.util.List variables, String external_template_name, UserDomainObject user, String doc_type)
+    public String getAdminTemplateFromDirectory( String adminTemplateName, UserDomainObject user, java.util.List variables,
+                                                 String directory )
 	;
 
     // parseExternaldoc use template
-    public String parseExternalDoc(java.util.List variables, String external_template_name, UserDomainObject user, String doc_type, String templateSet)
+    public String getAdminTemplateFromSubDirectoryOfDirectory( String adminTemplateName, UserDomainObject user, java.util.List variables,
+                                                               String directory, String subDirectory )
 	;
 
     // get templatehome
