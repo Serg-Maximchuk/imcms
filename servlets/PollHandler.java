@@ -239,7 +239,8 @@ public class PollHandler extends HttpServlet {
 			
 			Map.Entry questionNo = (Map.Entry)answersIter.next();
 			mail.append( "___________________________________________" + "\n" );
-			mail.append( "Fråga nr: " + (String)questionNo.getKey()  + "\n");
+			//mail.append( "Fråga " + (String)questionNo.getKey()  + "\n");
+			mail.append( "Fråga: \n");
 			
 			mail.append(textQuestions.get(questionNo.getKey() )  + "\n\n" );
 		
