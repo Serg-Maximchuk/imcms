@@ -179,7 +179,6 @@ public class AdminDoc extends HttpServlet {
 			urlvec.add(servlet_url) ;
 			
 			htmlStr = IMCServiceRMI.parseDoc(imcserver, urlvec, "change_url_doc.html", lang_prefix) ;
-			//htmlStr = IMCServiceRMI.interpretAdminTemplate( imcserver,meta_id,user,"change_url_doc.html",5,parent_meta_id,0,0 ) ;
 			break;
 
 		case 7:
@@ -195,7 +194,6 @@ public class AdminDoc extends HttpServlet {
 			fsetvec.add(servlet_url) ;
 			htmlStr = IMCServiceRMI.parseDoc(imcserver, fsetvec, "change_frameset_doc.html", lang_prefix) ;
 
-//			htmlStr = IMCServiceRMI.interpretAdminTemplate( imcserver,meta_id,user,"change_frameset_doc.html",7,parent_meta_id,0,0 ) ;
 			break;
 
 		case 6:

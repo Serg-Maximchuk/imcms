@@ -66,8 +66,6 @@ public class ChangeText extends HttpServlet {
 			return ;
 		}
 
-//		htmlStr = IMCServiceRMI.interpretAdminTemplate(imcserver,meta_id,user,"change_text.html",txt_no,text_type,0,0) ;          	
-
 		String sqlStr = "select text from texts where meta_id = "+meta_id+" and name = "+txt_no ;
 		String temp = IMCServiceRMI.sqlQueryStr(imcserver,sqlStr) ;
 		if ( temp == null ) {

@@ -54,17 +54,10 @@ public class SaveUrlDoc extends HttpServlet {
 		values = req.getParameterValues( "url_ref" ) ;
 		if( values != null )
 			url_ref = values[0] ;
-		// get urltxt
-/*
-		values = req.getParameterValues( "url_txt" ) ;
-		if( values != null )
-			url_txt = values[0] ;
-*/
+
 		// save form data
 		imcode.server.Table doc = new imcode.server.Table( ) ;
 
-//		doc.addField( "url_ref",url_ref ) ;
-//		doc.addField( "url_txt",url_txt ) ;
 
 		String target = req.getParameter("target") ;
 		if ( "_other".equals(target) ) {
@@ -99,23 +92,10 @@ public class SaveUrlDoc extends HttpServlet {
 			return ;
 		}
 
-/*		if( req.getParameter("cancel")!=null ) {
-//			htmlStr = IMCServiceRMI.interpretTemplate( imcserver,parent_meta_id,user ) ;
-			byte[] tempbytes = AdminDoc.adminDoc(parent_meta_id,parent_meta_id,host,user,req,res) ;
-			if ( tempbytes != null ) {
-				out.write(tempbytes) ;
-			}
-			return ;
-		} else if( req.getParameter("metadata")!=null )
-			//htmlStr = IMCServiceRMI.interpretAdminTemplate( imcserver,meta_id,user,"change_meta.html",5,parent_meta_id,0,0 ) ;
-			htmlStr = imcode.util.MetaDataParser.parseMetaData(String.valueOf(meta_id), String.valueOf(parent_meta_id),user,host) ;
-		else { */
-//			IMCServiceRMI.saveUrlDoc( imcserver,meta_id,user,doc ) ;
 			String sqlStr = "update url_docs set url_ref = '"+url_ref+"' where meta_id = "+meta_id ;
 			IMCServiceRMI.sqlUpdateQuery(imcserver,sqlStr) ;
 			sqlStr = "update meta set target = '"+target+"' where meta_id = "+meta_id ;
 			IMCServiceRMI.sqlUpdateQuery(imcserver,sqlStr) ;
-//			htmlStr = IMCServiceRMI.interpretTemplate( imcserver,parent_meta_id,user ) ;
 
 			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd") ;
 			Date dt = IMCServiceRMI.getCurrentDate(imcserver) ;
@@ -127,7 +107,5 @@ public class SaveUrlDoc extends HttpServlet {
 				out.write(tempbytes) ;
 			}
 			return ;
-		//}
-		//out.print( htmlStr ) ;
 	}
 }
