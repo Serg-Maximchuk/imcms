@@ -295,6 +295,8 @@ public class ImcmsTagSubstitution implements Substitution, IMCConstants {
 				 pollparameter-hideresults 
 				 pollparameter-confirmation_text 
 				 pollparameter-email_recipients 
+				 pollparameter-email_from
+				 pollparameter-email_subject
 				 pollparameter-result_template     #template to use when return the result
 				 pollparameter-name 
 				 pollparameter-description 
