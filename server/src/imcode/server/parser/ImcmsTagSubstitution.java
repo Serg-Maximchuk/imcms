@@ -171,6 +171,7 @@ public class ImcmsTagSubstitution implements Substitution, IMCConstants {
 										  documentRequest.getSessionId(),
 										  documentRequest.getUser(), included_meta_id, document) ;
 		    includedDocumentRequest.setUserAgent(documentRequest.getUserAgent()) ;
+		    includedDocumentRequest.setHttpServletRequest(documentRequest.getHttpServletRequest()) ;
 		    String documentStr = textDocParser.parsePage(includedDocumentRequest,-1,includeLevel-1,paramsToParse) ;
 		    documentStr = org.apache.oro.text.regex.Util.substitute(patMat,HTML_PREBODY_PATTERN,NULL_SUBSTITUTION,documentStr) ;
 		    documentStr = org.apache.oro.text.regex.Util.substitute(patMat,HTML_POSTBODY_PATTERN,NULL_SUBSTITUTION,documentStr) ;
