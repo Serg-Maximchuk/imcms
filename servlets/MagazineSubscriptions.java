@@ -35,7 +35,7 @@ public class MagazineSubscriptions extends HttpServlet {
 	/* Check if user logged on */
 	String no_permission_url =  Prefs.get   ( "admin_url",  IMCConstants.HOST_PROPERTIES );
 	if ( (user=Check.userLoggedOn(req,res,no_permission_url))==null ) {
-	    String targetURL = req.getRequestURL().append('?').append(urlEncodeParameters(flagParameterValues, setflagParameterValues, forwardTo)).toString() ;
+	    String targetURL = HttpUtils.getRequestURL(req).append('?').append(urlEncodeParameters(flagParameterValues, setflagParameterValues, forwardTo)).toString() ;
 	    log.debug("TargetUrl: "+targetURL) ;
 	    req.getSession(true).setAttribute("login.target", targetURL) ;
 	    return ;
