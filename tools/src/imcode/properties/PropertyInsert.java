@@ -221,7 +221,7 @@ public class PropertyInsert {
         private BufferedReader reader;
         private String line = null;
 
-        public AskForStringIterator( String question, BufferedReader reader ) {
+        private AskForStringIterator( String question, BufferedReader reader ) {
             this.question = question;
             this.reader = reader;
         }

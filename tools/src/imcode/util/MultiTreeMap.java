@@ -74,10 +74,6 @@ public class MultiTreeMap extends TreeMap implements MultiMap {
         super.clear();
     }
 
-    public void putAll( Map mapToPut ) {
-        super.putAll( mapToPut );
-    }
-
     public Collection values() {
         ArrayList returnList = new ArrayList( super.size() );
 

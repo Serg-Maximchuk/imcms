@@ -12,7 +12,7 @@ import java.io.FileInputStream;
  */
 public class PropertiesBaseTestCase extends TestCase {
 
-    protected Properties[] getPropertieses( File dir, String[] propertiesFilenames ) throws IOException {
+    Properties[] getPropertieses( File dir, String[] propertiesFilenames ) throws IOException {
         Properties[] propertieses = new Properties[propertiesFilenames.length] ;
         for ( int i = 0; i < propertiesFilenames.length; i++ ) {
             String propertiesFilename = propertiesFilenames[i];
