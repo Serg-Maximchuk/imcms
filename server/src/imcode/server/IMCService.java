@@ -1637,7 +1637,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	dbc.closeConnection() ;
 	dbc = null ;
 
-	if ( data != null ) {
+	if ( data != null && columns > 0) {
 	    String result[][] = new String[data.size()/columns][columns] ;
 	    for ( int i = 0 ; i < data.size() ; i++ ) {
 		result[i / columns][i % columns] =
