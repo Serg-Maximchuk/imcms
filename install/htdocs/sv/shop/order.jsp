@@ -79,7 +79,7 @@ body { overflow:auto }
 	for (int i = 0; i < items.length; ++i) {
 		ShoppingItem item = items[i] ;
 		double itemPrice = item.getPrice() ;
-		totalPrice += itemPrice ; %>
+		totalPrice += itemPrice * order.countItem(item) ; %>
 	<tr<%= (1 != (i % 2)) ? " bgcolor=\"#EAE4DA\"" : "" %>>
 		<td height="24" nowrap>&nbsp;<%= item.getDescription(1) %></td>
 		<td nowrap align="right"><%= item.getDescription(2) %></td>
