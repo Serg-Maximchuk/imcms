@@ -19,15 +19,16 @@
     <!-- The webroot. Everything put here can be seen by any visitor. -->
     <property name="webroot"        value="${build}"/>
 
-    <property name="imcmsimages"          value="${webroot}/imcmsimages"/>
-    <property name="images"               value="${webroot}/images"/>
-    <property name="login"                value="${webroot}/login"/>
-    <property name="css"                  value="${webroot}/css"/>
-    <property name="user"                 value="${webroot}/user"/>
-    <property name="javascript"           value="${webroot}/javascript"/>
-    <property name="adminbuttons"         value="${imcmsimages}/admin"/>
-    <property name="readrunner"	          value="${webroot}/readrunner"/>
-    <property name="shop"	          value="${webroot}/shop"/>
+    <property name="imcmsimages"           value="${webroot}/imcmsimages"/>
+    <property name="images"                value="${webroot}/images"/>
+    <property name="login"                 value="${webroot}/login"/>
+    <property name="css"                   value="${webroot}/css"/>
+    <property name="user"                  value="${webroot}/user"/>
+    <property name="javascript"            value="${webroot}/javascript"/>
+    <property name="adminbuttons"          value="${imcmsimages}/admin"/>
+    <property name="readrunner"	           value="${webroot}/readrunner"/>
+    <property name="shop"	           value="${webroot}/shop"/>
+    <property name="magazinesubscriptions" value="${webroot}/magazinesubscriptions"/>
 
     <!-- 'WEB-INF' - Everything put here is private to the webapp -->
     <property name="WEB-INF"        value="${webroot}/WEB-INF"/>
@@ -40,7 +41,7 @@
     <property name="fortunes"       value="${WEB-INF}/fortunes"/>
     <property name="uploads"        value="${WEB-INF}/uploads"/>
     <property name="logs"           value="${WEB-INF}/logs"/>
-    
+
     <!-- Paths for other templates -->
     <property name="texttemplates"  value="${templates}/text"/>
     <property name="demotemplates"  value="${texttemplates}/demo"/>
@@ -51,15 +52,16 @@
     <property file="${build.properties}"/>
 
     <!-- URIs -->
-    <property name="servleturl"           value="${rooturl}/servlet"/>
-    <property name="loginurl"             value="${rooturl}/login"/>
-    <property name="imageurl"             value="${rooturl}/images"/>
-    <property name="cssurl"               value="${rooturl}/css"/>
-    <property name="javascripturl"        value="${rooturl}/javascript"/>
-    <property name="postcardsurl"         value="${rooturl}/postcards"/>
-    <property name="imcmsimageurl"        value="${rooturl}/imcmsimages"/>
-    <property name="adminbuttonsurl"      value="${imcmsimageurl}/admin"/>
-    <property name="shopurl"              value="${rooturl}/shop"/>
+    <property name="servleturl"               value="${rooturl}/servlet"/>
+    <property name="loginurl"                 value="${rooturl}/login"/>
+    <property name="imageurl"                 value="${rooturl}/images"/>
+    <property name="cssurl"                   value="${rooturl}/css"/>
+    <property name="javascripturl"            value="${rooturl}/javascript"/>
+    <property name="postcardsurl"             value="${rooturl}/postcards"/>
+    <property name="imcmsimageurl"            value="${rooturl}/imcmsimages"/>
+    <property name="adminbuttonsurl"          value="${imcmsimageurl}/admin"/>
+    <property name="shopurl"                  value="${rooturl}/shop"/>
+    <property name="magazinesubscriptionsurl" value="${rooturl}/magazinesubscriptions"/>
 
     <property name="readrunnerurl"	  value="${rooturl}/readrunner"/>
     <property name="readrunnerimagesurl"  value="${readrunnerurl}/images"/>
@@ -95,7 +97,6 @@
 
     <!-- Defines global filters. -->
     <target name="global-filters"
-	    depends="check-build-properties"
 	    description="Defines global filters.">
 
 	<!-- Global filters -->
@@ -223,7 +224,15 @@
 
     <!-- If you want to add more things to build by default, the dependencies of this target is the place to do it. -->
     <target name="build"
-	    depends="init,server,servlets,templates,libraries,web,conf,dir,conference,chat,billboard,postcard,help,fortune,readrunner,sql,calender,shop"
+	    depends="init,
+		     server,
+		     servlets,
+		     templates,
+		     libraries,
+		     web,conf,dir,sql,
+		     conference,chat,billboard,postcard,
+		     help,fortune,readrunner,calender,
+		     shop,magazinesubscriptions"
 	    description="Builds everything.">
 
 	<copy todir="${WEB-INF}" file="install/web.xml"/>
@@ -1133,7 +1142,7 @@
     </target>
 
 
-    <!-- The images for the online-help for one language. -->
+    <!-- The shop-files for one language. -->
     <target name="shop-lang"
 	    depends="global-filters,language-properties"
 	    description="Copies the help-images for one language.">
@@ -1143,5 +1152,32 @@
 	</copy>
 
     </target>
+
+
+    <!-- Copies the magazinesubscription files. -->
+    <target name="magazinesubscriptions"
+	    depends="init"
+	    description="Copies the magazinesubscription files."
+	    if="build-magazinesubscriptions">
+
+	<antcall target="magazinesubscriptions-lang">
+	    <param name="srclanguage" value="sv"/>
+	    <param name="language" value="sv"/>
+	</antcall>
+
+    </target>
+
+
+    <!-- The magazine-subscription files for one language. -->
+    <target name="magazinesubscriptions-lang"
+	    depends="global-filters,language-properties"
+	    description="Copies the magazinesubscription files for one language.">
+
+	<copy todir="${magazinesubscriptions}" filtering="true">
+	    <fileset dir="install/htdocs/${srclanguage}/magazinesubscriptions" includes="*"/>
+	</copy>
+
+    </target>
+
 
 </project>
