@@ -191,7 +191,7 @@ public class ConfLogin extends Conference {
             // Ok, we found the user, lets verify that the user is a member of this conference
             // MemberInConf	@meta_id int,	@user_id int
             String foundUserInConf = imcref.sqlProcedureStr( "A_MemberInConf", new String[]{
-                params.getMetaId() + ", " + userId
+                ""+params.getMetaId(), ""+userId
             } );
 
             // Ok, The user is not a user in this conference, lets check if he has
