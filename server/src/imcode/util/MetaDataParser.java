@@ -403,14 +403,19 @@ public class MetaDataParser {
             vec.add(imcref.parseDoc(null, PUBLISHER_NONE_MSG_TEMPLATE, lang_prefix));
         }
 
-        UserDomainObject[] users = userAndRoleMapper.getUsers( false, false );
+        // FIXME: Ugly kludge, userAndRoleMapper.getUsers() is much too slow and inefficient for thousands of users.
+        String sqlStr = "SELECT user_id, login_name, first_name, last_name FROM users WHERE login_name != 'user' AND active != 0 ORDER BY login_name, last_name, first_name";
+        String[][] userData = imcref.sqlQueryMulti(sqlStr, new String[0] ) ;
         List usersInOptionList = new ArrayList();
         usersInOptionList.add("");
         usersInOptionList.add("");
-        for (int i = 0; i < users.length; i++) {
-            UserDomainObject user = users[i];
-            usersInOptionList.add( "" + user.getUserId() );
-            usersInOptionList.add( user.getLastName() + ", " + user.getFirstName() );
+        for (int i = 0; i < userData.length; i++) {
+            int userId = Integer.parseInt( userData[i][0] ) ;
+            String userLoginName = userData[i][1] ;
+            String userFirstName = userData[i][2] ;
+            String userLastName = userData[i][3] ;
+            usersInOptionList.add( "" + userId );
+            usersInOptionList.add( userLoginName + ": " + userLastName + ", " + userFirstName );
         }
 
         String optionList;
@@ -535,8 +540,8 @@ public class MetaDataParser {
             }
             // If the role has no permissions for this document, we put it away in a special html-optionlist.
             if (role_set_id == IMCConstants.DOC_PERM_SET_NONE) {
-                roles_no_rights.append("<option value=\"" + role_id + "\">" + role_name + "</option>");
-                roles_rights.append("<input type=\"hidden\" name=\"role_" + role_id + "\" value=\"4\">");
+                roles_no_rights.append( "<option value=\"" ).append( role_id ).append( "\">" ).append( role_name ).append( "</option>");
+                roles_rights.append( "<input type=\"hidden\" name=\"role_" ).append( role_id ).append( "\" value=\"4\">" );
                 // So... it's put away for later... we don't need it now.
                 continue;
             }
@@ -545,13 +550,6 @@ public class MetaDataParser {
             vec2.add(role_name);
             vec2.add("#user_role#");
             vec2.add(String.valueOf(IMCConstants.DOC_PERM_SET_FULL).equals(role_permissions[i][3]) ? "" : "*");
-
-            // // As we all know... 0 is full, 3 is read, 4 is none, and 1 and 2 are "other"
-            // // Btw, 'none' doesn't really have a value, but is rather the absence of a value.
-            // // I just use 4 here because i have to distinguish the absence of a value from a value that is about to be removed.
-            // // FIXME: Hire the mafia to force me to put these as constants in an interface.
-
-            // Update: Hey, hey! After finding a horse's head in my bed, i decided to create imcode.server.IMCConstants...
 
             for (int j = IMCConstants.DOC_PERM_SET_FULL; j <= IMCConstants.DOC_PERM_SET_NONE; ++j) { // From DOC_PERM_SET_FULL to DOC_PERM_SET_NONE (0 to 4)
                 vec2.add("#" + j + "#");
