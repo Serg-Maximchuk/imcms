@@ -20,6 +20,7 @@ import imcode.server.parser.* ;
 
 import imcode.util.FileCache ;
 import imcode.util.fortune.* ;
+import imcode.util.shop.* ;
 
 import imcode.readrunner.* ;
 
@@ -182,9 +183,9 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	if ( user_data.length > 0 ) {
 
 	    user = new User() ;
-			
-	    /* user object 
-	       private int userId ;			
+
+	    /* user object
+	       private int userId ;
 	       private String loginName ;		//varchar 50
 	       private String password ;		//varchar 15
 	       private String firstName;		//varchar 25
@@ -200,60 +201,60 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 		   private String workPhone;       //varchar 25
 		   private String mobilePhone;     //varchar 25
 		   private String homePhone;       //varchar 25
-	       private int lang_id;			
-	       private int user_type;			
+	       private int lang_id;
+	       private int user_type;
 	       private boolean active ;		//int
 	       private Date create_date;		//smalldatetime
-				
+
 	       private String langPrefix;
-			    
+
 	       private int template_group = -1 ;
 	       private String loginType ;
-				
-				
+
+
 	    */
 
-	    user.setUserId       	( Integer.parseInt( user_data[0]  ) ) ;
-	    user.setLoginName    	( user_data[1] ) ;
-	    user.setPassword     	( user_data[2].trim() ) ;
-	    user.setFirstName    	( user_data[3] ) ;
-	    user.setLastName     	( user_data[4] ) ;
-	    user.setTitle	     	( user_data[5] ) ;
-	    user.setCompany		 	( user_data[6] ) ;
-	    user.setAddress      	( user_data[7] ) ;
-	    user.setCity         	( user_data[8] ) ;
-	    user.setZip          	( user_data[9] ) ;
-	    user.setCountry      	( user_data[10] ) ;
-	    user.setCountyCouncil 	( user_data[11] ) ;
-	    user.setEmailAddress 	( user_data[12] ) ;
-	    user.setLangId       	( Integer.parseInt( user_data[13] ) ) ;
-	    user.setUserType     	( Integer.parseInt( user_data[15] ) ) ;
-	    user.setActive       	( 0 != Integer.parseInt( user_data[16] ) ) ;
-	    user.setCreateDate   	( user_data[17] ) ;
-	    user.setLangPrefix   	( user_data[14] ) ;
-		
+	    user.setUserId	( Integer.parseInt( user_data[0]  ) ) ;
+	    user.setLoginName	( user_data[1] ) ;
+	    user.setPassword	( user_data[2].trim() ) ;
+	    user.setFirstName	( user_data[3] ) ;
+	    user.setLastName	( user_data[4] ) ;
+	    user.setTitle		( user_data[5] ) ;
+	    user.setCompany			( user_data[6] ) ;
+	    user.setAddress	( user_data[7] ) ;
+	    user.setCity	( user_data[8] ) ;
+	    user.setZip	( user_data[9] ) ;
+	    user.setCountry	( user_data[10] ) ;
+	    user.setCountyCouncil	( user_data[11] ) ;
+	    user.setEmailAddress	( user_data[12] ) ;
+	    user.setLangId	( Integer.parseInt( user_data[13] ) ) ;
+	    user.setUserType	( Integer.parseInt( user_data[15] ) ) ;
+	    user.setActive	( 0 != Integer.parseInt( user_data[16] ) ) ;
+	    user.setCreateDate	( user_data[17] ) ;
+	    user.setLangPrefix	( user_data[14] ) ;
+
 		String [][] phoneNbr = sqlProcedureMulti("GetUserPhoneNumbers " + user_data[0]) ;
 		String workPhone = "";
 		String mobilePhone = "";
 		String homePhone = "";
-		
+
 		if ( phoneNbr != null ){
 		    for (int i=0; i < phoneNbr.length; i++) {
 				if ( ("2").equals( phoneNbr[i][3] ) ){
 				    workPhone = phoneNbr[i][1];
 				}
 				else if ( ("3").equals( phoneNbr[i][3] ) ){
-			    	mobilePhone = phoneNbr[i][1];
+				mobilePhone = phoneNbr[i][1];
 				}
 				else if ( ("1").equals( phoneNbr[i][3] ) ){
-			    	homePhone = phoneNbr[i][1];
+				homePhone = phoneNbr[i][1];
 				}
 		    }
 		}
-		user.setWorkPhone		( workPhone );	
-		user.setMobilePhone		( mobilePhone );	
-		user.setHomePhone		( homePhone );	
-		
+		user.setWorkPhone		( workPhone );
+		user.setMobilePhone		( mobilePhone );
+		user.setHomePhone		( homePhone );
+
 		String login_password_from_db = user.getPassword() ;
 	    String login_password_from_form = password ;
 
@@ -279,15 +280,15 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
        @return An object representing the user with the given id.
     **/
     public User getUserById(int userId) {
-	
+
 	String[] user_data = sqlProcedure("GetUserInfo ", new String[] { ""+userId } ) ;
-		
-	user_data = sqlProcedure("GetUserByLogin ", new String[] { user_data[1] } ) ;	
-		
+
+	user_data = sqlProcedure("GetUserByLogin ", new String[] { user_data[1] } ) ;
+
 
 	// if resultSet > 0 a user is found
 	if ( user_data.length > 0 ) {
-		
+
 	    User user = new User() ;
 
 	    user.setUserId       ( Integer.parseInt( user_data[0]  ) ) ;
@@ -310,17 +311,17 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	    user.setLangPrefix   ( user_data[14] ) ;
 
 	    return user ;
-		
+
 	} else {
 	    // No user with that id.
 	    return null ;
 	}
     }
-	
+
     // Fixme! public bolean addUser(User user) save a user in db
     //		  public bolean updateUser(User user) save a user in db
-	
-	
+
+
     //Check if user has a special adminRole
     public boolean checkUserAdminrole ( int userId, int adminRole ) {
 	String[] adminrole = sqlProcedure("checkUserAdminrole ", new String[] {"" + userId, "" + adminRole });
@@ -331,8 +332,8 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	}
 	return false;
     }
-	
-	
+
+
 
     public String parsePage (DocumentRequest documentRequest, int flags,ParserParameters paramsToParse) throws IOException {
 	return textDocParser.parsePage(documentRequest,flags,paramsToParse) ;
@@ -388,9 +389,9 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
 	String doctypeStr = sqlQueryStr("select type from doc_types where doc_type = "+doc_type) ;
 	tags.put("doc_type",doctypeStr) ;
-	
+
 	// if user is superadmin or useradmin lets add superadmin button
-	if ( checkAdminRights(user) || 	checkUserAdminrole( user.getUserId(), 2 ) ) {
+	if ( checkAdminRights(user) ||	checkUserAdminrole( user.getUserId(), 2 ) ) {
 	    tags.put("superadmin",superadmin.toString()) ;
 	} else {
 	    tags.put("superadmin","") ;
@@ -575,14 +576,14 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
     /* Fixme:  delete doc from plugin db */
     public void deleteDocAll(int meta_id,imcode.server.User user) {
 	String sqlStr = "DocumentDelete " + meta_id ;
-	
+
 	String filename = meta_id + "_se";
 	File file = new File(m_FilePath, filename);
 	//System.out.println("FilePath: " + file.toString()) ;
-	
+
 	//If meta_id is a file document we have to delete the file from file system
 	if ( file.exists() ) {
-	    file.delete(); 
+	    file.delete();
 	}
 
 	// Create a db connection and execte sp DocumentDelete on meta_id
@@ -946,7 +947,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
      */
     public String isFramesetDoc(int meta_id,User user) {
 	String sqlStr = "" ;
-	Vector frame_set = new Vector() ;
+	Vector frame_set ;
 	String html_str = "" ;
 
 	DBConnect dbc = new DBConnect(m_conPool) ;
@@ -974,128 +975,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	dbc = null ;
 
 	return html_str ;
-
-    }
-
-    /**
-     * Search docs.
-     */
-    public Vector searchDocs(int meta_id,User user,String question_str,
-			     String search_type,String string_match,String search_area) {
-
-	// search_area : all,not_archived,archived
-
-	String sqlStr = "" ;
-	Vector tokens = new Vector() ;
-	Vector meta_docs = new Vector() ;
-
-	String match = "%" ;
-
-	if ( string_match.equals("match") )
-	    match = "" ;
-
-
-	StringTokenizer parser = new StringTokenizer(question_str.trim()," ") ;
-	while ( parser.hasMoreTokens() )
-	    tokens.addElement(parser.nextToken()) ;
-
-
-	DBConnect dbc = new DBConnect(m_conPool) ;
-	dbc.getConnection() ;
-
-	if ( !search_type.equals("atc_icd10") ) {
-
-	    // text fields                 // texts.meta_id
-	    if (tokens.size() > 0)
-		sqlStr  += "select distinct meta.meta_id,meta.meta_headline,meta.meta_text from texts,meta where (" ;
-	    for ( int i = 0 ; i < tokens.size() ; i++ ) {
-		sqlStr += " text like  '%" + tokens.elementAt(i).toString() + match + "'"  ;
-		if ( i < tokens.size() -1 )
-		    sqlStr += " " + search_type + " " ;
-	    }
-
-	    sqlStr += ") " ;
-
-	    if (tokens.size() > 0) {
-		sqlStr += " and meta.meta_id = texts.meta_id" ;
-		sqlStr += " and meta.activate = 1 and meta.disable_search = 0\n" ;
-	    }
-
-	    if (search_area.equals("not_archived")) {
-		sqlStr += " and meta.archive = 0" ;
-	    }
-
-	    if (search_area.equals("archived")) {
-		sqlStr += " and meta.archive = 1" ;
-	    }
-
-
-
-	    if ( tokens.size() > 0 ) {
-		sqlStr += "\n union \n" ;
-	    }
-
-
-	    // meta_headline
-	    if (tokens.size() > 0)
-		sqlStr  += "select distinct meta_id,meta_headline,meta_text from meta where " ;
-	    for ( int i = 0 ; i < tokens.size() ; i++ ) {
-		sqlStr += " (meta_headline like  '%" + tokens.elementAt(i).toString() + match + "' " ;
-		sqlStr += " or meta_text like  '%" + tokens.elementAt(i).toString() + match + "' " ;
-		sqlStr += " or classification like '%" + tokens.elementAt(i).toString() + match + "') " ;
-
-		if ( i < tokens.size() -1 )
-		    sqlStr += " " + search_type + " " ;
-	    }
-
-
-	    sqlStr += " and activate = 1 and disable_search = 0\n" ;
-
-	    if (search_area.equals("not_archived")) {
-		sqlStr += " and meta.archive = 0" ;
-	    }
-
-	    if (search_area.equals("archived")) {
-		sqlStr += " and meta.archive = 1" ;
-	    }
-
-
-
-	    if ( tokens.size() > 0 ) {
-		sqlStr += " order by meta.meta_id" ;
-		dbc.setSQLString(sqlStr) ;
-		dbc.createStatement() ;
-		meta_docs = (Vector)dbc.executeQuery() ;
-
-		dbc.clearResultSet() ;
-	    }
-
-
-	} else {
-	    sqlStr  = "select distinct meta_id,meta_headline,meta_text from meta where " ;
-	    sqlStr += "classification = '" + question_str + "'";
-	    sqlStr += " and activate = 1 and disable_search = 0\n" ;
-
-	    if (search_area.equals("not_archived")) {
-		sqlStr += " and meta.archive = 0" ;
-	    }
-
-	    if (search_area.equals("archived")) {
-		sqlStr += " and meta.archive = 1" ;
-	    }
-
-	    dbc.setSQLString(sqlStr) ;
-	    dbc.createStatement() ;
-	    meta_docs = (Vector)dbc.executeQuery() ;
-	    dbc.clearResultSet() ;
-	}
-
-
-	//close connection
-	dbc.closeConnection() ;
-	dbc = null ;
-
-	return meta_docs ;
 
     }
 
@@ -1332,6 +1211,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	return sqlProcedure(procedure, params, true) ;
     }
 
+
     /**
        The preferred way of getting data from the db.
        @param procedure The name of the procedure.
@@ -1398,17 +1278,17 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	return res;
     }
 
+
     /**
        Send a procedure to the database and return a string.
-       @deprecated Use {@link #sqlProcedure(String, String[])} instead.
+       @deprecated Use {@link #sqlProcedureStr(String, String[])} instead.
     **/
     public String sqlProcedureStr(String procedure) {
-	Vector data = new Vector() ;
+	Vector data ;
 
 	DBConnect dbc = new DBConnect(m_conPool) ;
 	dbc.getConnection() ;
 	dbc.setProcedure(procedure) ;
-	//dbc.createStatement() ;
 	data = (Vector)dbc.executeProcedure() ;
 
 	dbc.clearResultSet() ;
@@ -1431,6 +1311,50 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 
 
     /**
+       Send a procedure to the database and return a string.
+    **/
+    public String sqlProcedureStr(String procedure, String[] params) {
+	return sqlProcedureStr(procedure, params, true) ;
+    }
+    /**
+       Send a procedure to the database and return a string.
+    **/
+    public String sqlProcedureStr(String procedure, String[] params, boolean trim) {
+	if ( params.length > 0 ) {
+	    StringBuffer procedureBuffer = new StringBuffer(procedure) ;
+	    procedureBuffer.append(" ?") ;
+	    for (int i = 1; i < params.length; ++i) {
+		procedureBuffer.append(",?") ;
+	    }
+	    procedure = procedureBuffer.toString() ;
+	}
+	DBConnect dbc = new DBConnect(m_conPool) ;
+	dbc.setTrim(trim) ;
+	dbc.getConnection() ;
+	dbc.setProcedure(procedure,params) ;
+	List data = dbc.executeProcedure() ;
+
+	dbc.clearResultSet() ;
+	dbc.closeConnection() ;
+	dbc = null ;
+
+	if (data != null) {
+
+	    if ( data.size() > 0) {
+		Object obj = data.get(0) ;
+		return
+		    null != obj
+		    ? obj.toString()
+		    : null ;
+	    } else {
+		return null ;
+	    }
+	} else
+	    return null ;
+    }
+
+
+    /**
        Send a update procedure to the database
        @deprecated Use {@link #sqlUpdateProcedure(String, String[])} instead.
     **/
@@ -1438,6 +1362,324 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	return sqlUpdateProcedure(procedure, new String[] {}) ;
     }
 
+
+    /**
+       Send a sqlQuery to the database and return a string array
+       Array[0]                 = number of field in the record
+       Array[1]   - array[n]    = metadata
+       Array[n+1] - array[size] = data
+    */
+    public String[] sqlQueryExt(String sqlQuery) {
+
+	DBConnect dbc = new DBConnect(m_conPool,sqlQuery) ;
+	dbc.getConnection() ;
+	dbc.createStatement() ;
+	Vector data = (Vector)dbc.executeQuery() ;
+
+	String[] meta = (String[])dbc.getMetaData() ;
+
+	if ( data.size() > 0 ) {
+	    String result[] = new String[data.size() + dbc.getColumnCount() + 1] ;
+
+	    // no of fields
+	    result[0] = dbc.getColumnCount() + "" ;
+
+	    // meta
+	    int i = 0 ;
+	    for ( i = 0 ; i < dbc.getColumnCount() ; i++ )
+		result[i+1] = meta[i] ;
+
+	    // data
+	    for ( int j = 0 ; j < data.size() ; j++ )
+		result[j+i+1] =
+		    null != data.elementAt(j)
+		    ? data.elementAt(j).toString()
+		    : null ;
+
+	    dbc.clearResultSet() ;
+	    dbc.closeConnection() ;
+	    dbc = null ;
+	    data = null ;
+	    meta = null ;
+	    return result ;
+	} else {
+	    dbc.clearResultSet() ;
+	    dbc.closeConnection() ;
+	    dbc = null ;
+	    data = null ;
+	    meta = null ;
+	    return null  ;
+	}
+
+    }
+
+    /**
+       Send a procedure to the database and return a string array
+       Array[0]                 = number of field in the record
+       Array[1]   - array[n]    = metadata
+       Array[n+1] - array[size] = data
+       @deprecated Use {@link #sqlProcedure(String, String[])} instead.
+
+    **/
+    public String[] sqlProcedureExt(String procedure) {
+
+	DBConnect dbc = new DBConnect(m_conPool) ;
+	dbc.getConnection() ;
+	dbc.setProcedure(procedure) ;
+
+
+	Vector data = (Vector)dbc.executeProcedure() ;
+	String[] meta = (String[])dbc.getMetaData() ;
+
+	if ( data != null && data.size() > 0 ) {
+
+
+	    String result[] = new String[data.size() + dbc.getColumnCount() + 1] ;
+
+	    // no of fields
+	    result[0] = dbc.getColumnCount() + "" ;
+
+	    // meta
+	    int i = 0 ;
+	    for ( i = 0 ; i < dbc.getColumnCount() ; i++ )
+		result[i+1] = meta[i] ;
+
+	    // data
+	    for ( int j = 0 ; j < data.size() ; j++ )
+		result[j+i+1] =
+		    null != data.elementAt(j)
+		    ? data.elementAt(j).toString()
+		    : null ;
+
+	    dbc.clearResultSet() ;
+	    dbc.closeConnection() ;
+	    dbc = null ;
+	    data = null ;
+	    meta = null ;
+	    return result ;
+	} else {
+	    dbc.clearResultSet() ;
+	    dbc.closeConnection() ;
+	    dbc = null ;
+	    data = null ;
+	    meta = null ;
+	    return null  ;
+	}
+
+    }
+
+
+    /**
+       Send a sqlQuery to the database and return a Hastable
+    */
+    public Hashtable sqlQueryHash(String sqlQuery) {
+
+	DBConnect dbc = new DBConnect(m_conPool,sqlQuery) ;
+	dbc.getConnection() ;
+	dbc.createStatement() ;
+
+	Vector data = (Vector)dbc.executeQuery() ;
+	String[] meta = (String[])dbc.getMetaData() ;
+
+	int columns = dbc.getColumnCount() ;
+
+	Hashtable result = new Hashtable(columns,0.5f) ;
+
+
+	dbc.clearResultSet() ;
+	dbc.closeConnection() ;
+
+
+
+	if ( data.size() > 0 ) {
+
+	    for ( int i = 0 ; i < columns ; i++ ) {
+		String temp_str[] = new String[data.size() / columns] ;
+		int counter = 0 ;
+
+		for ( int j =  i ; j < data.size()  ; j+=columns )
+		    temp_str[counter++] =
+			null != data.elementAt(j)
+			? data.elementAt(j).toString()
+			: null ;
+
+		result.put(meta[i],temp_str) ;
+	    }
+
+
+	    return result ;
+	} else {
+	    return new Hashtable(1,0.5f)   ;
+	}
+
+    }
+
+
+
+
+
+    /**
+       Send a procedure to the database and return a Hashtable
+       @deprecated Use {@link #sqlProcedure(String, String[])} instead.
+    **/
+    public Hashtable sqlProcedureHash(String procedure) {
+
+	DBConnect dbc = new DBConnect(m_conPool) ;
+	dbc.getConnection() ;
+	dbc.setProcedure(procedure) ;
+
+
+
+	Vector data = (Vector)dbc.executeProcedure() ;
+	String[] meta = (String[])dbc.getMetaData() ;
+	int columns = dbc.getColumnCount() ;
+
+
+	Hashtable result = new Hashtable(columns,0.5f) ;
+
+	dbc.clearResultSet() ;
+	dbc.closeConnection() ;
+
+
+	if ( data.size() > 0 ) {
+
+	    for ( int i = 0 ; i < columns ; i++ ) {
+		String temp_str[] = new String[data.size() / columns] ;
+		int counter = 0 ;
+
+
+		for ( int j =  i ; j < data.size()  ; j+=columns ) {
+		    temp_str[counter++] =
+			null != data.elementAt(j)
+			? data.elementAt(j).toString()
+			: null ;
+		}
+		result.put(meta[i],temp_str) ;
+	    }
+	    return result ;
+	} else {
+	    return new Hashtable(1,0.5f)   ;
+	}
+    }
+
+    /**
+       Send a procedure to the database and return a 2-dimensional string array
+    **/
+    public String[][] sqlProcedureMulti(String procedure, String[] params) {
+	return sqlProcedureMulti(procedure, params, true) ;
+    }
+
+    /**
+       Send a procedure to the database and return a 2-dimensional string array
+    **/
+    public String[][] sqlProcedureMulti(String procedure, String[] params, boolean trim) {
+	Vector data = new Vector() ;
+
+	DBConnect dbc = new DBConnect(m_conPool) ;
+	dbc.setTrim(trim) ;
+	dbc.getConnection() ;
+	if ( params.length > 0 ) {
+	    StringBuffer procedureBuffer = new StringBuffer(procedure) ;
+	    procedureBuffer.append(" ?") ;
+	    for (int i = 1; i < params.length; ++i) {
+		procedureBuffer.append(",?") ;
+	    }
+	    procedure = procedureBuffer.toString() ;
+	}
+
+	dbc.setProcedure(procedure, params) ;
+	data = (Vector)dbc.executeProcedure() ;
+	int columns = dbc.getColumnCount() ;
+	dbc.clearResultSet() ;
+	dbc.closeConnection() ;
+	dbc = null ;
+
+	if ( data != null ) {
+	    String result[][] = new String[data.size()/columns][columns] ;
+	    for ( int i = 0 ; i < data.size() ; i++ ) {
+		result[i / columns][i % columns] =
+		    null != data.elementAt(i)
+		    ? data.elementAt(i).toString()
+		    : null ;
+	    }
+	    return result ;
+	}
+	return null ;
+    }
+
+
+    /**
+       Send a procedure to the database and return a 2-dimensional string array
+       @deprecated Use {@link #sqlProcedureMulti(String, String[])} instead.
+    **/
+    public String[][] sqlProcedureMulti(String procedure) {
+
+	Vector data = new Vector() ;
+
+	DBConnect dbc = new DBConnect(m_conPool) ;
+	dbc.getConnection() ;
+	dbc.setProcedure(procedure) ;
+
+	data = (Vector)dbc.executeProcedure() ;
+	int columns = dbc.getColumnCount() ;
+
+	if (columns == 0)
+	    return new String[0][0] ;
+
+	int rows = data.size() / columns ;
+	dbc.clearResultSet() ;
+	dbc.closeConnection() ;
+
+	String result[][] = new String[rows][columns] ;
+	for(int i = 0 ; i < rows ; i++) {
+	    for(int j = 0 ; j < columns ; j++) {
+		result[i][j] =
+		    null != data.elementAt(i * columns +  j)
+		    ? data.elementAt(i * columns +  j).toString()
+		    : null ;
+	    }
+
+	}
+
+	return result ;
+
+    }
+
+
+    /**
+       Send a sqlquery to the database and return a multi string array
+    */
+    public String[][] sqlQueryMulti(String sqlQuery) {
+
+
+	Vector data = new Vector() ;
+
+	DBConnect dbc = new DBConnect(m_conPool,sqlQuery) ;
+	dbc.getConnection() ;
+	dbc.createStatement() ;
+
+	data = (Vector)dbc.executeQuery() ;
+	int columns = dbc.getColumnCount() ;
+
+	if (columns == 0)
+	    return new String[0][0] ;
+
+	int rows = data.size() / columns ;
+	dbc.clearResultSet() ;
+	dbc.closeConnection() ;
+
+	String result[][] = new String[rows][columns] ;
+	for(int i = 0 ; i < rows ; i++) {
+	    for(int j = 0 ; j < columns ; j++) {
+		result[i][j] =
+		    null != data.elementAt(i * columns +  j)
+		    ? data.elementAt(i * columns +  j).toString()
+		    : null ;
+	    }
+
+	}
+	return result ;
+    }
 
 
     /**
@@ -1633,280 +1875,6 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	    tempVec.addElement(vec.elementAt(i+elements)) ;
 	return tempVec ;
     }
-
-
-    /**
-       Send a sqlQuery to the database and return a string array
-       Array[0]                 = number of field in the record
-       Array[1]   - array[n]    = metadata
-       Array[n+1] - array[size] = data
-    */
-    public String[] sqlQueryExt(String sqlQuery) {
-
-	DBConnect dbc = new DBConnect(m_conPool,sqlQuery) ;
-	dbc.getConnection() ;
-	dbc.createStatement() ;
-	Vector data = (Vector)dbc.executeQuery() ;
-
-	String[] meta = (String[])dbc.getMetaData() ;
-
-	if ( data.size() > 0 ) {
-	    String result[] = new String[data.size() + dbc.getColumnCount() + 1] ;
-
-	    // no of fields
-	    result[0] = dbc.getColumnCount() + "" ;
-
-	    // meta
-	    int i = 0 ;
-	    for ( i = 0 ; i < dbc.getColumnCount() ; i++ )
-		result[i+1] = meta[i] ;
-
-	    // data
-	    for ( int j = 0 ; j < data.size() ; j++ )
-		result[j+i+1] = 
-		    null != data.elementAt(j)
-		    ? data.elementAt(j).toString()
-		    : null ;
-
-	    dbc.clearResultSet() ;
-	    dbc.closeConnection() ;
-	    dbc = null ;
-	    data = null ;
-	    meta = null ;
-	    return result ;
-	} else {
-	    dbc.clearResultSet() ;
-	    dbc.closeConnection() ;
-	    dbc = null ;
-	    data = null ;
-	    meta = null ;
-	    return null  ;
-	}
-
-    }
-
-    /**
-       Send a procedure to the database and return a string array
-       Array[0]                 = number of field in the record
-       Array[1]   - array[n]    = metadata
-       Array[n+1] - array[size] = data
-       @deprecated Use {@link #sqlProcedure(String, String[])} instead.
-
-    **/
-    public String[] sqlProcedureExt(String procedure) {
-
-	DBConnect dbc = new DBConnect(m_conPool) ;
-	dbc.getConnection() ;
-	dbc.setProcedure(procedure) ;
-
-
-	Vector data = (Vector)dbc.executeProcedure() ;
-	String[] meta = (String[])dbc.getMetaData() ;
-
-	if ( data != null && data.size() > 0 ) {
-
-
-	    String result[] = new String[data.size() + dbc.getColumnCount() + 1] ;
-
-	    // no of fields
-	    result[0] = dbc.getColumnCount() + "" ;
-
-	    // meta
-	    int i = 0 ;
-	    for ( i = 0 ; i < dbc.getColumnCount() ; i++ )
-		result[i+1] = meta[i] ;
-
-	    // data
-	    for ( int j = 0 ; j < data.size() ; j++ )
-		result[j+i+1] =
-		    null != data.elementAt(j)
-		    ? data.elementAt(j).toString()
-		    : null ;
-
-	    dbc.clearResultSet() ;
-	    dbc.closeConnection() ;
-	    dbc = null ;
-	    data = null ;
-	    meta = null ;
-	    return result ;
-	} else {
-	    dbc.clearResultSet() ;
-	    dbc.closeConnection() ;
-	    dbc = null ;
-	    data = null ;
-	    meta = null ;
-	    return null  ;
-	}
-
-    }
-
-
-    /**
-       Send a sqlQuery to the database and return a Hastable
-    */
-    public Hashtable sqlQueryHash(String sqlQuery) {
-
-	DBConnect dbc = new DBConnect(m_conPool,sqlQuery) ;
-	dbc.getConnection() ;
-	dbc.createStatement() ;
-
-	Vector data = (Vector)dbc.executeQuery() ;
-	String[] meta = (String[])dbc.getMetaData() ;
-
-	int columns = dbc.getColumnCount() ;
-
-	Hashtable result = new Hashtable(columns,0.5f) ;
-
-
-	dbc.clearResultSet() ;
-	dbc.closeConnection() ;
-
-
-
-	if ( data.size() > 0 ) {
-
-	    for ( int i = 0 ; i < columns ; i++ ) {
-		String temp_str[] = new String[data.size() / columns] ;
-		int counter = 0 ;
-
-		for ( int j =  i ; j < data.size()  ; j+=columns )
-		    temp_str[counter++] =
-			null != data.elementAt(j)
-			? data.elementAt(j).toString()
-			: null ;
-
-		result.put(meta[i],temp_str) ;
-	    }
-
-
-	    return result ;
-	} else {
-	    return new Hashtable(1,0.5f)   ;
-	}
-
-    }
-
-
-
-
-
-    /**
-       Send a procedure to the database and return a Hashtable
-       @deprecated Use {@link #sqlProcedure(String, String[])} instead.
-    **/
-    public Hashtable sqlProcedureHash(String procedure) {
-
-	DBConnect dbc = new DBConnect(m_conPool) ;
-	dbc.getConnection() ;
-	dbc.setProcedure(procedure) ;
-
-
-
-	Vector data = (Vector)dbc.executeProcedure() ;
-	String[] meta = (String[])dbc.getMetaData() ;
-	int columns = dbc.getColumnCount() ;
-
-
-	Hashtable result = new Hashtable(columns,0.5f) ;
-
-	dbc.clearResultSet() ;
-	dbc.closeConnection() ;
-
-
-	if ( data.size() > 0 ) {
-
-	    for ( int i = 0 ; i < columns ; i++ ) {
-		String temp_str[] = new String[data.size() / columns] ;
-		int counter = 0 ;
-
-
-		for ( int j =  i ; j < data.size()  ; j+=columns ) {
-		    temp_str[counter++] =
-			null != data.elementAt(j)
-			? data.elementAt(j).toString()
-			: null ;
-		}
-		result.put(meta[i],temp_str) ;
-	    }
-	    return result ;
-	} else {
-	    return new Hashtable(1,0.5f)   ;
-	}
-    }
-
-
-    /**
-       Send a procedure to the database and return a multi string array
-    **/
-    public String[][] sqlProcedureMulti(String procedure) {
-
-	Vector data = new Vector() ;
-
-	DBConnect dbc = new DBConnect(m_conPool) ;
-	dbc.getConnection() ;
-	dbc.setProcedure(procedure) ;
-
-	data = (Vector)dbc.executeProcedure() ;
-	int columns = dbc.getColumnCount() ;
-
-	if (columns == 0)
-	    return new String[0][0] ;
-
-	int rows = data.size() / columns ;
-	dbc.clearResultSet() ;
-	dbc.closeConnection() ;
-
-	String result[][] = new String[rows][columns] ;
-	for(int i = 0 ; i < rows ; i++) {
-	    for(int j = 0 ; j < columns ; j++) {
-		result[i][j] =
-		    null != data.elementAt(i * columns +  j)
-		    ? data.elementAt(i * columns +  j).toString()
-		    : null ;
-	    }
-
-	}
-
-	return result ;
-
-    }
-
-
-    /**
-       Send a sqlquery to the database and return a multi string array
-    */
-    public String[][] sqlQueryMulti(String sqlQuery) {
-
-
-	Vector data = new Vector() ;
-
-	DBConnect dbc = new DBConnect(m_conPool,sqlQuery) ;
-	dbc.getConnection() ;
-	dbc.createStatement() ;
-
-	data = (Vector)dbc.executeQuery() ;
-	int columns = dbc.getColumnCount() ;
-
-	if (columns == 0)
-	    return new String[0][0] ;
-
-	int rows = data.size() / columns ;
-	dbc.clearResultSet() ;
-	dbc.closeConnection() ;
-
-	String result[][] = new String[rows][columns] ;
-	for(int i = 0 ; i < rows ; i++) {
-	    for(int j = 0 ; j < columns ; j++) {
-		result[i][j] =
-		    null != data.elementAt(i * columns +  j)
-		    ? data.elementAt(i * columns +  j).toString()
-		    : null ;
-	    }
-
-	}
-	return result ;
-    }
-
 
     /**
        get doctype
@@ -2935,7 +2903,7 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 	    null != rrUserData.getExpiryDate()
 	    ? new SimpleDateFormat("yyyy-MM-dd").format(rrUserData.getExpiryDate())
 	    : null ;
-	
+
 	String temp[] = {""+userId,
 			 ""+rrUserData.getUses(),
 			 ""+rrUserData.getMaxUses(),
@@ -2944,9 +2912,9 @@ final public class IMCService implements IMCServiceInterface, IMCConstants {
 			 ""+rrUserData.getExpiryDateWarningThreshold(),
 			 ""+rrUserData.getExpiryDateWarningSent()
 	};
-	for (int i = 0 ; i < temp.length ; i++ ){	
+	for (int i = 0 ; i < temp.length ; i++ ){
 	    System.out.println("temp[]= " + temp[i]);
-	}	
+	}
 
 	sqlUpdateProcedure("SetReadrunnerUserDataForUser",
 			   new String[] {
