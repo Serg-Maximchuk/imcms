@@ -126,11 +126,11 @@ public class PollHandler extends HttpServlet {
 				String text = req.getParameter(aParameter);
 				if( !("").equals(text.trim()) ){ 
 					textAnswers.put(""+question_no, text); //
-				}
 				
-				//lets store question number and question text that we are going to send as mail to recipients 
-				String questionText = getText(imcref, Integer.parseInt(meta_id), question_no ); // in this case question_no is equal to text_no
-				textQuestions.put(""+question_no, questionText); 
+					//lets store question number and question text that we are going to send as mail to recipients 
+					String questionText = getText(imcref, Integer.parseInt(meta_id), question_no ); // in this case question_no is equal to text_no
+					textQuestions.put(""+question_no, questionText); 
+				}
 							
 		    
 			// else lets increase selected options (votes)
@@ -260,8 +260,12 @@ public class PollHandler extends HttpServlet {
 
 		IMCText text;
 		text = imcref.getText(meta_id, text_no);
-	
-		return text.getText();					
+		
+		if ( text != null ) {
+			return text.getText();					
+		}else{
+			return ("");
+		}
 	}
 }
 
