@@ -3,6 +3,7 @@ import javax.servlet.http.* ;
 
 import java.io.* ;
 import java.util.* ;
+import java.net.URLEncoder ;
 
 import imcode.server.* ;
 import imcode.util.* ;
@@ -19,15 +20,24 @@ public class MagazineSubscriptions extends HttpServlet {
 
     private static Logger log = Logger.getLogger( MagazineSubscriptions.class.getName() ) ;
 
-    public void doPost (HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+    public void service (HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
 	IMCServiceInterface imcref = IMCServiceRMI.getIMCServiceInterface(req) ;
 	String startUrl	= imcref.getStartUrl() ;
 	ServletOutputStream out = res.getOutputStream() ;
 
+	String[] flagParameterValues    = emptyIfNull(req.getParameterValues("flag")) ;
+	String[] setflagParameterValues = emptyIfNull(req.getParameterValues("setflag")) ;
+	/* Where to go next */
+	String forwardTo = req.getParameter("next_url") ;
+
 	User user = null ;
 	/* Check if user logged on */
-	if ( (user=Check.userLoggedOn(req,res,startUrl))==null ) {
+	String no_permission_url =  Prefs.get   ( "admin_url",  IMCConstants.HOST_PROPERTIES );
+	if ( (user=Check.userLoggedOn(req,res,no_permission_url))==null ) {
+	    String targetURL = req.getRequestURL().append('?').append(urlEncodeParameters(flagParameterValues, setflagParameterValues, forwardTo)).toString() ;
+	    log.debug("TargetUrl: "+targetURL) ;
+	    req.getSession(true).setAttribute("login.target", targetURL) ;
 	    return ;
 	}
 
@@ -43,9 +53,9 @@ public class MagazineSubscriptions extends HttpServlet {
 	Map previouslySetFlags = imcref.getUserFlags(user,MAGAZINE_SUBSCRIPTION_USER_FLAG_TYPE) ;
 
 	/* Turn the set flags into a set. */
-	Set setFlags = new HashSet(Arrays.asList(emptyIfNull(req.getParameterValues("setflag")))) ;
+	Set setFlags = new HashSet(Arrays.asList(setflagParameterValues)) ;
 
-	List flags = Arrays.asList(emptyIfNull(req.getParameterValues("flag"))) ;
+	List flags = Arrays.asList(flagParameterValues) ;
 
 	boolean addedToMail = false ;
 	for (Iterator it = flags.iterator(); it.hasNext();) {
@@ -71,9 +81,6 @@ public class MagazineSubscriptions extends HttpServlet {
 	if (addedToMail) {
 	    sendMail(theMail) ;
 	}
-
-	/* Where to go next */
-	String forwardTo = req.getParameter("next_url") ;
 
 	if (null == forwardTo || "".equals(forwardTo)) {
 	    /* or, if there was no "next", back to where we came from */
@@ -132,5 +139,23 @@ public class MagazineSubscriptions extends HttpServlet {
 	} catch (IOException ioex) {
 	    log.error("Failed to send subscription-mail.", ioex) ;
 	}
+    }
+
+    private String urlEncodeParameters(String[] flags, String[] setFlags, String next_url) {
+	StringBuffer result = new StringBuffer() ;
+	try {
+	    for (int i = 0; i < flags.length; ++i) {
+		result.append("flag=").append(URLEncoder.encode(flags[i],"UTF-8")).append('&') ;
+	    }
+	    for (int i = 0; i < setFlags.length; ++i) {
+		result.append("setflag=").append(URLEncoder.encode(setFlags[i],"UTF-8")).append('&') ;
+	    }
+	    if (null != next_url) {
+		result.append("next_url=").append(URLEncoder.encode(next_url,"UTF-8")) ;
+	    }
+	} catch (UnsupportedEncodingException uee) {
+	    /* WTF isn't UnsupportedEncodingException a RuntimeException? */
+	}
+	return result.toString() ;
     }
 }
