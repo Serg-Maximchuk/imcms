@@ -1273,7 +1273,7 @@ public class IMCService extends UnicastRemoteObject implements IMCServiceInterfa
 		superadmin = new StringBuffer(getCachedFileString(superadmin_filename)) ;
 		
 	    } catch(IOException e) {
-		this.updateLogs("An error occurred reading the file" + e );
+		this.updateLogs("An error occurred reading the file" + e ) ;
 		System.out.println("An error occurred reading the file" + e) ;
 		return null ;
 	    }
