@@ -27,9 +27,11 @@ public interface PollHandlingSystem {
 				@popup_freq int
 				@set_cookie bit ,
 				@hide_result bit ,
-				@confirmation_text varchar (500) ,
-				@email_recipients varchar (200) ,
-				@result_template varchar (80)
+				@confirmation_text int ,
+				@email_recipients int ,
+				@email_from int ,
+				@email_subject int ,
+				@result_template int
 	*/
 	public String[] getPollParameters(String meta_id);
 
@@ -79,9 +81,11 @@ public interface PollHandlingSystem {
 			@popup_freq int
 			@set_cookie bit
 			@hide_result bit
-			@confirmation_text varchar (500) 
-			@email_recipients varchar (200)
-			@result_template varchar (80) 
+			@confirmation_text int 
+			@email_recipients int
+			@email_from int
+			@email_subject int
+			@result_template int 
 	*/
 	public String[][] getAllPolls();
 

@@ -25,8 +25,8 @@ if ( meta_id !=null){
 	
 	if ( poll_param != null && poll_param.length !=0 ){
 		hide_result = Integer.parseInt( poll_param[6] );
-		if ( poll_param[9] != null && Integer.parseInt(poll_param[9]) > 0 ){
-			result_template = imcref.getText( Integer.parseInt(meta_id), Integer.parseInt(poll_param[9])).getText().trim();
+		if ( poll_param[11] != null && Integer.parseInt(poll_param[11]) > 0 ){
+			result_template = imcref.getText( Integer.parseInt(meta_id), Integer.parseInt(poll_param[11])).getText().trim();
 		}
 		set_cookie = Integer.parseInt(poll_param[5]);
 	}

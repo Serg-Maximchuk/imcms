@@ -17,8 +17,6 @@ import imcode.server.* ;
 public class PollHandler extends HttpServlet {
 
    
-    private final static String POLL_CONFIG = "poll.properties" ;
-
     //private final static String MAIL_ITEM_FORMAT = "poll/mailitemformat.txt" ;
     //private final static String MAIL_FORMAT      = "poll/mailformat.txt" ;
 
@@ -202,9 +200,9 @@ public class PollHandler extends HttpServlet {
 		    // Do nothing, let mailtimeout stay at default.
 		}
 
-		String mailFromAddress = Prefs.get("mail-from-address", POLL_CONFIG) ;
+		String mailFromAddress = getText( imcref, Integer.parseInt(meta_id), Integer.parseInt(poll_param[9]) );
 		String mailToAddress   = getText( imcref, Integer.parseInt(meta_id), Integer.parseInt(poll_param[8]) ); // comma-separated string;
-		String mailSubject     = Prefs.get("mail-subject",      POLL_CONFIG) ;
+		String mailSubject     = getText( imcref, Integer.parseInt(meta_id), Integer.parseInt(poll_param[10]) );
 		//String mailFormat      = imcref.parseDoc(null, MAIL_FORMAT, imcref.getLanguage()) ;
 		//String mailItemFormat  = imcref.parseDoc(null, MAIL_ITEM_FORMAT, imcref.getLanguage()) ;
 		

@@ -137,6 +137,14 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 			}else if ( text_type.endsWith("email_recipients") ){
 				sql_param[1] = "email_recipients" ;
 				sql_param[2] = ""+text_no ;
+				
+			}else if ( text_type.endsWith("email_from") ){
+				sql_param[1] = "email_from" ;
+				sql_param[2] = ""+text_no ;	
+				
+			}else if ( text_type.endsWith("email_subject") ){
+				sql_param[1] = "email_subject" ;
+				sql_param[2] = ""+text_no ;
 			
 			}else if ( text_type.endsWith("name") ){
 				sql_param[1] = "name" ;
@@ -196,9 +204,11 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 				@popup_freq int
 				@set_cookie bit ,
 				@hide_result bit ,
-				@confirmation_text varchar (500) ,
-				@email_recipients varchar (200) ,
-				@result_template varchar (80)
+				@confirmation_text int ,
+				@email_recipients int ,
+				@email_from int ,
+				@email_subject int ,
+				@result_template int
 	*/
 	public String[] getPollParameters(String meta_id){
 		String[] poll_data = imcref.sqlProcedure( "Poll_GetOne ", new String[] { meta_id } ) ; 
@@ -262,9 +272,11 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 			@popup_freq int
 			@set_cookie bit
 			@hide_result bit
-			@confirmation_text varchar (500) 
-			@email_recipients varchar (200)
-			@result_template varchar (80) 
+			@confirmation_text int
+			@email_recipients int 
+			@email_from int 
+			@email_subject int
+			@result_template int 
 	*/
 	public String[][] getAllPolls(){
 		return imcref.sqlProcedureMulti( "Poll_GetAll ", new String[] {} );
