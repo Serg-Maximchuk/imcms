@@ -10,6 +10,40 @@ public class TestShoppingItem extends TestCase {
 	super(name) ;
     }
 
+    ShoppingItem[] items = new ShoppingItem[8] ;
+
+    protected void setUp() {
+	items[0] = new ShoppingItem() ;
+	items[0].setDescription(2,"Desc") ;
+	items[0].setPrice(0.1) ;
+	items[1] = new ShoppingItem() ;
+	items[1].setDescription(2,"XXX") ;
+	items[1].setPrice(1.2) ;
+	items[2] = new ShoppingItem() ;
+	items[2].setDescription(1,"Desc") ;
+	items[2].setPrice(2.3) ;
+	items[3] = new ShoppingItem() ;
+	items[3].setDescription(1,"Desc") ;
+	items[3].setDescription(2,"Desc") ;
+	items[3].setPrice(3.4) ;
+	items[4] = new ShoppingItem() ;
+	items[4].setDescription(1,"Desc") ;
+	items[4].setDescription(2,"XXX") ;
+	items[4].setPrice(4.5) ;
+	items[5] = new ShoppingItem() ;
+	items[5].setDescription(1,"XXX") ;
+	items[5].setDescription(2,"Desc") ;
+	items[5].setPrice(5.6) ;
+	items[6] = new ShoppingItem() ;
+	items[6].setDescription(1,"XXX") ;
+	items[6].setDescription(2,"XXX") ;
+	items[6].setPrice(6.7) ;
+	items[7] = new ShoppingItem() ;
+	items[7].setDescription(1,"XXX") ;
+	items[7].setDescription(2,"XXX") ;
+	items[7].setPrice(7.8) ;
+    }
+
     public void testPrice() {
 	ShoppingItem item1 = new ShoppingItem() ;
 	assertEquals(0, item1.getPrice(), 0) ;
@@ -115,39 +149,32 @@ public class TestShoppingItem extends TestCase {
     }
 
     public void testCompareToSort() {
-	ShoppingItem item1 = new ShoppingItem() ;
-	item1.setDescription(2,"Desc") ;
-	ShoppingItem item2 = new ShoppingItem() ;
-	item2.setDescription(1,"Desc") ;
-	ShoppingItem item3 = new ShoppingItem() ;
-	item3.setDescription(1,"Desc") ;
-	item3.setDescription(2,"Desc") ;
-	ShoppingItem item4 = new ShoppingItem() ;
-	item4.setDescription(1,"XXX") ;
-	item4.setDescription(2,"Desc") ;
 
-	ShoppingItem[] items = new ShoppingItem[] { item1, item2, item3, item4 } ;
+	List itemsList = new ArrayList(Arrays.asList(items)) ;
+	Collections.reverse(itemsList) ;
 
-	Arrays.sort(items) ;
+	ShoppingItem[] sortedItems = (ShoppingItem[]) itemsList.toArray(new ShoppingItem[items.length]) ;
 
-	assertTrue(item2 != items[0]) ;
-	assertTrue(item3 != items[0]) ;
-	assertTrue(item4 != items[0]) ;
-	assertSame(item1, items[0]) ;
+	Arrays.sort(sortedItems) ;
 
-	assertTrue(item1 != items[1]) ;
-	assertTrue(item3 != items[1]) ;
-	assertTrue(item4 != items[1]) ;
-	assertSame(item2, items[1]) ;
+	for (int i=0; i < items.length; ++i) {
+	    for (int j=0; j < items.length; ++j) {
+		if (i == j) {
+		    assertEquals("items["+i+"] == cartItems["+j+"]\n"+itemsToString(sortedItems), items[i], sortedItems[j]) ;
+		} else {
+		    assertTrue("items["+i+"] != cartItems["+j+"]\n"+itemsToString(sortedItems), items[i] != sortedItems[j]) ;
+		}
+	    }
+	}
+    }
 
-	assertTrue(item1 != items[2]) ;
-	assertTrue(item2 != items[2]) ;
-	assertTrue(item4 != items[2]) ;
-	assertSame(item3, items[2]) ;
+    public String itemsToString(ShoppingItem[] items) {
+	StringBuffer result = new StringBuffer() ;
 
-	assertTrue(item1 != items[3]) ;
-	assertTrue(item2 != items[3]) ;
-	assertTrue(item3 != items[3]) ;
-	assertSame(item4, items[3]) ;
+	for (int i=0; i < items.length; ++i) {
+	    result.append(items[i].toString()) ;
+	    result.append('\n') ;
+	}
+	return result.toString() ;
     }
 }

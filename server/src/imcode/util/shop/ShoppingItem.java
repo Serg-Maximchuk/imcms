@@ -134,4 +134,7 @@ public class ShoppingItem implements Comparable {
 	return 0 ;
     }
 
+    public String toString() {
+	return descriptions.toString()+" "+price ;
+    }
 }
