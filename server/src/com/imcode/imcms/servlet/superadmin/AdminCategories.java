@@ -140,7 +140,7 @@ public class AdminCategories extends HttpServlet {
             boolean nameWasChanged = !req.getParameter(PARAMETER__OLD_NAME).toLowerCase().equals(req.getParameter(PARAMETER__NAME).toLowerCase());
             CategoryTypeDomainObject categoryTypeToAddTo = getCategoryTypeFromRequest(req, service, PARAMETER_SELECT__CATEGORY_TYPE_TO_ADD_TO);
             if (nameWasChanged) {
-                nameIsUnique = isUniqueName(service, categoryTypeToAddTo, category.getName());
+                nameIsUnique = isUniqueName(service, categoryTypeToAddTo, req.getParameter(PARAMETER__NAME));
             }
             if (nameIsUnique) {
                 setCategoryFromRequest(category, req, service);
