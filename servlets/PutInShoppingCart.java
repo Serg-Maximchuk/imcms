@@ -243,6 +243,8 @@ public class PutInShoppingCart extends HttpServlet {
 	ShoppingCart cart = (ShoppingCart)req.getSession(true).getAttribute(ShoppingCart.SESSION_NAME) ;
 	ShoppingItem[] items = cart.getItems() ;
 
+	DecimalFormat priceFormat = createDecimalFormat(null, ".", null) ;
+
 	double totalPrice = 0 ;
 	for (int i = 0; i < items.length; ++i) {
 	    ShoppingItem item = items[i] ;
@@ -259,14 +261,14 @@ public class PutInShoppingCart extends HttpServlet {
 	    }
 
 	    /* Put the price in the map */
-	    itemStringMap.put("#price#",""+item.getPrice()) ;
+	    itemStringMap.put("#price#",priceFormat.format(item.getPrice())) ;
 
 	    /* Put the quantity in the map */
 	    int quantity = cart.countItem(item) ;
 	    itemStringMap.put("#quantity#",""+quantity) ;
 
 	    /* Put the total item price for this item in the map */
-	    itemStringMap.put("#total_price#",""+(quantity*item.getPrice())) ;
+	    itemStringMap.put("#total_price#",priceFormat.format(quantity*item.getPrice())) ;
 
 	    /* Add to the total price for all items */
 	    totalPrice += quantity*item.getPrice() ;
@@ -297,7 +299,7 @@ public class PutInShoppingCart extends HttpServlet {
 	mailStringMap.put("#user_city#",           user.getCity()) ;
 	mailStringMap.put("#user_country#",        user.getCountry()) ;
 	mailStringMap.put("#user_county_council#", user.getCountyCouncil()) ;
-	mailStringMap.put("#total_price#",         ""+totalPrice) ;
+	mailStringMap.put("#total_price#",         priceFormat.format(totalPrice)) ;
 
 	/* Put the mailitems in the mail */
 	String mail = Util.substitute(patternMatcher,
