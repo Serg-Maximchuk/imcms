@@ -48,7 +48,7 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 			if ( question_no > 0 ) {
 				String[] sql_data =  imcref.sqlProcedure( "Poll_GetQuestion ", new String[] { ""+poll_id, ""+question_no } ) ; 
 					
-				if ( sql_data == null || sql_data.length == 0 ){
+				if ( sql_data == null || sql_data.length == 0 || ("-1").equals(sql_data[3]) ){
 					imcref.sqlUpdateProcedure("Poll_AddQuestion ", new String[] { ""+poll_id, ""+question_no, ""+text_no } ) ;
 				}
 			}
@@ -62,6 +62,12 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 			if ( question_no > 0 && option_no > 0 ) {
 			
 				String[] sql_data =  imcref.sqlProcedure( "Poll_GetQuestion ", new String[] { ""+poll_id, ""+question_no 	} );
+				
+				// lets create a new question in db if the user don`t have create it before he create the answer.  
+				if ( sql_data == null || sql_data.length == 0){
+					imcref.sqlUpdateProcedure("Poll_AddQuestion ", new String[] { ""+poll_id, ""+question_no, "-1" } ) ;
+					sql_data =  imcref.sqlProcedure( "Poll_GetQuestion ", new String[] { ""+poll_id, ""+question_no } );	
+				}
 				int question_id = Integer.parseInt(sql_data[0]);
 			
 				if ( question_id > 0 ) {
@@ -83,6 +89,12 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 			if ( question_no > 0 && option_no > 0 ) {
 			
 				String[] sql_data =  imcref.sqlProcedure( "Poll_GetQuestion ", new String[] { ""+poll_id, ""+question_no 	} );
+				
+				// lets create a new question in db if the user don`t have create it before he create the answer-option.  
+				if ( sql_data == null || sql_data.length == 0){
+					imcref.sqlUpdateProcedure("Poll_AddQuestion ", new String[] { ""+poll_id, ""+question_no, "-1" } ) ;
+					sql_data =  imcref.sqlProcedure( "Poll_GetQuestion ", new String[] { ""+poll_id, ""+question_no } );	
+				}
 				int question_id = Integer.parseInt(sql_data[0]);
 				
 				if ( question_id > 0 ) {
@@ -114,7 +126,8 @@ public class PollHandlingSystemImpl implements PollHandlingSystem {
 				sql_param[2] = 	textstring.trim().equals("") ? "0" : "1" ; // we accept anything that is not an empty string and take it for a '1'		
 			
 			}else if ( text_type.endsWith("confirmation_text") ){
-				sql_param[1] = "confirmation_text" ;	
+				sql_param[1] = "confirmation_text" ;
+				sql_param[2] = ""+text_no ; 	
 				
 			}else if ( text_type.endsWith("email_recipients") ){
 				sql_param[1] = "email_recipients" ;

@@ -381,7 +381,10 @@
 	    description="Copies the jar-files.">
 
 	<copy todir="${lib}">
-	    <fileset dir="install/lib" excludes="junit.jar"/>
+	    <fileset dir="install/lib" >
+			<exclude name = "junit.jar"/>
+			<exclude name = "servlet.jar"/>
+	    </fileset>	
 	</copy>
 
     </target>
