@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <changesets>
 
+<changeset version="2.1.2">
+
+    <changes for="API-using developers">
+         <change>
+            <p>
+                When including other documents,
+                the <class>TextDocumentViewing</class> in the request was replaced,
+                so that subsequent <class>TextDocumentViewings</class>
+                in the including document came from the included document.
+            </p>
+            <bug id="3062"/>
+         </change>
+    </changes>
+
+</changeset>
+
+
 <changeset version="2.1.1">
 
     <changes for="users">
