@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <changesets>
 
-<changeset version="2.1.2">
+<changeset version="2.2.0">
+
+    <changes for="users">
+        <change>
+            <p>
+                Added "Save" and "Save and close" buttons to text editor.
+            </p>
+            <bug id="2937"/>
+        </change>
+    </changes>
 
     <changes for="API-using developers">
          <change>
