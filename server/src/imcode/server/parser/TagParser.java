@@ -151,6 +151,10 @@ class TagParser {
      * @param patMat     A pattern matcher.
      */
     private String tagInclude( Properties attributes, PatternMatcher patMat ) {
+        if (shouldOutputNothingAccordingToMode(attributes, includeMode)) {
+            return "" ;
+        }
+
         int no ;
         String attributevalue;
 
@@ -398,11 +402,7 @@ class TagParser {
      *                   pollparameter-description
      */
     private String tagText( Properties attributes ) {
-        String mode = attributes.getProperty( "mode" );
-        if ( mode != null && !"".equals( mode )
-             && ( textMode && "read".startsWith( mode ) // With mode="read", we don't want anything in textMode.
-                  || !textMode && "write".startsWith( mode )// With mode="write", we don't want anything unless we're in textMode.
-                ) ) {
+        if ( shouldOutputNothingAccordingToMode( attributes, textMode ) ) {
             return "";
         }
         // Get the 'no'-attribute of the <?imcms:text no="..."?>-tag
@@ -456,6 +456,14 @@ class TagParser {
         return finalresult;
     }
 
+    private boolean shouldOutputNothingAccordingToMode( Properties attributes, boolean mode ) {
+        String modeAttribute = attributes.getProperty( "mode" );
+        return StringUtils.isNotBlank( modeAttribute )
+             && ( mode && "read".startsWith( modeAttribute ) // With mode="read", we don't want anything in textMode.
+                  || !mode && "write".startsWith( modeAttribute )// With mode="write", we don't want anything unless we're in textMode.
+                );
+    }
+
     private String getLabel( Properties attributes ) {
         return attributes.getProperty( "label", "" ).replaceAll( "\\s+", " " );
     }
@@ -490,11 +498,7 @@ class TagParser {
      * @param attributes The attributes of the image tag
      */
     private String tagImage( Properties attributes ) {
-        String mode = attributes.getProperty( "mode" );
-        if ( mode != null && !"".equals( mode )
-             && ( imageMode && "read".startsWith( mode ) // With mode="read", we don't want anything in imageMode.
-                  || !imageMode && "write".startsWith( mode )// With mode="write", we don't want anything it not in imageMode.
-                ) ) {
+        if ( shouldOutputNothingAccordingToMode( attributes, imageMode ) ) {
             return "";
         }
         // Get the 'no'-attribute of the <?imcms:text no="..."?>-tag
