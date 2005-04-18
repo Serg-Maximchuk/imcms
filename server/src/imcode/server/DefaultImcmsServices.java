@@ -239,9 +239,11 @@ final public class DefaultImcmsServices implements ImcmsServices {
 
         boolean userAuthenticates = externalizedImcmsAuthAndMapper.authenticate( login, password );
         UserDomainObject user = externalizedImcmsAuthAndMapper.getUser( login );
-        if ( userAuthenticates ) {
+        if ( userAuthenticates  ) {
             result = user;
-            mainLog.info( "->User '" + login + "' successfully logged in." );
+            if ( !user.isDefaultUser() ) {
+                mainLog.info( "->User '" + login + "' successfully logged in." );
+            }
         } else if ( null == user ) {
             mainLog.info( "->User '" + login + "' failed to log in: User not found." );
         } else if ( !user.isActive() ) {
