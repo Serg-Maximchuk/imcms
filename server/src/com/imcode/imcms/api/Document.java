@@ -1,6 +1,6 @@
 package com.imcode.imcms.api;
 
-import com.imcode.imcms.api.util.ChainableReversibleNullComparator;
+import com.imcode.util.ChainableReversibleNullComparator;
 import imcode.server.document.*;
 import imcode.server.user.RoleDomainObject;
 import imcode.server.user.UserDomainObject;
@@ -37,9 +37,26 @@ public class Document {
     }
 
     /**
+     * @deprecated Use {@link #getRolesMappedToPermissions()}.
      * @return map of rolename String -> DocumentPermissionSet instances.
      */
     public Map getAllRolesMappedToPermissions() throws NoPermissionException {
+
+        Map roleNamesMappedToPermissions = new HashMap();
+        final Map rolesMappedToPermissions = getRolesMappedToPermissions();
+        for (Iterator iterator = rolesMappedToPermissions.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            final Role role = (Role) entry.getKey();
+            final DocumentPermissionSet documentPermissionSet = (DocumentPermissionSet) entry.getValue();
+            roleNamesMappedToPermissions.put(role.getName(), documentPermissionSet  );
+        }
+        return roleNamesMappedToPermissions;
+    }
+
+    /**
+     * @return map of roles Role -> DocumentPermissionSet instances.
+     */
+    public Map getRolesMappedToPermissions() throws NoPermissionException {
         getSecurityChecker().hasEditPermission( this );
 
         Map rolesMappedToPermissionSetIds = internalDocument.getRolesMappedToPermissionSetIds();
@@ -47,21 +64,20 @@ public class Document {
         Map result = new HashMap();
         for ( Iterator it = rolesMappedToPermissionSetIds.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry rolePermissionTuple = (Map.Entry)it.next();
-            RoleDomainObject role = (RoleDomainObject)rolePermissionTuple.getKey();
+            RoleDomainObject role =  (RoleDomainObject)rolePermissionTuple.getKey() ;
             int permissionType = ( (Integer)rolePermissionTuple.getValue() ).intValue();
             switch ( permissionType ) {
                 case DocumentPermissionSetDomainObject.TYPE_ID__FULL:
-                    result.put( role.getName(), DocumentPermissionSetDomainObject.FULL );
+                    result.put( role, DocumentPermissionSetDomainObject.FULL );
                     break;
                 case DocumentPermissionSetDomainObject.TYPE_ID__RESTRICTED_1:
                 case DocumentPermissionSetDomainObject.TYPE_ID__RESTRICTED_2:
-                    result.put( role.getName(),
-                                getDocumentPermissionSetMapper().getRestrictedPermissionSet( internalDocument,
+                    result.put( role,  getDocumentPermissionSetMapper().getRestrictedPermissionSet( internalDocument,
                                                                                                 permissionType,
                                                                                                 false ) );
                     break;
                 case DocumentPermissionSetDomainObject.TYPE_ID__READ:
-                    result.put( role.getName(), DocumentPermissionSetDomainObject.READ );
+                    result.put( role, DocumentPermissionSetDomainObject.READ );
                     break;
                 case DocumentPermissionSetDomainObject.TYPE_ID__NONE:
                     break;
@@ -84,10 +100,10 @@ public class Document {
         Set keys = rolesMappedToPermissionsIds.keySet();
         Iterator keyIterator = keys.iterator();
         while ( keyIterator.hasNext() ) {
-            String roleName = (String)keyIterator.next();
-            DocumentPermissionSetDomainObject documentPermissionSetDO = (DocumentPermissionSetDomainObject)rolesMappedToPermissionsIds.get( roleName );
+            RoleDomainObject role = (RoleDomainObject)keyIterator.next();
+            DocumentPermissionSetDomainObject documentPermissionSetDO = (DocumentPermissionSetDomainObject)rolesMappedToPermissionsIds.get( role );
             DocumentPermissionSet documentPermissionSet = new DocumentPermissionSet( documentPermissionSetDO );
-            result.put( roleName, documentPermissionSet );
+            result.put( new Role(role), documentPermissionSet );
         }
         return result;
     }
@@ -421,7 +437,7 @@ public class Document {
         protected abstract int compareDocuments( Document d1, Document d2 ) throws NoPermissionException;
 
         public final static Comparator ID = new Comparator() {
-            protected int compareDocuments( Document d1, Document d2 ) throws NoPermissionException {
+            protected int compareDocuments( Document d1, Document d2 ) {
                 return d1.getId() - d2.getId();
             }
         };
