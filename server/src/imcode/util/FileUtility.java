@@ -1,17 +1,16 @@
 package imcode.util;
 
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
 import org.apache.oro.text.regex.*;
 
-import java.io.FileFilter;
 import java.io.File;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Iterator;
-import java.util.ArrayList;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.*;
 
 public class FileUtility {
 
@@ -91,6 +90,26 @@ public class FileUtility {
             return Util.substitute(new Perl5Matcher(), new Perl5Compiler().compile( "_([A-Fa-f0-9]{4})"), new UnescapeFilenameSubstitution(), escapedFilename,Util.SUBSTITUTE_ALL) ;
         } catch ( MalformedPatternException e ) {
             throw new UnhandledException( e );
+        }
+    }
+
+    public static void backupRename(File source, File destination) throws IOException {
+        if (!source.equals(destination)) {
+            File oldDestination = new File(destination.getParentFile(), destination.getName() + ".old");
+            FileUtils.forceDelete(oldDestination);
+            if (destination.exists()) {
+                fatalRename(destination, oldDestination);
+            }
+            fatalRename(source, destination);
+            FileUtils.forceDelete(oldDestination);
+        }
+    }
+
+    private static void fatalRename(File source, File destination) throws IOException {
+        if ( !source.renameTo(destination) ) {
+            throw new IOException("Failed to rename \"" + source + "\" to \""
+                                  + destination
+                                  + "\".");
         }
     }
 
