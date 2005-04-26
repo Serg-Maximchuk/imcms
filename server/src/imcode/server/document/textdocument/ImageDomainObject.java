@@ -8,6 +8,7 @@ import imcode.server.document.DocumentReference;
 import imcode.server.document.FileDocumentDomainObject;
 import imcode.util.FileInputStreamSource;
 import imcode.util.InputStreamSource;
+import imcode.util.FileUtility;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -282,7 +283,8 @@ public class ImageDomainObject implements Serializable {
         }
 
         public String getUrlPathRelativeToContextPath() {
-            return Imcms.getServices().getConfig().getImageUrl() + relativePath;
+            File file = new File (relativePath);
+            return Imcms.getServices().getConfig().getImageUrl () + FileUtility.relativeFileToString(file);
 
         }
 
