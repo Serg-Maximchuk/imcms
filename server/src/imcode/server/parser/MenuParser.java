@@ -2,6 +2,7 @@ package imcode.server.parser;
 
 import imcode.server.DocumentRequest;
 import imcode.server.ImcmsServices;
+import imcode.server.Imcms;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentTypeDomainObject;
 import imcode.server.document.textdocument.MenuDomainObject;
@@ -340,9 +341,13 @@ class MenuParser {
                                                   Properties parameters, int menuItemIndex, int menuIndex ) {
 
         DocumentDomainObject document = menuItem.getDocument();
+        DocumentRequest documentRequest = parserParameters.getDocumentRequest();
+        String contextPath = documentRequest.getHttpServletRequest().getContextPath();
         String imageUrl = document.getMenuImage();
+        final String imagesRoot = contextPath + Imcms.getServices().getConfig().getImageUrl();
+
         String imageTag = imageUrl != null && imageUrl.length() > 0
-                          ? "<img src=\"" + StringEscapeUtils.escapeHtml( imageUrl ) + "\" border=\"0\">" : "";
+                          ? "<img src=\"" + imagesRoot + StringEscapeUtils.escapeHtml( imageUrl ) + "\" border=\"0\">" : "";
         String headline = document.getHeadline() ;
         if ( StringUtils.isBlank( headline ) ) {
             headline = "&nbsp;";
@@ -378,7 +383,7 @@ class MenuParser {
         tags.setProperty( "#menuitemdatecreated#", createdDate );
         tags.setProperty( "#menuitemdatemodified#", modifiedDate );
 
-        DocumentRequest documentRequest = parserParameters.getDocumentRequest();
+
 
         String template = parameters.getProperty( "template" );
         String href = Utility.getAbsolutePathToDocument( documentRequest.getHttpServletRequest(), document );
