@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <changesets>
 
+
+<changeset version="2a.0.0">
+
+    <changes for="users">
+        <change>
+            <p>
+                Made <tag>&lt;?imcms:include file="..."?&gt;</tag> recursively parse tags.
+            </p>
+            <bug id="3122"/>
+        </change>
+    </changes>
+
+</changeset>
+
+
 <changeset version="2.2.0">
 
     <changes for="users">

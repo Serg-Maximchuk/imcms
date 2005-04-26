@@ -169,7 +169,7 @@ class TagParser {
         } else if ( null != ( attributevalue = attributes.getProperty( "path" ) ) ) {
             return includePath( attributevalue );
         } else if ( null != ( attributevalue = attributes.getProperty( "file" ) ) ) { // If we have the attribute file="filename"...
-            return includeFile( attributevalue );
+            return includeFile( attributevalue, patMat );
         } else if ( null != ( attributevalue = attributes.getProperty( "document" ) ) ) { // If we have the attribute document="meta-id"
             return includeDocument( attributevalue, attributes, patMat );
         } else if ( null != ( attributevalue = attributes.getProperty( "url" ) ) ) { // If we have an attribute of the form url="url:url"
@@ -313,9 +313,9 @@ class TagParser {
         return "";
     }
 
-    private String includeFile( String attributevalue ) {// Fetch a file from the disk
+    private String includeFile(String attributevalue, PatternMatcher patMat) {// Fetch a file from the disk
         try {
-            return fileCache.getCachedFileString( new File( service.getIncludePath(), attributevalue ) ); // Get a file from the include directory
+            return replaceTags( patMat, fileCache.getCachedFileString( new File( service.getIncludePath(), attributevalue ) ) ); // Get a file from the include directory
         } catch ( IOException ex ) {
             return "<!-- imcms:include file failed: " + ex + " -->";
         }
