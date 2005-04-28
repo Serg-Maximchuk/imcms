@@ -7,6 +7,13 @@
     <changes for="users">
         <change>
             <p>
+                Fixed a NullPointerException when trying to view a textpage containing a
+                filedocument-image that had been deleted.
+            </p>
+            <bug id="3125"/>
+        </change>
+        <change>
+            <p>
                 Made <tag>&lt;?imcms:include file="..."?&gt;</tag> recursively parse tags.
             </p>
             <bug id="3122"/>
