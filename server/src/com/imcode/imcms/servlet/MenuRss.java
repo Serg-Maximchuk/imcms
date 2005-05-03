@@ -45,6 +45,8 @@ public class MenuRss extends HttpServlet {
             }
         } catch ( NoPermissionException e ) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch ( ClassCastException nfe ) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
         } catch ( NumberFormatException nfe ) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } catch ( ParserConfigurationException e ) {
