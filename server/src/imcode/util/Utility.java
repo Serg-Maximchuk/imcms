@@ -208,7 +208,7 @@ public class Utility {
         if (null != queryString) {
             loginTarget.append( "?" ).append( queryString );
         }
-        String noPermissionPage = "/imcms/" + user.getLanguageIso639_2() + "/login/" + NO_PERMISSION_URL+"?"+VerifyUser.REQUEST_PARAMETER__TARGET+"="+URLEncoder.encode( loginTarget.toString() );
+        String noPermissionPage = "/imcms/" + user.getLanguageIso639_2() + "/login/" + NO_PERMISSION_URL+"?"+VerifyUser.REQUEST_PARAMETER__NEXT_URL+"="+URLEncoder.encode( loginTarget.toString() );
         response.setStatus( HttpServletResponse.SC_FORBIDDEN );
         request.getRequestDispatcher( noPermissionPage ).forward( request,response );
     }
@@ -291,5 +291,9 @@ public class Utility {
         } catch ( TransformerException e ) {
             throw new UnhandledException( e );
         }
+    }
+
+    public static void makeUserLoggedIn(HttpServletRequest req, UserDomainObject user) {
+        req.getSession().setAttribute(WebAppGlobalConstants.LOGGED_IN_USER, user);
     }
 }
