@@ -78,7 +78,7 @@ public class TextDocumentParser {
             MapSubstitution hashtagsubstitution = new MapSubstitution( hashTags, true );
             TagParser tagParser = new TagParser( this, parserParameters, includelevel, viewing );
 
-            String tagsReplaced = tagParser.replaceTags( patMat, template );
+            String tagsReplaced = tagParser.replaceTags( patMat, template, false);
             tagsReplaced = Util.substitute( patMat, HASHTAG_PATTERN, hashtagsubstitution, tagsReplaced, Util.SUBSTITUTE_ALL );
 
             String emphasizedAndTagsReplaced = applyEmphasis( documentRequest, user, tagsReplaced, patMat );
