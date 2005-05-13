@@ -96,12 +96,16 @@ public class FileUtility {
     public static void backupRename(File source, File destination) throws IOException {
         if (!source.equals(destination)) {
             File oldDestination = new File(destination.getParentFile(), destination.getName() + ".old");
-            FileUtils.forceDelete(oldDestination);
+            if (oldDestination.exists()) {
+                FileUtils.forceDelete(oldDestination);
+            }
             if (destination.exists()) {
                 fatalRename(destination, oldDestination);
             }
             fatalRename(source, destination);
-            FileUtils.forceDelete(oldDestination);
+            if (oldDestination.exists()) {
+                FileUtils.deleteDirectory(oldDestination);
+            }
         }
     }
 
