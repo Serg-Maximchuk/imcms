@@ -1,10 +1,10 @@
 package com.imcode.imcms.api;
 
+import imcode.server.db.IntegrityConstraintViolationSQLException;
+import imcode.server.db.StringTruncationSQLException;
 import imcode.server.user.ImcmsAuthenticatorAndUserAndRoleMapper;
 import imcode.server.user.RoleDomainObject;
 import imcode.server.user.UserDomainObject;
-import imcode.server.db.IntegrityConstraintViolationSQLException;
-import imcode.server.db.StringTruncationSQLException;
 
 public class UserService {
 
@@ -34,10 +34,16 @@ public class UserService {
         return result;
     }
 
-    public User getUser( String userLoginName ) throws NoPermissionException {
+    /**
+        @param userLoginName
+        @return User with the specified login name, or null if none.
+    **/
+     public User getUser( String userLoginName ) throws NoPermissionException {
         UserDomainObject internalUser = getMapper().getUser( userLoginName );
-        User result = new User( internalUser );
-        return result;
+        if (null == internalUser) {
+            return null ;
+        }
+        return new User( internalUser );
     }
 
     /**

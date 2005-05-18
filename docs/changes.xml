@@ -20,6 +20,15 @@
         </change>
     </changes>
 
+    <changes for="API-using developers">
+        <change>
+            <p>
+                <method>UserService.getUser(String)</method> now returns null for non-existing users.
+            </p>
+            <bug id="3167"/>
+        </change>
+    </changes>
+
 </changeset>
 
 
