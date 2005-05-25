@@ -1,8 +1,11 @@
 package com.imcode.imcms.servlet.admin;
 
+import com.imcode.util.HumanReadable;
+import com.imcode.util.MultipartHttpServletRequest;
 import imcode.server.Imcms;
 import imcode.server.user.UserDomainObject;
 import imcode.util.*;
+import imcode.util.io.FileUtility;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
@@ -18,9 +21,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import com.imcode.util.MultipartHttpServletRequest;
-import com.imcode.util.HumanReadable;
 
 /**
  * Browse images in image-directory.

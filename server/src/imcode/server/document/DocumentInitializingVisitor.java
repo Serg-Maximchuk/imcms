@@ -3,7 +3,7 @@ package imcode.server.document;
 import imcode.server.ImcmsServices;
 import imcode.server.db.Database;
 import imcode.server.document.textdocument.*;
-import imcode.util.FileInputStreamSource;
+import imcode.util.io.FileInputStreamSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 

@@ -6,6 +6,7 @@ import imcode.server.ImcmsServices;
 import imcode.server.WebAppGlobalConstants;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.user.UserDomainObject;
+import imcode.util.io.FileUtility;
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.SetUtils;
 import org.apache.commons.lang.StringEscapeUtils;

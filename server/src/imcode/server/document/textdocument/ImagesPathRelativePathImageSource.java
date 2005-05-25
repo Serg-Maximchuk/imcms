@@ -2,9 +2,9 @@ package imcode.server.document.textdocument;
 
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
-import imcode.util.FileInputStreamSource;
-import imcode.util.FileUtility;
-import imcode.util.InputStreamSource;
+import imcode.util.io.FileInputStreamSource;
+import imcode.util.io.FileUtility;
+import imcode.util.io.InputStreamSource;
 
 import java.io.File;
 import java.util.Date;

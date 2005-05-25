@@ -1,6 +1,6 @@
 package imcode.server.document.textdocument;
 
-import imcode.util.InputStreamSource;
+import imcode.util.io.InputStreamSource;
 
 import java.util.Date;
 

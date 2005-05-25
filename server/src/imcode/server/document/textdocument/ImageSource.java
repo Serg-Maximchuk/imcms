@@ -1,7 +1,7 @@
 package imcode.server.document.textdocument;
 
 import com.imcode.util.ImageSize;
-import imcode.util.InputStreamSource;
+import imcode.util.io.InputStreamSource;
 
 import java.io.IOException;
 import java.io.Serializable;

@@ -1,7 +1,7 @@
 package imcode.server.document.index;
 
 import imcode.server.document.DocumentDomainObject;
-import imcode.util.FileUtility;
+import imcode.util.io.FileUtility;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 

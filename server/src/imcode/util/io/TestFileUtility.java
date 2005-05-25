@@ -1,4 +1,4 @@
-package imcode.util;
+package imcode.util.io;
 
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
