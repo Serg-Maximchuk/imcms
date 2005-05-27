@@ -5,7 +5,6 @@ import com.imcode.imcms.api.DefaultContentManagementSystem;
 import com.imcode.imcms.api.RequestConstants;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
-import imcode.server.WebAppGlobalConstants;
 import imcode.server.user.UserDomainObject;
 import imcode.util.Utility;
 import org.apache.commons.lang.StringUtils;
@@ -34,15 +33,12 @@ public class ImcmsSetupFilter implements Filter {
             setDomainSessionCookie( response, session );
         }
 
-        UserDomainObject user = (UserDomainObject)session.getAttribute( WebAppGlobalConstants.LOGGED_IN_USER );
+        UserDomainObject user = Utility.getLoggedOnUser(httpServletRequest) ;
         if ( user == null ) {
             String ip = request.getRemoteAddr();
             user = getUserUserOrIpLoggedInUser( ip );
-            session.setAttribute( WebAppGlobalConstants.LOGGED_IN_USER, user );
+            Utility.makeUserLoggedIn(httpServletRequest, user);
         }
-
-        // FIXME: Ugly hack to get the contextpath into DefaultImcmsServices.getVelocityContext()
-        user.setCurrentContextPath( ( (HttpServletRequest)request ).getContextPath() );
 
         initRequestWithApi( user, request );
 
@@ -128,10 +124,11 @@ public class ImcmsSetupFilter implements Filter {
             user = imcref.verifyUser( user_data[0], user_data[1] );
             user.setLoginType( "ip_access" );
         } else {
-            user = imcref.verifyUser( "User", "user" );
+            user = Utility.getDefaultUser();
             user.setLoginType( "extern" );
         }
 
         return user;
     }
+
 }

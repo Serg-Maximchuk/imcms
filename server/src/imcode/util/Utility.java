@@ -296,5 +296,15 @@ public class Utility {
 
     public static void makeUserLoggedIn(HttpServletRequest req, UserDomainObject user) {
         req.getSession().setAttribute(WebAppGlobalConstants.LOGGED_IN_USER, user);
+        // FIXME: Ugly hack to get the contextpath into DefaultImcmsServices.getVelocityContext()
+        user.setCurrentContextPath( req.getContextPath() );
+    }
+
+    public static UserDomainObject getDefaultUser() {
+        return Imcms.getServices().verifyUser( "User", "user" );
+    }
+
+    public static void makeUserLoggedInAsDefaultUser(HttpServletRequest req) {
+        makeUserLoggedIn(req, getDefaultUser());
     }
 }
