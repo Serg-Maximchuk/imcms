@@ -134,31 +134,26 @@ public class Document {
     }
 
     public DocumentPermissionSet getPermissionSetRestrictedOne() throws NoPermissionException {
-        getSecurityChecker().hasEditPermission( this );
         DocumentPermissionSetDomainObject restrictedOne = getDocumentPermissionSetMapper().getPermissionSetRestrictedOne( internalDocument );
         DocumentPermissionSet result = new DocumentPermissionSet( restrictedOne );
         return result;
     }
 
     public DocumentPermissionSet getPermissionSetRestrictedTwo() throws NoPermissionException {
-        getSecurityChecker().hasEditPermission( this );
         DocumentPermissionSetDomainObject restrictedTwo = getDocumentPermissionSetMapper().getPermissionSetRestrictedTwo( internalDocument );
         DocumentPermissionSet result = new DocumentPermissionSet( restrictedTwo );
         return result;
     }
 
     public String getHeadline() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getHeadline();
     }
 
     public String getMenuText() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getMenuText();
     }
 
     public String getMenuImageURL() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getMenuImage();
     }
 
@@ -178,7 +173,6 @@ public class Document {
     }
 
     public User getCreator() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return new User( internalDocument.getCreator() );
     }
 
@@ -188,7 +182,6 @@ public class Document {
     }
 
     public Language getLanguage() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return Language.getLanguageByISO639_2( internalDocument.getLanguageIso639_2() );
     }
 
@@ -213,7 +206,6 @@ public class Document {
      * @throws NoPermissionException
      */
     public Category[] getCategories() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         CategoryDomainObject[] categoryDomainObjects = internalDocument.getCategories();
         return getCategoryArrayFromCategoryDomainObjectArray( categoryDomainObjects );
     }
@@ -262,13 +254,11 @@ public class Document {
      * @throws NoPermissionException
      */
     public Category[] getCategoriesOfType( CategoryType categoryType ) throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         CategoryDomainObject[] categoryDomainObjects = internalDocument.getCategoriesOfType( categoryType.getInternal() );
         return getCategoryArrayFromCategoryDomainObjectArray( categoryDomainObjects );
     }
 
     public User getPublisher() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         UserDomainObject publisher = internalDocument.getPublisher();
         if ( null != publisher ) {
             return new User( publisher );
@@ -278,7 +268,6 @@ public class Document {
     }
 
     public String getTarget() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getTarget();
     }
 
@@ -290,7 +279,6 @@ public class Document {
     }
 
     public Date getPublicationStartDatetime() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getPublicationStartDatetime();
     }
 
@@ -307,7 +295,6 @@ public class Document {
     }
 
     public Date getArchivedDatetime() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getArchivedDatetime();
     }
 
@@ -326,7 +313,6 @@ public class Document {
      * @throws NoPermissionException
      */
     public Section[] getSections() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         SectionDomainObject[] sectionDomainObjects = internalDocument.getSections();
         Section[] sections = new Section[sectionDomainObjects.length];
         for ( int i = 0; i < sectionDomainObjects.length; i++ ) {
@@ -347,7 +333,6 @@ public class Document {
     }
 
     public Date getModifiedDatetime() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getModifiedDatetime();
     }
 
@@ -357,7 +342,6 @@ public class Document {
     }
 
     public Date getCreatedDatetime() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getCreatedDatetime();
     }
 
@@ -382,12 +366,10 @@ public class Document {
     }
 
     public Date getPublicationEndDatetime() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getPublicationEndDatetime();
     }
 
     public int getStatus() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.getStatus();
     }
 
@@ -397,7 +379,6 @@ public class Document {
     }
 
     public boolean isVisibleInMenusForUnauthorizedUsers() throws NoPermissionException {
-        getSecurityChecker().hasAtLeastDocumentReadPermission( this );
         return internalDocument.isVisibleInMenusForUnauthorizedUsers();
     }
 
