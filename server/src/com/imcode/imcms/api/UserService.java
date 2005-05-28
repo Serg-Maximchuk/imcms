@@ -206,20 +206,21 @@ public class UserService {
     /**
      * Send a password reminder mail
      *
-     * @param fromAddress
-     * @param subject
+     * @param user The user to send mail to
+     * @param fromAddress The address to send from
+     * @param subject The subject of the mail
      * @param body The body of the mail, containing a placeholder for the password
      * @param bodyPasswordPlaceHolderRegex Is replaced with the password in the body.
      * @throws MailException
      */
-    public void sendPasswordReminderMail(String fromAddress, String subject, String body, String bodyPasswordPlaceHolderRegex) throws MailException {
-        UserDomainObject user = contentManagementSystem.getCurrentUser().getInternal();
-        String password = user.getPassword();
+    public void sendPasswordReminderMail(User user, String fromAddress, String subject, String body, String bodyPasswordPlaceHolderRegex) throws MailException {
+        UserDomainObject userDO = user.getInternal();
+        String password = userDO.getPassword();
         String bodyWithPassword = body.replaceAll(bodyPasswordPlaceHolderRegex, password) ;
         Mail mail = new Mail(fromAddress);
         mail.setSubject(subject);
         mail.setBody(bodyWithPassword);
-        mail.setToAddresses(new String[] {user.getEmailAddress()});
+        mail.setToAddresses(new String[] {userDO.getEmailAddress()});
         MailService mailService = contentManagementSystem.getMailService();
         mailService.sendMail(mail);
     }
