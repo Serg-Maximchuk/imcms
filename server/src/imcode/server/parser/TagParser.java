@@ -794,6 +794,7 @@ class TagParser {
         velocityContext.put( "response", parserParameters.getDocumentRequest().getHttpServletResponse() );
         velocityContext.put( "viewing", viewing ) ;
         velocityContext.put( "document", viewing.getTextDocument() ) ;
+        velocityContext.put( "util", new VelocityTagUtil()) ;
         StringWriter stringWriter = new StringWriter();
         try {
             velocityEngine.init();
@@ -841,5 +842,10 @@ class TagParser {
         return attributes;
     }
 
+    public static class VelocityTagUtil {
 
+        public String escapeHtml(String s) {
+            return StringEscapeUtils.escapeHtml(s) ;
+        }
+    }
 }
