@@ -202,4 +202,25 @@ public class UserService {
             throw new UserAlreadyExistsException( "A user with the login name \""+user.getLoginName()+"\" already exists." ) ;
         }
     }
+
+    /**
+     * Send a password reminder mail
+     *
+     * @param fromAddress
+     * @param subject
+     * @param body The body of the mail, containing a placeholder for the password
+     * @param bodyPasswordPlaceHolderRegex Is replaced with the password in the body.
+     * @throws MailException
+     */
+    public void sendPasswordReminderMail(String fromAddress, String subject, String body, String bodyPasswordPlaceHolderRegex) throws MailException {
+        UserDomainObject user = contentManagementSystem.getCurrentUser().getInternal();
+        String password = user.getPassword();
+        String bodyWithPassword = body.replaceAll(bodyPasswordPlaceHolderRegex, password) ;
+        Mail mail = new Mail(fromAddress);
+        mail.setSubject(subject);
+        mail.setBody(bodyWithPassword);
+        mail.setToAddresses(new String[] {user.getEmailAddress()});
+        MailService mailService = contentManagementSystem.getMailService();
+        mailService.sendMail(mail);
+    }
 }
