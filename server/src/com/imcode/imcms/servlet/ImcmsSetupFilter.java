@@ -1,15 +1,11 @@
 package com.imcode.imcms.servlet;
 
-import com.imcode.imcms.api.ContentManagementSystem;
-import com.imcode.imcms.api.DefaultContentManagementSystem;
-import com.imcode.imcms.api.RequestConstants;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
 import imcode.server.user.UserDomainObject;
 import imcode.util.Utility;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 
 import javax.servlet.*;
@@ -17,8 +13,6 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 public class ImcmsSetupFilter implements Filter {
-
-    private final static Logger log = Logger.getLogger( ImcmsSetupFilter.class.getName() );
 
     public static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
 
@@ -40,7 +34,7 @@ public class ImcmsSetupFilter implements Filter {
             Utility.makeUserLoggedIn(httpServletRequest, user);
         }
 
-        initRequestWithApi( user, request );
+        Utility.initRequestWithApi(request, user);
 
         NDC.setMaxDepth( 0 );
         String contextPath = ( (HttpServletRequest)request ).getContextPath();
@@ -83,15 +77,6 @@ public class ImcmsSetupFilter implements Filter {
             cookie.setPath( "/" );
             ((HttpServletResponse)response).addCookie( cookie );
         }
-    }
-
-    private void initRequestWithApi( UserDomainObject currentUser, ServletRequest request ) {
-        NDC.push( "initRequestWithApi" );
-        ContentManagementSystem imcmsSystem;
-        ImcmsServices service = Imcms.getServices();
-        imcmsSystem = DefaultContentManagementSystem.create( service, currentUser );
-        request.setAttribute( RequestConstants.SYSTEM, imcmsSystem );
-        NDC.pop();
     }
 
     public void init( FilterConfig config ) throws ServletException {

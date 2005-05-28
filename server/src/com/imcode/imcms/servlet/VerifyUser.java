@@ -1,7 +1,7 @@
 package com.imcode.imcms.servlet;
 
-import imcode.server.Imcms;
-import imcode.server.user.UserDomainObject;
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.User;
 import imcode.util.Utility;
 
 import javax.servlet.ServletException;
@@ -29,15 +29,11 @@ public class VerifyUser extends HttpServlet {
         String accessDeniedUrl = req.getContextPath() + "/imcms/" + Utility.getLoggedOnUser(req).getLanguageIso639_2()
                                  + "/login/access_denied.jsp" ;
 
-        UserDomainObject user = Imcms.getServices().verifyUser(name, passwd);
+        ContentManagementSystem cms = ContentManagementSystem.login(req, name, passwd);
 
-        boolean loggedInSuccessfully = user != null ;
-
-        if ( loggedInSuccessfully ) {
-            Utility.makeUserLoggedIn(req, user);
-            user.setLoginType("verify");
+        if ( null != cms ) {
             if ( req.getParameter("Ändra") != null ) {
-                goToEditUserPage(user, res, accessDeniedUrl, req);
+                goToEditUserPage(cms.getCurrentUser(), res, accessDeniedUrl, req);
             } else {
                 goToLoginSuccessfulPage(req, res);
             }
@@ -86,7 +82,7 @@ public class VerifyUser extends HttpServlet {
         res.sendRedirect(nexturl);
     }
 
-    private void goToEditUserPage(UserDomainObject user, HttpServletResponse res, String accessDeniedUrl,
+    private void goToEditUserPage(User user, HttpServletResponse res, String accessDeniedUrl,
                                   HttpServletRequest req) throws IOException {
         if ( user.isDefaultUser() ) {
             res.sendRedirect(accessDeniedUrl);

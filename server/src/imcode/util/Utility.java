@@ -1,5 +1,8 @@
 package imcode.util;
 
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.DefaultContentManagementSystem;
+import com.imcode.imcms.api.RequestConstants;
 import com.imcode.imcms.servlet.VerifyUser;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
@@ -13,9 +16,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
 import org.apache.log4j.Logger;
+import org.apache.log4j.NDC;
 import org.w3c.dom.Document;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
@@ -306,5 +311,14 @@ public class Utility {
 
     public static void makeUserLoggedInAsDefaultUser(HttpServletRequest req) {
         makeUserLoggedIn(req, getDefaultUser());
+    }
+
+    public static ContentManagementSystem initRequestWithApi(ServletRequest request, UserDomainObject currentUser) {
+        NDC.push( "initRequestWithApi" );
+        ImcmsServices service = Imcms.getServices();
+        ContentManagementSystem imcmsSystem = DefaultContentManagementSystem.create( service, currentUser );
+        request.setAttribute( RequestConstants.SYSTEM, imcmsSystem );
+        NDC.pop();
+        return imcmsSystem ;
     }
 }
