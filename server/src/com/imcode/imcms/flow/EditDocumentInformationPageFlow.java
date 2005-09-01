@@ -93,7 +93,7 @@ public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
         } );
         imageBrowser.setSelectImageUrlCommand( new ImageBrowser.SelectImageUrlCommand() {
             public void selectImageUrl( String imageUrl, HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
-                document.setMenuImage( imageUrl );
+                document.setMenuImage( "../images/" + imageUrl );
                 request.setAttribute( REQUEST_ATTRIBUTE_OR_PARAMETER__FLOW, flowSessionAttributeName );
                 dispatchToFirstPage( request, response );
             }
@@ -241,7 +241,7 @@ public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
 
     }
 
-    private static String[] parseKeywords( String keywordsString ) {
+    public static String[] parseKeywords( String keywordsString ) {
         List keywords = new ArrayList();
         StringBuffer currentKeyword = new StringBuffer();
         boolean insideString = false;
