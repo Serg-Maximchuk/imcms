@@ -133,6 +133,14 @@ public class Document {
         return internalDocument.hashCode();
     }
 
+    public Set getKeywords() {
+        return new HashSet(Arrays.asList(internalDocument.getKeywords()));
+    }
+
+    public void setKeywords(Set keywords) {
+        internalDocument.setKeywords((String[]) keywords.toArray(new String[keywords.size()]));
+    }
+
     public DocumentPermissionSet getPermissionSetRestrictedOne() throws NoPermissionException {
         DocumentPermissionSetDomainObject restrictedOne = getDocumentPermissionSetMapper().getPermissionSetRestrictedOne( internalDocument );
         DocumentPermissionSet result = new DocumentPermissionSet( restrictedOne );
