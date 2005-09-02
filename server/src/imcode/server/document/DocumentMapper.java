@@ -2,7 +2,10 @@ package imcode.server.document;
 
 import com.imcode.imcms.api.CategoryAlreadyExistsException;
 import com.imcode.imcms.flow.DocumentPageFlow;
-import imcode.server.*;
+import imcode.server.Config;
+import imcode.server.Imcms;
+import imcode.server.ImcmsServices;
+import imcode.server.LanguageMapper;
 import imcode.server.db.Database;
 import imcode.server.document.index.DocumentIndex;
 import imcode.server.document.textdocument.MenuItemDomainObject;
@@ -11,7 +14,10 @@ import imcode.server.document.textdocument.TextDomainObject;
 import imcode.server.user.ImcmsAuthenticatorAndUserAndRoleMapper;
 import imcode.server.user.RoleDomainObject;
 import imcode.server.user.UserDomainObject;
-import imcode.util.*;
+import imcode.util.Clock;
+import imcode.util.DateConstants;
+import imcode.util.IdNamePair;
+import imcode.util.Utility;
 import imcode.util.io.FileUtility;
 import org.apache.commons.collections.map.AbstractMapDecorator;
 import org.apache.commons.collections.map.LRUMap;
@@ -940,8 +946,7 @@ public class DocumentMapper {
         return browser;
     }
 
-    public void deleteDocument( DocumentDomainObject document, UserDomainObject user ) {
-        // Create a db connection and execte sp DocumentDelete on meta_id
+    public void deleteDocument(DocumentDomainObject document) {
         database.sqlUpdateProcedure( "DocumentDelete", new String[]{"" + document.getId()} );
         document.accept( new DocumentDeletingVisitor() );
         invalidateDocument( document );

@@ -3,6 +3,7 @@ package com.imcode.imcms.api;
 import imcode.server.document.*;
 import imcode.server.document.index.IndexException;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
+import imcode.server.user.UserDomainObject;
 
 public class DocumentService {
 
@@ -223,6 +224,15 @@ public class DocumentService {
         } catch ( IndexException e ) {
             throw new SearchException( e );
         }
+    }
+
+    public void deleteDocument( Document document ) throws NoPermissionException {
+        UserDomainObject internalUser = contentManagementSystem.getCurrentUser().getInternal();
+        if (!internalUser.isSuperAdmin()) {
+            throw new NoPermissionException("User must be superadmin to delete documents.") ;
+        }
+
+        getDocumentMapper().deleteDocument(document.getInternal());
     }
 
     private DocumentMapper getDocumentMapper() {

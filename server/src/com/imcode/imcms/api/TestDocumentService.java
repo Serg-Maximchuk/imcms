@@ -4,6 +4,8 @@ import imcode.server.Config;
 import imcode.server.MockImcmsServices;
 import imcode.server.db.MockDatabase;
 import imcode.server.document.DocumentMapper;
+import imcode.server.document.MockDocumentIndex;
+import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.server.user.RoleDomainObject;
 import imcode.server.user.UserDomainObject;
 import junit.framework.TestCase;
@@ -13,15 +15,16 @@ public class TestDocumentService extends TestCase {
     private DocumentService documentService;
     private MockDatabase database;
     private User user;
+    private MockContentManagementSystem contentManagementSystem;
 
     public void setUp() throws Exception {
         super.setUp();
-        MockContentManagementSystem contentManagementSystem = new MockContentManagementSystem();
+        contentManagementSystem = new MockContentManagementSystem();
         user = new User(new UserDomainObject());
         contentManagementSystem.setCurrentUser( user );
         MockImcmsServices imcmsServices = new MockImcmsServices();
         database = new MockDatabase();
-        imcmsServices.setDocumentMapper(new DocumentMapper(imcmsServices, database, null,null,null,null,new Config() )) ;
+        imcmsServices.setDocumentMapper(new DocumentMapper(imcmsServices, database, null,null,new MockDocumentIndex(), null,new Config() )) ;
         contentManagementSystem.setInternal( imcmsServices );
         this.documentService = new DocumentService(contentManagementSystem) ;
     }
@@ -66,4 +69,15 @@ public class TestDocumentService extends TestCase {
         database.assertCalled( new MockDatabase.UpdateTableSqlCallPredicate( "categories", otherName ));
     }
 
+    public void testDeleteDocument() throws Exception {
+        TextDocument document = new TextDocument(new TextDocumentDomainObject(), contentManagementSystem);
+        try {
+            documentService.deleteDocument(document);
+            fail("Expected NoPermissionException") ;
+        } catch(NoPermissionException e) {}
+        UserDomainObject admin = new UserDomainObject() ;
+        admin.addRole(RoleDomainObject.SUPERADMIN);
+        contentManagementSystem.setCurrentInternalUser(admin);
+        documentService.deleteDocument(document);
+    }
 }
