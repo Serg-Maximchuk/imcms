@@ -91,7 +91,33 @@ public class Html {
         return categoryOptionList;
     }
 
-    public static String getLinkedStatusIconTemplate( DocumentDomainObject document, UserDomainObject user,
+	public static String createOptionListOfCategoriesOfTypeNotSelectedForDocument ( DocumentMapper documentMapper,
+                                                                        CategoryTypeDomainObject categoryType,
+                                                                        DocumentDomainObject document ) {
+        CategoryDomainObject[] categories = documentMapper.getAllCategoriesOfType( categoryType );
+        CategoryDomainObject[] documentSelectedCategories = document.getCategoriesOfType( categoryType );
+		Set notSelectedCategories = new HashSet(Arrays.asList(categories)) ;
+		notSelectedCategories.removeAll(Arrays.asList(documentSelectedCategories));
+
+		return createOptionListOfCategories(new TreeSet(notSelectedCategories), categoryType);
+    }
+
+	public static String createOptionListOfCategories(Collection categories, CategoryTypeDomainObject categoryType){
+		Transformer categoryToStringPairTransformer = new Transformer() {
+            public Object transform( Object o ) {
+                CategoryDomainObject category = (CategoryDomainObject)o;
+                return new String[]{"" + category.getId(), category.getName()};
+            }
+        };
+		String categoryOptionList = createOptionList( categories, Arrays.asList( new String[]{}  ), categoryToStringPairTransformer );
+
+		if ( 1 == categoryType.getMaxChoices() ) {
+			categoryOptionList = "<option></option>" + categoryOptionList;
+		}
+		return categoryOptionList;
+	}
+
+	public static String getLinkedStatusIconTemplate( DocumentDomainObject document, UserDomainObject user,
                                                       HttpServletRequest request ) {
         String statusIconTemplate = getStatusIconTemplate( document, user );
         if ( user.canEditDocumentInformationFor( document ) ) {

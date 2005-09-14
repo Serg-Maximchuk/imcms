@@ -77,13 +77,15 @@ function openHelpW(id){
 }
 
 function popWinOpen(winW,winH,sUrl,sName,iResize,iScroll) {
+	var winX = 0;
+	var winY = 0;
 	if (screen) {
 		if ((screen.height - winH) < 150) {
-			var winX = (screen.width - winW) / 2;
-			var winY = 0;
+			winX = (screen.width - winW) / 2;
+			winY = 0;
 		} else {
-			var winX = (screen.width - winW) / 2;
-			var winY = (screen.height - winH) / 2;
+			winX = (screen.width - winW) / 2;
+			winY = (screen.height - winH) / 2;
 		}
 		var popWindow = window.open(sUrl,sName,"resizable=" + iResize + ",menubar=0,scrollbars=" + iScroll + ",width=" + winW + ",height=" + winH + ",top=" + winY + ",left=" + winX + "");
 		if (popWindow) popWindow.focus();

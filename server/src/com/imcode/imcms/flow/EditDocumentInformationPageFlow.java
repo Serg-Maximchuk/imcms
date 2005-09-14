@@ -4,10 +4,7 @@ import com.imcode.imcms.servlet.admin.ImageBrowser;
 import com.imcode.imcms.servlet.admin.UserFinder;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
-import imcode.server.document.CategoryDomainObject;
-import imcode.server.document.DocumentDomainObject;
-import imcode.server.document.DocumentMapper;
-import imcode.server.document.SectionDomainObject;
+import imcode.server.document.*;
 import imcode.server.user.UserDomainObject;
 import imcode.util.DateConstants;
 import imcode.util.HttpSessionUtils;
@@ -40,6 +37,10 @@ public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
     public static final String REQUEST_PARAMETER__PUBLICATION_END_TIME = "publication_end_time";
     public static final String REQUEST_PARAMETER__LANGUAGE = "lang_prefix";
     public static final String REQUEST_PARAMETER__CATEGORIES = "categories";
+	public static final String REQUEST_PARAMETER__CATEGORY_IDS_TO_REMOVE = "categories_to_remove";
+	public static final String REQUEST_PARAMETER__CATEGORY_IDS_TO_ADD = "categories_to_add";
+	public static final String REQUEST_PARAMETER__ADD_CATEGORY = "add_category";
+	public static final String REQUEST_PARAMETER__REMOVE_CATEGORY = "remove_category";
     public static final String REQUEST_PARAMETER__VISIBLE_IN_MENU_FOR_UNAUTHORIZED_USERS = "show_meta";
     public static final String REQUEST_PARAMETER__LINKABLE_BY_OTHER_USERS = "shared";
     public static final String REQUEST_PARAMETER__KEYWORDS = "classification";
@@ -73,13 +74,30 @@ public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
 
     private void dispatchFromDocumentInformation( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
         setDocumentAttributesFromRequestParameters( document, request );
+		DocumentMapper documentMapper = Imcms.getServices().getDocumentMapper();
         if ( null != request.getParameter( REQUEST_PARAMETER__GO_TO_PUBLISHER_BROWSER ) ) {
             dispatchToPublisherUserBrowser( request, response );
         } else if ( null != request.getParameter( REQUEST_PARAMETER__GO_TO_CREATOR_BROWSER ) ) {
             dispatchToCreatorUserBrowser( request, response );
         } else if ( null != request.getParameter( REQUEST_PARAMETER__GO_TO_IMAGE_BROWSER ) ) {
             dispatchToImageBrowser( request, response );
-        }
+        } else if ( null != request.getParameter( REQUEST_PARAMETER__ADD_CATEGORY ) ) {
+			if ( null != request.getParameter( REQUEST_PARAMETER__CATEGORY_IDS_TO_ADD ) ){
+				String[] categoriesToAdd = request.getParameterValues(REQUEST_PARAMETER__CATEGORY_IDS_TO_ADD);
+				for (int i = 0; i < categoriesToAdd.length; i++){
+					document.addCategory(documentMapper.getCategoryById(Integer.parseInt(categoriesToAdd[i] )));
+				}
+			}
+		    dispatchToFirstPage( request, response );
+		} else if ( null != request.getParameter( REQUEST_PARAMETER__REMOVE_CATEGORY ) ) {
+			if ( null != request.getParameter( REQUEST_PARAMETER__CATEGORY_IDS_TO_REMOVE ) ){
+				String[] categoriesToRemove = request.getParameterValues(REQUEST_PARAMETER__CATEGORY_IDS_TO_REMOVE);
+				for (int i = 0; i < categoriesToRemove.length; i++){
+					document.removeCategory(documentMapper.getCategoryById(Integer.parseInt(categoriesToRemove[i] )));
+				}
+			}
+		    dispatchToFirstPage( request, response );
+		}
     }
 
     private void dispatchToImageBrowser( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
@@ -204,7 +222,17 @@ public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
         String languageIso639_2 = request.getParameter( REQUEST_PARAMETER__LANGUAGE );
         document.setLanguageIso639_2( languageIso639_2 );
 
-        document.removeAllCategories();
+		//*** Remove all categories except multi without picture
+		CategoryTypeDomainObject[] categoryTypes = documentMapper.getAllCategoryTypes() ;
+		for ( int i = 0; i < categoryTypes.length; i++ ) {
+			CategoryTypeDomainObject categoryType = categoryTypes[i] ;
+			boolean categoryTypeIsSingleChoice = 1 == categoryType.getMaxChoices();
+			boolean shouldRemoveCategoriesOfType = categoryTypeIsSingleChoice || categoryType.hasImages();
+			if ( shouldRemoveCategoriesOfType ){
+				removeCategoriesOfTypeFromDocument(document, categoryType);
+			}
+		}
+
         String[] categoryIds = request.getParameterValues( REQUEST_PARAMETER__CATEGORIES );
         for ( int i = 0; null != categoryIds && i < categoryIds.length; i++ ) {
             try {
@@ -241,7 +269,14 @@ public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
 
     }
 
-    private static String[] parseKeywords( String keywordsString ) {
+	private static void removeCategoriesOfTypeFromDocument(DocumentDomainObject document, CategoryTypeDomainObject categoryType){
+		CategoryDomainObject[] categories = document.getCategoriesOfType( categoryType );
+		for (int j = 0; j < categories.length; j++){
+			document.removeCategory(categories[j]);
+		}
+	}
+
+	private static String[] parseKeywords( String keywordsString ) {
         List keywords = new ArrayList();
         StringBuffer currentKeyword = new StringBuffer();
         boolean insideString = false;
