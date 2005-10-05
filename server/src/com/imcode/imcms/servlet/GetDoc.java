@@ -10,8 +10,16 @@ import org.apache.oro.text.perl.Perl5Util;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.*;
-import java.io.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 public class GetDoc extends HttpServlet {
@@ -128,6 +136,7 @@ public class GetDoc extends HttpServlet {
 
         if ( !document.isPublished() && !user.canEdit( document ) ) {
             res.setStatus( HttpServletResponse.SC_FORBIDDEN );
+            Utility.setDefaultHtmlContentType(res);
             return imcref.getAdminTemplate( NO_ACTIVE_DOCUMENT_URL, user, null );
         }
 
@@ -253,6 +262,7 @@ public class GetDoc extends HttpServlet {
         vec.add( "#EMAIL_SERVER_MASTER#" );
         vec.add( eMailServerMaster );
         res.setStatus( HttpServletResponse.SC_NOT_FOUND );
+        Utility.setDefaultHtmlContentType(res);
         return imcref.getAdminTemplate( NO_PAGE_URL, user, vec );
     }
 
