@@ -46,7 +46,7 @@
 			}
 			out.println( "</td></tr>" );
 		}%>
-	<tr><td colspan="2" align="right"><input type="button" name="back" value="Tillbka" onclick="history.go(-1);"><input type="submit" name="submit" value="Spara"></td></tr>
+	<tr><td colspan="2" align="right"><input type="button" name="back" value="Tillbaka" onclick="history.go(-1);"><input type="submit" name="submit" value="Spara"></td></tr>
 	</table>
 </form><%
 	}%>
