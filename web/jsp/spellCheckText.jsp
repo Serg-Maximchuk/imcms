@@ -1,15 +1,14 @@
-<%@ page import="com.imcode.imcms.api.ImCMSSpellChecker,
-				 com.imcode.imcms.api.ImCMSSpellChecker.MissSpelledWord,
-				 java.util.ArrayList" %>
-<html>
+<%@ page import="java.util.ArrayList,
+				 imcode.util.Utility,
+				 imcode.util.Utility.MisspelledWord"
+%><html>
 <body><%
 	String text = request.getParameter( "text" );
-	ImCMSSpellChecker spellChecker = new ImCMSSpellChecker( text );
-	ArrayList missSpelledWords = spellChecker.getMissSpelledWords();
+	ArrayList missSpelledWords = (ArrayList)Utility.getMisspelledWords( text );
 	if( null != request.getParameter( "submit" ) ) {
 		int wordPos = 0;
 		for ( int i = 0; i < missSpelledWords.size(); i++ ) {
-			MissSpelledWord missSpelledWord = (MissSpelledWord)missSpelledWords.get( i );
+			MisspelledWord missSpelledWord = (MisspelledWord)missSpelledWords.get( i );
 			ArrayList suggestions = missSpelledWord.getSuggestions();
 			int suggestionId = Integer.parseInt( request.getParameter( "suggestion" + i ) );
 			wordPos = text.indexOf(missSpelledWord.getWord(), wordPos);
@@ -36,7 +35,7 @@
 	<tr><th>Felstavat ord</th><th>Förslag</th></tr><%
 		for ( int i = 0; i < missSpelledWords.size(); i++ ) {
 			out.print( "\t\t<tr>" );
-			MissSpelledWord missSpelledWord = (MissSpelledWord)missSpelledWords.get( i );
+			MisspelledWord missSpelledWord = (MisspelledWord)missSpelledWords.get( i );
 			out.print( "<td valign=\"top\">" + missSpelledWord.getWord() + "</td>" );
 			ArrayList suggestions = missSpelledWord.getSuggestions();
 			out.print( "<td valign=\"top\">" );

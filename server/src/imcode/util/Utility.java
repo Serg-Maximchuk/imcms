@@ -3,17 +3,19 @@ package imcode.util;
 import com.imcode.imcms.api.ContentManagementSystem;
 import com.imcode.imcms.api.DefaultContentManagementSystem;
 import com.imcode.imcms.servlet.VerifyUser;
+import com.swabunga.spell.engine.SpellDictionary;
+import com.swabunga.spell.engine.SpellDictionaryHashMap;
+import com.swabunga.spell.event.SpellCheckEvent;
+import com.swabunga.spell.event.SpellChecker;
+import com.swabunga.spell.event.StringWordTokenizer;
+import com.swabunga.spell.event.SpellCheckListener;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
 import imcode.server.WebAppGlobalConstants;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.user.UserDomainObject;
 import imcode.util.io.FileUtility;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.MultiMap;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.SetUtils;
-import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.*;
 import org.apache.commons.collections.iterators.ObjectArrayIterator;
 import org.apache.commons.collections.iterators.TransformIterator;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -56,7 +58,7 @@ public class Utility {
     private final static String CONTENT_MANAGEMENT_SYSTEM_REQUEST_ATTRIBUTE = "com.imcode.imcms.ImcmsSystem";
 
     private final static LocalizedMessage ERROR__NO_PERMISSION = new LocalizedMessage("templates/login/no_permission.html/4");
-    
+
     private Utility() {
 
     }
@@ -418,4 +420,64 @@ public class Utility {
     public static ContentManagementSystem getContentManagementSystemFromRequest(ServletRequest request) {
         return (ContentManagementSystem)request.getAttribute( CONTENT_MANAGEMENT_SYSTEM_REQUEST_ATTRIBUTE );
     }
+
+	public static class MisspelledWord {
+		private String word;
+		private ArrayList suggestions;
+
+		public MisspelledWord( String word ) {
+			this.word = word;
+			this.suggestions = new ArrayList();
+		}
+
+		public String getWord() {
+			return word;
+		}
+
+		public ArrayList getSuggestions() {
+			return suggestions;
+		}
+
+		public void addSuggestions( String suggestion ) {
+			this.suggestions.add( suggestion );
+		}
+	}
+
+	public static List getMisspelledWords ( String wordsToCheck ) throws IOException {
+
+		String path = "WEB-INF/dict/";
+		String dictFile = "swedish.0";
+		String phonetFile = "phonet.sv";
+
+		SpellDictionary dictionary = new SpellDictionaryHashMap( new File( WebAppGlobalConstants.getInstance().getAbsoluteWebAppPath(), path + dictFile ), new File( WebAppGlobalConstants.getInstance().getAbsoluteWebAppPath(), path + phonetFile ) );
+
+		final ArrayList misspelledWords = new ArrayList();
+
+		SpellChecker spellCheck = new SpellChecker( dictionary );
+		spellCheck.addSpellCheckListener( new ListAddingSpellCheckListener( misspelledWords ) );
+
+		spellCheck.checkSpelling( new StringWordTokenizer( wordsToCheck ) );
+
+		return misspelledWords;
+
+	}
+
+	private static class ListAddingSpellCheckListener implements SpellCheckListener {
+		private final List misspelledWords;
+
+		public ListAddingSpellCheckListener( List misspelledWords ) {
+			this.misspelledWords = misspelledWords;
+		}
+
+		public void spellingError( SpellCheckEvent event ) {
+			List suggestions = event.getSuggestions();
+			MisspelledWord newWord = new MisspelledWord( event.getInvalidWord() );
+			if( suggestions.size() > 0 ) {
+				for ( Iterator suggestedWord = suggestions.iterator(); suggestedWord.hasNext(); ) {
+					newWord.addSuggestions( suggestedWord.next().toString() );
+				}
+			}
+			misspelledWords.add( newWord );
+		}
+	}
 }
