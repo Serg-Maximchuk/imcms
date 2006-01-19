@@ -91,28 +91,22 @@ public class DocumentStoringVisitor extends DocumentVisitor {
     }
 
     void updateTextDocumentTexts(TextDocumentDomainObject textDocument) {
-        deleteTextDocumentTexts(textDocument);
-        insertTextDocumentTexts(textDocument);
+        Map texts = textDocument.getTexts();
+        String sqlDeleteTexts = "DELETE FROM texts WHERE meta_id = ?";
+        final Object[] parameters = new String[]{"" + textDocument.getId()};
+        DatabaseUtils.executeUpdate(database, sqlDeleteTexts, parameters);
+        for (Iterator iterator = texts.keySet().iterator(); iterator.hasNext();) {
+            Integer textIndex = (Integer) iterator.next();
+            TextDomainObject text = (TextDomainObject) texts.get(textIndex);
+            sqlInsertText(textDocument, textIndex, text);
+        }
     }
 
     void updateTextDocumentImages(TextDocumentDomainObject textDocument) {
-        deleteTextDocumentImages(textDocument);
-        insertTextDocumentImages(textDocument);
-    }
-
-    void updateTextDocumentIncludes(TextDocumentDomainObject textDocument) {
-        deleteTextDocumentIncludes(textDocument);
-        insertTextDocumentIncludes(textDocument);
-    }
-
-    private void deleteTextDocumentIncludes(TextDocumentDomainObject textDocument) {
-        String sqlDeleteDocumentIncludes = "DELETE FROM includes WHERE meta_id = ?";
-        final Object[] parameters = new String[]{"" + textDocument.getId()};
-        DatabaseUtils.executeUpdate(database, sqlDeleteDocumentIncludes, parameters);
-    }
-
-    private void insertTextDocumentImages(TextDocumentDomainObject textDocument) {
         Map images = textDocument.getImages();
+        String sqlDeleteImages = "DELETE FROM images WHERE meta_id = ?";
+        final Object[] parameters = new String[]{"" + textDocument.getId()};
+        DatabaseUtils.executeUpdate(database, sqlDeleteImages, parameters);
         for (Iterator iterator = images.keySet().iterator(); iterator.hasNext();) {
             Integer imageIndex = (Integer) iterator.next();
             ImageDomainObject image = (ImageDomainObject) images.get(imageIndex);
@@ -120,18 +114,15 @@ public class DocumentStoringVisitor extends DocumentVisitor {
         }
     }
 
-    private void deleteTextDocumentImages(TextDocumentDomainObject textDocument) {
-        String sqlDeleteImages = "DELETE FROM images WHERE meta_id = ?";
+    void updateTextDocumentIncludes(TextDocumentDomainObject textDocument) {
+        Map includes = textDocument.getIncludes();
+        String sqlDeleteDocumentIncludes = "DELETE FROM includes WHERE meta_id = ?";
         final Object[] parameters = new String[]{"" + textDocument.getId()};
-        DatabaseUtils.executeUpdate(database, sqlDeleteImages, parameters);
-    }
-
-    private void insertTextDocumentTexts(TextDocumentDomainObject textDocument) {
-        Map texts = textDocument.getTexts();
-        for (Iterator iterator = texts.keySet().iterator(); iterator.hasNext();) {
-            Integer textIndex = (Integer) iterator.next();
-            TextDomainObject text = (TextDomainObject) texts.get(textIndex);
-            sqlInsertText(textDocument, textIndex, text);
+        DatabaseUtils.executeUpdate(database, sqlDeleteDocumentIncludes, parameters);
+        for (Iterator iterator = includes.keySet().iterator(); iterator.hasNext();) {
+            Integer includeIndex = (Integer) iterator.next();
+            Integer includedDocumentId = (Integer) includes.get(includeIndex);
+            sqlInsertTextDocumentInclude(textDocument, includeIndex, includedDocumentId);
         }
     }
 
@@ -140,22 +131,6 @@ public class DocumentStoringVisitor extends DocumentVisitor {
             "" + textDocument.getId(), "" + textIndex, text.getText(), "" + text.getType()
         };
         DatabaseUtils.executeUpdate(database, "INSERT INTO texts (meta_id, name, text, type) VALUES(?,?,?,?)", parameters);
-    }
-
-    private void deleteTextDocumentTexts(TextDocumentDomainObject textDocument) {
-        String sqlDeleteTexts = "DELETE FROM texts WHERE meta_id = ?";
-        final Object[] parameters = new String[]{"" + textDocument.getId()};
-        DatabaseUtils.executeUpdate(database, sqlDeleteTexts, parameters);
-    }
-
-    private void insertTextDocumentIncludes(TextDocumentDomainObject textDocument) {
-        Map includes = textDocument.getIncludes();
-        for (Iterator iterator = includes.keySet().iterator(); iterator.hasNext();) {
-            Integer includeIndex = (Integer) iterator.next();
-            Integer includedDocumentId = (Integer) includes.get(includeIndex);
-            sqlInsertTextDocumentInclude(textDocument, includeIndex, includedDocumentId);
-        }
-
     }
 
     private void sqlInsertTextDocumentInclude(TextDocumentDomainObject textDocument, Integer includeIndex,

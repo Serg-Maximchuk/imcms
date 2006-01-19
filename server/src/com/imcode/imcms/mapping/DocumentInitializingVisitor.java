@@ -23,9 +23,9 @@ class DocumentInitializingVisitor extends DocumentVisitor {
 
     private TextDocumentInitializer textDocumentInitializer;
     
-    DocumentInitializingVisitor(Database database, DocumentGetter documentGetter, Collection documentIds,
+    DocumentInitializingVisitor(DocumentGetter documentGetter, Collection documentIds,
                                 DefaultDocumentMapper documentMapper) {
-        this.database = database;
+        this.database = documentMapper.getDatabase();
         this.documentMapper = documentMapper;
         textDocumentInitializer = new TextDocumentInitializer(database, documentGetter, documentIds);
     }

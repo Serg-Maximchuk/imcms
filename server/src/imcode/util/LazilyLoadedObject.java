@@ -18,7 +18,7 @@ public class LazilyLoadedObject implements Serializable, Cloneable {
         return object;
     }
 
-    private void load() {
+    public void load() {
         if (!isLoaded()) {
             object = loader.load().copy() ;
             setLoaded();

@@ -42,24 +42,25 @@ public class TextDocumentInitializer {
     }
 
     public void initialize(TextDocumentDomainObject document) {
-        document.setLazilyLoadedMenus(new LazilyLoadedObject(new MenusLoader(document)));
-        document.setLazilyLoadedTexts(new LazilyLoadedObject(new TextsLoader(document)));
-        document.setLazilyLoadedImages(new LazilyLoadedObject(new ImagesLoader(document)));
-        document.setLazilyLoadedIncludes(new LazilyLoadedObject(new IncludesLoader(document)));
-        document.setLazilyLoadedTemplateIds(new LazilyLoadedObject(new TemplateIdsLoader(document)));
+        Integer documentId = new Integer(document.getId()) ;
+        document.setLazilyLoadedMenus(new LazilyLoadedObject(new MenusLoader(documentId)));
+        document.setLazilyLoadedTexts(new LazilyLoadedObject(new TextsLoader(documentId)));
+        document.setLazilyLoadedImages(new LazilyLoadedObject(new ImagesLoader(documentId)));
+        document.setLazilyLoadedIncludes(new LazilyLoadedObject(new IncludesLoader(documentId)));
+        document.setLazilyLoadedTemplateIds(new LazilyLoadedObject(new TemplateIdsLoader(documentId)));
     }
 
     private class MenusLoader implements LazilyLoadedObject.Loader {
 
-        private final TextDocumentDomainObject document;
+        private final Integer documentId;
 
-        MenusLoader(TextDocumentDomainObject document) {
-            this.document = document;
+        MenusLoader(Integer documentId) {
+            this.documentId = documentId;
         }
 
         public LazilyLoadedObject.Copyable load() {
             initDocumentsMenuItems();
-            DocumentMenusMap menusMap = (DocumentMenusMap) documentsMenuItems.get(new Integer(document.getId()));
+            DocumentMenusMap menusMap = (DocumentMenusMap) documentsMenuItems.get(documentId);
             if ( null == menusMap ) {
                 menusMap = new DocumentMenusMap();
             }
@@ -70,7 +71,7 @@ public class TextDocumentInitializer {
             if ( null == documentsMenuItems ) {
                 documentsMenuItems = new HashMap();
                 StringBuffer sql = new StringBuffer(SQL_GET_MENU_ITEMS);
-                Integer[] parameters = DatabaseDocumentGetter.appendInClause(sql, documentIds);
+                Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
                 database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
@@ -106,15 +107,15 @@ public class TextDocumentInitializer {
 
     private class IncludesLoader implements LazilyLoadedObject.Loader {
 
-        private final TextDocumentDomainObject document;
+        private final Integer documentId;
 
-        IncludesLoader(TextDocumentDomainObject document) {
-            this.document = document;
+        IncludesLoader(Integer documentId) {
+            this.documentId = documentId;
         }
 
         public LazilyLoadedObject.Copyable load() {
             initDocumentsIncludes();
-            CopyableHashMap documentIncludesMap = (CopyableHashMap) documentsIncludes.get(new Integer(document.getId()));
+            CopyableHashMap documentIncludesMap = (CopyableHashMap) documentsIncludes.get(documentId);
             if ( null == documentIncludesMap ) {
                 documentIncludesMap = new CopyableHashMap();
             }
@@ -125,7 +126,7 @@ public class TextDocumentInitializer {
             if ( null == documentsIncludes ) {
                 documentsIncludes = new HashMap();
                 StringBuffer sql = new StringBuffer("SELECT meta_id, include_id, included_meta_id FROM includes WHERE meta_id ");
-                Integer[] parameters = DatabaseDocumentGetter.appendInClause(sql, documentIds);
+                Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
                 database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
@@ -150,15 +151,15 @@ public class TextDocumentInitializer {
 
     private class ImagesLoader implements LazilyLoadedObject.Loader {
 
-        private final TextDocumentDomainObject document;
+        private final Integer documentId;
 
-        ImagesLoader(TextDocumentDomainObject document) {
-            this.document = document;
+        ImagesLoader(Integer documentId) {
+            this.documentId = documentId;
         }
 
         public LazilyLoadedObject.Copyable load() {
             initDocumentsImages();
-            CopyableHashMap documentImagesMap = (CopyableHashMap) documentsImages.get(new Integer(document.getId()));
+            CopyableHashMap documentImagesMap = (CopyableHashMap) documentsImages.get(documentId);
             if ( null == documentImagesMap ) {
                 documentImagesMap = new CopyableHashMap();
             }
@@ -172,7 +173,7 @@ public class TextDocumentInitializer {
                                                     + "width,height,border,v_space,h_space,"
                                                     + "target,align,alt_text,low_scr,linkurl,type "
                                                     + "FROM images WHERE meta_id ");
-                Integer[] parameters = DatabaseDocumentGetter.appendInClause(sql, documentIds);
+                Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
                 database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
@@ -228,15 +229,15 @@ public class TextDocumentInitializer {
 
     private class TextsLoader implements LazilyLoadedObject.Loader {
 
-        private final TextDocumentDomainObject document;
+        private final Integer documentId;
 
-        TextsLoader(TextDocumentDomainObject document) {
-            this.document = document;
+        TextsLoader(Integer documentId) {
+            this.documentId = documentId;
         }
 
         public LazilyLoadedObject.Copyable load() {
             initDocumentsTexts();
-            CopyableHashMap documentTexts = (CopyableHashMap) documentsTexts.get(new Integer(document.getId()));
+            CopyableHashMap documentTexts = (CopyableHashMap) documentsTexts.get(documentId);
             if ( null == documentTexts ) {
                 documentTexts = new CopyableHashMap();
             }
@@ -247,7 +248,7 @@ public class TextDocumentInitializer {
             if ( null == documentsTexts ) {
                 documentsTexts = new HashMap();
                 StringBuffer sql = new StringBuffer("SELECT meta_id, name, text, type FROM texts WHERE meta_id ");
-                Integer[] parameters = DatabaseDocumentGetter.appendInClause(sql, documentIds);
+                Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
                 database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
@@ -272,15 +273,15 @@ public class TextDocumentInitializer {
 
     private class TemplateIdsLoader implements LazilyLoadedObject.Loader {
 
-        private final TextDocumentDomainObject document;
+        private final Integer documentId;
 
-        TemplateIdsLoader(TextDocumentDomainObject document) {
-            this.document = document;
+        TemplateIdsLoader(Integer documentId) {
+            this.documentId = documentId;
         }
 
         public LazilyLoadedObject.Copyable load() {
             initDocumentsTemplateIds();
-            TextDocumentDomainObject.TemplateIds templateIds = (TextDocumentDomainObject.TemplateIds) documentsTemplateIds.get(new Integer(document.getId())) ;
+            TextDocumentDomainObject.TemplateIds templateIds = (TextDocumentDomainObject.TemplateIds) documentsTemplateIds.get(documentId) ;
             if (null == templateIds) {
                 templateIds = new TextDocumentDomainObject.TemplateIds();
             }
@@ -291,7 +292,7 @@ public class TextDocumentInitializer {
             if ( null == documentsTemplateIds ) {
                 documentsTemplateIds = new HashMap();
                 StringBuffer sql = new StringBuffer("SELECT meta_id, template_id, group_id, default_template, default_template_1, default_template_2 FROM text_docs WHERE meta_id ");
-                Integer[] parameters = DatabaseDocumentGetter.appendInClause(sql, documentIds);
+                Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
                 database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {

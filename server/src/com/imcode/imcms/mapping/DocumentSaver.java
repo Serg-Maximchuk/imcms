@@ -38,6 +38,8 @@ class DocumentSaver {
 
         checkDocumentForSave(document, oldDocument, user);
 
+        document.loadAllLazilyLoaded();
+        
         try {
             Date lastModifiedDatetime = Utility.truncateDateToMinutePrecision(document.getActualModifiedDatetime());
             Date modifiedDatetime = Utility.truncateDateToMinutePrecision(document.getModifiedDatetime());
@@ -145,6 +147,8 @@ class DocumentSaver {
 
         checkDocumentForSave(document, null, user);
 
+        document.loadAllLazilyLoaded();
+        
         documentMapper.setCreatedAndModifiedDatetimes(document, new Date());
 
         int newMetaId = sqlInsertIntoMeta(document);

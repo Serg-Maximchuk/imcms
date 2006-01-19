@@ -124,7 +124,7 @@ public class DocumentPermissionSetMapper {
         String table = getExtendedPermissionsTable(forNewDocuments);
         Set allowedDocumentTypeIds = textDocumentPermissionSet.getAllowedDocumentTypeIds();
         String sqlInsertCreatableDocumentTypeId = "INSERT INTO " + table + " VALUES(?,?,"
-                                                  + DatabaseDocumentGetter.PERM_CREATE_DOCUMENT
+                                                  + DocumentInitializer.PERM_CREATE_DOCUMENT
                                                   + ",?)";
         for ( Iterator iterator = allowedDocumentTypeIds.iterator(); iterator.hasNext(); ) {
             Integer allowedDocumentTypeId = (Integer) iterator.next();

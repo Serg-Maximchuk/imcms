@@ -150,4 +150,8 @@ public class DocumentPermissionSetDomainObject implements Serializable, LazilyLo
         clone.permissions = (HashSet) permissions.clone();
         return clone ;
     }
+
+    public boolean isEmpty() {
+        return permissions.isEmpty();
+    }
 }

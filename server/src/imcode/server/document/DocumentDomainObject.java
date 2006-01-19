@@ -426,12 +426,26 @@ public abstract class DocumentDomainObject implements Cloneable, Serializable {
         attributes.permissionSetsForNewDocuments = permissionSetsForNew;
     }
 
+    public void loadAllLazilyLoaded() {
+        attributes.categoryIds.load();
+        attributes.sectionIds.load();
+        attributes.keywords.load();
+        attributes.permissionSets.load();
+        attributes.permissionSetsForNewDocuments.load();
+        attributes.roleIdToDocumentPermissionSetTypeMappings.load();
+    }
+
+
     public static class Attributes implements Cloneable, Serializable {
 
         private Date archivedDatetime;
+
         private Date createdDatetime;
+
         private int creatorId;
+
         private String headline = "";
+
         private String image;
         private String languageIso639_2;
         private boolean linkableByOtherUsers;

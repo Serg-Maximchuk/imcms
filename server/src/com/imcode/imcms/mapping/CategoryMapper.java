@@ -154,8 +154,8 @@ public class CategoryMapper {
     }
 
     void updateDocumentCategories(DocumentDomainObject document) {
-        removeAllCategoriesFromDocument(document);
         Set categoryIds = document.getCategoryIds();
+        removeAllCategoriesFromDocument(document);
         for ( Iterator iterator = categoryIds.iterator(); iterator.hasNext(); ) {
             Integer categoryId = (Integer) iterator.next();
             addCategoryToDocument(categoryId.intValue(), document);

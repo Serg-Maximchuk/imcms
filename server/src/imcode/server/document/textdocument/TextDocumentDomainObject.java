@@ -32,6 +32,14 @@ public class TextDocumentDomainObject extends DocumentDomainObject {
         setId(documentId);
     }
 
+    public void loadAllLazilyLoaded() {
+        texts.load();
+        images.load();
+        includes.load();
+        menus.load();
+        templateIds.load();
+    }
+
     public Object clone() throws CloneNotSupportedException {
         TextDocumentDomainObject clone = (TextDocumentDomainObject)super.clone();
         clone.texts = (LazilyLoadedObject) texts.clone();
