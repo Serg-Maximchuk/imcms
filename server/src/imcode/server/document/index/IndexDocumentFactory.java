@@ -3,6 +3,7 @@ package imcode.server.document.index;
 import imcode.server.Imcms;
 import imcode.server.document.*;
 import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.CategoryMapper;
 import imcode.util.DateConstants;
 import imcode.util.Utility;
 import org.apache.log4j.Logger;
@@ -14,9 +15,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-class IndexDocumentFactory {
+public class IndexDocumentFactory {
 
+    private CategoryMapper categoryMapper ;
+    
     private final static Logger log = Logger.getLogger( IndexDocumentFactory.class.getName() );
+
+    public IndexDocumentFactory(CategoryMapper categoryMapper) {
+        this.categoryMapper = categoryMapper;
+    }
 
     public Document createIndexDocument( DocumentDomainObject document ) {
         log.trace("Indexing document "+document.getId());
@@ -27,15 +34,16 @@ class IndexDocumentFactory {
         indexDocument.add( Field.UnStored( DocumentIndex.FIELD__META_HEADLINE, document.getHeadline() ) );
         indexDocument.add( Field.UnStored( DocumentIndex.FIELD__META_TEXT, document.getMenuText() ) );
         indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__DOC_TYPE_ID, "" + document.getDocumentTypeId() ) );
-        indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__CREATOR_ID, "" + document.getCreator().getId()) );
-        if ( null != document.getPublisher() ){
-            indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__PUBLISHER_ID, "" + document.getPublisher().getId()) );
+        indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__CREATOR_ID, "" + document.getCreatorId()) );
+        if ( null != document.getPublisherId() ){
+            indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__PUBLISHER_ID, "" + document.getPublisherId()) );
         }
-        SectionDomainObject[] sections = document.getSections();
-        for ( int i = 0; i < sections.length; i++ ) {
-            SectionDomainObject section = sections[i];
+        Set sectionIds = document.getSectionIds();
+        for ( Iterator iterator = sectionIds.iterator(); iterator.hasNext(); ) {
+            Integer sectionId = (Integer) iterator.next();
+            SectionDomainObject section = Imcms.getServices().getDefaultDocumentMapper().getSectionById(sectionId.intValue());
             indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__SECTION, section.getName() ) );
-            indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__SECTION_ID, ""+section.getId())) ;
+            indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__SECTION_ID, sectionId.toString())) ;
         }
 
         addDateFieldToIndexDocument( documentId, indexDocument, DocumentIndex.FIELD__CREATED_DATETIME, document.getCreatedDatetime() );
@@ -55,9 +63,9 @@ class IndexDocumentFactory {
             log.error( "Error indexing document-type-specific data of document "+document.getId(), re) ;
         }
 
-        CategoryDomainObject[] categories = document.getCategories();
-        for ( int i = 0; i < categories.length; i++ ) {
-            CategoryDomainObject category = categories[i];
+        Set categories = categoryMapper.getCategories(document.getCategoryIds());
+        for ( Iterator iterator = categories.iterator(); iterator.hasNext(); ) {
+            CategoryDomainObject category = (CategoryDomainObject) iterator.next();
             indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__CATEGORY, category.getName() )) ;
             indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__CATEGORY_ID, "" + category.getId() ) );
             CategoryTypeDomainObject categoryType = category.getType() ;

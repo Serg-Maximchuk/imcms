@@ -1,12 +1,9 @@
 package com.imcode.imcms.mapping;
 
 import com.imcode.db.Database;
-import com.imcode.db.DatabaseConnection;
 import com.imcode.db.commands.InsertIntoTableDatabaseCommand;
-import com.imcode.db.commands.SqlQueryDatabaseCommand;
 import com.imcode.db.commands.UpdateTableWhereColumnEqualsDatabaseCommand;
-import com.imcode.db.handlers.ObjectArrayResultSetHandler;
-import com.imcode.db.handlers.ObjectFromRowFactory;
+import com.imcode.db.handlers.RowTransformer;
 import com.imcode.imcms.api.CategoryAlreadyExistsException;
 import com.imcode.imcms.db.DatabaseUtils;
 import imcode.server.document.CategoryDomainObject;
@@ -16,6 +13,10 @@ import imcode.server.document.MaxCategoryDomainObjectsOfTypeExceededException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class CategoryMapper {
     private Database database;
@@ -46,14 +47,9 @@ public class CategoryMapper {
                                                           + "FROM categories\n"
                                                           + "JOIN category_types ON categories.category_type_id = category_types.category_type_id\n"
                                                           + "WHERE categories.category_id = ?";
-    private static final String SQL__GET_DOCUMENT_CATEGORIES = "SELECT "+SQL__CATEGORY__COLUMNS+", " +
-                                                               SQL__CATEGORY_TYPE__COLUMNS
-                                                               + " FROM document_categories"
-                                                               + " JOIN categories"
-                                                               + "  ON document_categories.category_id = categories.category_id"
-                                                               + " JOIN category_types"
-                                                               + "  ON categories.category_type_id = category_types.category_type_id"
-                                                               + " WHERE document_categories.meta_id = ?";
+    static final String SQL__GET_DOCUMENT_CATEGORIES = "SELECT meta_id, category_id"
+                                                       + " FROM document_categories"
+                                                       + " WHERE meta_id ";
 
     public CategoryMapper(Database database) {
         this.database = database ;
@@ -115,7 +111,7 @@ public class CategoryMapper {
 
     public CategoryTypeDomainObject addCategoryTypeToDb(final CategoryTypeDomainObject categoryType
     ) {
-        Number newId = (Number) database.executeCommand(new InsertIntoTableDatabaseCommand("category_types", getColumnNamesAndValuesForCategoryType(categoryType))) ;
+        Number newId = (Number) database.execute(new InsertIntoTableDatabaseCommand("category_types", getColumnNamesAndValuesForCategoryType(categoryType))) ;
         return getCategoryTypeById(newId.intValue());
     }
 
@@ -128,11 +124,11 @@ public class CategoryMapper {
     }
 
     public void updateCategoryType(CategoryTypeDomainObject categoryType) {
-        database.executeCommand(new UpdateTableWhereColumnEqualsDatabaseCommand("category_types", "category_type_id", new Integer(categoryType.getId()), getColumnNamesAndValuesForCategoryType(categoryType))) ;
+        database.execute(new UpdateTableWhereColumnEqualsDatabaseCommand("category_types", "category_type_id", new Integer(categoryType.getId()), getColumnNamesAndValuesForCategoryType(categoryType))) ;
     }
 
     public CategoryDomainObject addCategory(CategoryDomainObject category) throws CategoryAlreadyExistsException {
-        Number newId = (Number) database.executeCommand(new InsertIntoTableDatabaseCommand("categories", getColumnNamesAndValuesForCategory(category))) ;
+        Number newId = (Number) database.execute(new InsertIntoTableDatabaseCommand("categories", getColumnNamesAndValuesForCategory(category))) ;
         int categoryId = newId.intValue();
         category.setId(categoryId);
         return getCategoryById(categoryId);
@@ -148,7 +144,7 @@ public class CategoryMapper {
     }
 
     public void updateCategory(CategoryDomainObject category) {
-        database.executeCommand(new UpdateTableWhereColumnEqualsDatabaseCommand("categories", "category_id", new Integer(category.getId()), getColumnNamesAndValuesForCategory(category))) ;
+        database.execute(new UpdateTableWhereColumnEqualsDatabaseCommand("categories", "category_id", new Integer(category.getId()), getColumnNamesAndValuesForCategory(category))) ;
     }
 
     public void deleteCategoryFromDb(CategoryDomainObject category) {
@@ -159,15 +155,14 @@ public class CategoryMapper {
 
     void updateDocumentCategories(DocumentDomainObject document) {
         removeAllCategoriesFromDocument(document);
-        CategoryDomainObject[] categories = document.getCategories();
-        for (int i = 0; i < categories.length; i++) {
-            CategoryDomainObject category = categories[i];
-            addCategoryToDocument(category, document);
+        Set categoryIds = document.getCategoryIds();
+        for ( Iterator iterator = categoryIds.iterator(); iterator.hasNext(); ) {
+            Integer categoryId = (Integer) iterator.next();
+            addCategoryToDocument(categoryId.intValue(), document);
         }
     }
 
-    private void addCategoryToDocument(CategoryDomainObject category, DocumentDomainObject document) {
-        int categoryId = category.getId();
+    private void addCategoryToDocument(int categoryId, DocumentDomainObject document) {
         String[] params = new String[]{"" + document.getId(), "" + categoryId};
         DatabaseUtils.executeUpdate(database, "INSERT INTO document_categories (meta_id, category_id) VALUES(?,?)", params);
     }
@@ -197,31 +192,14 @@ public class CategoryMapper {
         for (int i = 0; i < categoryTypes.length; i++) {
             CategoryTypeDomainObject categoryType = categoryTypes[i];
             int maxChoices = categoryType.getMaxChoices();
-            CategoryDomainObject[] documentCategoriesOfType = document.getCategoriesOfType(categoryType);
-            if (UNLIMITED_MAX_CATEGORY_CHOICES != maxChoices && documentCategoriesOfType.length > maxChoices) {
+            Set documentCategoriesOfType = getCategoriesOfType(categoryType, document.getCategoryIds());
+            if (UNLIMITED_MAX_CATEGORY_CHOICES != maxChoices && documentCategoriesOfType.size() > maxChoices) {
                 throw new MaxCategoryDomainObjectsOfTypeExceededException("Document may have at most " + maxChoices
                                                                           + " categories of type '"
                                                                           + categoryType.getName()
                                                                           + "'");
             }
         }
-    }
-
-    public void initDocumentCategories(DatabaseConnection connection, DocumentDomainObject document) {
-        CategoryDomainObject[] documentCategories = getDocumentCategories(document, connection);
-
-        for ( int i = 0; i < documentCategories.length; i++ ) {
-            CategoryDomainObject category = documentCategories[i];
-            document.addCategory(category);
-        }
-
-    }
-
-    private CategoryDomainObject[] getDocumentCategories(DocumentDomainObject document,
-                                                         DatabaseConnection connection) {
-        Object result = new SqlQueryDatabaseCommand(SQL__GET_DOCUMENT_CATEGORIES, new String[] {
-                "" + document.getId() }, new ObjectArrayResultSetHandler(new CategoryFromRowFactory())).executeOn(connection);
-        return (CategoryDomainObject[]) result;
     }
 
     public void saveCategory(CategoryDomainObject category) throws CategoryAlreadyExistsException {
@@ -239,7 +217,31 @@ public class CategoryMapper {
         }
     }
 
-    private static class CategoryTypeFromRowFactory implements ObjectFromRowFactory {
+    public Set getCategories(Collection categoryIds) {
+        Set categories = new HashSet() ;
+        for ( Iterator iterator = categoryIds.iterator(); iterator.hasNext(); ) {
+            Integer categoryId = (Integer) iterator.next();
+            CategoryDomainObject category = getCategoryById(categoryId.intValue()) ;
+            if (null != category) {
+                categories.add(category) ;
+            }
+        }
+        return categories;
+    }
+
+    public Set getCategoriesOfType(CategoryTypeDomainObject categoryType, Set categoryIds) {
+        Set categories = getCategories(categoryIds) ;
+        Set categoriesOfType = new HashSet();
+        for ( Iterator iterator = categories.iterator(); iterator.hasNext(); ) {
+            CategoryDomainObject category = (CategoryDomainObject) iterator.next();
+            if ( categoryType.equals( category.getType() ) ) {
+                categoriesOfType.add( category );
+            }
+        }
+        return categoriesOfType ;
+    }
+
+    private static class CategoryTypeFromRowFactory implements RowTransformer {
 
         private final int offset;
 
@@ -264,7 +266,7 @@ public class CategoryMapper {
         }
     }
 
-    private static class CategoryFromRowFactory implements ObjectFromRowFactory {
+    private static class CategoryFromRowFactory implements RowTransformer {
 
         public Object createObjectFromResultSetRow(ResultSet resultSet) throws SQLException {
             int categoryId = resultSet.getInt(1);

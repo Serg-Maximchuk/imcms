@@ -10,7 +10,7 @@ import imcode.server.parser.ParserParameters;
 import imcode.server.user.ImcmsAuthenticatorAndUserAndRoleMapper;
 import imcode.server.user.RoleGetter;
 import imcode.server.user.UserDomainObject;
-import imcode.util.FileCache;
+import imcode.util.CachingFileLoader;
 import imcode.util.net.SMTP;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -81,11 +81,6 @@ public class MockImcmsServices implements ImcmsServices {
     // get doctype
     public int getDocType( int meta_id ) {
         return 0;
-    }
-
-    // get server date
-    public Date getCurrentDate() {
-        return null;
     }
 
     public SystemData getSystemData() {
@@ -164,7 +159,7 @@ public class MockImcmsServices implements ImcmsServices {
         return languageMapper;
     }
 
-    public FileCache getFileCache() {
+    public CachingFileLoader getFileCache() {
         return null ;
     }
 

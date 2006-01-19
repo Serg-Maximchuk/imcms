@@ -1,29 +1,28 @@
 package imcode.server;
 
 import com.imcode.db.Database;
-import com.imcode.db.DatasourceDatabase;
+import com.imcode.db.DataSourceDatabase;
 import com.imcode.db.commands.SqlUpdateDatabaseCommand;
 import com.imcode.imcms.db.DatabaseUtils;
 import com.imcode.imcms.db.DefaultProcedureExecutor;
 import com.imcode.imcms.db.ProcedureExecutor;
 import com.imcode.imcms.db.StringArrayArrayResultSetHandler;
 import com.imcode.imcms.mapping.CategoryMapper;
-import com.imcode.imcms.mapping.DatabaseDocumentGetter;
 import com.imcode.imcms.mapping.DefaultDocumentMapper;
-import com.imcode.imcms.mapping.DocumentPermissionSetMapper;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentTypeDomainObject;
 import imcode.server.document.TemplateMapper;
-import imcode.server.document.index.DocumentIndex;
 import imcode.server.document.index.RebuildingDirectoryIndex;
+import imcode.server.document.index.IndexDocumentFactory;
 import imcode.server.parser.ParserParameters;
 import imcode.server.parser.TextDocumentParser;
 import imcode.server.user.*;
-import imcode.util.Clock;
+import imcode.server.benchmark.BenchmarkDatabase;
 import imcode.util.DateConstants;
-import imcode.util.FileCache;
+import imcode.util.CachingFileLoader;
 import imcode.util.Parser;
 import imcode.util.Prefs;
+import imcode.util.cache.MapCache;
 import imcode.util.io.FileUtility;
 import imcode.util.net.SMTP;
 import org.apache.commons.beanutils.BeanUtils;
@@ -33,6 +32,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 import org.apache.velocity.VelocityContext;
@@ -64,7 +64,7 @@ final public class DefaultImcmsServices implements ImcmsServices {
 
     private Date sessionCounterDate;
     private int sessionCounter = 0;
-    private FileCache fileCache = new FileCache();
+    private CachingFileLoader fileLoader = new CachingFileLoader();
 
     private final static Logger mainLog = Logger.getLogger(ImcmsConstants.MAIN_LOG);
 
@@ -81,7 +81,6 @@ final public class DefaultImcmsServices implements ImcmsServices {
     private KeyStore keyStore;
 
     private Map velocityEngines = new TreeMap();
-    private CategoryMapper categoryMapper;
     private LanguageMapper languageMapper;
     private ProcedureExecutor procedureExecutor;
 
@@ -91,14 +90,14 @@ final public class DefaultImcmsServices implements ImcmsServices {
 
     /** Contructs an DefaultImcmsServices object. */
     public DefaultImcmsServices(DataSource dataSource, Properties props) {
-        database = new DatasourceDatabase(dataSource);
+        final DataSourceDatabase dataSourceDatabase = new DataSourceDatabase(dataSource);
+        database = new BenchmarkDatabase(dataSourceDatabase);
         procedureExecutor = new DefaultProcedureExecutor(database);
         initConfig(props);
         initKeyStore();
         initSysData();
         initSessionCounter();
         languageMapper = new LanguageMapper(database, config.getDefaultLanguage());
-        categoryMapper = new CategoryMapper(getDatabase());
         initAuthenticatorsAndUserAndRoleMappers(props);
         initDocumentMapper();
         initTemplateMapper();
@@ -206,8 +205,9 @@ final public class DefaultImcmsServices implements ImcmsServices {
 
     private void initDocumentMapper() {
         File indexDirectory = new File(getRealContextPath(), "WEB-INF/index");
-        DocumentIndex documentIndex = new PhaseQueryFixingDocumentIndex(new RebuildingDirectoryIndex(indexDirectory, getConfig().getIndexingSchedulePeriodInMinutes()));
-        documentMapper = new DefaultDocumentMapper(this, this.getDatabase(), new DatabaseDocumentGetter(this.getDatabase(), this), new DocumentPermissionSetMapper(database, this), documentIndex, this.getClock(), this.getConfig(), categoryMapper);
+        documentMapper = new DefaultDocumentMapper(this, this.getDatabase());
+        documentMapper.setDocumentIndex(new PhaseQueryFixingDocumentIndex(new RebuildingDirectoryIndex(indexDirectory, getConfig().getIndexingSchedulePeriodInMinutes(), new IndexDocumentFactory(getCategoryMapper())))) ;
+        documentMapper.setDocumentCache(new MapCache(new LRUMap(getConfig().getDocumentCacheMaxSize())));
     }
 
     private void initTemplateMapper() {
@@ -485,10 +485,6 @@ final public class DefaultImcmsServices implements ImcmsServices {
         return config;
     }
 
-    private Clock getClock() {
-        return this;
-    }
-
     public File getRealContextPath() {
         return WebAppGlobalConstants.getInstance().getAbsoluteWebAppPath();
     }
@@ -536,16 +532,12 @@ final public class DefaultImcmsServices implements ImcmsServices {
         }
     }
 
-    public Date getCurrentDate() {
-        return new Date();
-    }
-
     private SystemData getSystemDataFromDb() {
 
         SystemData sd = new SystemData();
 
         final Object[] parameters5 = new String[0];
-        String startDocument = DatabaseUtils.executeStringQuery(getDatabase(), "SELECT value FROM sys_data WHERE sys_id = 0", parameters5);
+        String startDocument = DatabaseUtils.executeStringQuery(getDatabase(), "SELECT value FROM sys_data WHERE type_id = 0", parameters5);
         sd.setStartDocument(startDocument == null ? DEFAULT_STARTDOCUMENT : Integer.parseInt(startDocument));
 
         final Object[] parameters4 = new String[0];
@@ -640,15 +632,15 @@ final public class DefaultImcmsServices implements ImcmsServices {
     }
 
     public CategoryMapper getCategoryMapper() {
-        return categoryMapper;
+        return documentMapper.getCategoryMapper();
     }
 
     public LanguageMapper getLanguageMapper() {
         return this.languageMapper;
     }
 
-    public FileCache getFileCache() {
-        return fileCache;
+    public CachingFileLoader getFileCache() {
+        return fileLoader;
     }
 
     public RoleGetter getRoleGetter() {

@@ -9,6 +9,9 @@ import com.imcode.imcms.mapping.DefaultDocumentMapper;
 import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.server.document.textdocument.NoPermissionToAddDocumentToMenuException;
+import imcode.server.document.textdocument.MenuItemDomainObject;
+import imcode.server.document.textdocument.TreeSortKeyDomainObject;
+import imcode.server.document.textdocument.MenuDomainObject;
 import imcode.server.user.UserDomainObject;
 import imcode.util.*;
 
@@ -173,7 +176,9 @@ public class AddDoc extends HttpServlet {
                 documentMapper.saveNewDocument( document, user );
                 this.savedDocument = document ;
                 if (null != parentMenuIndex) {
-                    documentMapper.addToMenu( parentDocument, parentMenuIndex.intValue(), document, user );
+                    MenuDomainObject menu = parentDocument.getMenu(parentMenuIndex.intValue());
+                    menu.addMenuItem(new MenuItemDomainObject(documentMapper.getDocumentReference(document)));
+                    documentMapper.saveDocument(parentDocument, user);
                 }
             }
         }
@@ -209,7 +214,7 @@ public class AddDoc extends HttpServlet {
             if ( document instanceof TextDocumentDomainObject ) {
                 TextDocumentDomainObject textDocument = (TextDocumentDomainObject)document;
                 if ( null != template ) {
-                    textDocument.setTemplate( template );
+                    textDocument.setTemplateId( template.getId() );
                 }
                 pageFlow = new CreateTextDocumentPageFlow( textDocument, saveDocumentCommand, returnCommand );
             } else if ( document instanceof UrlDocumentDomainObject ) {
@@ -220,6 +225,8 @@ public class AddDoc extends HttpServlet {
                 pageFlow = new CreateDocumentWithEditPageFlow( new EditFileDocumentPageFlow( (FileDocumentDomainObject)document, servletContext, returnCommand, saveDocumentCommand, null ) );
             } else if ( document instanceof BrowserDocumentDomainObject ) {
                 pageFlow = new CreateDocumentWithEditPageFlow( new EditBrowserDocumentPageFlow( (BrowserDocumentDomainObject)document, returnCommand, saveDocumentCommand ) );
+            } else {
+                return ;
             }
             pageFlow.dispatch( request, response );
         }

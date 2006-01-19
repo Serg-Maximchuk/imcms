@@ -10,7 +10,7 @@ import imcode.server.user.ImcmsAuthenticatorAndUserAndRoleMapper;
 import imcode.server.user.RoleGetter;
 import imcode.server.user.UserDomainObject;
 import imcode.util.Clock;
-import imcode.util.FileCache;
+import imcode.util.CachingFileLoader;
 import imcode.util.net.SMTP;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -22,7 +22,7 @@ import java.text.Collator;
 import java.util.Date;
 import java.util.Properties;
 
-public interface ImcmsServices extends Clock {
+public interface ImcmsServices {
 
     /** Verify a Internet/Intranet user. Data from any SQL Database. **/
     UserDomainObject verifyUser(String login, String password)
@@ -55,10 +55,6 @@ public interface ImcmsServices extends Clock {
 
     // get doctype
     int getDocType(int meta_id)
-    ;
-
-    // get server date
-    Date getCurrentDate()
     ;
 
     SystemData getSystemData()  ;
@@ -101,7 +97,7 @@ public interface ImcmsServices extends Clock {
 
     LanguageMapper getLanguageMapper();
 
-    FileCache getFileCache();
+    CachingFileLoader getFileCache();
 
     RoleGetter getRoleGetter();
 

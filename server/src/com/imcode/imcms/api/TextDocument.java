@@ -2,7 +2,6 @@ package com.imcode.imcms.api;
 
 import imcode.server.ImcmsServices;
 import imcode.server.document.*;
-import imcode.server.document.DocumentReference;
 import com.imcode.imcms.mapping.DefaultDocumentMapper;
 import imcode.server.document.textdocument.*;
 import imcode.server.user.UserDomainObject;
@@ -91,7 +90,7 @@ public class TextDocument extends Document {
         Transformer fromDomainToAPITransformer = new Transformer() {
             public Object transform(Object o) {
                 Integer tempMetaId = (Integer) o;
-                return DocumentService.wrapDocumentDomainObject(getDocumentGetter().getDocument(new DocumentId(tempMetaId.intValue())), contentManagementSystem );
+                return DocumentService.wrapDocumentDomainObject(getDocumentGetter().getDocument(tempMetaId), contentManagementSystem );
             }
         };
 
@@ -119,8 +118,7 @@ public class TextDocument extends Document {
 
     public TextField getTextField(int textFieldIndexInDocument) {
         TextDomainObject imcmsText = getInternalTextDocument().getText(textFieldIndexInDocument);
-        TextField textField = new TextField(imcmsText);
-        return textField;
+        return new TextField(imcmsText);
     }
 
     private TextDocumentDomainObject getInternalTextDocument() {
@@ -150,13 +148,12 @@ public class TextDocument extends Document {
     }
 
     public Template getTemplate() {
-        TemplateDomainObject template = getInternalTextDocument().getTemplate();
-        Template result = new Template(template);
-        return result;
+        int templateId = getInternalTextDocument().getTemplateId();
+        return contentManagementSystem.getTemplateService().getTemplateById(templateId) ;
     }
 
     public void setTemplate(TemplateGroup templateGroup, Template template) {
-        getInternalTextDocument().setTemplate(template.getInternal());
+        getInternalTextDocument().setTemplateId(template.getInternal().getId());
         if (null != templateGroup) {
             getInternalTextDocument().setTemplateGroupId(templateGroup.getId());
         }
@@ -169,7 +166,7 @@ public class TextDocument extends Document {
     public Document getInclude(int includeIndexInDocument) {
         Integer includedDocumentId = getInternalTextDocument().getIncludedDocumentId(includeIndexInDocument);
         if (null != includedDocumentId) {
-            DocumentDomainObject includedDocument = getDocumentGetter().getDocument(new DocumentId(includedDocumentId.intValue()));
+            DocumentDomainObject includedDocument = getDocumentGetter().getDocument(new Integer(includedDocumentId.intValue()));
             if (null != includedDocument) {
                 return DocumentService.wrapDocumentDomainObject(includedDocument, contentManagementSystem );
             }
@@ -295,7 +292,7 @@ public class TextDocument extends Document {
         }
 
         public void setSortKey( Integer sortKey ) {
-            internalMenuItem.setSortKey(sortKey);
+            internalMenuItem = new MenuItemDomainObject(internalMenuItem.getDocumentReference(), sortKey, internalMenuItem.getTreeSortKey());
         }
 
         public TreeKey getTreeKey() {
@@ -303,7 +300,7 @@ public class TextDocument extends Document {
         }
 
         public void setTreeKey(TreeKey treeKey) {
-            this.internalMenuItem.setTreeSortKey(treeKey.internalTreeSortKey);
+            internalMenuItem = new MenuItemDomainObject(internalMenuItem.getDocumentReference(), internalMenuItem.getSortKey(), treeKey.internalTreeSortKey);
         }
 
         public static class TreeKey {
@@ -372,8 +369,8 @@ public class TextDocument extends Document {
         public void addDocument(Document documentToAdd) {
             ImcmsServices internal = contentManagementSystem.getInternal();
             DefaultDocumentMapper documentMapper = internal.getDefaultDocumentMapper();
-            DocumentReference documentReference = documentMapper.getDocumentReference( documentMapper.getDocument(documentToAdd.getId()) );
-            internalTextDocument.getMenu(menuIndex).addMenuItem(new MenuItemDomainObject(documentReference ));
+            DocumentReference documentReference = documentMapper.getDocumentReference( documentToAdd.getId() );
+            internalTextDocument.getMenu(menuIndex).addMenuItem(new MenuItemDomainObject(documentReference));
         }
 
         /**
@@ -417,8 +414,7 @@ public class TextDocument extends Document {
          */
         public Document[] getVisibleDocuments() {
             MenuItem[] menuItems = getVisibleMenuItems() ;
-            Document[] documents = getDocumentsFromMenuItems( menuItems );
-            return documents ;
+            return getDocumentsFromMenuItems( menuItems ) ;
         }
 
         /**

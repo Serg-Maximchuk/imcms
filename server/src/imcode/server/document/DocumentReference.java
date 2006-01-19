@@ -1,15 +1,34 @@
 package imcode.server.document;
 
-public class DocumentReference extends DocumentId {
+public abstract class DocumentReference {
 
-    private final transient DocumentGetter documentGetter;
+    private final int documentId;
 
-    public DocumentReference( int documentId, DocumentGetter documentGetter ) {
-        super(documentId) ;
-        this.documentGetter = documentGetter;
+    protected DocumentReference(int documentId) {
+        this.documentId = documentId;
     }
 
-    public DocumentDomainObject getDocument() {
-        return documentGetter.getDocument( this ) ;
+    public int getDocumentId() {
+        return documentId;
+    }
+
+    public abstract DocumentDomainObject getDocument() ;
+
+    public int hashCode() {
+        return documentId ;
+    }
+
+    public boolean equals(Object o) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        final DocumentReference that = (DocumentReference) o;
+
+        return documentId == that.documentId;
+
     }
 }

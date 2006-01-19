@@ -1,7 +1,6 @@
 package imcode.server.document.index;
 
 import com.imcode.imcms.mapping.DefaultDocumentMapper;
-import com.imcode.imcms.mapping.DocumentMapper;
 import com.imcode.util.HumanReadable;
 import imcode.server.Imcms;
 import imcode.server.document.DocumentDomainObject;
@@ -10,6 +9,8 @@ import imcode.util.IntervalSchedule;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -19,14 +20,15 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.AbstractList;
 
 class DefaultDirectoryIndex implements DirectoryIndex {
 
@@ -34,7 +36,7 @@ class DefaultDirectoryIndex implements DirectoryIndex {
     private final static int INDEXING_LOG_PERIOD__MILLISECONDS = DateUtils.MILLIS_IN_MINUTE ;
 
     private final File directory;
-    private final IndexDocumentFactory indexDocumentFactory = new IndexDocumentFactory();
+    private final IndexDocumentFactory indexDocumentFactory;
 
     private boolean inconsistent;
 
@@ -43,11 +45,12 @@ class DefaultDirectoryIndex implements DirectoryIndex {
         BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
     }
 
-    DefaultDirectoryIndex( File directory ) {
+    DefaultDirectoryIndex(File directory, IndexDocumentFactory indexDocumentFactory) {
         this.directory = directory;
+        this.indexDocumentFactory = indexDocumentFactory;
     }
 
-    public DocumentDomainObject[] search( Query query, UserDomainObject searchingUser ) throws IndexException {
+    public List search(Query query, Sort sort, UserDomainObject searchingUser) throws IndexException {
         try {
             IndexSearcher indexSearcher = new IndexSearcher( directory.toString() );
             try {
@@ -59,7 +62,7 @@ class DefaultDirectoryIndex implements DirectoryIndex {
                 log.debug( "Search for " + query.toString() + ": " + searchTime + "ms. Total: "
                            + searchStopWatch.getTime()
                            + "ms." );
-                return (DocumentDomainObject[])documentList.toArray( new DocumentDomainObject[documentList.size()] );
+                return documentList ;
             } finally {
                 indexSearcher.close();
             }
@@ -76,21 +79,20 @@ class DefaultDirectoryIndex implements DirectoryIndex {
         }
     }
 
-    private List getDocumentListForHits( Hits hits, UserDomainObject searchingUser ) throws IOException {
-        List documentList = new ArrayList( hits.length() );
-        final DocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
-        for ( int i = 0; i < hits.length(); ++i ) {
-            int metaId = Integer.parseInt( hits.doc( i ).get( DocumentIndex.FIELD__META_ID ) );
-            DocumentDomainObject document = documentMapper.getDocument( metaId );
-            if ( null == document ) {
-                inconsistent = true;
-                continue;
-            }
-            if ( searchingUser.canSearchFor( document ) ) {
-                documentList.add( document );
-            }
+    private List getDocumentListForHits( final Hits hits, final UserDomainObject searchingUser ) throws IOException {
+        DefaultDocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
+        List documentIds = new DocumentIdHitsLists(hits) ;
+        List documentList = documentMapper.getDocuments(documentIds) ;
+        if (documentList.size() != hits.length()) {
+            inconsistent = true ;
         }
-        return documentList;
+        CollectionUtils.filter(documentList, new Predicate() {
+            public boolean evaluate(Object object) {
+                DocumentDomainObject document = (DocumentDomainObject) object;
+                return searchingUser.canSearchFor(document) ;
+            }
+        });
+        return documentList ;
     }
 
     public void indexDocument( DocumentDomainObject document ) throws IndexException {
@@ -194,10 +196,6 @@ class DefaultDirectoryIndex implements DirectoryIndex {
         log.debug( "Optimized index in " + optimizeStopWatch.getTime() + "ms" );
     }
 
-    File getDirectory() {
-        return directory;
-    }
-
     public boolean isInconsistent() {
         return inconsistent;
     }
@@ -227,5 +225,26 @@ class DefaultDirectoryIndex implements DirectoryIndex {
 
     public int hashCode() {
         return directory.hashCode();
+    }
+
+    private static class DocumentIdHitsLists extends AbstractList {
+
+        private final Hits hits;
+
+        public DocumentIdHitsLists(Hits hits) {
+            this.hits = hits;
+        }
+
+        public Object get(int index) {
+            try {
+                return new Integer(Integer.parseInt( hits.doc( index ).get( DocumentIndex.FIELD__META_ID ) )) ;
+            } catch ( IOException e ) {
+                throw new IndexException(e);
+            }
+        }
+
+        public int size() {
+            return hits.length() ;
+        }
     }
 }

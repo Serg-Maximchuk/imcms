@@ -3,6 +3,7 @@ package com.imcode.imcms.servlet.admin;
 import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
+import imcode.server.ImcmsConstants;
 import imcode.server.document.*;
 import imcode.server.document.textdocument.NoPermissionToAddDocumentToMenuException;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
@@ -10,6 +11,7 @@ import imcode.server.user.UserDomainObject;
 import imcode.util.ShouldHaveCheckedPermissionsEarlierException;
 import imcode.util.Utility;
 import org.apache.commons.lang.UnhandledException;
+import org.apache.commons.lang.ArrayUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -20,6 +22,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Iterator;
 
 /**
  * Save data from editwindow.
@@ -44,16 +48,16 @@ public class SaveInPage extends HttpServlet {
         TemplateGroupDomainObject requestedTemplateGroup = getRequestedTemplateGroup( req, templateMapper );
 
         TextDocumentPermissionSetDomainObject textDocumentPermissionSet = (TextDocumentPermissionSetDomainObject)user.getPermissionSetFor( textDocument );
-        TemplateGroupDomainObject[] allowedTemplateGroups = textDocumentPermissionSet.getAllowedTemplateGroups( services );
+        Set allowedTemplateGroupIds = textDocumentPermissionSet.getAllowedTemplateGroupIds();
 
         boolean requestedTemplateGroupIsAllowed = null == requestedTemplateGroup;
         boolean requestedTemplateIsAllowed = null == requestedTemplate;
-        for ( int i = 0; i < allowedTemplateGroups.length; i++ ) {
-            TemplateGroupDomainObject allowedTemplateGroup = allowedTemplateGroups[i];
-            if ( allowedTemplateGroup.equals( requestedTemplateGroup ) ) {
+        for ( Iterator iterator = allowedTemplateGroupIds.iterator(); iterator.hasNext(); ) {
+            Integer allowedTemplateGroupId = (Integer) iterator.next();
+            if ( allowedTemplateGroupId.intValue()== requestedTemplateGroup.getId()) {
                 requestedTemplateGroupIsAllowed = true;
             }
-            if ( templateMapper.templateGroupContainsTemplate( allowedTemplateGroup, requestedTemplate ) ) {
+            if ( allowedTemplateGroupIds.contains(new Integer(requestedTemplate.getId()))) {
                 requestedTemplateIsAllowed = true;
             }
         }
@@ -88,7 +92,7 @@ public class SaveInPage extends HttpServlet {
             }
 
             // save textdoc
-            textDocument.setTemplate( requestedTemplate );
+            textDocument.setTemplateId( requestedTemplate.getId() );
             if ( null != requestedTemplateGroup ) {
                 textDocument.setTemplateGroupId( requestedTemplateGroup.getId() );
             }
@@ -140,7 +144,7 @@ public class SaveInPage extends HttpServlet {
             Utility.setDefaultHtmlContentType( res );
             Writer out = res.getWriter();
 
-            req.getSession().setAttribute( "flags", new Integer( imcode.server.ImcmsConstants.PERM_EDIT_TEXT_DOCUMENT_TEMPLATE ) );
+            req.getSession().setAttribute( "flags", new Integer( ImcmsConstants.PERM_EDIT_TEXT_DOCUMENT_TEMPLATE ) );
 
             if ( null != requestedTemplateGroup ) {
                 user.setTemplateGroup( requestedTemplateGroup );

@@ -2,7 +2,10 @@ package imcode.server.document;
 
 import com.imcode.db.Database;
 import com.imcode.db.DatabaseException;
+import com.imcode.db.handlers.CollectionResultSetHandler;
+import com.imcode.db.handlers.RowTransformer;
 import com.imcode.db.commands.InsertIntoTableDatabaseCommand;
+import com.imcode.db.commands.SqlQueryDatabaseCommand;
 import com.imcode.imcms.db.DatabaseUtils;
 import com.imcode.imcms.db.StringArrayArrayResultSetHandler;
 import com.imcode.imcms.mapping.DocumentMapper;
@@ -12,11 +15,9 @@ import org.apache.commons.io.CopyUtils;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class TemplateMapper {
 
@@ -52,14 +53,14 @@ public class TemplateMapper {
 
     public String createHtmlOptionListOfTemplateGroups( TemplateGroupDomainObject selectedTemplateGroup ) {
         TemplateGroupDomainObject[] templateGroups = services.getTemplateMapper().getAllTemplateGroups();
-        return createHtmlOptionListOfTemplateGroups( templateGroups, selectedTemplateGroup );
+        return createHtmlOptionListOfTemplateGroups( Arrays.asList(templateGroups), selectedTemplateGroup );
     }
 
-    public String createHtmlOptionListOfTemplateGroups( TemplateGroupDomainObject[] templateGroups,
+    public String createHtmlOptionListOfTemplateGroups( Collection templateGroups,
                                                         TemplateGroupDomainObject selectedTemplateGroup ) {
         String temps = "";
-        for ( int i = 0; i < templateGroups.length; i++ ) {
-            TemplateGroupDomainObject templateGroup = templateGroups[i];
+        for ( Iterator iterator = templateGroups.iterator(); iterator.hasNext(); ) {
+            TemplateGroupDomainObject templateGroup = (TemplateGroupDomainObject) iterator.next();
             boolean selected = null != selectedTemplateGroup && selectedTemplateGroup.equals( templateGroup );
             temps += "<option value=\"" + templateGroup.getId() + "\"" + ( selected ? " selected" : "" ) + ">"
                      + templateGroup.getName() + "</option>";
@@ -141,6 +142,10 @@ public class TemplateMapper {
                                                                                        int metaId ) {
         String[][] sprocResult = sprocGetTemplateGroupsForUser(user, metaId );
         return createTemplateGroupsFromSqlResult( sprocResult );
+    }
+
+    public Set getAllTemplateGroupIds() {
+        return (Set) database.execute(new SqlQueryDatabaseCommand("SELECT template_id FROM templates", null, new CollectionResultSetHandler(new HashSet(), new TemplateIdRowTransformer()))) ;
     }
 
     public TemplateDomainObject[] getAllTemplates() {
@@ -299,14 +304,9 @@ public class TemplateMapper {
     }
 
     public void createTemplateGroup( String name ) {
-        database.executeCommand(new InsertIntoTableDatabaseCommand("templategroups", new Object[][] {
+        database.execute(new InsertIntoTableDatabaseCommand("templategroups", new Object[][] {
                 { "group_name", name },
         })) ;
-    }
-
-    public boolean templateGroupContainsTemplate( TemplateGroupDomainObject templateGroup,
-                                                  TemplateDomainObject template ) {
-        return ArrayUtils.contains( getTemplatesInGroup( templateGroup ), template ) ;
     }
 
     public void saveDemoTemplate( int template_id, InputStream data, String suffix ) throws IOException {
@@ -441,10 +441,34 @@ public class TemplateMapper {
         return services.getFileCache().getCachedFileString( new File( services.getConfig().getTemplatePath(), "/text/" + template_id + ".html" ) );
     }
 
+    public List getTemplateGroups(Set templateGroupIds) {
+        List allowedTemplateGroups = new ArrayList(templateGroupIds.size());
+        for ( Iterator iterator = templateGroupIds.iterator(); iterator.hasNext(); ) {
+            Integer allowedTemplateGroupId = (Integer) iterator.next();
+            TemplateGroupDomainObject templateGroup = getTemplateGroupById(allowedTemplateGroupId.intValue());
+            if (null != templateGroup) {
+                allowedTemplateGroups.add(templateGroup) ;
+            }
+        }
+        Collections.sort(allowedTemplateGroups) ;
+        return allowedTemplateGroups;
+    }
+
     private static class NonEmptyFileFilter implements FileFilter {
 
         public boolean accept( File file ) {
             return file.length() > 0;
+        }
+    }
+
+    private static class TemplateIdRowTransformer implements RowTransformer {
+
+        public Object createObjectFromResultSetRow(ResultSet resultSet) throws SQLException {
+            return new Integer(resultSet.getInt(1)) ;
+        }
+
+        public Class getClassOfCreatedObjects() {
+            return Integer.class ;
         }
     }
 }

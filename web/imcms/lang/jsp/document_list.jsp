@@ -82,7 +82,7 @@ if (null != formData.documentsIterator) { %>
 	<td><%
 		if (document instanceof TextDocumentDomainObject) {
 			TextDocumentDomainObject textDocument = (TextDocumentDomainObject)document ;
-			List childDocuments = new ArrayList(textDocument.getChildDocuments());
+			List childDocuments = documentMapper.getDocuments(textDocument.getChildDocumentIds());
 			if (!childDocuments.isEmpty()) { %>
 	<table border="0" cellpadding="2" cellspacing="0"><%
 				Collections.sort(childDocuments, DocumentComparator.ID) ;

@@ -4,7 +4,7 @@ import com.imcode.db.Database;
 import com.imcode.db.DatabaseException;
 import com.imcode.db.commands.SqlQueryDatabaseCommand;
 import com.imcode.db.commands.SqlUpdateDatabaseCommand;
-import imcode.util.FileCache;
+import imcode.util.CachingFileLoader;
 import imcode.util.io.FileUtility;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.ArrayUtils;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class DefaultProcedureExecutor implements ProcedureExecutor {
 
     private final Database database;
-    private FileCache fileCache = new FileCache();
+    private CachingFileLoader fileLoader = new CachingFileLoader();
     private Map procedureCache = new HashMap();
     private final static Logger log = Logger.getLogger( DefaultProcedureExecutor.class.getName() );
 
@@ -68,7 +68,7 @@ public class DefaultProcedureExecutor implements ProcedureExecutor {
         String procedureName = wantedProcedure.toLowerCase();
         File file = getFile( procedureName );
         Procedure procedure = (Procedure)procedureCache.get( procedureName );
-        String procedureContents = fileCache.getCachedFileStringIfRecent( file );
+        String procedureContents = fileLoader.getCachedFileStringIfRecent( file );
         if ( null == procedureContents ) {
             String procedureContents1 = loadFile(file);
             log.debug("Loading procedure "+procedureName) ;
@@ -98,7 +98,7 @@ public class DefaultProcedureExecutor implements ProcedureExecutor {
 
     private String loadFile( File file ) {
         try {
-            return fileCache.getCachedFileString( file );
+            return fileLoader.getCachedFileString( file );
         } catch ( IOException e ) {
             throw new UnhandledException( e );
         }

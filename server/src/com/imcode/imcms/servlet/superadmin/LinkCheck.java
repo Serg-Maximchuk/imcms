@@ -178,10 +178,10 @@ public class LinkCheck extends HttpServlet {
                                       HttpServletRequest request, IntRange range ) {
         TermQuery urlDocumentsQuery = new TermQuery( new Term( DocumentIndex.FIELD__DOC_TYPE_ID, ""
                                                                                      + DocumentTypeDomainObject.URL_ID ) );
-        DocumentDomainObject[] urlDocuments = reindexingIndex.search( urlDocumentsQuery, user );
+        List urlDocuments = reindexingIndex.search( urlDocumentsQuery, null, user );
 
-        for ( int i = 0; i < urlDocuments.length; i++ ) {
-            UrlDocumentDomainObject urlDocument = (UrlDocumentDomainObject)urlDocuments[i];
+        for ( Iterator iterator = urlDocuments.iterator(); iterator.hasNext(); ) {
+            UrlDocumentDomainObject urlDocument = (UrlDocumentDomainObject) iterator.next();
             if ( !range.containsInteger( urlDocument.getId() )) {
                 continue ;
             }
@@ -197,10 +197,10 @@ public class LinkCheck extends HttpServlet {
         query.add( new PrefixQuery( new Term( DocumentIndex.FIELD__NONSTRIPPED_TEXT, "href" ) ), false, false );
         query.add( new PrefixQuery( new Term( DocumentIndex.FIELD__IMAGE_LINK_URL, "http" ) ), false, false );
 
-        DocumentDomainObject[] textDocuments = reindexingIndex.search( query, user );
+        List textDocuments = reindexingIndex.search( query, null, user );
 
-        for ( int i = 0; i < textDocuments.length; i++ ) {
-            TextDocumentDomainObject textDocument = (TextDocumentDomainObject)textDocuments[i];
+        for ( Iterator iterator = textDocuments.iterator(); iterator.hasNext(); ) {
+            TextDocumentDomainObject textDocument = (TextDocumentDomainObject) iterator.next();
             if (!range.containsInteger( textDocument.getId() )) {
                 continue;
             }

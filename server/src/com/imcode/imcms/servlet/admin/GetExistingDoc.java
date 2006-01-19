@@ -5,19 +5,16 @@ import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.Imcms;
 import imcode.server.ImcmsConstants;
 import imcode.server.ImcmsServices;
-import imcode.server.document.ConcurrentDocumentModificationException;
-import imcode.server.document.DocumentDomainObject;
-import imcode.server.document.NoPermissionToEditDocumentException;
-import imcode.server.document.TextDocumentPermissionSetDomainObject;
+import imcode.server.document.*;
 import imcode.server.document.index.DefaultQueryParser;
 import imcode.server.document.index.DocumentIndex;
 import imcode.server.document.textdocument.MenuDomainObject;
 import imcode.server.document.textdocument.MenuItemDomainObject;
 import imcode.server.document.textdocument.NoPermissionToAddDocumentToMenuException;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
+import imcode.server.document.textdocument.TreeSortKeyDomainObject;
 import imcode.server.user.UserDomainObject;
 import imcode.util.*;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.DateField;
@@ -140,9 +137,9 @@ public class GetExistingDoc extends HttpServlet {
             }
 
             log.debug( "Query: " + query );
-            DocumentDomainObject[] searchResultDocuments = index.search( query, user );
+            List searchResultDocuments = index.search( query, null, user );
 
-            if ( 0 == searchResultDocuments.length ) {
+            if ( 0 == searchResultDocuments.size() ) {
                 if ( StringUtils.isNumeric(searchString) ) {
                     int documentId = Integer.parseInt(searchString) ;
                     DocumentDomainObject document = documentMapper.getDocument(documentId);
@@ -152,8 +149,8 @@ public class GetExistingDoc extends HttpServlet {
                         return ;
                     }
                 }
-            } else if ( 1 == searchResultDocuments.length ) {
-                DocumentDomainObject onlyDocumentFound = searchResultDocuments[0];
+            } else if ( 1 == searchResultDocuments.size() ) {
+                DocumentDomainObject onlyDocumentFound = (DocumentDomainObject) searchResultDocuments.get(0);
                 if ( searchString.equals( "" + onlyDocumentFound.getId() ) && canAddToMenu(user, parentDocument, onlyDocumentFound) ) {
                     addDocumentToMenu( onlyDocumentFound, parentDocument, menuIndex, user );
                     redirectBackToMenu( res, parentDocument, menuIndex );
@@ -230,20 +227,13 @@ public class GetExistingDoc extends HttpServlet {
                           + menuIndex );
     }
 
-    private Set getUsersAllowedDocumentTypeIdsOnDocument( UserDomainObject user,
-                                                          TextDocumentDomainObject parentDocument ) {
-        int[] allowedDocumentTypeIdsArray = ( (TextDocumentPermissionSetDomainObject)user.getPermissionSetFor( parentDocument ) ).getAllowedDocumentTypeIds();
-        Set allowedDocumentTypeIds = new HashSet( Arrays.asList( ArrayUtils.toObject( allowedDocumentTypeIdsArray ) ) );
-        return allowedDocumentTypeIds;
-    }
-
     private void addDocumentToMenu( DocumentDomainObject document, TextDocumentDomainObject parentDocument,
                                     int menuIndex, UserDomainObject user ) {
         DefaultDocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
         boolean canAddToMenu = canAddToMenu(user, parentDocument, document);
         if ( canAddToMenu ) {
             final MenuDomainObject parentMenu = parentDocument.getMenu( menuIndex );
-            parentMenu.addMenuItem( new MenuItemDomainObject( documentMapper.getDocumentReference( document ) ) );
+            parentMenu.addMenuItem( new MenuItemDomainObject(new DirectDocumentReference(document)) );
             try {
                 documentMapper.saveDocument( parentDocument, user );
             } catch ( NoPermissionToEditDocumentException e ) {
@@ -256,18 +246,18 @@ public class GetExistingDoc extends HttpServlet {
 
     private boolean canAddToMenu(UserDomainObject user, TextDocumentDomainObject parentDocument,
                                  DocumentDomainObject document) {
-        Set allowedDocumentTypeIds = getUsersAllowedDocumentTypeIdsOnDocument( user, parentDocument ) ;
+        Set allowedDocumentTypeIds = ( (TextDocumentPermissionSetDomainObject) user.getPermissionSetFor(parentDocument) ).getAllowedDocumentTypeIds() ;
         boolean sharePermission = user.canAddDocumentToAnyMenu( document );
         return sharePermission && allowedDocumentTypeIds.contains(new Integer(document.getDocumentTypeId()));
     }
 
     private void createSearchResultsPage( ImcmsServices imcref, imcode.server.user.UserDomainObject user,
-                                          String langPrefix, DocumentDomainObject[] searchResultDocuments, TextDocumentDomainObject parentDocument,
+                                          String langPrefix, List searchResultDocuments, TextDocumentDomainObject parentDocument,
                                           int doc_menu_no, HttpServletRequest req, Date startDate,
                                           DateFormat dateFormat, Date endDate, String[] docTypes, String sortBy,
                                           List sortOrderV, Writer out ) throws IOException {
         Comparator searchResultsComparator = new DocumentDomainObjectComparator( sortBy );
-        Arrays.sort( searchResultDocuments, searchResultsComparator );
+        Collections.sort( searchResultDocuments, searchResultsComparator );
 
         StringBuffer searchResults;
         List outVector = new ArrayList();
@@ -461,11 +451,11 @@ public class GetExistingDoc extends HttpServlet {
      */
 
     private static StringBuffer parseSearchResults( String oneRecHtmlSrc,
-                                                    DocumentDomainObject[] searchResultDocuments, Map docTypesHash ) {
+                                                    List searchResultDocuments, Map docTypesHash ) {
         StringBuffer searchResults = new StringBuffer( 1024 );
 
-        for ( int i = 0; i < searchResultDocuments.length; i++ ) {
-            DocumentDomainObject document = searchResultDocuments[i];
+        for ( Iterator iterator = searchResultDocuments.iterator(); iterator.hasNext(); ) {
+            DocumentDomainObject document = (DocumentDomainObject) iterator.next();
 
             DateFormat dateFormat = new SimpleDateFormat( DateConstants.DATETIME_FORMAT_STRING );
             String[] data = {

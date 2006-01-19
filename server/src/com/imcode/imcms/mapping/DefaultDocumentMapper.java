@@ -2,26 +2,30 @@ package com.imcode.imcms.mapping;
 
 import com.imcode.db.Database;
 import com.imcode.db.DatabaseCommand;
+import com.imcode.db.handlers.CollectionResultSetHandler;
+import com.imcode.db.handlers.RowTransformer;
 import com.imcode.db.commands.CompositeDatabaseCommand;
 import com.imcode.db.commands.DeleteWhereColumnsEqualDatabaseCommand;
 import com.imcode.db.commands.SqlUpdateDatabaseCommand;
+import com.imcode.db.commands.SqlQueryDatabaseCommand;
 import com.imcode.imcms.api.Document;
 import com.imcode.imcms.db.DatabaseUtils;
 import com.imcode.imcms.flow.DocumentPageFlow;
-import imcode.server.Config;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
 import imcode.server.document.*;
 import imcode.server.document.index.DocumentIndex;
-import imcode.server.document.textdocument.MenuItemDomainObject;
 import imcode.server.document.textdocument.NoPermissionToAddDocumentToMenuException;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.server.user.RoleDomainObject;
 import imcode.server.user.UserDomainObject;
 import imcode.util.Clock;
+import imcode.util.SystemClock;
 import imcode.util.Utility;
+import imcode.util.LazilyLoadedObject;
+import imcode.util.cache.Cache;
+import imcode.util.cache.MapCache;
 import imcode.util.io.FileUtility;
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
 import org.apache.commons.lang.math.IntRange;
@@ -30,6 +34,8 @@ import org.apache.oro.text.perl.Perl5Util;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DefaultDocumentMapper implements DocumentMapper {
 
@@ -40,63 +46,35 @@ public class DefaultDocumentMapper implements DocumentMapper {
     private Database database;
     private DocumentPermissionSetMapper documentPermissionSetMapper;
     private DocumentIndex documentIndex;
-    private Map documentCache;
-    private Clock clock;
+    private Cache documentCache = new MapCache(new HashMap());
+    private Clock clock = new SystemClock();
     private ImcmsServices imcmsServices;
     private DocumentGetter documentGetter ;
     private DocumentSaver documentSaver ;
     private CategoryMapper categoryMapper;
 
-    public static final String SQL_GET_DOCUMENT = "SELECT meta_id,\n"
-                                                  + "doc_type,\n"
-                                                  + "meta_headline,\n"
-                                                  + "meta_text,\n"
-                                                  + "meta_image,\n"
-                                                  + "owner_id,\n"
-                                                  + "permissions,\n"
-                                                  + "shared,\n"
-                                                  + "show_meta,\n"
-                                                  + "lang_prefix,\n"
-                                                  + "date_created,\n"
-                                                  + "date_modified,\n"
-                                                  + "disable_search,\n"
-                                                  + "target,\n"
-                                                  + "archived_datetime,\n"
-                                                  + "publisher_id,\n"
-                                                  + "status,\n"
-                                                  + "publication_start_datetime,\n"
-                                                  + "publication_end_datetime\n"
-                                                  + "FROM meta\n"
-                                                  + "WHERE meta_id = ?";
-    public static final String SQL_GET_SECTIONS_FOR_DOCUMENT = "SELECT s.section_id, s.section_name\n"
-            + " FROM sections s, meta_section ms, meta m\n"
-            + "where m.meta_id=ms.meta_id\n"
-            + "and m.meta_id=?\n"
-            + "and ms.section_id=s.section_id";
-    public static final String SQL_DELETE_ROLE_DOCUMENT_PERMISSION_SET_ID = "DELETE FROM roles_rights WHERE role_id = ? AND meta_id = ?";
-    public static final String SQL_SET_ROLE_DOCUMENT_PERMISSION_SET_ID = "INSERT INTO roles_rights (role_id, meta_id, set_id) VALUES(?,?,?)";
+    private LazilyLoadedObject sections;
 
-    public DefaultDocumentMapper() {
+    public DefaultDocumentMapper(ImcmsServices services, Database database) {
+        this.imcmsServices = services;
+        this.database = database;
+        setDocumentGetter(new FragmentingDocumentGetter(new DatabaseDocumentGetter(database, services)));
+        this.documentPermissionSetMapper = new DocumentPermissionSetMapper(database);
+        this.categoryMapper = new CategoryMapper(database);
+        documentSaver = new DocumentSaver(this);
+        initSections();
     }
 
-    public DefaultDocumentMapper(ImcmsServices services, Database database, DocumentGetter documentGetter,
-                                 DocumentPermissionSetMapper documentPermissionSetMapper, DocumentIndex documentIndex,
-                                 Clock clock, Config config, CategoryMapper categoryMapper) {
+    public void initSections() {
+        sections = new LazilyLoadedObject(new SectionsSetLoader());
+    }
 
-        this.database = database;
-        this.clock = clock;
-        this.imcmsServices = services;
-        this.documentPermissionSetMapper = documentPermissionSetMapper;
-        this.documentIndex = documentIndex;
-        int documentCacheMaxSize = config.getDocumentCacheMaxSize();
-        documentCache = Collections.synchronizedMap(new LRUMap(documentCacheMaxSize)) ;
-        setDocumentGetter(documentGetter);
-        this.categoryMapper = categoryMapper;
-        documentSaver = new DocumentSaver(this);
+    public void setDocumentCache(Cache documentCache) {
+        this.documentCache = documentCache ;
     }
 
     public void setDocumentGetter(DocumentGetter documentGetter) {
-        this.documentGetter = new CachingDocumentGetter(documentGetter, documentCache);
+        this.documentGetter = documentGetter;
     }
 
     public DocumentSaver getDocumentSaver() {
@@ -135,19 +113,19 @@ public class DefaultDocumentMapper implements DocumentMapper {
     }
 
     void setTemplateForNewTextDocument( TextDocumentDomainObject newTextDocument, UserDomainObject user,
-                                                final DocumentDomainObject parent ) {
+                                        final DocumentDomainObject parent ) {
         DocumentPermissionSetTypeDomainObject documentPermissionSetType = user.getDocumentPermissionSetTypeFor( parent );
-        TemplateDomainObject template = null;
+        Integer templateId = null;
         if ( DocumentPermissionSetTypeDomainObject.RESTRICTED_1.equals(documentPermissionSetType) ) {
-            template = ( (TextDocumentPermissionSetDomainObject)newTextDocument.getPermissionSetForRestrictedOneForNewDocuments() ).getDefaultTemplate();
+            templateId = newTextDocument.getDefaultTemplateIdForRestricted1();
         } else if ( DocumentPermissionSetTypeDomainObject.RESTRICTED_2.equals(documentPermissionSetType) ) {
-            template = ( (TextDocumentPermissionSetDomainObject)newTextDocument.getPermissionSetForRestrictedTwoForNewDocuments() ).getDefaultTemplate();
+            templateId = newTextDocument.getDefaultTemplateIdForRestricted2();
         }
-        if ( null == template && parent instanceof TextDocumentDomainObject ) {
-            template = ( (TextDocumentDomainObject)parent ).getDefaultTemplate();
+        if ( null == templateId && parent instanceof TextDocumentDomainObject ) {
+            templateId = ( (TextDocumentDomainObject)parent ).getDefaultTemplateId();
         }
-        if ( null != template ) {
-            newTextDocument.setTemplate( template );
+        if ( null != templateId ) {
+            newTextDocument.setTemplateId( templateId.intValue() );
         }
     }
 
@@ -175,35 +153,25 @@ public class DefaultDocumentMapper implements DocumentMapper {
     }
 
     public DocumentDomainObject getDocument(int documentId) {
-        return getDocument(new DocumentId(documentId)) ;
+        return getDocument(new Integer(documentId)) ;
     }
 
     public DocumentReference getDocumentReference(DocumentDomainObject document) {
         return getDocumentReference(document.getId());
     }
 
-    DocumentReference getDocumentReference(int childId) {
-        return new DocumentReference(childId, documentGetter);
+    public DocumentReference getDocumentReference(int childId) {
+        return new GetterDocumentReference(childId, documentGetter);
     }
 
     public SectionDomainObject getSectionById(int sectionId) {
-        String[] params = new String[]{"" + sectionId};
-        String sectionName = DatabaseUtils.executeStringQuery(getDatabase(), "SELECT section_name FROM sections WHERE section_id = ?", params);
-        if (null == sectionName) {
-            return null;
-        }
-        return new SectionDomainObject(sectionId, sectionName);
+        SectionsSet sectionsSet = (SectionsSet) sections.get();
+        return sectionsSet.getSectionById(sectionId) ;
     }
 
     public SectionDomainObject getSectionByName(String name) {
-        String[] params = new String[]{name};
-        String[] sectionSqlRow = DatabaseUtils.executeStringArrayQuery(getDatabase(), "SELECT section_id, section_name FROM sections WHERE section_name = ?", params);
-        if (0 == sectionSqlRow.length) {
-            return null;
-        }
-        int sectionId = Integer.parseInt(sectionSqlRow[0]);
-        String sectionName = sectionSqlRow[1];
-        return new SectionDomainObject(sectionId, sectionName);
+        SectionsSet sectionsSet = (SectionsSet) sections.get();
+        return sectionsSet.getSectionByName(name) ;
     }
 
     public void saveNewDocument(DocumentDomainObject document, UserDomainObject user)
@@ -225,7 +193,7 @@ public class DefaultDocumentMapper implements DocumentMapper {
 
     public void invalidateDocument(DocumentDomainObject document) {
         documentIndex.indexDocument(document);
-        documentCache.remove(new DocumentId(document.getId()));
+        documentCache.remove(new Integer(document.getId()));
     }
 
     public DocumentIndex getDocumentIndex() {
@@ -248,12 +216,6 @@ public class DefaultDocumentMapper implements DocumentMapper {
         String sqlStr = "SELECT mime FROM mime_types WHERE mime_id > 0 ORDER BY mime_id";
         String[] params = new String[]{};
         return DatabaseUtils.executeStringArrayQuery(getDatabase(), sqlStr, params);
-    }
-
-    public void addToMenu(TextDocumentDomainObject parentDocument, int parentMenuIndex,
-                          DocumentDomainObject documentToAddToMenu, UserDomainObject user) throws NoPermissionToEditDocumentException, NoPermissionToAddDocumentToMenuException {
-        parentDocument.getMenu(parentMenuIndex).addMenuItem(new MenuItemDomainObject(this.getDocumentReference(documentToAddToMenu)));
-        saveDocument(parentDocument, user);
     }
 
     public BrowserDocumentDomainObject.Browser[] getAllBrowsers() {
@@ -286,10 +248,10 @@ public class DefaultDocumentMapper implements DocumentMapper {
 
     public void deleteDocument(final DocumentDomainObject document, UserDomainObject user) {
         DatabaseCommand deleteDocumentCommand = createDeleteDocumentCommand(document);
-        getDatabase().executeCommand(deleteDocumentCommand);
+        getDatabase().execute(deleteDocumentCommand);
         document.accept(new DocumentDeletingVisitor());
         documentIndex.removeDocument(document);
-        documentCache.remove(new DocumentId(document.getId()));
+        documentCache.remove(new Integer(document.getId()));
     }
 
     private DatabaseCommand createDeleteDocumentCommand(final DocumentDomainObject document) {
@@ -414,7 +376,7 @@ public class DefaultDocumentMapper implements DocumentMapper {
         String copyHeadlineSuffix = imcmsServices.getAdminTemplate(COPY_HEADLINE_SUFFIX_TEMPLATE, user, null);
         selectedChild.setHeadline(selectedChild.getHeadline() + copyHeadlineSuffix);
         makeDocumentLookNew(selectedChild, user);
-        imcmsServices.getDefaultDocumentMapper().saveNewDocument(selectedChild, user);
+        saveNewDocument(selectedChild, user);
     }
 
     public List getDocumentsWithPermissionsForRole(RoleDomainObject role) {
@@ -433,7 +395,7 @@ public class DefaultDocumentMapper implements DocumentMapper {
         };
     }
 
-    public DocumentDomainObject getDocument(DocumentId documentId) {
+    public DocumentDomainObject getDocument(Integer documentId) {
         return documentGetter.getDocument(documentId);
     }
 
@@ -464,20 +426,29 @@ public class DefaultDocumentMapper implements DocumentMapper {
         return DatabaseUtils.executeStringArrayQuery(getDatabase(), "SELECT code FROM classification", params);
     }
 
-    public void setCategoryMapper(CategoryMapper categoryMapper) {
-        this.categoryMapper = categoryMapper;
-    }
-
     public void setClock(Clock clock) {
         this.clock = clock;
     }
 
-    public void setDatabase(Database database) {
-        this.database = database;
-    }
-
     public void setDocumentPermissionSetMapper(DocumentPermissionSetMapper documentPermissionSetMapper) {
         this.documentPermissionSetMapper = documentPermissionSetMapper;
+    }
+
+    public void setDocumentIndex(DocumentIndex documentIndex) {
+        this.documentIndex = documentIndex;
+    }
+
+    public List getDocuments(Collection documentIds) {
+        return documentGetter.getDocuments(documentIds) ;
+    }
+
+    public Set getSections(Collection sectionIds) {
+        Set sections = new HashSet() ;
+        for ( Iterator iterator = sectionIds.iterator(); iterator.hasNext(); ) {
+            Integer sectionId = (Integer) iterator.next();
+            sections.add(getSectionById(sectionId.intValue())) ;
+        }
+        return sections ;
     }
 
     public static class TextDocumentMenuIndexPair {
@@ -502,7 +473,7 @@ public class DefaultDocumentMapper implements DocumentMapper {
     private class DocumentsIterator implements Iterator {
 
         int[] documentIds;
-        int index = 0;
+        int index;
 
         DocumentsIterator(int[] documentIds) {
             this.documentIds = (int[]) documentIds.clone();
@@ -565,7 +536,7 @@ public class DefaultDocumentMapper implements DocumentMapper {
             boolean correctFileForFileDocumentFile = file.equals(DocumentSavingVisitor.getFileForFileDocumentFile(fileDocumentId, fileId));
             boolean fileDocumentHasFile = null != fileDocument.getFile(fileId);
             return super.accept(file, fileDocumentId, fileId)
-                    && (!correctFileForFileDocumentFile || !fileDocumentHasFile);
+                   && (!correctFileForFileDocumentFile || !fileDocumentHasFile);
         }
     }
 
@@ -578,4 +549,52 @@ public class DefaultDocumentMapper implements DocumentMapper {
         }
     }
 
+    private static class SectionsSet extends AbstractSet implements LazilyLoadedObject.Copyable {
+
+        private Map byId = new HashMap() ;
+        private Map byName = new HashMap() ;
+
+        public boolean add(Object o) {
+            SectionDomainObject section = (SectionDomainObject) o ;
+            byName.put(section.getName().toLowerCase(), section) ;
+            return null == byId.put(new Integer(section.getId()), section) ;
+        }
+
+        public int size() {
+            return byId.size() ;
+        }
+
+        public Iterator iterator() {
+            return byId.values().iterator() ;
+        }
+
+        public SectionDomainObject getSectionById(int sectionId) {
+            return (SectionDomainObject) byId.get(new Integer(sectionId)) ;
+        }
+
+        public SectionDomainObject getSectionByName(String name) {
+            return (SectionDomainObject) byName.get(name.toLowerCase()) ;
+        }
+
+        public LazilyLoadedObject.Copyable copy() {
+            return this ;
+        }
+    }
+
+    private class SectionsSetLoader implements LazilyLoadedObject.Loader {
+
+        public LazilyLoadedObject.Copyable load() {
+            return (SectionsSet) getDatabase().execute(new SqlQueryDatabaseCommand("SELECT section_id, section_name FROM sections", null, new CollectionResultSetHandler(new SectionsSet(), new RowTransformer() {
+                public Object createObjectFromResultSetRow(ResultSet rs) throws SQLException {
+                    int sectionId = rs.getInt(1);
+                    String sectionName = rs.getString(2) ;
+                    return new SectionDomainObject(sectionId, sectionName);
+                }
+
+                public Class getClassOfCreatedObjects() {
+                    return SectionDomainObject.class ;
+                }
+            }))) ;
+        }
+    }
 }

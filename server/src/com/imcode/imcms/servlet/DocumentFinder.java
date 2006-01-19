@@ -58,9 +58,9 @@ public class DocumentFinder extends WebComponent {
             booleanQuery.add( restrictingQuery, true, false );
         }
         if ( booleanQuery.getClauses().length > 0 ) {
-            DocumentDomainObject[] documentsFound = index.search( booleanQuery, Utility.getLoggedOnUser( request ) );
+            List documentsFound = index.search( booleanQuery, null, Utility.getLoggedOnUser( request ) );
             if (null != documentComparator) {
-                Arrays.sort(documentsFound, documentComparator) ;
+                Collections.sort(documentsFound, documentComparator) ;
             }
             page.setDocumentsFound( documentsFound );
         }

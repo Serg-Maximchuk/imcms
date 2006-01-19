@@ -52,7 +52,6 @@ public class Utility {
 
    private final static Logger log = Logger.getLogger( Utility.class.getName() );
 
-    private final static String NO_PERMISSION_URL = "no_permission.jsp";
     private final static String CONTENT_MANAGEMENT_SYSTEM_REQUEST_ATTRIBUTE = "com.imcode.imcms.ImcmsSystem";
 
     private final static LocalizedMessage ERROR__NO_PERMISSION = new LocalizedMessage("templates/login/no_permission.html/4");
@@ -338,6 +337,10 @@ public class Utility {
         return Long.toString(identityHashCode,Character.MAX_RADIX);
     }
 
+    public static Integer getInteger(Object object) {
+        return null == object ? null : new Integer(( (Number) object ).intValue());
+    }
+
     private static class ObjectPairToMapEntryTransformer implements Transformer {
         public Object transform(Object input) {
             final Object[] pair = (Object[])input ;
@@ -423,4 +426,5 @@ public class Utility {
     public static ContentManagementSystem getContentManagementSystemFromRequest(ServletRequest request) {
         return (ContentManagementSystem)request.getAttribute( CONTENT_MANAGEMENT_SYSTEM_REQUEST_ATTRIBUTE );
     }
+
 }

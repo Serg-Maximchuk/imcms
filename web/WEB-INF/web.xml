@@ -107,6 +107,11 @@
     </servlet>
 
     <servlet>
+        <servlet-name>com.imcode.imcms.servlet.admin.DatabaseBenchmark</servlet-name>
+        <servlet-class>com.imcode.imcms.servlet.admin.DatabaseBenchmark</servlet-class>
+    </servlet>
+    
+    <servlet>
         <servlet-name>com.imcode.imcms.servlet.admin.DocumentPageFlowDispatcher</servlet-name>
         <servlet-class>com.imcode.imcms.servlet.admin.DocumentPageFlowDispatcher</servlet-class>
     </servlet>
@@ -334,6 +339,11 @@
     <servlet-mapping>
         <servlet-name>com.imcode.imcms.servlet.admin.ChangeText</servlet-name>
         <url-pattern>/servlet/ChangeText</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>com.imcode.imcms.servlet.admin.DatabaseBenchmark</servlet-name>
+        <url-pattern>/servlet/DatabaseBenchmark</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

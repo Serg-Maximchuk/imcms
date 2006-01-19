@@ -68,7 +68,7 @@ public class SearchDocumentsPage extends OkCancelPage {
     private Date endDate;
     private String sortOrder;
 
-    private DocumentDomainObject[] documentsFound;
+    private List documentsFound;
     private int firstDocumentIndex;
     private int documentsPerPage = DEFAULT_DOCUMENTS_PER_PAGE;
     private DocumentDomainObject selectedDocument;
@@ -320,11 +320,11 @@ public class SearchDocumentsPage extends OkCancelPage {
         return Collections.unmodifiableSet( sections );
     }
 
-    public DocumentDomainObject[] getDocumentsFound() {
+    public List getDocumentsFound() {
         return documentsFound;
     }
 
-    public void setDocumentsFound( DocumentDomainObject[] documentsFound ) {
+    public void setDocumentsFound( List documentsFound ) {
         this.documentsFound = documentsFound;
     }
 

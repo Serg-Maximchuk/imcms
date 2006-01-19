@@ -26,15 +26,15 @@ LI { padding-bottom:5; }
 	<td valign="top">
 	<table border="0" cellspacing="0" cellpadding="0" width="760">
 	<tr>
-		<td colspan="5"><?imcms:include
-		url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoTop"?></td>
+		<td colspan="5"><!-- ?imcms:include
+		url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoTop"? --></td>
 	</tr>
 	<tr>
 		<td colspan="5" height="15">&nbsp;</td>
 	</tr>
 	<tr valign="top">
-		<td width="200"><?imcms:include
-		url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoLeft"?></td>
+		<td width="200"><!-- ?imcms:include
+		url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoLeft"?--></td>
 
 		<td width="15">&nbsp;</td>
 
@@ -48,9 +48,9 @@ LI { padding-bottom:5; }
 		<ul><?imcms:menuloop?>
 			<li style="padding-bottom:5">#menuitemlink##menuitemheadline##/menuitemlink#<?/imcms:menuloop?>
 		</ul>
-		<?/imcms:menu?><?imcms:include
+		<?/imcms:menu?><!--?imcms:include
 
-		url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoContent" pre='<hr>' post='<hr>'?><?imcms:image
+		url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoContent" pre='<hr>' post='<hr>'?--><?imcms:image
 		no='3' label='Bild' pre='<br><br>' post='<br>'?><br>
 		<?imcms:include no='1' label='Dynamisk inkludering 1'?></td>
 

@@ -7,6 +7,8 @@ import imcode.server.document.index.IndexException;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.server.user.UserDomainObject;
 
+import java.util.List;
+
 public class DocumentService {
 
     private final ContentManagementSystem contentManagementSystem;
@@ -197,7 +199,8 @@ public class DocumentService {
 
     public Document[] search( SearchQuery query ) throws SearchException {
         try {
-            DocumentDomainObject[] documentDomainObjects = getDocumentMapper().getDocumentIndex().search( query.getQuery(), contentManagementSystem.getCurrentUser().getInternal() );
+            List documentList = getDocumentMapper().getDocumentIndex().search(query.getQuery(), null, contentManagementSystem.getCurrentUser().getInternal());
+            DocumentDomainObject[] documentDomainObjects = (DocumentDomainObject[]) documentList.toArray(new DocumentDomainObject[documentList.size()]);
             Document[] documents = new Document[documentDomainObjects.length];
             for ( int i = 0; i < documentDomainObjects.length; i++ ) {
                 DocumentDomainObject documentDomainObject = documentDomainObjects[i];
