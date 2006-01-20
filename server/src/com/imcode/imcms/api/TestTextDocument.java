@@ -38,7 +38,7 @@ public class TestTextDocument extends TestCase {
         otherTextDocumentDO.setId( 1002 );
         otherTextDocumentDO.setLinkableByOtherUsers( true );
         int menuIndex = 1;
-        DocumentReference documentReference = new MockDocumentReference( otherTextDocumentDO );
+        DocumentReference documentReference = new DirectDocumentReference( otherTextDocumentDO );
         MenuDomainObject menuDO = textDocumentDO.getMenu( menuIndex );
         menuDO.addMenuItem( new MenuItemDomainObject(documentReference) );
         contentManagementSystem = new MockContentManagementSystem();
@@ -169,20 +169,6 @@ public class TestTextDocument extends TestCase {
     private void publish(DocumentDomainObject document) {
         document.setPublicationStatus( Document.PublicationStatus.APPROVED );
         document.setPublicationStartDatetime( new Date( 0 ) );
-    }
-
-    private static class MockDocumentReference extends GetterDocumentReference {
-
-        private final DocumentDomainObject document;
-
-        MockDocumentReference( DocumentDomainObject document ) {
-            super( document.getId(), null );
-            this.document = document;
-        }
-
-        public DocumentDomainObject getDocument() {
-            return document ;
-        }
     }
 
 }

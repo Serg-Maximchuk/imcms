@@ -33,6 +33,8 @@ public class TextDocumentDomainObject extends DocumentDomainObject {
     }
 
     public void loadAllLazilyLoaded() {
+        super.loadAllLazilyLoaded();
+               
         texts.load();
         images.load();
         includes.load();

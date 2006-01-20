@@ -1,24 +1,25 @@
 package com.imcode.imcms.mapping;
 
-import imcode.server.document.textdocument.*;
-import imcode.server.document.GetterDocumentReference;
-import imcode.server.document.DocumentDomainObject;
+import com.imcode.db.Database;
+import com.imcode.db.commands.SqlQueryDatabaseCommand;
 import imcode.server.document.DirectDocumentReference;
+import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentGetter;
+import imcode.server.document.GetterDocumentReference;
+import imcode.server.document.textdocument.*;
 import imcode.util.LazilyLoadedObject;
 import imcode.util.Utility;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Collection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import com.imcode.db.commands.SqlQueryDatabaseCommand;
-import com.imcode.db.Database;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class TextDocumentInitializer {
 
@@ -72,6 +73,8 @@ public class TextDocumentInitializer {
                 documentsMenuItems = new HashMap();
                 StringBuffer sql = new StringBuffer(SQL_GET_MENU_ITEMS);
                 Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
+                final Set destinationDocumentIds = new HashSet();
+                final BatchDocumentGetter batchDocumentGetter = new BatchDocumentGetter(destinationDocumentIds, documentGetter);
                 database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
@@ -79,10 +82,10 @@ public class TextDocumentInitializer {
                             int menuId = rs.getInt(2);
                             int menuIndex = rs.getInt(3);
                             int menuSortOrder = rs.getInt(4);
-                            int destinationDocumentId = rs.getInt(5);
-                            Number sortKey = (Number) rs.getObject(6);
-                            Integer sortKeyInt = null == sortKey ? null : new Integer(sortKey.intValue());
+                            Integer destinationDocumentId = new Integer(rs.getInt(5));
+                            Integer sortKey = Utility.getInteger(rs.getObject(6));
 
+                            destinationDocumentIds.add(destinationDocumentId) ;
                             Map documentMenus = (Map) documentsMenuItems.get(new Integer(documentId));
                             if ( null == documentMenus ) {
                                 documentMenus = new DocumentMenusMap();
@@ -94,15 +97,14 @@ public class TextDocumentInitializer {
                                 menu = new MenuDomainObject(menuId, menuSortOrder);
                                 documentMenus.put(new Integer(menuIndex), menu);
                             }
-                            MenuItemDomainObject menuItem = new MenuItemDomainObject(new GetterDocumentReference(destinationDocumentId, documentGetter), sortKeyInt, new TreeSortKeyDomainObject(rs.getString(7)));
-                            menu.addMenuItem(menuItem);
+                            MenuItemDomainObject menuItem = new MenuItemDomainObject(new GetterDocumentReference(destinationDocumentId.intValue(), batchDocumentGetter), sortKey, new TreeSortKeyDomainObject(rs.getString(7)));
+                            menu.addMenuItemUnchecked(menuItem);
                         }
                         return null;
                     }
                 }));
             }
         }
-
     }
 
     private class IncludesLoader implements LazilyLoadedObject.Loader {
