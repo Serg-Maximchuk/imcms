@@ -2,8 +2,8 @@ package com.imcode.imcms.db;
 
 import com.imcode.db.Database;
 import com.imcode.db.DatabaseException;
-import com.imcode.db.commands.SqlQueryDatabaseCommand;
 import com.imcode.db.commands.SqlUpdateDatabaseCommand;
+import com.imcode.db.commands.SqlQueryCommand;
 import imcode.util.CachingFileLoader;
 import imcode.util.io.FileUtility;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -37,7 +37,7 @@ public class DefaultProcedureExecutor implements ProcedureExecutor {
         Object[] parametersAtCorrectIndices = getParametersAtCorrectIndicesForProcedure( procedure, parameters );
         String body = procedure.getBody();
         logProcedureCall(procedureName, body, parametersAtCorrectIndices);
-        return ((Integer)database.executeCommand(new SqlUpdateDatabaseCommand(body, parametersAtCorrectIndices))).intValue() ;
+        return ( (Integer) database.execute(new SqlUpdateDatabaseCommand(body, parametersAtCorrectIndices)) ).intValue() ;
     }
 
     private void logProcedureCall(String procedureName, String body, Object[] parametersAtCorrectIndices) {
@@ -51,7 +51,7 @@ public class DefaultProcedureExecutor implements ProcedureExecutor {
         Object[] parametersAtCorrectIndices = getParametersAtCorrectIndicesForProcedure( procedure, params );
         String body = procedure.getBody();
         logProcedureCall(procedureName, body, parametersAtCorrectIndices);
-        return database.executeCommand(new SqlQueryDatabaseCommand(body, parametersAtCorrectIndices, resultSetHandler)) ;
+        return database.execute(new SqlQueryCommand(body, parametersAtCorrectIndices, resultSetHandler));
     }
 
     private Object[] getParametersAtCorrectIndicesForProcedure( Procedure procedure, Object[] parameters ) {

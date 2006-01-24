@@ -12,6 +12,7 @@ import org.apache.commons.collections.SetUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

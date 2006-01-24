@@ -1,8 +1,8 @@
 package com.imcode.imcms.servlet.superadmin;
 
 import com.imcode.db.commands.DeleteWhereColumnsEqualDatabaseCommand;
+import com.imcode.db.commands.SqlUpdateCommand;
 import com.imcode.db.handlers.ObjectFromFirstRowResultSetHandler;
-import com.imcode.imcms.db.DatabaseUtils;
 import com.imcode.imcms.db.StringArrayArrayResultSetHandler;
 import com.imcode.imcms.db.StringFromRowFactory;
 import imcode.server.Imcms;
@@ -157,7 +157,7 @@ public class AdminSection extends HttpServlet {
             } else {
                 final Object[] parameters = new String[] {new_sections,
                                                                                             del_section};
-                DatabaseUtils.executeUpdate(imcref.getDatabase(), "update meta_section set section_id = ? where section_id = ?", parameters);
+                ((Integer)imcref.getDatabase().execute( new SqlUpdateCommand( "update meta_section set section_id = ? where section_id = ?", parameters ) )).intValue();
                 deleteSection( imcref, del_section );
             }
         }

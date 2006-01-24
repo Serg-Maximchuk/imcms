@@ -103,7 +103,7 @@ public class SearchDocumentsPage extends OkCancelPage {
         firstDocumentIndex = Math.max( 0, NumberUtils.stringToInt( request.getParameter( REQUEST_PARAMETER__FIRST_DOCUMENT_INDEX ) ) );
 
         boolean gotNewFirstDocumentIndex = Utility.parameterIsSet( request, REQUEST_PARAMETER__FIRST_DOCUMENT_INDEX );
-        boolean notBrowsingResultList = !gotNewFirstDocumentIndex;
+        boolean notBrowsingResultList = !gotNewFirstDocumentIndex || documentsFound == null ;
         if ( notBrowsingResultList ) {
             try {
                 sections.clear();
@@ -120,8 +120,6 @@ public class SearchDocumentsPage extends OkCancelPage {
 
             documentTypeIds = Utility.getParameterInts(request, REQUEST_PARAMETER__DOCUMENT_TYPE_ID);
         }
-
-
 
         String userDocumentsRestrictionParameter = request.getParameter( REQUEST_PARAMETER__USER_RESTRICTION );
         if ( null != userDocumentsRestrictionParameter ) {

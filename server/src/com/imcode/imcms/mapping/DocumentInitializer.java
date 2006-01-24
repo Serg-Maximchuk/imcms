@@ -1,7 +1,7 @@
 package com.imcode.imcms.mapping;
 
 import com.imcode.db.Database;
-import com.imcode.db.commands.SqlQueryDatabaseCommand;
+import com.imcode.db.commands.SqlQueryCommand;
 import com.imcode.util.CountingIterator;
 import imcode.server.ImcmsConstants;
 import imcode.server.document.*;
@@ -111,7 +111,7 @@ public class DocumentInitializer {
             documentsSectionIds = new MultiHashMap();
             StringBuffer sql = new StringBuffer(SQL_GET_SECTION_IDS_FOR_DOCUMENT);
             Integer[] parameters = appendInClause(sql, documentIds);
-            database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+            database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                 public Object handle(ResultSet rs) throws SQLException {
                     while ( rs.next() ) {
                         int documentId = rs.getInt(1);
@@ -151,7 +151,7 @@ public class DocumentInitializer {
             documentsKeywords = new MultiHashMap();
             StringBuffer sql = new StringBuffer(SQL_GET_KEYWORDS);
             Integer[] parameters = appendInClause(sql, documentIds);
-            database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+            database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                 public Object handle(ResultSet rs) throws SQLException {
                     while ( rs.next() ) {
                         int documentId = rs.getInt(1);
@@ -190,7 +190,7 @@ public class DocumentInitializer {
             documentsCategoryIds = new MultiHashMap();
             StringBuffer sql = new StringBuffer(CategoryMapper.SQL__GET_DOCUMENT_CATEGORIES);
             Integer[] parameters = appendInClause(sql, documentIds);
-            database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+            database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                 public Object handle(ResultSet rs) throws SQLException {
                     while ( rs.next() ) {
                         int documentId = rs.getInt(1);
@@ -235,7 +235,7 @@ public class DocumentInitializer {
                                                 + "WHERE meta_id ");
             Integer[] parameters = appendInClause(sql, documentIds);
 
-            database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+            database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                 public Object handle(ResultSet rs) throws SQLException {
                     while ( rs.next() ) {
                         Integer documentId = new Integer(rs.getInt(1));
@@ -294,7 +294,7 @@ public class DocumentInitializer {
                     + "LEFT JOIN "+(forNew ? "new_": "")+"doc_permission_sets_ex de ON d.meta_id = de.meta_id AND d.set_id = de.set_id\n"
                     + "WHERE d.meta_id ");
             Integer[] parameters = appendInClause(sql, documentIds);
-            database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+            database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                 public Object handle(ResultSet resultSet) throws SQLException {
                     while ( resultSet.next() ) {
                         Integer documentId = new Integer(resultSet.getInt(1));
@@ -304,13 +304,13 @@ public class DocumentInitializer {
                         Integer permissionData = Utility.getInteger(resultSet.getObject(5));
 
                         DocumentPermissionSets permissionSets = (DocumentPermissionSets) documentsPermissionSets.get(documentId);
-                        if (null == permissionSets) {
+                        if ( null == permissionSets ) {
                             permissionSets = new DocumentPermissionSets();
-                            documentsPermissionSets.put(documentId,permissionSets) ;
+                            documentsPermissionSets.put(documentId, permissionSets);
                         }
 
                         DocumentPermissionSetDomainObject restricted = permissionSets.getRestricted(setId);
-                        if (0 != permissionSetBits && restricted.isEmpty()) {
+                        if ( 0 != permissionSetBits && restricted.isEmpty() ) {
                             restricted.setFromBits(permissionSetBits);
                         }
                         setPermissionData(restricted, permissionId, permissionData);

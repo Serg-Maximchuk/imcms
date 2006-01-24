@@ -4,7 +4,7 @@ import com.imcode.db.Database;
 import com.imcode.db.DatabaseConnection;
 import com.imcode.db.DatabaseException;
 import com.imcode.db.commands.TransactionDatabaseCommand;
-import com.imcode.imcms.db.DatabaseUtils;
+import com.imcode.db.commands.SqlUpdateCommand;
 import imcode.server.document.*;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.server.user.UserDomainObject;
@@ -102,7 +102,7 @@ public class DocumentPermissionSetMapper {
                     ""
                     + allowedTemplateGroupId.intValue()
             };
-            DatabaseUtils.executeUpdate(database, sqlInsertAllowedTemplateGroupId, parameters);
+            ((Integer)database.execute( new SqlUpdateCommand( sqlInsertAllowedTemplateGroupId, parameters ) )).intValue();
         }
     }
 
@@ -133,7 +133,7 @@ public class DocumentPermissionSetMapper {
                     ""
                     + allowedDocumentTypeId.intValue()
             };
-            DatabaseUtils.executeUpdate(database, sqlInsertCreatableDocumentTypeId, parameters);
+            ((Integer)database.execute( new SqlUpdateCommand( sqlInsertCreatableDocumentTypeId, parameters ) )).intValue();
         }
     }
 

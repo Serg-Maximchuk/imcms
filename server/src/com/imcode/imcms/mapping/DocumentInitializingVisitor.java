@@ -2,11 +2,11 @@ package com.imcode.imcms.mapping;
 
 import com.imcode.db.Database;
 import com.imcode.db.DatabaseException;
-import com.imcode.db.commands.SqlQueryDatabaseCommand;
-import com.imcode.imcms.db.DatabaseUtils;
+import com.imcode.db.commands.SqlQueryCommand;
 import imcode.server.document.*;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.util.io.FileInputStreamSource;
+import imcode.util.Utility;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.UnhandledException;
 
@@ -35,7 +35,7 @@ class DocumentInitializingVisitor extends DocumentVisitor {
         try {
             String[] parameters = new String[] { "" + document.getId() };
             String sqlStr = "SELECT to_meta_id, browser_id FROM browser_docs WHERE meta_id = ?";
-            sqlResult = DatabaseUtils.execute2dStringArrayQuery(database, sqlStr, parameters);
+            sqlResult = (String[][]) database.execute(new SqlQueryCommand(sqlStr, parameters, Utility.STRING_ARRAY_ARRAY_HANDLER));
         } catch ( DatabaseException e ) {
             throw new UnhandledException(e);
         }
@@ -49,8 +49,9 @@ class DocumentInitializingVisitor extends DocumentVisitor {
     }
 
     public void visitFileDocument(final FileDocumentDomainObject document) {
-        database.execute(new SqlQueryDatabaseCommand(SQL__SELECT_FILE_DOCUMENT_FILES, new String[] {
-                "" + document.getId() }, new ResultSetHandler() {
+        Object[] parameters = new String[] {
+                "" + document.getId() };
+        database.execute(new SqlQueryCommand(SQL__SELECT_FILE_DOCUMENT_FILES, parameters, new ResultSetHandler() {
             public Object handle(ResultSet resultSet) throws SQLException {
                 while ( resultSet.next() ) {
                     String fileId = resultSet.getString(1);
@@ -84,7 +85,7 @@ class DocumentInitializingVisitor extends DocumentVisitor {
         try {
             String[] parameters = new String[] { "" + htmlDocument.getId() };
             String sqlStr = "SELECT frame_set FROM frameset_docs WHERE meta_id = ?";
-            html = DatabaseUtils.executeStringQuery(database, sqlStr, parameters);
+            html = (String) database.execute(new SqlQueryCommand(sqlStr, parameters, Utility.SINGLE_STRING_HANDLER));
         } catch ( DatabaseException e ) {
             throw new UnhandledException(e);
         }
@@ -95,7 +96,7 @@ class DocumentInitializingVisitor extends DocumentVisitor {
         String url;
         try {
             String[] parameters = new String[] { "" + document.getId() };
-            url = DatabaseUtils.executeStringQuery(database, "SELECT url_ref FROM url_docs WHERE meta_id = ?", parameters);
+            url = (String) database.execute(new SqlQueryCommand("SELECT url_ref FROM url_docs WHERE meta_id = ?", parameters, Utility.SINGLE_STRING_HANDLER));
         } catch ( DatabaseException e ) {
             throw new UnhandledException(e);
         }

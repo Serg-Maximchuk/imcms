@@ -30,6 +30,6 @@ public class DocumentIndexWrapper implements DocumentIndex {
     }
 
     public List search(Query query, Sort sort, UserDomainObject searchingUser) throws IndexException {
-        return index.search(query, null, searchingUser) ;
+        return index.search(query, sort, searchingUser) ;
     }
 }

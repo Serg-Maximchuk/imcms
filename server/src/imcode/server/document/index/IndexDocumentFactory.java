@@ -101,6 +101,8 @@ public class IndexDocumentFactory {
                           + "' of document "
                           + documentId, re );
             }
+        } else {
+            indexDocument.add( unStoredKeyword( fieldName, DateField.MIN_DATE_STRING() ));
         }
     }
 

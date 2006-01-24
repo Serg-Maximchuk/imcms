@@ -1,7 +1,7 @@
 package com.imcode.imcms.mapping;
 
 import com.imcode.db.Database;
-import com.imcode.db.commands.SqlQueryDatabaseCommand;
+import com.imcode.db.commands.SqlQueryCommand;
 import imcode.server.document.DirectDocumentReference;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentGetter;
@@ -75,7 +75,7 @@ public class TextDocumentInitializer {
                 Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
                 final Set destinationDocumentIds = new HashSet();
                 final BatchDocumentGetter batchDocumentGetter = new BatchDocumentGetter(destinationDocumentIds, documentGetter);
-                database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+                database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
                             int documentId = rs.getInt(1);
@@ -85,7 +85,7 @@ public class TextDocumentInitializer {
                             Integer destinationDocumentId = new Integer(rs.getInt(5));
                             Integer sortKey = Utility.getInteger(rs.getObject(6));
 
-                            destinationDocumentIds.add(destinationDocumentId) ;
+                            destinationDocumentIds.add(destinationDocumentId);
                             Map documentMenus = (Map) documentsMenuItems.get(new Integer(documentId));
                             if ( null == documentMenus ) {
                                 documentMenus = new DocumentMenusMap();
@@ -129,7 +129,7 @@ public class TextDocumentInitializer {
                 documentsIncludes = new HashMap();
                 StringBuffer sql = new StringBuffer("SELECT meta_id, include_id, included_meta_id FROM includes WHERE meta_id ");
                 Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
-                database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+                database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
                             Integer documentId = new Integer(rs.getInt(1));
@@ -176,7 +176,7 @@ public class TextDocumentInitializer {
                                                     + "target,align,alt_text,low_scr,linkurl,type "
                                                     + "FROM images WHERE meta_id ");
                 Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
-                database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+                database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
                             Integer documentId = new Integer(rs.getInt(1));
@@ -251,7 +251,7 @@ public class TextDocumentInitializer {
                 documentsTexts = new HashMap();
                 StringBuffer sql = new StringBuffer("SELECT meta_id, name, text, type FROM texts WHERE meta_id ");
                 Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
-                database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+                database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
                             Integer documentId = new Integer(rs.getInt(1));
@@ -295,7 +295,7 @@ public class TextDocumentInitializer {
                 documentsTemplateIds = new HashMap();
                 StringBuffer sql = new StringBuffer("SELECT meta_id, template_id, group_id, default_template, default_template_1, default_template_2 FROM text_docs WHERE meta_id ");
                 Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
-                database.execute(new SqlQueryDatabaseCommand(sql.toString(), parameters, new ResultSetHandler() {
+                database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {
                         while ( rs.next() ) {
                             Integer documentId = new Integer(rs.getInt(1));

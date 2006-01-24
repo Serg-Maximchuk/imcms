@@ -1,7 +1,7 @@
 package com.imcode.imcms.mapping;
 
 import com.imcode.db.Database;
-import com.imcode.imcms.db.DatabaseUtils;
+import com.imcode.db.commands.SqlUpdateCommand;
 import imcode.server.ImcmsServices;
 import imcode.server.document.*;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
@@ -20,7 +20,7 @@ public class DocumentCreatingVisitor extends DocumentStoringVisitor {
         final Object[] parameters = new String[] {
                                              "" + document.getId(), document.getHtml()
                                              };
-        DatabaseUtils.executeUpdate(database, sqlUrlDocsInsertStr, parameters);
+        ((Integer)database.execute( new SqlUpdateCommand( sqlUrlDocsInsertStr, parameters ) )).intValue();
     }
 
     public void visitUrlDocument( UrlDocumentDomainObject document ) {
@@ -31,7 +31,7 @@ public class DocumentCreatingVisitor extends DocumentStoringVisitor {
         final Object[] parameters = new String[] {
                                              "" + document.getId(), "", "", document.getUrl(), "", ""
                                              };
-        DatabaseUtils.executeUpdate(database, sqlUrlDocsInsertStr, parameters);
+        ((Integer)database.execute( new SqlUpdateCommand( sqlUrlDocsInsertStr, parameters ) )).intValue();
     }
 
     public void visitTextDocument( final TextDocumentDomainObject textDocument ) {
@@ -52,7 +52,7 @@ public class DocumentCreatingVisitor extends DocumentStoringVisitor {
                 null != defaultTemplateForRestricted2
                 ? "" + defaultTemplateForRestricted2 : "-1",
                 };
-        DatabaseUtils.executeUpdate(database, sqlTextDocsInsertStr, parameters);
+        ((Integer)database.execute( new SqlUpdateCommand( sqlTextDocsInsertStr, parameters ) )).intValue();
         updateTextDocumentTexts( textDocument );
         updateTextDocumentImages( textDocument );
         updateTextDocumentIncludes( textDocument );

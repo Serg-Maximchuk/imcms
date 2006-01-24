@@ -2,10 +2,8 @@ package imcode.util;
 
 import org.apache.commons.collections.map.AbstractMapDecorator;
 
-import java.util.Map;
 import java.util.List;
-
-import imcode.util.FrequencyOrderedBag;
+import java.util.Map;
 
 public class LfuMap extends AbstractMapDecorator {
 

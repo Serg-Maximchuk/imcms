@@ -1,7 +1,7 @@
 package com.imcode.imcms.mapping;
 
 import com.imcode.db.Database;
-import com.imcode.imcms.db.DatabaseUtils;
+import com.imcode.db.commands.SqlUpdateCommand;
 import imcode.server.ImcmsServices;
 import imcode.server.document.*;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
@@ -19,13 +19,13 @@ public class DocumentSavingVisitor extends DocumentStoringVisitor {
     public void visitHtmlDocument( HtmlDocumentDomainObject htmlDocument ) {
         String sqlStr = "UPDATE frameset_docs SET frame_set = ? WHERE meta_id = ?";
         final Object[] parameters = new String[]{htmlDocument.getHtml(), "" + htmlDocument.getId()};
-        DatabaseUtils.executeUpdate(database, sqlStr, parameters);
+        ((Integer)database.execute( new SqlUpdateCommand( sqlStr, parameters ) )).intValue();
     }
 
     public void visitUrlDocument( UrlDocumentDomainObject urlDocument ) {
         String sqlStr = "UPDATE url_docs SET url_ref = ? WHERE meta_id = ?";
         final Object[] parameters = new String[]{urlDocument.getUrl(), "" + urlDocument.getId()};
-        DatabaseUtils.executeUpdate(database, sqlStr, parameters);
+        ((Integer)database.execute( new SqlUpdateCommand( sqlStr, parameters ) )).intValue();
     }
 
     public void visitTextDocument( final TextDocumentDomainObject textDocument ) {
@@ -46,7 +46,7 @@ public class DocumentSavingVisitor extends DocumentStoringVisitor {
             null != defaultTemplateIdForRestricted2 ? "" + defaultTemplateIdForRestricted2 : "-1",
             "" + textDocument.getId()
         };
-        DatabaseUtils.executeUpdate(database, sqlStr, parameters);
+        ((Integer)database.execute( new SqlUpdateCommand( sqlStr, parameters ) )).intValue();
 
         updateTextDocumentTexts( textDocument );
         updateTextDocumentImages( textDocument );

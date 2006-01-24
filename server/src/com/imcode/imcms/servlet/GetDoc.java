@@ -1,7 +1,7 @@
 package com.imcode.imcms.servlet;
 
-import com.imcode.imcms.db.DatabaseUtils;
 import com.imcode.imcms.mapping.DocumentMapper;
+import com.imcode.db.commands.SqlQueryCommand;
 import imcode.server.*;
 import imcode.server.document.BrowserDocumentDomainObject;
 import imcode.server.document.DocumentDomainObject;
@@ -163,10 +163,10 @@ public class GetDoc extends HttpServlet {
                 br_id = "";
             }
             final Object[] parameters = new String[] { "" + meta_id, br_id };
-            String destinationMetaId = DatabaseUtils.executeStringQuery(imcref.getDatabase(), "select to_meta_id\n"
-                                                                                              + "from browser_docs\n"
-                                                                                              + "join browsers on browsers.browser_id = browser_docs.browser_id\n"
-                                                                                              + "where meta_id = ? and ? like user_agent order by value desc", parameters);
+            String destinationMetaId = (String) imcref.getDatabase().execute(new SqlQueryCommand("select to_meta_id\n"
+                                                                                                 + "from browser_docs\n"
+                                                                                                 + "join browsers on browsers.browser_id = browser_docs.browser_id\n"
+                                                                                                 + "where meta_id = ? and ? like user_agent order by value desc", parameters, Utility.SINGLE_STRING_HANDLER));
             int toMetaId;
             if ( destinationMetaId != null && !"".equals(destinationMetaId) ) {
                 toMetaId = Integer.parseInt(destinationMetaId);

@@ -152,7 +152,7 @@ public class RebuildingDirectoryIndex implements DocumentIndex {
     public List search(Query query,
                        Sort sort, UserDomainObject searchingUser) throws IndexException {
         try {
-            List documents = index.search(query, null, searchingUser);
+            List documents = index.search(query, sort, searchingUser);
             if ( index.isInconsistent() ) {
                 rebuildBecauseOfError("Index is inconsistent.", null);
             }

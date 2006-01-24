@@ -57,12 +57,14 @@ class DefaultDirectoryIndex implements DirectoryIndex {
             try {
                 StopWatch searchStopWatch = new StopWatch();
                 searchStopWatch.start();
-                Hits hits = indexSearcher.search( query );
+                Hits hits = indexSearcher.search( query, sort );
                 long searchTime = searchStopWatch.getTime();
                 List documentList = getDocumentListForHits( hits, searchingUser );
-                log.debug( "Search for " + query.toString() + ": " + searchTime + "ms. Total: "
+                if (log.isTraceEnabled()) {
+                    log.trace( "Search for " + query.toString() + ": " + searchTime + "ms. Total: "
                            + searchStopWatch.getTime()
                            + "ms." );
+                }
                 return documentList ;
             } finally {
                 indexSearcher.close();
@@ -82,7 +84,7 @@ class DefaultDirectoryIndex implements DirectoryIndex {
 
     private List getDocumentListForHits( final Hits hits, final UserDomainObject searchingUser ) {
         DocumentGetter documentGetter = Imcms.getServices().getDocumentMapper().getDocumentGetter();
-        List documentIds = new DocumentIdHitsLists(hits) ;
+        List documentIds = new DocumentIdHitsList(hits) ;
         List documentList = documentGetter.getDocuments(documentIds) ;
         if (documentList.size() != hits.length()) {
             inconsistent = true ;
@@ -228,11 +230,11 @@ class DefaultDirectoryIndex implements DirectoryIndex {
         return directory.hashCode();
     }
 
-    private static class DocumentIdHitsLists extends AbstractList {
+    private static class DocumentIdHitsList extends AbstractList {
 
         private final Hits hits;
 
-        public DocumentIdHitsLists(Hits hits) {
+        DocumentIdHitsList(Hits hits) {
             this.hits = hits;
         }
 
