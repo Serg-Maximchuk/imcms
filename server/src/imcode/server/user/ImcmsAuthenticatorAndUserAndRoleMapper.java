@@ -398,19 +398,6 @@ public class ImcmsAuthenticatorAndUserAndRoleMapper implements UserAndRoleRegist
         }
     }
 
-    public void addPhoneNumber(final int newUserId, final String phoneNumber, final int phoneNumberType
-    ) {
-        try {
-            services.getDatabase().executeCommand(new InsertIntoTableDatabaseCommand("phones", new String[][] {
-                    { "user_id", "" + newUserId },
-                    { "number", phoneNumber },
-                    { "phonetype_id", "" + phoneNumberType }
-            }));
-        } catch ( DatabaseException e ) {
-            throw new UnhandledException(e);
-        }
-    }
-
     public synchronized RoleDomainObject addRole(String roleName) {
         RoleDomainObject role = getRoleByName(roleName);
         if ( null == role ) {
@@ -667,7 +654,4 @@ public class ImcmsAuthenticatorAndUserAndRoleMapper implements UserAndRoleRegist
         return null;
     }
 
-    public UserDomainObject verifyUserByIp(String remoteAddr) {
-        return null;
-    }
 }

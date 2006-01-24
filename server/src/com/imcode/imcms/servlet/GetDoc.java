@@ -97,7 +97,7 @@ public class GetDoc extends HttpServlet {
             history.push(meta_int);
         }
 
-        DocumentMapper documentMapper = imcref.getDefaultDocumentMapper();
+        DocumentMapper documentMapper = imcref.getDocumentMapper();
         DocumentDomainObject document = documentMapper.getDocument(meta_id);
         if ( null == document ) {
             return getDocumentDoesNotExistPage(res, user);

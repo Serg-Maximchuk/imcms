@@ -8,7 +8,7 @@ import com.imcode.imcms.db.DefaultProcedureExecutor;
 import com.imcode.imcms.db.ProcedureExecutor;
 import com.imcode.imcms.db.StringArrayArrayResultSetHandler;
 import com.imcode.imcms.mapping.CategoryMapper;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.DocumentTypeDomainObject;
 import imcode.server.document.TemplateMapper;
@@ -17,12 +17,11 @@ import imcode.server.document.index.IndexDocumentFactory;
 import imcode.server.parser.ParserParameters;
 import imcode.server.parser.TextDocumentParser;
 import imcode.server.user.*;
-import imcode.server.benchmark.BenchmarkDatabase;
+import com.imcode.db.benchmark.BenchmarkDatabase;
 import imcode.util.DateConstants;
 import imcode.util.CachingFileLoader;
 import imcode.util.Parser;
 import imcode.util.Prefs;
-import imcode.util.cache.MapCache;
 import imcode.util.io.FileUtility;
 import imcode.util.net.SMTP;
 import org.apache.commons.beanutils.BeanUtils;
@@ -32,7 +31,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 import org.apache.velocity.VelocityContext;
@@ -75,7 +73,7 @@ final public class DefaultImcmsServices implements ImcmsServices {
 
     private ImcmsAuthenticatorAndUserAndRoleMapper imcmsAuthenticatorAndUserAndRoleMapper;
     private ExternalizedImcmsAuthenticatorAndUserRegistry externalizedImcmsAuthAndMapper;
-    private DefaultDocumentMapper documentMapper;
+    private DocumentMapper documentMapper;
     private TemplateMapper templateMapper;
     private Map languagePropertiesMap = new HashMap();
     private KeyStore keyStore;
@@ -205,9 +203,8 @@ final public class DefaultImcmsServices implements ImcmsServices {
 
     private void initDocumentMapper() {
         File indexDirectory = new File(getRealContextPath(), "WEB-INF/index");
-        documentMapper = new DefaultDocumentMapper(this, this.getDatabase());
+        documentMapper = new DocumentMapper(this, this.getDatabase());
         documentMapper.setDocumentIndex(new PhaseQueryFixingDocumentIndex(new RebuildingDirectoryIndex(indexDirectory, getConfig().getIndexingSchedulePeriodInMinutes(), new IndexDocumentFactory(getCategoryMapper())))) ;
-        documentMapper.setDocumentCache(new MapCache(new LRUMap(getConfig().getDocumentCacheMaxSize())));
     }
 
     private void initTemplateMapper() {
@@ -385,7 +382,7 @@ final public class DefaultImcmsServices implements ImcmsServices {
 
     }
 
-    public DefaultDocumentMapper getDefaultDocumentMapper() {
+    public DocumentMapper getDocumentMapper() {
         return documentMapper;
     }
 

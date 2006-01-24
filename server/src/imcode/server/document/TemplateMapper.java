@@ -12,7 +12,6 @@ import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.ImcmsServices;
 import imcode.server.user.UserDomainObject;
 import org.apache.commons.io.CopyUtils;
-import org.apache.commons.lang.ArrayUtils;
 
 import java.io.*;
 import java.util.*;
@@ -168,7 +167,7 @@ public class TemplateMapper {
     public DocumentDomainObject[] getDocumentsUsingTemplate( TemplateDomainObject template ) {
         final Object[] parameters = new String[]{"" + template.getId()};
         String[][] temp = DatabaseUtils.execute2dStringArrayQuery(database, "select td.meta_id, meta_headline from text_docs td join meta m on td.meta_id = m.meta_id where template_id = ? order by td.meta_id", parameters);
-        DocumentMapper documentMapper = services.getDefaultDocumentMapper();
+        DocumentMapper documentMapper = services.getDocumentMapper();
         DocumentDomainObject[] documents = new DocumentDomainObject[temp.length];
         for ( int i = 0; i < documents.length; i++ ) {
             int documentId = Integer.parseInt( temp[i][0] );

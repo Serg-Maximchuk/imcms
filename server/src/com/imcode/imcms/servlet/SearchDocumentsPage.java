@@ -4,7 +4,6 @@ import com.imcode.imcms.flow.DispatchCommand;
 import com.imcode.imcms.flow.EditDocumentInformationPageFlow;
 import com.imcode.imcms.flow.OkCancelPage;
 import com.imcode.imcms.flow.Page;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
 import com.imcode.imcms.mapping.DocumentMapper;
 import com.imcode.imcms.servlet.superadmin.AdminManager;
 import imcode.server.Imcms;
@@ -86,15 +85,13 @@ public class SearchDocumentsPage extends OkCancelPage {
     public static final String DATE_TYPE__ARCHIVED = "archived";
     public static final String DATE_TYPE__MODIFIED = "modified";
 
-    JSCalendar jsCalendar; 
-
     public SearchDocumentsPage() {
         super( null, null );
     }
 
     public void updateFromRequest( HttpServletRequest request ) {
 
-        DefaultDocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
+        DocumentMapper documentMapper = Imcms.getServices().getDocumentMapper();
 
         if ( documentFinder.isDocumentsSelectable() ) {
             try {
@@ -269,7 +266,7 @@ public class SearchDocumentsPage extends OkCancelPage {
     protected void dispatchOther( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
         DocumentDomainObject documentSelectedForEditing = null;
         try {
-            DocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
+            DocumentMapper documentMapper = Imcms.getServices().getDocumentMapper();
             documentSelectedForEditing = documentMapper.getDocument( Integer.parseInt( request.getParameter( REQUEST_PARAMETER__TO_EDIT_DOCUMENT_ID ) ) );
         } catch ( NumberFormatException nfe ) {
         }
@@ -290,7 +287,7 @@ public class SearchDocumentsPage extends OkCancelPage {
                 documentFinder.forwardWithPage( request, response, SearchDocumentsPage.this );
             }
         };
-        EditDocumentInformationPageFlow editDocumentInformationPageFlow = new EditDocumentInformationPageFlow( documentSelectedForEditing, returnCommand, new DefaultDocumentMapper.SaveEditedDocumentCommand() );
+        EditDocumentInformationPageFlow editDocumentInformationPageFlow = new EditDocumentInformationPageFlow( documentSelectedForEditing, returnCommand, new DocumentMapper.SaveEditedDocumentCommand() );
         editDocumentInformationPageFlow.setAdminButtonsHidden( true );
         editDocumentInformationPageFlow.dispatch( request, response );
     }

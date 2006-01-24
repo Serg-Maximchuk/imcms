@@ -1,7 +1,7 @@
 package com.imcode.imcms.servlet.admin;
 
-import imcode.server.benchmark.BenchmarkDatabase;
-import imcode.server.benchmark.BenchmarkAverages;
+import com.imcode.db.benchmark.BenchmarkDatabase;
+import com.imcode.db.benchmark.BenchmarkAverages;
 import imcode.server.Imcms;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.TransformerUtils;

@@ -176,10 +176,6 @@ public class TextDocumentDomainObject extends DocumentDomainObject {
         return Collections.unmodifiableMap( getTextsMap() );
     }
 
-    public void setImages( Map images ) {
-        this.images.set(new CopyableHashMap(images));
-    }
-
     public void setTemplateId( int v ) {
         getTemplateIds().setTemplateId(v);
     }

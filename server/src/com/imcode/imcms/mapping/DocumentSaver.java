@@ -19,14 +19,14 @@ import java.util.*;
 
 class DocumentSaver {
 
-    private final DefaultDocumentMapper documentMapper ;
+    private final DocumentMapper documentMapper ;
 
     private static final int META_HEADLINE_MAX_LENGTH = 255;
     private static final int META_TEXT_MAX_LENGTH = 1000;
     public static final String SQL_DELETE_ROLE_DOCUMENT_PERMISSION_SET_ID = "DELETE FROM roles_rights WHERE role_id = ? AND meta_id = ?";
     public static final String SQL_SET_ROLE_DOCUMENT_PERMISSION_SET_ID = "INSERT INTO roles_rights (role_id, meta_id, set_id) VALUES(?,?,?)";
 
-    DocumentSaver(DefaultDocumentMapper documentMapper) {
+    DocumentSaver(DocumentMapper documentMapper) {
         this.documentMapper = documentMapper;
     }
 
@@ -68,7 +68,7 @@ class DocumentSaver {
                                               TextDocumentDomainObject oldTextDocument,
                                               final UserDomainObject user) throws NoPermissionToAddDocumentToMenuException
     {
-        Collection documentsAddedWithoutPermission = getDocumentsAddedWithoutPermission(textDocument, oldTextDocument, user);
+        Collection documentsAddedWithoutPermission = getDocumentsAddedWithoutPermission(textDocument, oldTextDocument, user, documentMapper);
         boolean documentsWereAddedWithoutPermission = !documentsAddedWithoutPermission.isEmpty();
         if (documentsWereAddedWithoutPermission ) {
             Collection documentIds = CollectionUtils.collect(documentsAddedWithoutPermission, new Transformer() {
@@ -282,9 +282,9 @@ class DocumentSaver {
 
     Set getDocumentsAddedWithoutPermission(TextDocumentDomainObject textDocument,
                                            TextDocumentDomainObject oldTextDocument,
-                                           final UserDomainObject user) {
+                                           final UserDomainObject user, DocumentGetter documentGetter) {
         Set documentIdsAdded = getDocumentIdsAdded(textDocument, oldTextDocument);
-        List documents = documentMapper.getDocuments(documentIdsAdded);
+        List documents = documentGetter.getDocuments(documentIdsAdded);
         Collection documentsAddedWithoutPermission = CollectionUtils.select(documents, new Predicate() {
             public boolean evaluate(Object object) {
                 return !user.canAddDocumentToAnyMenu((DocumentDomainObject) object) ;

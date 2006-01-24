@@ -10,7 +10,6 @@ import imcode.server.ImcmsServices;
 import imcode.server.LanguageMapper;
 import imcode.server.document.AbstractDocumentGetter;
 import imcode.server.document.DocumentDomainObject;
-import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +21,6 @@ public class DatabaseDocumentGetter extends AbstractDocumentGetter {
 
     private Database database;
     private ImcmsServices services;
-    Logger log = Logger.getLogger(DatabaseDocumentGetter.class);
     public static final String SQL_GET_DOCUMENTS = "SELECT meta_id,\n"
                                                    + "doc_type,\n"
                                                    + "meta_headline,\n"
@@ -44,15 +42,6 @@ public class DatabaseDocumentGetter extends AbstractDocumentGetter {
                                                    + "publication_end_datetime\n"
                                                    + "FROM meta\n"
                                                    + "WHERE meta_id ";
-    /** Stored procedure names used in this class */
-    static final String SQL_GET_TEMPLATE_GROUPS_WITH_PERMISSIONS = "SELECT meta_id, set_id, permission_data\n"
-                                                                   + "FROM   doc_permission_sets_ex\n"
-                                                                   + "       WHERE permission_id = 524288\n"
-                                                                   + "       AND meta_id ";
-    static final String SQL_GET_TEMPLATE_GROUPS_WITH_NEW_PERMISSIONS = "SELECT meta_id, set_id, permission_data\n"
-                                                                       + "FROM   new_doc_permission_sets_ex\n"
-                                                                       + "       WHERE permission_id = 524288\n"
-                                                                       + "       AND meta_id ";
     static final String SQL_SELECT_PERMISSON_DATA__PREFIX = "SELECT meta_id, set_id, permission_data FROM ";
 
     public DatabaseDocumentGetter(Database database, ImcmsServices services) {
@@ -67,9 +56,9 @@ public class DatabaseDocumentGetter extends AbstractDocumentGetter {
         DatabaseCommand command = new SqlQueryDatabaseCommand(sql.toString(), parameters, new CollectionResultSetHandler(documentList, new DocumentFromRowFactory()));
         database.execute(command);
 
-        DefaultDocumentMapper defaultDocumentMapper = services.getDefaultDocumentMapper();
+        DocumentMapper documentMapper = services.getDocumentMapper();
 
-        DocumentInitializer initializer = new DocumentInitializer(defaultDocumentMapper);
+        DocumentInitializer initializer = new DocumentInitializer(documentMapper);
         initializer.initDocuments(documentList);
         return documentList;
     }

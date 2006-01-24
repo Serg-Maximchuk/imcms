@@ -4,9 +4,8 @@ import com.imcode.imcms.servlet.admin.ImageBrowser;
 import com.imcode.imcms.servlet.admin.UserFinder;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
-import imcode.server.document.CategoryDomainObject;
 import imcode.server.document.DocumentDomainObject;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import com.imcode.imcms.mapping.CategoryMapper;
 import com.imcode.imcms.api.Document;
 import com.imcode.util.KeywordsParser;
@@ -169,7 +168,7 @@ public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
                                                                     HttpServletRequest request ) {
 
         final ImcmsServices service = Imcms.getServices();
-        final DefaultDocumentMapper documentMapper = service.getDefaultDocumentMapper();
+        final DocumentMapper documentMapper = service.getDocumentMapper();
         final CategoryMapper categoryMapper = service.getCategoryMapper();
 
         String headline = request.getParameter( REQUEST_PARAMETER__HEADLINE );

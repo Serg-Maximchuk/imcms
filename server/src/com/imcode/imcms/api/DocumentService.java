@@ -1,7 +1,7 @@
 package com.imcode.imcms.api;
 
 import com.imcode.imcms.mapping.CategoryMapper;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.document.*;
 import imcode.server.document.index.IndexException;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
@@ -212,8 +212,8 @@ public class DocumentService {
         }
     }
 
-    private DefaultDocumentMapper getDocumentMapper() {
-        return contentManagementSystem.getInternal().getDefaultDocumentMapper();
+    private DocumentMapper getDocumentMapper() {
+        return contentManagementSystem.getInternal().getDocumentMapper();
     }
 
     public SearchQuery parseLuceneSearchQuery( String query ) throws BadQueryException {

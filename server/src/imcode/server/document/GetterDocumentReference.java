@@ -1,10 +1,15 @@
 package imcode.server.document;
 
+import imcode.server.Imcms;
+
+import java.io.ObjectInputStream;
+import java.io.IOException;
+
 public class GetterDocumentReference extends DocumentReference {
 
-    private final DocumentGetter documentGetter;
+    private transient DocumentGetter documentGetter;
     private DocumentDomainObject document ;
-    
+
     public GetterDocumentReference( int documentId, DocumentGetter documentGetter ) {
         super(documentId) ;
         this.documentGetter = documentGetter;
@@ -15,6 +20,11 @@ public class GetterDocumentReference extends DocumentReference {
             document = documentGetter.getDocument( new Integer(getDocumentId()) ) ;
         }
         return document;
+    }
+
+    public void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        documentGetter = Imcms.getServices().getDocumentMapper().getDocumentGetter() ;
+        ois.defaultReadObject();
     }
 
 }

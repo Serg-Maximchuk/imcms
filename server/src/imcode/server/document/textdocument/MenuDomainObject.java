@@ -180,22 +180,4 @@ public class MenuDomainObject implements Cloneable, Serializable {
         return sortOrder + menuItems.hashCode() ;
     }
 
-    public DocumentDomainObject[] getDocuments() {
-        MenuItemDomainObject[] menuItems = getMenuItems();
-        DocumentDomainObject[] documents = new DocumentDomainObject[menuItems.length];
-        for ( int i = 0; i < menuItems.length; i++ ) {
-            MenuItemDomainObject menuItem = menuItems[i];
-            documents[i] = menuItem.getDocument() ;
-        }
-        return documents ;
-    }
-
-    public Set getDocumentIds() {
-        return Collections.unmodifiableSet(menuItems.keySet()) ;
-    }
-
-    public Collection getMenuItemsCollection() {
-        return Collections.unmodifiableCollection(menuItems.values());
-    }
-
 }

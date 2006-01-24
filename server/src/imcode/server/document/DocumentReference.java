@@ -1,6 +1,8 @@
 package imcode.server.document;
 
-public abstract class DocumentReference {
+import java.io.Serializable;
+
+public abstract class DocumentReference implements Serializable {
 
     private final int documentId;
 

@@ -24,7 +24,6 @@ public class TestDocumentPermissionSetMapper extends TestCase {
     }
 
     public void testSetTextDocumentPermissionSetFromBits() throws Exception {
-        database.addExpectedSqlCall( new MockDatabase.EqualsSqlCallPredicate( DatabaseDocumentGetter.SQL_GET_TEMPLATE_GROUPS_WITH_PERMISSIONS ), null );
         database.addExpectedSqlCall( new MockDatabase.StartsWithSqlCallPredicate( DatabaseDocumentGetter.SQL_SELECT_PERMISSON_DATA__PREFIX ), null );
         textDocumentPermissionSet.setEditDocumentInformation(0 != ( DocumentPermissionSetDomainObject.EDIT_DOCUMENT_PERMISSION_ID & DocumentPermissionSetDomainObject.EDIT_DOCINFO_PERMISSION_ID ));
         textDocumentPermissionSet.setEditPermissions(0 != ( DocumentPermissionSetDomainObject.EDIT_DOCUMENT_PERMISSION_ID & DocumentPermissionSetDomainObject.EDIT_PERMISSIONS_PERMISSION_ID ));

@@ -1,6 +1,6 @@
 package com.imcode.imcms.api;
 
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.MockImcmsServices;
 import imcode.server.document.*;
 import imcode.server.document.textdocument.MenuDomainObject;
@@ -146,7 +146,7 @@ public class TestTextDocument extends TestCase {
                 return null ;
             }
         };
-        DefaultDocumentMapper documentMapper = new DefaultDocumentMapper(null,null);
+        DocumentMapper documentMapper = new DocumentMapper(imcmsServices, null);
         documentMapper.setDocumentGetter(documentGetter);
         imcmsServices.setDocumentMapper( documentMapper );
         menu.addDocument( otherTextDocument );

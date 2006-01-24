@@ -2,7 +2,7 @@ package imcode.server.document.index;
 
 import imcode.server.Imcms;
 import imcode.server.document.*;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import com.imcode.imcms.mapping.CategoryMapper;
 import imcode.util.DateConstants;
 import imcode.util.Utility;
@@ -41,7 +41,7 @@ public class IndexDocumentFactory {
         Set sectionIds = document.getSectionIds();
         for ( Iterator iterator = sectionIds.iterator(); iterator.hasNext(); ) {
             Integer sectionId = (Integer) iterator.next();
-            SectionDomainObject section = Imcms.getServices().getDefaultDocumentMapper().getSectionById(sectionId.intValue());
+            SectionDomainObject section = Imcms.getServices().getDocumentMapper().getSectionById(sectionId.intValue());
             indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__SECTION, section.getName() ) );
             indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__SECTION_ID, sectionId.toString())) ;
         }
@@ -55,7 +55,7 @@ public class IndexDocumentFactory {
 
         indexDocument.add( unStoredKeyword( DocumentIndex.FIELD__STATUS, "" + document.getPublicationStatus() ) );
 
-        DefaultDocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
+        DocumentMapper documentMapper = Imcms.getServices().getDocumentMapper();
 
         try {
             document.accept( new IndexDocumentAdaptingVisitor( indexDocument ) );

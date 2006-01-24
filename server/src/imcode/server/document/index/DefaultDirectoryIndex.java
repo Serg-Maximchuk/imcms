@@ -1,9 +1,10 @@
 package imcode.server.document.index;
 
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import com.imcode.util.HumanReadable;
 import imcode.server.Imcms;
 import imcode.server.document.DocumentDomainObject;
+import imcode.server.document.DocumentGetter;
 import imcode.server.user.UserDomainObject;
 import imcode.util.IntervalSchedule;
 import org.apache.commons.io.FileUtils;
@@ -79,10 +80,10 @@ class DefaultDirectoryIndex implements DirectoryIndex {
         }
     }
 
-    private List getDocumentListForHits( final Hits hits, final UserDomainObject searchingUser ) throws IOException {
-        DefaultDocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
+    private List getDocumentListForHits( final Hits hits, final UserDomainObject searchingUser ) {
+        DocumentGetter documentGetter = Imcms.getServices().getDocumentMapper().getDocumentGetter();
         List documentIds = new DocumentIdHitsLists(hits) ;
-        List documentList = documentMapper.getDocuments(documentIds) ;
+        List documentList = documentGetter.getDocuments(documentIds) ;
         if (documentList.size() != hits.length()) {
             inconsistent = true ;
         }
@@ -145,7 +146,7 @@ class DefaultDirectoryIndex implements DirectoryIndex {
     }
 
     private void indexAllDocumentsToIndexWriter( IndexWriter indexWriter ) throws IOException {
-        DefaultDocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
+        DocumentMapper documentMapper = Imcms.getServices().getDocumentMapper();
         int[] documentIds = documentMapper.getAllDocumentIds();
 
         logIndexingStarting( documentIds.length );

@@ -678,10 +678,6 @@ public class UserDomainObject implements Cloneable, Serializable {
         userAdminRoleIds = new RoleIds(userAdminRoleReferences);
     }
 
-    public void addUserAdminRoleReference(RoleId roleId) {
-        userAdminRoleIds.add(roleId) ;
-    }
-
     public boolean isUserAdminAndNotSuperAdmin() {
         return isUserAdmin() && !isSuperAdmin() ;
     }

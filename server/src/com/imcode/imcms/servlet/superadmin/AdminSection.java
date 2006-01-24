@@ -95,7 +95,7 @@ public class AdminSection extends HttpServlet {
                 if(!section_exists){
                     final Object[] parameters = new String[] {new_section_name};
                     imcref.getProcedureExecutor().executeUpdateProcedure("SectionAdd", parameters);
-                    imcref.getDefaultDocumentMapper().initSections();
+                    imcref.getDocumentMapper().initSections();
                     final Object[] parameters1 = new String[0];
                     section_arr = (String[][]) imcref.getProcedureExecutor().executeProcedure("SectionGetAllCount", parameters1, new StringArrayArrayResultSetHandler());
                 }
@@ -120,7 +120,7 @@ public class AdminSection extends HttpServlet {
                 final Object[] parameters = new String[] {section_id,
                                                                                                 new_section};
                 imcref.getProcedureExecutor().executeUpdateProcedure("SectionChangeName", parameters);
-                imcref.getDefaultDocumentMapper().initSections();
+                imcref.getDocumentMapper().initSections();
             }
 
             //now we needs a list of the created ones in db
@@ -233,7 +233,7 @@ public class AdminSection extends HttpServlet {
     private void deleteSection( ImcmsServices imcref, String del_section ) {
         imcref.getDatabase().execute(new DeleteWhereColumnsEqualDatabaseCommand( "meta_section", "section_id", del_section) ) ;
         imcref.getDatabase().execute(new DeleteWhereColumnsEqualDatabaseCommand( "sections", "section_id", del_section) ) ;
-        imcref.getDefaultDocumentMapper().initSections();
+        imcref.getDocumentMapper().initSections();
     }
 
     //method that creates an option list of all the sections in db

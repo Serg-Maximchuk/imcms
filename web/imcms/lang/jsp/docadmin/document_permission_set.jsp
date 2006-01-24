@@ -83,7 +83,7 @@
                 <%
     ImcmsServices services = Imcms.getServices();
     Set allowedDocumentTypeIds = textDocumentPermissionSet.getAllowedDocumentTypeIds() ;
-                    Map allDocumentTypes = services.getDefaultDocumentMapper().getAllDocumentTypeIdsAndNamesInUsersLanguage( user ) ;
+                    Map allDocumentTypes = services.getDocumentMapper().getAllDocumentTypeIdsAndNamesInUsersLanguage( user ) ;
                     for ( Iterator iterator = allDocumentTypes.entrySet().iterator(); iterator.hasNext(); ) {
                         Map.Entry entry = (Map.Entry)iterator.next();
                         Integer documentTypeId = (Integer)entry.getKey();

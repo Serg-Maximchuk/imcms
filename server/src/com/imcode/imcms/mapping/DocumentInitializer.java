@@ -22,7 +22,7 @@ import java.util.Map;
 public class DocumentInitializer {
     private static final String SQL_GET_KEYWORDS = "SELECT mc.meta_id, c.code FROM classification c JOIN meta_classification mc ON mc.class_id = c.class_id WHERE mc.meta_id ";
 
-    private final DefaultDocumentMapper defaultDocumentMapper;
+    private final DocumentMapper documentMapper;
     public static final String SQL_GET_SECTION_IDS_FOR_DOCUMENT = "SELECT ms.meta_id, ms.section_id\n"
                                                                   + "FROM meta_section ms\n"
                                                                   + "WHERE ms.meta_id ";
@@ -37,15 +37,15 @@ public class DocumentInitializer {
     HashMap documentsPermissionSets ;
     HashMap documentsPermissionSetsForNew ;
 
-    public DocumentInitializer(DefaultDocumentMapper defaultDocumentMapper) {
-        this.defaultDocumentMapper = defaultDocumentMapper;
-        this.database = defaultDocumentMapper.getDatabase();
+    public DocumentInitializer(DocumentMapper documentMapper) {
+        this.documentMapper = documentMapper;
+        this.database = documentMapper.getDatabase();
     }
 
     void initDocuments(DocumentList documentList) {
         final Map documentMap = documentList.getMap();
 
-        DocumentInitializingVisitor documentInitializingVisitor = new DocumentInitializingVisitor(defaultDocumentMapper, documentMap.keySet(), defaultDocumentMapper);
+        DocumentInitializingVisitor documentInitializingVisitor = new DocumentInitializingVisitor(documentMapper, documentMap.keySet(), documentMapper);
         for ( Iterator iterator = documentList.iterator(); iterator.hasNext(); ) {
             final DocumentDomainObject document = (DocumentDomainObject) iterator.next();
             final Integer documentId = new Integer(document.getId()) ;
@@ -318,14 +318,6 @@ public class DocumentInitializer {
                     return null;
                 }
             }));
-        }
-
-        private DocumentPermissionSetDomainObject createDocumentPermissionSet(
-                DocumentPermissionSetTypeDomainObject documentPermissionSetType,
-                int permissionBits) {
-            DocumentPermissionSetDomainObject documentPermissionSet = new TextDocumentPermissionSetDomainObject(documentPermissionSetType);
-            documentPermissionSet.setFromBits(permissionBits);
-            return documentPermissionSet;
         }
 
         private void setPermissionData(DocumentPermissionSetDomainObject permissionSet, Integer permissionId, Integer permissionData) {

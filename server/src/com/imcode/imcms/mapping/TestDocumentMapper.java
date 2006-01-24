@@ -18,9 +18,9 @@ import org.apache.log4j.varia.NullAppender;
 import java.io.Serializable;
 import java.sql.ResultSet;
 
-public class TestDefaultDocumentMapper extends TestCase {
+public class TestDocumentMapper extends TestCase {
 
-    private DefaultDocumentMapper documentMapper;
+    private DocumentMapper documentMapper;
     private MockDatabase database;
     private UserDomainObject user;
     private RoleDomainObject testRole;
@@ -57,7 +57,7 @@ public class TestDefaultDocumentMapper extends TestCase {
         }) ;
         documentIndex = new MockDocumentIndex();
         CategoryMapper categoryMapper = new CategoryMapper(database);
-        documentMapper = new DefaultDocumentMapper( services, database);
+        documentMapper = new DocumentMapper( services, database);
         documentMapper.setDocumentIndex(documentIndex);
         services.setDocumentMapper(documentMapper);
         services.setCategoryMapper(categoryMapper);
@@ -70,7 +70,7 @@ public class TestDefaultDocumentMapper extends TestCase {
     }
 
     public void testNotSerializable() {
-        if ( DefaultDocumentMapper.class.isAssignableFrom( Serializable.class )) {
+        if ( DocumentMapper.class.isAssignableFrom( Serializable.class )) {
             fail("DocumentMapper must not be serializable so it can't be put in the session.") ;
         }
     }

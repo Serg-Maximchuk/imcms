@@ -2,7 +2,7 @@ package com.imcode.imcms.servlet.superadmin;
 
 import com.imcode.imcms.flow.DispatchCommand;
 import com.imcode.imcms.flow.DocumentPageFlow;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import com.imcode.imcms.servlet.AdminManagerSearchPage;
 import com.imcode.imcms.servlet.DocumentFinder;
 import com.imcode.imcms.servlet.SearchDocumentsPage;
@@ -92,7 +92,7 @@ public class AdminManager extends HttpServlet {
             return;
         }
 
-        final DefaultDocumentMapper documentMapper = service.getDefaultDocumentMapper();
+        final DocumentMapper documentMapper = service.getDocumentMapper();
         if ( Utility.parameterIsSet( request, REQUEST_PARAMETER__CREATE_NEW_DOCUMENT ) ) {
             try {
                 int parentId = Integer.parseInt( request.getParameter( REQUEST_PARAMETER__NEW_DOCUMENT_PARENT_ID ) );
@@ -138,7 +138,7 @@ public class AdminManager extends HttpServlet {
     private void createAndShowAdminManagerPage(HttpServletRequest request, HttpServletResponse response, LocalizedMessage errorMessage, String tabToShow) throws IOException, ServletException {
         UserDomainObject loggedOnUser = Utility.getLoggedOnUser( request );
         ImcmsServices service = Imcms.getServices();
-        final DefaultDocumentMapper documentMapper = service.getDefaultDocumentMapper();
+        final DocumentMapper documentMapper = service.getDocumentMapper();
 
         String html_admin_part = "";
 
@@ -457,7 +457,6 @@ public class AdminManager extends HttpServlet {
         String tabName;
         List subreports = new ArrayList();
         String htmlAdminPart;
-        JSCalendar jsCalendar;
         public static final String REQUEST_ATTRIBUTE__PAGE = "ampage";
 
         private LocalizedMessage errorMessage;
@@ -607,7 +606,7 @@ public class AdminManager extends HttpServlet {
     private static class SaveNewDocumentCommand implements DocumentPageFlow.SaveDocumentCommand {
 
         public void saveDocument( DocumentDomainObject document, UserDomainObject user ) throws NoPermissionToEditDocumentException, NoPermissionToAddDocumentToMenuException {
-            Imcms.getServices().getDefaultDocumentMapper().saveNewDocument( document, user );
+            Imcms.getServices().getDocumentMapper().saveNewDocument( document, user );
         }
     }
 

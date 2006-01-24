@@ -5,12 +5,10 @@ import imcode.server.Imcms;
 import imcode.server.ImcmsConstants;
 import imcode.server.ImcmsServices;
 import imcode.server.document.*;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
 import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.server.document.textdocument.NoPermissionToAddDocumentToMenuException;
 import imcode.server.document.textdocument.MenuItemDomainObject;
-import imcode.server.document.textdocument.TreeSortKeyDomainObject;
 import imcode.server.document.textdocument.MenuDomainObject;
 import imcode.server.user.UserDomainObject;
 import imcode.util.*;
@@ -41,7 +39,7 @@ public class AddDoc extends HttpServlet {
         } else {
 
             ImcmsServices services = Imcms.getServices();
-            DocumentMapper documentMapper = services.getDefaultDocumentMapper();
+            DocumentMapper documentMapper = services.getDocumentMapper();
 
             DocumentDomainObject parentDocument = documentMapper.getDocument( parentId );
             SaveNewDocumentAndAddToMenuCommand saveNewDocumentAndAddToMenuCommand = new SaveNewDocumentAndAddToMenuCommand( (TextDocumentDomainObject)parentDocument, parentMenuIndex );
@@ -172,7 +170,7 @@ public class AddDoc extends HttpServlet {
         public synchronized void saveDocument( DocumentDomainObject document, UserDomainObject user ) throws NoPermissionToEditDocumentException, NoPermissionToAddDocumentToMenuException
         {
             if ( null == savedDocument ) {
-                final DefaultDocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
+                final DocumentMapper documentMapper = Imcms.getServices().getDocumentMapper();
                 documentMapper.saveNewDocument( document, user );
                 this.savedDocument = document ;
                 if (null != parentMenuIndex) {
@@ -208,7 +206,7 @@ public class AddDoc extends HttpServlet {
                                                                HttpServletResponse response ) throws IOException, ServletException, NoPermissionToCreateDocumentException {
             UserDomainObject user = Utility.getLoggedOnUser( request );
             ImcmsServices services = Imcms.getServices();
-            DefaultDocumentMapper documentMapper = services.getDefaultDocumentMapper();
+            DocumentMapper documentMapper = services.getDocumentMapper();
             DocumentDomainObject document = documentMapper.createDocumentOfTypeFromParent( documentTypeId, parentDocument, user );
             PageFlow pageFlow = null;
             if ( document instanceof TextDocumentDomainObject ) {

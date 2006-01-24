@@ -26,9 +26,7 @@ import imcode.util.Utility;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.collections.iterators.TransformIterator;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.*;
 import org.apache.velocity.VelocityContext;
@@ -360,7 +358,7 @@ class TagParser {
             includedParserParameters = (ParserParameters) parserParameters.clone();
             includedParserParameters.setTemplate(attributes.getProperty("template"));
             includedParserParameters.setParameter(attributes.getProperty("param"));
-            includedParserParameters.getDocumentRequest().setDocument(service.getDefaultDocumentMapper().getDocument(included_meta_id));
+            includedParserParameters.getDocumentRequest().setDocument(service.getDocumentMapper().getDocument(included_meta_id));
             includedParserParameters.getDocumentRequest().setReferrer(document);
             includedParserParameters.setFlags(0);
             includedParserParameters.setAdminButtonsVisible(false);

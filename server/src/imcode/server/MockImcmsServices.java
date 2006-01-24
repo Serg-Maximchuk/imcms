@@ -4,7 +4,7 @@ import com.imcode.db.Database;
 import com.imcode.db.mock.MockDatabase;
 import com.imcode.imcms.db.ProcedureExecutor;
 import com.imcode.imcms.mapping.CategoryMapper;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.document.TemplateMapper;
 import imcode.server.parser.ParserParameters;
 import imcode.server.user.ImcmsAuthenticatorAndUserAndRoleMapper;
@@ -30,11 +30,12 @@ public class MockImcmsServices implements ImcmsServices {
     private Database database = new MockDatabase();
     private KeyStore keyStore;
     private TemplateMapper templateMapper;
-    private DefaultDocumentMapper documentMapper;
+    private DocumentMapper documentMapper;
     private CategoryMapper categoryMapper;
     private LanguageMapper languageMapper = new LanguageMapper(null, null);
     private RoleGetter roleGetter;
     private ProcedureExecutor procedureExecutor;
+    private Config config = new Config();
 
     public UserDomainObject verifyUser( String login, String password ) {
         return null;
@@ -107,7 +108,7 @@ public class MockImcmsServices implements ImcmsServices {
 
     }
 
-    public DefaultDocumentMapper getDefaultDocumentMapper() {
+    public DocumentMapper getDocumentMapper() {
         return documentMapper;
     }
 
@@ -144,7 +145,7 @@ public class MockImcmsServices implements ImcmsServices {
     }
 
     public Config getConfig() {
-        return null;
+        return this.config;
     }
 
     public Database getDatabase() {
@@ -196,7 +197,7 @@ public class MockImcmsServices implements ImcmsServices {
         this.templateMapper = templateMapper;
     }
 
-    public void setDocumentMapper( DefaultDocumentMapper documentMapper ) {
+    public void setDocumentMapper( DocumentMapper documentMapper ) {
         this.documentMapper = documentMapper;
     }
 

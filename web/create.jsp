@@ -2,7 +2,7 @@
     ContentManagementSystem cms = ContentManagementSystem.fromRequest(request);
     DocumentService documentService = cms.getDocumentService();
     TextDocument textDocument = documentService.getTextDocument(1001) ;
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 1000; ++i) {
         TextDocument newTextDocument = documentService.createNewTextDocument(textDocument);
         newTextDocument.setHeadline("test");
         documentService.saveChanges(newTextDocument);

@@ -3,7 +3,7 @@ package com.imcode.imcms.servlet.superadmin;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
 import imcode.server.document.*;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.document.index.DocumentIndex;
 import imcode.server.document.textdocument.ImageDomainObject;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
@@ -58,7 +58,7 @@ public class LinkCheck extends HttpServlet {
 
         List links = new ArrayList();
         ImcmsServices imcref = Imcms.getServices();
-        DefaultDocumentMapper documentMapper = imcref.getDefaultDocumentMapper();
+        DocumentMapper documentMapper = imcref.getDocumentMapper();
         DocumentIndex reindexingIndex = documentMapper.getDocumentIndex();
 
         int lowestDocumentId = documentMapper.getLowestDocumentId();
@@ -352,12 +352,12 @@ public class LinkCheck extends HttpServlet {
     public final static class UrlDocumentLink extends Link {
 
         private UrlDocumentDomainObject urlDocument;
-        private DefaultDocumentMapper.TextDocumentMenuIndexPair[] documentMenuPairsContainingUrlDocument;
+        private DocumentMapper.TextDocumentMenuIndexPair[] documentMenuPairsContainingUrlDocument;
 
         public UrlDocumentLink( UrlDocumentDomainObject urlDocument, HttpServletRequest request ) {
             super( request );
             this.urlDocument = urlDocument;
-            documentMenuPairsContainingUrlDocument = Imcms.getServices().getDefaultDocumentMapper().getDocumentMenuPairsContainingDocument( urlDocument );
+            documentMenuPairsContainingUrlDocument = Imcms.getServices().getDocumentMapper().getDocumentMenuPairsContainingDocument( urlDocument );
         }
 
         public String getUrl() {
@@ -368,7 +368,7 @@ public class LinkCheck extends HttpServlet {
             return urlDocument;
         }
 
-        public DefaultDocumentMapper.TextDocumentMenuIndexPair[] getDocumentMenuPairsContainingUrlDocument() {
+        public DocumentMapper.TextDocumentMenuIndexPair[] getDocumentMenuPairsContainingUrlDocument() {
             return documentMenuPairsContainingUrlDocument;
         }
 

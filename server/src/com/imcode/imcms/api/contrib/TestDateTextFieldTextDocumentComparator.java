@@ -3,7 +3,7 @@ package com.imcode.imcms.api.contrib;
 import com.imcode.imcms.api.DocumentService;
 import com.imcode.imcms.api.MockContentManagementSystem;
 import com.imcode.imcms.api.TextDocument;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.MockImcmsServices;
 import imcode.server.document.DocumentDomainObject;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
@@ -26,7 +26,7 @@ public class TestDateTextFieldTextDocumentComparator extends TestCase {
         internalUser.addRoleId( RoleId.SUPERADMIN );
         contentManagementSystem.setCurrentInternalUser( internalUser );
         MockImcmsServices imcmsServices = new MockImcmsServices();
-        imcmsServices.setDocumentMapper( new DefaultDocumentMapper( imcmsServices, null) {
+        imcmsServices.setDocumentMapper( new DocumentMapper( imcmsServices, null) {
             public DocumentDomainObject getDocument( Integer metaId ) {
                 TextDocumentDomainObject textDocument = new TextDocumentDomainObject();
                 textDocument.setId( metaId.intValue() );

@@ -2,7 +2,7 @@ package com.imcode.imcms.api;
 
 import imcode.server.ImcmsServices;
 import imcode.server.document.*;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.document.textdocument.*;
 import imcode.server.user.UserDomainObject;
 import org.apache.commons.collections.CollectionUtils;
@@ -101,7 +101,7 @@ public class TextDocument extends Document {
     }
 
     private DocumentGetter getDocumentGetter() {
-        return contentManagementSystem.getInternal().getDefaultDocumentMapper() ;
+        return contentManagementSystem.getInternal().getDocumentMapper() ;
     }
 
     private SortedMap filterAndConvertValues(Map map, Predicate predicate, Transformer transformer) {
@@ -368,7 +368,7 @@ public class TextDocument extends Document {
          */
         public void addDocument(Document documentToAdd) {
             ImcmsServices internal = contentManagementSystem.getInternal();
-            DefaultDocumentMapper documentMapper = internal.getDefaultDocumentMapper();
+            DocumentMapper documentMapper = internal.getDocumentMapper();
             DocumentReference documentReference = documentMapper.getDocumentReference( documentToAdd.getId() );
             internalTextDocument.getMenu(menuIndex).addMenuItem(new MenuItemDomainObject(documentReference));
         }

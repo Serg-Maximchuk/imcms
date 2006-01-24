@@ -11,7 +11,6 @@ import imcode.server.user.UserDomainObject;
 import imcode.util.ShouldHaveCheckedPermissionsEarlierException;
 import imcode.util.Utility;
 import org.apache.commons.lang.UnhandledException;
-import org.apache.commons.lang.ArrayUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -36,7 +35,7 @@ public class SaveInPage extends HttpServlet {
     public void doPost( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
         ImcmsServices services = Imcms.getServices();
         UserDomainObject user = Utility.getLoggedOnUser( req );
-        DocumentMapper documentMapper = services.getDefaultDocumentMapper();
+        DocumentMapper documentMapper = services.getDocumentMapper();
 
         int documentId = Integer.parseInt( req.getParameter( "meta_id" ) );
         TextDocumentDomainObject textDocument = (TextDocumentDomainObject)documentMapper.getDocument( documentId );

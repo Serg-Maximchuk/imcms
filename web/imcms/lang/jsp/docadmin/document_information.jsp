@@ -36,7 +36,7 @@
     UserDomainObject user = Utility.getLoggedOnUser( request ) ;
     final ImcmsServices service = Imcms.getServices();
     ImcmsAuthenticatorAndUserAndRoleMapper userMapper = service.getImcmsAuthenticatorAndUserAndRoleMapper();
-    final DefaultDocumentMapper documentMapper = service.getDefaultDocumentMapper();
+    final DocumentMapper documentMapper = service.getDocumentMapper();
     final CategoryMapper categoryMapper = service.getCategoryMapper();
 
     DocumentPageFlow httpFlow = DocumentPageFlow.fromRequest(request) ;

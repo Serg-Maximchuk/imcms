@@ -3,7 +3,7 @@ package com.imcode.imcms.api;
 import com.imcode.db.mock.MockDatabase;
 import com.imcode.db.mock.MockResultSet;
 import com.imcode.imcms.mapping.CategoryMapper;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import com.imcode.imcms.mapping.MockDocumentIndex;
 import imcode.server.MockImcmsServices;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
@@ -30,7 +30,7 @@ public class TestDocumentService extends TestCase {
         imcmsServices = new MockImcmsServices();
         imcmsServices.setRoleGetter(new MockRoleGetter());
         database = new MockDatabase();
-        DefaultDocumentMapper documentMapper = new DefaultDocumentMapper(imcmsServices, database);
+        DocumentMapper documentMapper = new DocumentMapper(imcmsServices, database);
         documentMapper.setDocumentIndex(new MockDocumentIndex());
         imcmsServices.setDocumentMapper(documentMapper) ;
         imcmsServices.setCategoryMapper(documentMapper.getCategoryMapper());

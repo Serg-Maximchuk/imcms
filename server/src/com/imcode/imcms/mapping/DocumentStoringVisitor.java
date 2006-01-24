@@ -212,7 +212,7 @@ public class DocumentStoringVisitor extends DocumentVisitor {
             DatabaseUtils.executeUpdate(database, sqlInsert, parameters);
             saveFileDocumentFile( fileDocument.getId(), fileDocumentFile, fileId );
         }
-        DefaultDocumentMapper.deleteOtherFileDocumentFiles( fileDocument ) ;
+        DocumentMapper.deleteOtherFileDocumentFiles( fileDocument ) ;
     }
 
     private String truncateFilename(String filename, int length) {

@@ -17,14 +17,14 @@ import java.util.Collection;
 
 class DocumentInitializingVisitor extends DocumentVisitor {
 
-    private DefaultDocumentMapper documentMapper;
+    private DocumentMapper documentMapper;
     private final Database database;
     private static final String SQL__SELECT_FILE_DOCUMENT_FILES = "SELECT variant_name, filename, mime, created_as_image, default_variant FROM fileupload_docs WHERE meta_id = ? ORDER BY default_variant DESC, variant_name";
 
     private TextDocumentInitializer textDocumentInitializer;
     
     DocumentInitializingVisitor(DocumentGetter documentGetter, Collection documentIds,
-                                DefaultDocumentMapper documentMapper) {
+                                DocumentMapper documentMapper) {
         this.database = documentMapper.getDatabase();
         this.documentMapper = documentMapper;
         textDocumentInitializer = new TextDocumentInitializer(database, documentGetter, documentIds);

@@ -1,6 +1,5 @@
 package com.imcode.imcms.servlet.admin;
 
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
 import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.Imcms;
 import imcode.server.ImcmsConstants;
@@ -12,7 +11,6 @@ import imcode.server.document.textdocument.MenuDomainObject;
 import imcode.server.document.textdocument.MenuItemDomainObject;
 import imcode.server.document.textdocument.NoPermissionToAddDocumentToMenuException;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
-import imcode.server.document.textdocument.TreeSortKeyDomainObject;
 import imcode.server.user.UserDomainObject;
 import imcode.util.*;
 import org.apache.commons.lang.StringUtils;
@@ -61,7 +59,7 @@ public class GetExistingDoc extends HttpServlet {
         Utility.setDefaultHtmlContentType( res );
         Writer out = res.getWriter();
 
-        DefaultDocumentMapper documentMapper = imcref.getDefaultDocumentMapper();
+        DocumentMapper documentMapper = imcref.getDocumentMapper();
         TextDocumentDomainObject parentDocument = (TextDocumentDomainObject)documentMapper.getDocument( Integer.parseInt( req.getParameter( "meta_id_value" ) ) );
 
         // Lets get the doc_menu_number
@@ -207,7 +205,7 @@ public class GetExistingDoc extends HttpServlet {
             values = new String[0];
         }
 
-        DocumentMapper documentMapper = imcref.getDefaultDocumentMapper();
+        DocumentMapper documentMapper = imcref.getDocumentMapper();
 
         // Lets loop through all the selected existsing meta ids and add them to the current menu
         for ( int m = 0; m < values.length; m++ ) {
@@ -229,7 +227,7 @@ public class GetExistingDoc extends HttpServlet {
 
     private void addDocumentToMenu( DocumentDomainObject document, TextDocumentDomainObject parentDocument,
                                     int menuIndex, UserDomainObject user ) {
-        DefaultDocumentMapper documentMapper = Imcms.getServices().getDefaultDocumentMapper();
+        DocumentMapper documentMapper = Imcms.getServices().getDocumentMapper();
         boolean canAddToMenu = canAddToMenu(user, parentDocument, document);
         if ( canAddToMenu ) {
             final MenuDomainObject parentMenu = parentDocument.getMenu( menuIndex );

@@ -1,7 +1,7 @@
 package com.imcode.imcms.servlet.superadmin;
 
 import com.imcode.imcms.db.DatabaseUtils;
-import com.imcode.imcms.mapping.DefaultDocumentMapper;
+import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.Imcms;
 import imcode.server.ImcmsServices;
 import imcode.server.user.UserDomainObject;
@@ -43,7 +43,7 @@ public class ListDocuments extends HttpServlet {
 
         FormData formData = new FormData();
         formData.selectedRange = new IntRange( start, end ) ;
-        DefaultDocumentMapper documentMapper = imcref.getDefaultDocumentMapper() ;
+        DocumentMapper documentMapper = imcref.getDocumentMapper() ;
         if ( req.getParameter( PARAMETER_BUTTON__LIST ) != null ) {
             formData.documentsIterator = documentMapper.getDocumentsIterator(formData.selectedRange) ;
         }
