@@ -1,10 +1,6 @@
 package imcode.server.document;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Collection;
-import java.util.Arrays;
+import java.util.*;
 
 public class AbstractDocumentGetter implements DocumentGetter {
 
@@ -21,7 +17,7 @@ public class AbstractDocumentGetter implements DocumentGetter {
     }
 
     public DocumentDomainObject getDocument(Integer documentId) {
-        List documents = getDocuments(Arrays.asList(new Integer[] {documentId} ));
+        List documents = getDocuments(Collections.singletonList(documentId));
         if (documents.isEmpty()) {
             return null ;
         }

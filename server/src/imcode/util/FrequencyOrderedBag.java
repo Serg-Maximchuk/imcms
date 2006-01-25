@@ -62,8 +62,8 @@ public class FrequencyOrderedBag {
         return ( (Integer) map.get(key) ).intValue();
     }
 
-    public void add(Object key) {
-        map.add(key);
+    public int add(Object key) {
+        return map.add(key);
     }
 
     public List asList() {
@@ -137,18 +137,21 @@ public class FrequencyOrderedBag {
             moveInPlace((Entry) entry);
         }
 
-        public void add(Object key) {
-            add(key, 1);
+        public int add(Object key) {
+            return add(key, 1);
         }
 
-        private void add(Object key, int nCopies) {
+        private int add(Object key, int nCopies) {
             Entry entry = (Entry) getEntry(key);
+            Integer frequency;
             if ( null == entry ) {
-                put(key, new Integer(nCopies));
+                frequency = new Integer(nCopies);
+                put(key, frequency);
             } else {
-                Integer frequency = (Integer) entry.getValue();
+                frequency = (Integer) entry.getValue();
                 updateEntry(entry, new Integer(frequency.intValue() + nCopies));
             }
+            return frequency.intValue() ;
         }
 
         public Object remove(Object key) {

@@ -138,17 +138,6 @@ public class TestTextDocument extends TestCase {
     }
 
     public void testAddRemoveDocument() throws DocumentAlreadyInMenuException {
-        DocumentGetter documentGetter = new AbstractDocumentGetter() {
-            public DocumentDomainObject getDocument(Integer documentId) {
-                if (documentId.intValue() == otherTextDocument.getId() ) {
-                    return otherTextDocument.getInternal() ;
-                }
-                return null ;
-            }
-        };
-        DocumentMapper documentMapper = new DocumentMapper(imcmsServices, null);
-        documentMapper.setDocumentGetter(documentGetter);
-        imcmsServices.setDocumentMapper( documentMapper );
         menu.addDocument( otherTextDocument );
         assertEquals(0, menu.getDocuments().length) ;
         otherTextDocumentDO.setDocumentPermissionSetTypeForRoleId(readRole, DocumentPermissionSetTypeDomainObject.READ);

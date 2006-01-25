@@ -60,8 +60,8 @@ class DefaultDirectoryIndex implements DirectoryIndex {
                 Hits hits = indexSearcher.search( query, sort );
                 long searchTime = searchStopWatch.getTime();
                 List documentList = getDocumentListForHits( hits, searchingUser );
-                if (log.isTraceEnabled()) {
-                    log.trace( "Search for " + query.toString() + ": " + searchTime + "ms. Total: "
+                if (log.isDebugEnabled()) {
+                    log.debug( "Search for " + query.toString() + ": " + searchTime + "ms. Total: "
                            + searchStopWatch.getTime()
                            + "ms." );
                 }
@@ -85,7 +85,13 @@ class DefaultDirectoryIndex implements DirectoryIndex {
     private List getDocumentListForHits( final Hits hits, final UserDomainObject searchingUser ) {
         DocumentGetter documentGetter = Imcms.getServices().getDocumentMapper().getDocumentGetter();
         List documentIds = new DocumentIdHitsList(hits) ;
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         List documentList = documentGetter.getDocuments(documentIds) ;
+        stopWatch.stop();
+        if (log.isDebugEnabled()) {
+            log.debug("Got "+documentList.size()+" documents in "+stopWatch.getTime()+"ms.");
+        }
         if (documentList.size() != hits.length()) {
             inconsistent = true ;
         }

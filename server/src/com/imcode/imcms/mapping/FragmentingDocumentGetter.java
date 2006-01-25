@@ -32,5 +32,4 @@ public class FragmentingDocumentGetter extends AbstractDocumentGetter {
         }
         return compositeDocumentList ;
     }
-
 }

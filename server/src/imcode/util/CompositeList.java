@@ -63,8 +63,22 @@ public class CompositeList extends AbstractList {
         }
     }
 
+    public boolean contains(Object o) {
+        synchronized (lists) {
+            for ( Iterator iterator = lists.iterator(); iterator.hasNext(); ) {
+                List list = (List) iterator.next();
+                if (list.contains(o)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void addList(List list) {
-        lists.add(list);
+        synchronized (lists) {
+            lists.add(list);
+        }
     }
 
     private static interface ListIndexOperation {

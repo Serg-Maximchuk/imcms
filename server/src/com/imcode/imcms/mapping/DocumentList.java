@@ -10,9 +10,13 @@ class DocumentList extends AbstractList implements Serializable {
     private ArrayList list;
     private Map map;
 
-    DocumentList(int capacity) {
-        list = new ArrayList(capacity);
-        map = Collections.synchronizedMap(new LinkedHashMap(capacity));
+    DocumentList(Map documentMap) {
+        map = Collections.synchronizedMap(documentMap);
+        list = new ArrayList(documentMap.size());
+        for ( Iterator iterator = map.values().iterator(); iterator.hasNext(); ) {
+            DocumentDomainObject document = (DocumentDomainObject) iterator.next();
+            list.add(document) ;
+        }
     }
 
     public synchronized Object remove(int index) {
@@ -52,5 +56,13 @@ class DocumentList extends AbstractList implements Serializable {
 
     public synchronized Map getMap() {
         return map;
+    }
+
+    public boolean contains(Object o) {
+        if (o instanceof Integer) {
+            return map.containsKey(o) ;
+        }
+        DocumentDomainObject document = (DocumentDomainObject) o ;
+        return map.containsKey(new Integer(document.getId())) ;
     }
 }

@@ -3,7 +3,6 @@ package com.imcode.imcms.api;
 import com.imcode.imcms.mapping.CategoryMapper;
 import com.imcode.imcms.mapping.DocumentMapper;
 import imcode.server.document.*;
-import imcode.server.document.index.IndexException;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.server.user.UserDomainObject;
 
@@ -192,7 +191,7 @@ public class DocumentService {
         return new Section(section);
     }
 
-    public List searchDocuments(SearchQuery query) throws SearchException {
+    public List getDocuments(SearchQuery query) throws SearchException {
         try {
             final List documentList = getDocumentMapper().getDocumentIndex().search(query.getQuery(), query.getSort(), contentManagementSystem.getCurrentUser().getInternal());
             return new AbstractList() {
@@ -210,7 +209,7 @@ public class DocumentService {
     }
 
     public Document[] search(SearchQuery query) throws SearchException {
-        List documents = searchDocuments(query) ;
+        List documents = getDocuments(query) ;
         return (Document[]) documents.toArray(new Document[documents.size()]);
     }
 

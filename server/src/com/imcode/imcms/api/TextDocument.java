@@ -367,9 +367,7 @@ public class TextDocument extends Document {
          * @param documentToAdd the document to add
          */
         public void addDocument(Document documentToAdd) {
-            ImcmsServices internal = contentManagementSystem.getInternal();
-            DocumentMapper documentMapper = internal.getDocumentMapper();
-            DocumentReference documentReference = documentMapper.getDocumentReference( documentToAdd.getId() );
+            DocumentReference documentReference = new DirectDocumentReference( documentToAdd.getInternal() );
             internalTextDocument.getMenu(menuIndex).addMenuItem(new MenuItemDomainObject(documentReference));
         }
 

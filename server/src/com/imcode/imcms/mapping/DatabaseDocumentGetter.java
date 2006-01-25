@@ -13,10 +13,7 @@ import imcode.server.document.DocumentDomainObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Collections;
+import java.util.*;
 
 public class DatabaseDocumentGetter extends AbstractDocumentGetter {
 
@@ -54,17 +51,44 @@ public class DatabaseDocumentGetter extends AbstractDocumentGetter {
         if (documentIds.isEmpty()) {
             return Collections.EMPTY_LIST ;
         }
-        DocumentList documentList = new DocumentList(documentIds.size());
+        LinkedHashMap documentMap = new LinkedHashMap();
         StringBuffer sql = new StringBuffer(SQL_GET_DOCUMENTS);
         Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
-        DatabaseCommand command = new SqlQueryCommand(sql.toString(), parameters, new CollectionHandler(documentList, new DocumentFromRowFactory()));
+        DatabaseCommand command = new SqlQueryCommand(sql.toString(), parameters, new CollectionHandler(new DocumentMapSet(documentMap), new DocumentFromRowFactory()));
         database.execute(command);
 
-        DocumentMapper documentMapper = services.getDocumentMapper();
+        DocumentList documentList = new DocumentList(documentMap);
 
-        DocumentInitializer initializer = new DocumentInitializer(documentMapper);
+        DocumentInitializer initializer = new DocumentInitializer(services.getDocumentMapper());
         initializer.initDocuments(documentList);
+
         return documentList;
+    }
+
+    private class DocumentMapSet extends AbstractSet {
+
+        private Map map ;
+
+        DocumentMapSet(Map map) {
+            this.map = map;
+        }
+
+        public int size() {
+            return map.size();
+        }
+
+        public boolean add(Object o) {
+            DocumentDomainObject document = (DocumentDomainObject) o ;
+            return null == map.put(new Integer(document.getId()), document) ;
+        }
+
+        public Iterator iterator() {
+            return map.values().iterator() ;
+        }
+
+        public Map getMap() {
+            return map ;
+        }
     }
 
     private Document.PublicationStatus publicationStatusFromInt(int publicationStatusInt) {

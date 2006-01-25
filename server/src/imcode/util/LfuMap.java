@@ -30,17 +30,19 @@ public class LfuMap extends AbstractMapDecorator {
         if ( !map.containsKey(key) && map.size() == maxSize && requestsInMap.size() >= maxSize ) {
             List list = requestsInMap.asList();
             Object lfuKey = list.get(maxSize-1);
-            if (requestsOutsideMap.getFrequency(key) > requestsInMap.getFrequency(lfuKey) ) {
+            int keyFrequency = requestsOutsideMap.getFrequency(key);
+            int lfuKeyFrequency = requestsInMap.getFrequency(lfuKey);
+            if (keyFrequency > lfuKeyFrequency ) {
                 remove(lfuKey) ;
             }
         }
-        if (map.size() < maxSize) {
+        if ( map.size() < maxSize ) {
             Object result = map.put(key, value);
-            if (null == result) {
+            if ( null == result ) {
                 int frequency = requestsOutsideMap.remove(key);
                 requestsInMap.add(key, frequency);
             }
-            return result ;
+            return result;
         }
         return null ;
     }
