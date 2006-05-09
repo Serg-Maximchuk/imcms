@@ -7,4 +7,4 @@ AS
 
       
  update sys_data
- set value = @new_date where type_id = 2
+ set ivalue = @new_date where type_id = 2

@@ -33,8 +33,8 @@ public class ImcmsAuthenticatorAndUserAndRoleMapper implements UserAndRoleRegist
 
     private static final String SQL_SELECT_USERS = "SELECT user_id, login_name, login_password, first_name, last_name, "
                                                    + "title, company, address, city, zip, country, county_council, "
-                                                   + "email, language, active, "
-                                                   + "create_date, external "
+                                                   + "email, ilanguage, active, "
+                                                   + "create_date, iexternal "
                                                    + "FROM users";
 
     public static final String SQL_ROLES_COLUMNS = "roles.role_id, roles.role_name, roles.admin_role, roles.permissions";
@@ -211,9 +211,9 @@ public class ImcmsAuthenticatorAndUserAndRoleMapper implements UserAndRoleRegist
                                                                            + "country = ?,\n"
                                                                            + "county_council = ?,\n"
                                                                            + "email = ?,\n"
-                                                                           + "external = ?,\n"
+                                                                           + "iexternal = ?,\n"
                                                                            + "active = ?,\n"
-                                                                           + "language = ?\n"
+                                                                           + "ilanguage = ?\n"
                                                                            + "WHERE user_id = ?", params ) )).intValue();
         } catch ( DatabaseException e ) {
             throw new UnhandledException(e);
@@ -278,7 +278,7 @@ public class ImcmsAuthenticatorAndUserAndRoleMapper implements UserAndRoleRegist
             if ( user.isImcmsExternal() ) {
                 user.setPassword("");
             }
-            Number newUserId = (Number) services.getDatabase().execute(new InsertIntoTableDatabaseCommand("users", new String[][] {
+            Number newUserId = (Number) services.getDatabase().execute(new InsertIntoTableDatabaseCommand("users", new Object[][] {
                     { "login_name", user.getLoginName() },
                     { "login_password", user.getPassword() },
                     { "first_name", user.getFirstName() },
@@ -291,10 +291,10 @@ public class ImcmsAuthenticatorAndUserAndRoleMapper implements UserAndRoleRegist
                     { "country", user.getCountry() },
                     { "county_council", user.getProvince() },
                     { "email", user.getEmailAddress() },
-                    { "external", user.isImcmsExternal() ? "1" : "0" },
+                    { "iexternal", user.isImcmsExternal() ? "1" : "0" },
                     { "active", user.isActive() ? "1" : "0" },
-                    { "language", user.getLanguageIso639_2() },
-                    { "create_date", Utility.makeSqlStringFromDate(new Date()) }
+                    { "ilanguage", user.getLanguageIso639_2() },
+                    { "create_date", Utility.makeSqlDateFromDate(new Date()) }
             }));
             int newIntUserId = newUserId.intValue();
             user.setId(newIntUserId);
@@ -582,7 +582,7 @@ public class ImcmsAuthenticatorAndUserAndRoleMapper implements UserAndRoleRegist
             final Object[] parameters = new String[] {
                     "" + userToChangeId };
             String[][] phoneNumberData = (String[][]) services.getDatabase().execute(new SqlQueryCommand(
-                    "SELECT   phones.number, phones.phonetype_id\n"
+                    "SELECT   phones.inumber, phones.phonetype_id\n"
                     + "FROM   phones\n"
                     + "WHERE  phones.user_id = ?", parameters, Utility.STRING_ARRAY_ARRAY_HANDLER));
             List phoneNumbers = new ArrayList();

@@ -37,15 +37,31 @@ public class DocumentSavingVisitor extends DocumentStoringVisitor {
 
         int templateId = textDocument.getTemplateId();
         int templateGroupId = textDocument.getTemplateGroupId();
+        final Object[] parameters;
 
-        final Object[] parameters = new String[]{
+        if (null != defaultTemplateId){
+            parameters = new String[]{
             "" + templateId,
             "" + templateGroupId,
-            (null != defaultTemplateId ? "" + defaultTemplateId : null),
+                defaultTemplateId+"",
             null != defaultTemplateIdForRestricted1 ? "" + defaultTemplateIdForRestricted1 : "-1",
             null != defaultTemplateIdForRestricted2 ? "" + defaultTemplateIdForRestricted2 : "-1",
             "" + textDocument.getId()
         };
+        } else {
+            parameters = new String[]{
+                "" + templateId,
+                "" + templateGroupId,
+                null != defaultTemplateIdForRestricted1 ? "" + defaultTemplateIdForRestricted1 : "-1",
+                null != defaultTemplateIdForRestricted2 ? "" + defaultTemplateIdForRestricted2 : "-1",
+                "" + textDocument.getId()
+            };
+            
+            sqlStr = "UPDATE text_docs SET template_id = ?, group_id = ?,\n"
+                        + " default_template_1 = ?, default_template_2 = ? WHERE meta_id = ?";
+        }
+        
+        
         ((Integer)database.execute( new SqlUpdateCommand( sqlStr, parameters ) )).intValue();
 
         updateTextDocumentTexts( textDocument );

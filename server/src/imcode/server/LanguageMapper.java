@@ -151,7 +151,7 @@ public class LanguageMapper {
     private List getListOfLanguageKeysAndNamesInUsersLanguage(UserDomainObject user) {
         final Object[] parameters = new String[] {
                 user.getLanguageIso639_2() };
-        String[][] languages = (String[][]) database.execute(new SqlQueryCommand("select lang_prefix, user_prefix, language from languages where user_prefix = ?", parameters, Utility.STRING_ARRAY_ARRAY_HANDLER));
+        String[][] languages = (String[][]) database.execute(new SqlQueryCommand("select lang_prefix, user_prefix, ilanguage from languages where user_prefix = ?", parameters, Utility.STRING_ARRAY_ARRAY_HANDLER));
         List languagesInOptionList = new ArrayList();
         for ( int i = 0; i < languages.length; i++ ) {
             String langStr = languages[i][0];

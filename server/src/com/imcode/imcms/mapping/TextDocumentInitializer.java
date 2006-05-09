@@ -170,9 +170,9 @@ public class TextDocumentInitializer {
         private void initDocumentsImages() {
             if ( null == documentsImages ) {
                 documentsImages = new HashMap();
-                StringBuffer sql = new StringBuffer("SELECT meta_id,name,image_name,imgurl,"
+                StringBuffer sql = new StringBuffer("SELECT meta_id,iname,image_name,imgurl,"
                                                     + "width,height,border,v_space,h_space,"
-                                                    + "target,align,alt_text,low_scr,linkurl,type "
+                                                    + "target,align,alt_text,low_scr,linkurl,itype "
                                                     + "FROM images WHERE meta_id ");
                 Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
                 database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
@@ -248,7 +248,7 @@ public class TextDocumentInitializer {
         private void initDocumentsTexts() {
             if ( null == documentsTexts ) {
                 documentsTexts = new HashMap();
-                StringBuffer sql = new StringBuffer("SELECT meta_id, name, text, type FROM texts WHERE meta_id ");
+                StringBuffer sql = new StringBuffer("SELECT meta_id, iname, text, itype FROM texts WHERE meta_id ");
                 Integer[] parameters = DocumentInitializer.appendInClause(sql, documentIds);
                 database.execute(new SqlQueryCommand(sql.toString(), parameters, new ResultSetHandler() {
                     public Object handle(ResultSet rs) throws SQLException {

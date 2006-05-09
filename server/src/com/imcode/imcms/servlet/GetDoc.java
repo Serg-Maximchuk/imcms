@@ -166,7 +166,7 @@ public class GetDoc extends HttpServlet {
             String destinationMetaId = (String) imcref.getDatabase().execute(new SqlQueryCommand("select to_meta_id\n"
                                                                                                  + "from browser_docs\n"
                                                                                                  + "join browsers on browsers.browser_id = browser_docs.browser_id\n"
-                                                                                                 + "where meta_id = ? and ? like user_agent order by value desc", parameters, Utility.SINGLE_STRING_HANDLER));
+                                                                                                 + "where meta_id = ? and ? like user_agent order by ivalue desc", parameters, Utility.SINGLE_STRING_HANDLER));
             int toMetaId;
             if ( destinationMetaId != null && !"".equals(destinationMetaId) ) {
                 toMetaId = Integer.parseInt(destinationMetaId);

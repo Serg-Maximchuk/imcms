@@ -98,14 +98,14 @@ public class PasswordMailReminder extends HttpServlet {
 
         if ( validLoginName ) {
 
-            final Object[] parameters = new String[]{
-            "" + PasswordMailReminder.PASSWORD_PERMISSION_ID, postedLoginName
-            };
+            final Object[] parameters = new String[]{postedLoginName};
+            
             String[] queryResult = (String[]) imcref.getDatabase().execute(new SqlQueryCommand(
-                    "select login_password, first_name, last_name, email, min(permissions & ?), lang_prefix \n"
+                    "select login_password, first_name, last_name, email, "
+            		+ "min(permissions - floor(permissions/2)*2), lang_prefix \n"
                     + "from users u \n"
                     + "join lang_prefixes lp \n"
-                    + "    on u.language = lp.lang_prefix\n"
+                    + "    on u.ilanguage = lp.lang_prefix\n"
                     + "join user_roles_crossref urc \n"
                     + "    on u.user_id = urc.user_id left \n"
                     + "join roles r \n"
@@ -197,5 +197,4 @@ public class PasswordMailReminder extends HttpServlet {
         out.print( returnString );
 
     }
-
 }

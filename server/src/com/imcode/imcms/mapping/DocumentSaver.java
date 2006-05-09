@@ -118,7 +118,7 @@ class DocumentSaver {
         sqlStr.append(StringUtils.join(sqlUpdateColumns.iterator(), ","));
         sqlStr.append(" where meta_id = ?");
         sqlUpdateValues.add("" + document.getId());
-        String[] params = (String[]) sqlUpdateValues.toArray(new String[sqlUpdateValues.size()]);
+        Object[] params = sqlUpdateValues.toArray();
         ((Integer)documentMapper.getDatabase().execute( new SqlUpdateCommand( sqlStr.toString(), params ) )).intValue();
     }
 
@@ -228,14 +228,19 @@ class DocumentSaver {
 
     static void makeDateSqlUpdateClause(String columnName, Date date, List sqlUpdateColumns,
                                         List sqlUpdateValues) {
-        makeStringSqlUpdateClause(columnName, Utility.makeSqlStringFromDate(date), sqlUpdateColumns, sqlUpdateValues);
+        if (null != date) {
+            sqlUpdateColumns.add(columnName + " = ?");
+            sqlUpdateValues.add(Utility.makeSqlDateFromDate(date));
+        } else {
+            sqlUpdateColumns.add(columnName + " = NULL");
+        }
     }
 
     static void makeIntSqlUpdateClause(String columnName, Integer integer, ArrayList sqlUpdateColumns,
                                        ArrayList sqlUpdateValues) {
         if (null != integer) {
             sqlUpdateColumns.add(columnName + " = ?");
-            sqlUpdateValues.add("" + integer);
+            sqlUpdateValues.add(integer);
         } else {
             sqlUpdateColumns.add(columnName + " = NULL");
         }
@@ -252,27 +257,28 @@ class DocumentSaver {
     }
 
     private int sqlInsertIntoMeta(DocumentDomainObject document) {
+        Integer status = Integer.getInteger(document.getPublicationStatus().toString());
 
-        final Number documentId = (Number) documentMapper.getDatabase().execute(new InsertIntoTableDatabaseCommand("meta", new String[][]{
-            { "doc_type", document.getDocumentTypeId() + ""},
+        final Number documentId = (Number) documentMapper.getDatabase().execute(new InsertIntoTableDatabaseCommand("meta", new Object[][]{
+            { "doc_type", new Integer(document.getDocumentTypeId()) },
             { "meta_headline", document.getHeadline()},
             { "meta_text", document.getMenuText()},
             { "meta_image", document.getMenuImage()},
-            { "owner_id", document.getCreatorId() + ""},
-            { "permissions", makeSqlStringFromBoolean(document.isRestrictedOneMorePrivilegedThanRestrictedTwo())},
-            { "shared", makeSqlStringFromBoolean(document.isLinkableByOtherUsers())},
-            { "show_meta", makeSqlStringFromBoolean(document.isVisibleInMenusForUnauthorizedUsers())},
+            { "owner_id", new Integer(document.getCreatorId())},
+            { "permissions", new Integer(document.isRestrictedOneMorePrivilegedThanRestrictedTwo() ? 1 : 0)},
+            { "shared",  new Integer(document.isLinkableByOtherUsers() ? 1 : 0)},
+            { "show_meta", new Integer(document.isVisibleInMenusForUnauthorizedUsers() ? 1 : 0)},
             { "lang_prefix", document.getLanguageIso639_2()},
-            { "date_created", Utility.makeSqlStringFromDate(document.getCreatedDatetime()) },
-            { "date_modified", Utility.makeSqlStringFromDate(document.getModifiedDatetime())},
-            { "disable_search", makeSqlStringFromBoolean(document.isSearchDisabled())},
+            { "date_created", Utility.makeSqlDateFromDate(document.getCreatedDatetime()) },
+            { "date_modified", Utility.makeSqlDateFromDate(document.getModifiedDatetime())},
+            { "disable_search",  new Integer(document.isSearchDisabled() ? 1 : 0)},
             { "target", document.getTarget()},
-            { "activate", "1"},
-            { "archived_datetime", Utility.makeSqlStringFromDate(document.getArchivedDatetime())},
-            { "publisher_id", null != document.getPublisherId() ? document.getPublisherId() + "" : null},
-            { "status", "" + document.getPublicationStatus()},
-            { "publication_start_datetime", Utility.makeSqlStringFromDate(document.getPublicationStartDatetime())},
-            { "publication_end_datetime", Utility.makeSqlStringFromDate(document.getPublicationEndDatetime())}
+            { "activate", new Integer(1)},
+            { "archived_datetime", Utility.makeSqlDateFromDate(document.getArchivedDatetime())},
+            { "publisher_id", document.getPublisherId()},
+            { "status", status == null ? new Integer(0) : status},
+            { "publication_start_datetime", Utility.makeSqlDateFromDate(document.getPublicationStartDatetime())},
+            { "publication_end_datetime", Utility.makeSqlDateFromDate(document.getPublicationEndDatetime())}
         }));
         return documentId.intValue();
     }

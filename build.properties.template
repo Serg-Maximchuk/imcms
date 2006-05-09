@@ -7,7 +7,7 @@
 # Do *not* use back-slashes ('\'). Use forward-slashes ('/').
 # You only need this if you want to use "ant install" and "ant install-war".
 
-deployroot =
+deployroot = /home/mdorofeev/.netbeans/5.0/jakarta-tomcat-5.5.9_base/webapps
 
 
 # The name of the webapp. Used for filenames and URIs.
@@ -26,7 +26,7 @@ db-host = localhost
 db-name = imcms
 db-user =
 db-pass =
-db-maxconnections = 20
+db-maxconnections = 100
 
 # For MSSQL
 db-target = mssql
@@ -42,6 +42,13 @@ db-url = ${db-url-without-db-name};DatabaseName=${db-name}
 #db-url-without-db-name = jdbc:mysql://${db-host}:${db-port}/
 #db-url = ${db-url-without-db-name}${db-name}
 
+# For Oracle
+#db-target = oracle
+#db-port = 1521
+#db-driver = oracle.jdbc.driver.OracleDriver
+#db-sid = imcmsdb
+#db-url-without-db-name = jdbc:oracle:thin:@${db-host}:${db-port}/
+#db-url = ${db-url-without-db-name}${db-name}
 
 external-authenticator =
 external-user-and-role-registry =
@@ -126,7 +133,12 @@ log4j-config = log4j-nodebug.xml
 
 # Tomcat settings for quick deployment during development
 
-tomcat-admin-username = admin
+tomcat-admin-username = 
 tomcat-admin-password =
 tomcat-webapp-manager-url = http://localhost:8080/manager
 tomcat-deployroot-local-directory =
+
+
+# If you want to include an addon under addons/ in the build, name the directory here.
+
+#addon =

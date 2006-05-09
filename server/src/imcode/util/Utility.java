@@ -321,7 +321,17 @@ public class Utility {
         if (null == date) {
             return null;
         }
-        return new SimpleDateFormat(DateConstants.DATETIME_FORMAT_STRING).format(date);
+        
+        String dateStr =  new SimpleDateFormat(DateConstants.DATETIME_FORMAT_STRING).format(date);
+        return dateStr;
+    }
+    
+    public static java.sql.Timestamp makeSqlDateFromDate(Date date) {
+        if (null == date) {
+            return null;
+        }
+        
+        return new java.sql.Timestamp(date.getTime());
     }
 
     public static Date parseDateFormat(DateFormat dateFormat, String dateString) {

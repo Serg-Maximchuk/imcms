@@ -26,25 +26,25 @@ public class CategoryMapper {
     private Database database;
     private static final int UNLIMITED_MAX_CATEGORY_CHOICES = 0;
 
-    private static final String SQL__CATEGORY__COLUMNS = "categories.category_id, categories.name, categories.description, categories.image";
-    public static final String SQL__CATEGORY_TYPE__COLUMNS = "category_types.category_type_id, category_types.name, category_types.max_choices, category_types.inherited";
+    private static final String SQL__CATEGORY__COLUMNS = "categories.category_id, categories.iname, categories.description, categories.image";
+    public static final String SQL__CATEGORY_TYPE__COLUMNS = "category_types.category_type_id, category_types.iname, category_types.max_choices, category_types.inherited";
     public static final String SQL_GET_ALL_CATEGORIES_OF_TYPE = "SELECT "+SQL__CATEGORY__COLUMNS+"\n"
                                                                 + "FROM categories\n"
                                                                 + "JOIN category_types ON categories.category_type_id = category_types.category_type_id\n"
                                                                 + "WHERE categories.category_type_id = ?\n"
-                                                                + "ORDER BY categories.name";
+                                                                + "ORDER BY categories.iname";
     public static final String SQL__GET_CATEGORY_BY_NAME_AND_CATEGORY_TYPE_ID = "SELECT " + SQL__CATEGORY__COLUMNS +", "
                                                                                 + SQL__CATEGORY_TYPE__COLUMNS + "\n"
                                                                                 + "FROM categories\n"
                                                                                 + "JOIN category_types\n"
                                                                                 + "ON categories.category_type_id = category_types.category_type_id\n"
-                                                                                + "WHERE categories.name = ?\n"
+                                                                                + "WHERE categories.iname = ?\n"
                                                                                 + "AND category_types.category_type_id = ?";
 
-    private static final String SQL__GET_ALL_CATEGORY_TYPES = "SELECT " + SQL__CATEGORY_TYPE__COLUMNS + " FROM category_types ORDER BY name";
+    private static final String SQL__GET_ALL_CATEGORY_TYPES = "SELECT " + SQL__CATEGORY_TYPE__COLUMNS + " FROM category_types ORDER BY iname";
     private static final String SQL__GET_CATEGORY_TYPE_BY_NAME = "SELECT "+SQL__CATEGORY_TYPE__COLUMNS +"\n"
                                                                  + "FROM category_types\n"
-                                                                 + "WHERE category_types.name = ?";
+                                                                 + "WHERE category_types.iname = ?";
     private static final String SQL__GET_CATEGORY_TYPE_BY_ID = "select "+SQL__CATEGORY_TYPE__COLUMNS +" from category_types where category_type_id = ? ";
     private static final String SQL__GET_CATEGORY_BY_ID = "SELECT "+SQL__CATEGORY__COLUMNS+", "+
                                                           SQL__CATEGORY_TYPE__COLUMNS +"\n"
@@ -129,7 +129,7 @@ public class CategoryMapper {
 
     private Object[][] getColumnNamesAndValuesForCategoryType(CategoryTypeDomainObject categoryType) {
         return new Object[][] {
-                { "name", categoryType.getName() },
+                { "iname", categoryType.getName() },
                 { "max_choices", new Integer(categoryType.getMaxChoices()) },
                 { "inherited", new Integer(categoryType.isInherited() ? 1 : 0) },
         };
@@ -149,7 +149,7 @@ public class CategoryMapper {
     private Object[][] getColumnNamesAndValuesForCategory(CategoryDomainObject category) {
         return new Object[][] {
                 { "category_type_id", new Integer(category.getType().getId()) },
-                { "name", category.getName() },
+                { "iname", category.getName() },
                 { "description", category.getDescription() },
                 { "image", category.getImageUrl() }
         };

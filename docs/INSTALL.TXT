@@ -34,6 +34,9 @@ Setting up the database:
 
       For details with setting up a Microsoft SQL Server database, see the file INSTALL_MSSQL.TXT.
 
+      For details with setting up an Oracle database, see the file INSTALL_ORACLE.TXT.
+
+
     Example:
 
         On MySQL something like the following might be appropriate:

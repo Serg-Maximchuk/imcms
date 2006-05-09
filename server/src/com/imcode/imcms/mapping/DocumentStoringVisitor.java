@@ -131,9 +131,9 @@ public class DocumentStoringVisitor extends DocumentVisitor {
 
     private void sqlInsertText(TextDocumentDomainObject textDocument, Integer textIndex, TextDomainObject text) {
         final Object[] parameters = new String[]{
-            "" + textDocument.getId(), "" + textIndex, text.getText(), "" + text.getType()
+            "" + textDocument.getId(), "" + textIndex, text.getText()+" ", "" + text.getType()
         };
-        ((Integer)database.execute( new SqlUpdateCommand( "INSERT INTO texts (meta_id, name, text, type) VALUES(?,?,?,?)", parameters ) )).intValue();
+        ((Integer)database.execute( new SqlUpdateCommand( "INSERT INTO texts (meta_id, iname, text, itype) VALUES(?,?,?,?)", parameters ) )).intValue();
     }
 
     private void sqlInsertTextDocumentInclude(TextDocumentDomainObject textDocument, Integer includeIndex,
@@ -158,13 +158,13 @@ public class DocumentStoringVisitor extends DocumentVisitor {
                 + "alt_text    = ?, \n"
                 + "low_scr     = ?, \n"
                 + "linkurl     = ?, \n"
-                + "type        = ?  \n"
+                + "itype        = ?  \n"
                 + "where meta_id = ? \n"
-                + "and name = ? \n";
+                + "and iname = ? \n";
 
         int rowUpdateCount = sqlImageUpdateQuery(sqlStr, image, meta_id, img_no);
         if (0 == rowUpdateCount) {
-            sqlStr = "insert into images (imgurl, width, height, border, v_space, h_space, image_name, target, align, alt_text, low_scr, linkurl, type, meta_id, name)"
+            sqlStr = "insert into images (imgurl, width, height, border, v_space, h_space, image_name, target, align, alt_text, low_scr, linkurl, itype, meta_id, iname)"
                     + " values(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?)";
 
             sqlImageUpdateQuery(sqlStr, image, meta_id, img_no);

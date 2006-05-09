@@ -29,12 +29,13 @@ public class DocumentCreatingVisitor extends DocumentStoringVisitor {
         String sqlUrlDocsInsertStr = DocumentStoringVisitor.makeSqlInsertString( "url_docs", urlDocumentColumns );
 
         final Object[] parameters = new String[] {
-                                             "" + document.getId(), "", "", document.getUrl(), "", ""
+                                             "" + document.getId(), "", "", document.getUrl(), "", "eng"
                                              };
         ((Integer)database.execute( new SqlUpdateCommand( sqlUrlDocsInsertStr, parameters ) )).intValue();
     }
 
     public void visitTextDocument( final TextDocumentDomainObject textDocument ) {
+        
         String sqlTextDocsInsertStr = "INSERT INTO text_docs (meta_id, template_id, group_id, default_template, default_template_1, default_template_2) VALUES (?,?,?,?,?,?)";
         int templateId = textDocument.getTemplateId();
         Integer defaultTemplate = textDocument.getDefaultTemplateId();
@@ -42,17 +43,36 @@ public class DocumentCreatingVisitor extends DocumentStoringVisitor {
         Integer defaultTemplateForRestricted2 = textDocument.getDefaultTemplateIdForRestricted2();
         int templateGroupId = textDocument.getTemplateGroupId();
         int textDocumentId = textDocument.getId();
-        final Object[] parameters = new String[] {
+        final Object[] parameters;
+        
+        if (null != defaultTemplate){            
+            parameters = new String[] {
                 "" + textDocumentId,
                 "" + templateId,
                 "" + templateGroupId,
-                null != defaultTemplate ? "" + defaultTemplate : null,
+                defaultTemplate+"",
+                null != defaultTemplateForRestricted1
+                        ? "" + defaultTemplateForRestricted1 : "-1",
+                null != defaultTemplateForRestricted2
+                        ? "" + defaultTemplateForRestricted2 : "-1",
+            };
+        } else {
+            sqlTextDocsInsertStr = "INSERT INTO text_docs (meta_id, template_id, group_id, default_template_1, default_template_2) VALUES (?,?,?,?,?)";  
+            parameters = new String[] {
+                "" + textDocumentId,
+                "" + templateId,
+                "" + templateGroupId,
                 null != defaultTemplateForRestricted1
                 ? "" + defaultTemplateForRestricted1 : "-1",
                 null != defaultTemplateForRestricted2
                 ? "" + defaultTemplateForRestricted2 : "-1",
                 };
+        }
+
+        
         ((Integer)database.execute( new SqlUpdateCommand( sqlTextDocsInsertStr, parameters ) )).intValue();
+        
+        
         updateTextDocumentTexts( textDocument );
         updateTextDocumentImages( textDocument );
         updateTextDocumentIncludes( textDocument );

@@ -378,7 +378,7 @@
 
         <mkdir dir="${tmp}"/>
 
-        <for list="mssql,mysql" param="database">                
+        <for list="mssql,mysql,oracle" param="database">                
             <sequential>
                 <for list="swe,eng" param="language">
                     <sequential>
@@ -538,7 +538,7 @@
             casesensitive="false"/>
         <propertyregex property="versionnumber"
             input="${version}"
-            regexp="^(.*?)(-.*)?$"
+            regexp="(.*)-.*"
             override="true"
             replace="\1"
             casesensitive="false"/>

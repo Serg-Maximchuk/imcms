@@ -218,7 +218,7 @@ public class DocumentMapper implements DocumentGetter {
     }
 
     public BrowserDocumentDomainObject.Browser[] getAllBrowsers() {
-        String sqlStr = "SELECT browser_id, name, value FROM browsers WHERE browser_id != 0";
+        String sqlStr = "SELECT browser_id, iname, ivalue FROM browsers WHERE browser_id != 0";
         String[] parameters = new String[0];
         String[][] sqlResult = (String[][]) getDatabase().execute(new SqlQueryCommand(sqlStr, parameters, Utility.STRING_ARRAY_ARRAY_HANDLER));
         List browsers = new ArrayList();
@@ -232,7 +232,7 @@ public class DocumentMapper implements DocumentGetter {
         if (browserIdToGet == BrowserDocumentDomainObject.Browser.DEFAULT.getId()) {
             return BrowserDocumentDomainObject.Browser.DEFAULT;
         }
-        String sqlStr = "SELECT browser_id, name, value FROM browsers WHERE browser_id = ?";
+        String sqlStr = "SELECT browser_id, iname, ivalue FROM browsers WHERE browser_id = ?";
         String[] params = new String[]{"" + browserIdToGet};
         String[] sqlRow = (String[]) getDatabase().execute(new SqlQueryCommand(sqlStr, params, Utility.STRING_ARRAY_HANDLER));
         return createBrowserFromSqlRow(sqlRow);
@@ -286,7 +286,7 @@ public class DocumentMapper implements DocumentGetter {
         String[] parameters = new String[]{
             user.getLanguageIso639_2()
         };
-        String[][] rows = (String[][]) getDatabase().execute(new SqlQueryCommand("SELECT doc_type, type FROM doc_types WHERE lang_prefix = ? ORDER BY doc_type", parameters, Utility.STRING_ARRAY_ARRAY_HANDLER));
+        String[][] rows = (String[][]) getDatabase().execute(new SqlQueryCommand("SELECT doc_type, itype FROM doc_types WHERE lang_prefix = ? ORDER BY doc_type", parameters, Utility.STRING_ARRAY_ARRAY_HANDLER));
         Map allDocumentTypeIdsAndNamesInUsersLanguage = new TreeMap();
         for (int i = 0; i < rows.length; i++) {
             String[] row = rows[i];
