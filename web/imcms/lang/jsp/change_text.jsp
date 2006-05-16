@@ -122,6 +122,8 @@ boolean showEditorCookie = !getCookie("imcms_hide_editor", request).equals("true
 			<label for="format_type2" id="format_type2_label" style="display:none" accesskey="<%= isMac ? "D" : "E" %>" title="Editor (<%= isMac ? "Ctrl" : "Alt" %> + <%= isMac ? "D" : "E" %>)">
 			&nbsp;<%= isMac ? "E<u>d</u>itor" : "<u>E</u>ditor" %>&nbsp;</label>&nbsp;</td><%
 		} %>
+			<td style="padding: 0 10px 0 20px;">
+			<input type="button" value="<? templates/sv/change_text.html/3000 ?>" class="imcmsFormBtnSmall" onClick="openRestoreWin(); return false"></td>
 		</tr>
 		</table></td>
 		<td align="right">
@@ -137,10 +139,16 @@ boolean showEditorCookie = !getCookie("imcms_hide_editor", request).equals("true
 #gui_bottom()
 #gui_outer_end()
 
+<iframe name="textAutosaverIframe" id="textAutosaverIframe" style="position:absolute; left:-10000px; top:-10000px;" src="$contextPath/imcms/$language/jsp/docadmin/text/text_autosaver.jsp?editor=editor&amp;textarea=txtCont&amp;id=<%= textEditPage.getDocumentId() + "_" + textEditPage.getTextIndex() %>"></iframe>
+
 <script language="javascript">
 <!--
 var winW = (document.all) ? document.body.offsetWidth - 20 : (document.getElementById) ? document.body.clientWidth  : 0 ;
 var winH = (document.all) ? document.body.offsetHeight - 4 : (document.getElementById) ? document.body.clientHeight : 0 ;
+
+function openRestoreWin() {
+	popWinOpen(700,600,'$contextPath/imcms/$language/jsp/docadmin/text/text_autosaver_restore.jsp?editor=editor&amp;textarea=txtCont&amp;id=<%= textEditPage.getDocumentId() + "_" + textEditPage.getTextIndex() %>','restoreWin',1,0) ;
+}
 
 function setEditorSize() {
 	if (document.getElementById) {
