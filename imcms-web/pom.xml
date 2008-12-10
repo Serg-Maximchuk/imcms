@@ -5,7 +5,7 @@
   <artifactId>imcms-web</artifactId>
   <packaging>war</packaging>
   <version>5.0-SNAPSHOT</version>
-  <name>imCMS</name>
+  <name>imCMS-jar</name>
 
   <parent>
     <groupId>com.imcode.imcms.imagearchive</groupId>
