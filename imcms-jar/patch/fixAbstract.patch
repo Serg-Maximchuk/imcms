@@ -1,7 +1,7 @@
 Index: src/main/java/com/imcode/imcms/db/SingleConnectionDataSource.java
 ===================================================================
---- src/main/java/com/imcode/imcms/db/SingleConnectionDataSource.java	(revision 13193)
-+++ src/main/java/com/imcode/imcms/db/SingleConnectionDataSource.java	(working copy)
+--- main/java/com/imcode/imcms/db/SingleConnectionDataSource.java	(revision 13193)
++++ main/java/com/imcode/imcms/db/SingleConnectionDataSource.java	(working copy)
 @@ -8,7 +8,7 @@
  
  import com.imcode.db.jdbc.ConnectionWrapper;

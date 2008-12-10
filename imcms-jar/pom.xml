@@ -419,6 +419,51 @@
                 </executions>
             </plugin>  		
   		
+
+
+          <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+
+                      <artifactId>maven-patch-plugin</artifactId>
+                                              <configuration>
+
+                                              <patchTargetDir>src</patchTargetDir>
+
+                                              <skipApplication>false</skipApplication>
+                                                          </configuration>
+
+                                                          <executions>
+
+                                                          <execution>
+
+                                                          <id>bugfix-patches</id>
+
+                                                          <configuration>
+
+                                                          <patchDirectory>patch/</patchDirectory>
+
+                                                          <patchTrackingFile>${project.build.directory}/optimization-files/bugfix/patches-applied.txt</patchTrackingFile>
+
+                                                          <naturalOrderProcessing>true</naturalOrderProcessing>
+
+                                                          </configuration>
+
+                                                          <phase>process-sources</phase>
+
+                                                          <goals>
+
+                                                          <goal>apply</goal>
+
+                                                          </goals>
+
+                                                          </execution>
+
+                                                          </executions>
+
+                                                          </plugin>
+                                                          
+
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
