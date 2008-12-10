@@ -1,0 +1,92 @@
+Index: imcms/lang/jsp/category_admin.jsp
+===================================================================
+--- imcms/lang/jsp/category_admin.jsp	(revision 13203)
++++ imcms/lang/jsp/category_admin.jsp	(working copy)
+@@ -134,7 +134,7 @@
+         }
+         %>
+         <input type="hidden" name="<%= AdminCategories.PARAMETER_MODE__ADD_CATEGORY_TYPE %>" value="1">
+-        <% request.setAttribute( "categoryType", new CategoryTypeDomainObject( 0,"",1,true) );
++        <% request.setAttribute( "categoryType", new CategoryTypeDomainObject( 0,"",1,true, false) );
+          %><jsp:include page="category_admin_category_type.jsp"/>
+ 
+         <%if( messageToUser.length() > 0 ) { %>
+Index: imcms/lang/jsp/category_admin_category_type.jsp
+===================================================================
+--- imcms/lang/jsp/category_admin_category_type.jsp	(revision 13203)
++++ imcms/lang/jsp/category_admin_category_type.jsp	(working copy)
+@@ -33,3 +33,7 @@
+                 <td><? install/htdocs/sv/jsp/category_admin/inherited ?></td>
+                 <td><input type="checkbox" name="<%=AdminCategories.PARAMETER__INHERITED%>" value="1" <%= categoryTypeToEdit.isInherited() ? "checked" : "" %> ></td>
+             </tr>
++            <tr>
++                <td><? install/htdocs/sv/jsp/category_admin/image_archive ?></td>
++                <td><input type="checkbox" name="<%=AdminCategories.PARAMETER__IMAGE_ARCHIVE%>" value="1" <%= categoryTypeToEdit.isImageArchive() ? "checked" : "" %> ></td>
++            </tr>
+Index: imcms/lang/jsp/change_img.jsp
+===================================================================
+--- imcms/lang/jsp/change_img.jsp	(revision 13203)
++++ imcms/lang/jsp/change_img.jsp	(working copy)
+@@ -308,7 +308,7 @@
+ 
+ 						<%-- Browse Image button --%>
+ 						<td style="padding-left:10px;"><input type="submit"
+-							name="<%= ImageEditPage.REQUEST_PARAMETER__GO_TO_IMAGE_BROWSER_BUTTON %>"
++							name="<%= ImageEditPage.REQUEST_PARAMETER__GO_TO_IMAGE_ARCHIVE_BUTTON %>"
+ 							class="imcmsFormBtnSmall" style="width:180px"
+ 							value="<? templates/sv/change_img.html/2004 ?>"
+ 							onClick="setI18nCodeParameterValue('${image.language.code}')"/></td>
+@@ -527,4 +527,4 @@
+ 	</div>
+ 	</body>
+ 	</html>
+-</vel:velocity>
+\ No newline at end of file
++</vel:velocity>
+Index: WEB-INF/conf/imcms_eng.properties
+===================================================================
+--- WEB-INF/conf/imcms_eng.properties	(revision 13203)
++++ WEB-INF/conf/imcms_eng.properties	(working copy)
+@@ -924,6 +924,8 @@
+ 
+ install/htdocs/sv/jsp/category_admin/inherited = Inherited to new documents
+ 
++install/htdocs/sv/jsp/category_admin/image_archive = Used by image archive
++
+ install/htdocs/sv/jsp/category_admin/remove_category = Remove category
+ 
+ install/htdocs/sv/jsp/category_admin/remove_category_type = Remove category type
+Index: WEB-INF/conf/imcms_swe.properties
+===================================================================
+--- WEB-INF/conf/imcms_swe.properties	(revision 13203)
++++ WEB-INF/conf/imcms_swe.properties	(working copy)
+@@ -925,6 +925,8 @@
+ 
+ install/htdocs/sv/jsp/category_admin/inherited = \u00c4rvs till nya dokument
+ 
++install/htdocs/sv/jsp/category_admin/image_archive = Used by image archive
++
+ install/htdocs/sv/jsp/category_admin/remove_category = Ta bort kategori
+ 
+ install/htdocs/sv/jsp/category_admin/remove_category_type = Ta bort kategorityp
+Index: WEB-INF/conf/server.properties
+===================================================================
+--- WEB-INF/conf/server.properties	(revision 13203)
++++ WEB-INF/conf/server.properties	(working copy)
+@@ -47,6 +47,7 @@
+ 
+ # Url, relative to the context path
+ ImageUrl = /images/
++ImageArchiveUrl = 192.168.2.76:8082/image-archive-web/archive
+ 
+ 
+ # If this is set, a JSESSIONID-cookie will be sent to clients, using this domain.
+@@ -73,7 +74,7 @@
+ 
+ # The paths which may be accessed through FileAdmin, relative to the webapp root.
+ # Separated by ';' or ':'.
+-FileAdminRootPaths = css/;images/;imcms/;javascript/;jsp/;login/;user/;WEB-INF/includes/;WEB-INF/logs;WEB-INF/templates/
++FileAdminRootPaths = css/;images/;imcms/;javascript/;jsp/;login/;user/;WEB-INF/includes/;WEB-INF/logs;WEB-INF/templates/;WEB-INF/libraries/
+ 
+ 
+ # Workaround for servlet containers (e.g. Tomcat)
