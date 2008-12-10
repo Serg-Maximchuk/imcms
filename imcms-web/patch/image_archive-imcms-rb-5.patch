@@ -1,7 +1,7 @@
-Index:main/webapps/imcms/lang/jsp/category_admin.jsp
+Index: src/main/webapps/imcms/lang/jsp/category_admin.jsp
 ===================================================================
----main/webapps/imcms/lang/jsp/category_admin.jsp	(revision 13203)
-+++main/webapps/imcms/lang/jsp/category_admin.jsp	(working copy)
+--- main/webapps/imcms/lang/jsp/category_admin.jsp	(revision 13203)
++++ main/webapps/imcms/lang/jsp/category_admin.jsp	(working copy)
 @@ -134,7 +134,7 @@
          }
          %>
@@ -11,10 +11,10 @@ Index:main/webapps/imcms/lang/jsp/category_admin.jsp
           %><jsp:include page="category_admin_category_type.jsp"/>
  
          <%if( messageToUser.length() > 0 ) { %>
-Index:main/webapps/imcms/lang/jsp/category_admin_category_type.jsp
+Index: src/main/webapps/imcms/lang/jsp/category_admin_category_type.jsp
 ===================================================================
----main/webapps/imcms/lang/jsp/category_admin_category_type.jsp	(revision 13203)
-+++main/webapps/imcms/lang/jsp/category_admin_category_type.jsp	(working copy)
+--- main/webapps/imcms/lang/jsp/category_admin_category_type.jsp	(revision 13203)
++++ main/webapps/imcms/lang/jsp/category_admin_category_type.jsp	(working copy)
 @@ -33,3 +33,7 @@
                  <td><? install/htdocs/sv/jsp/category_admin/inherited ?></td>
                  <td><input type="checkbox" name="<%=AdminCategories.PARAMETER__INHERITED%>" value="1" <%= categoryTypeToEdit.isInherited() ? "checked" : "" %> ></td>
@@ -23,10 +23,10 @@ Index:main/webapps/imcms/lang/jsp/category_admin_category_type.jsp
 +                <td><? install/htdocs/sv/jsp/category_admin/image_archive ?></td>
 +                <td><input type="checkbox" name="<%=AdminCategories.PARAMETER__IMAGE_ARCHIVE%>" value="1" <%= categoryTypeToEdit.isImageArchive() ? "checked" : "" %> ></td>
 +            </tr>
-Index:main/webapps/imcms/lang/jsp/change_img.jsp
+Index: src/main/webapps/imcms/lang/jsp/change_img.jsp
 ===================================================================
----main/webapps/imcms/lang/jsp/change_img.jsp	(revision 13203)
-+++main/webapps/imcms/lang/jsp/change_img.jsp	(working copy)
+--- main/webapps/imcms/lang/jsp/change_img.jsp	(revision 13203)
++++ main/webapps/imcms/lang/jsp/change_img.jsp	(working copy)
 @@ -308,7 +308,7 @@
  
  						<%-- Browse Image button --%>
@@ -43,10 +43,10 @@ Index:main/webapps/imcms/lang/jsp/change_img.jsp
 -</vel:velocity>
 \ No newline at end of file
 +</vel:velocity>
-Index:main/webapps/WEB-INF/conf/imcms_eng.properties
+Index: src/main/webapps/WEB-INF/conf/imcms_eng.properties
 ===================================================================
----main/webapps/WEB-INF/conf/imcms_eng.properties	(revision 13203)
-+++main/webapps/WEB-INF/conf/imcms_eng.properties	(working copy)
+--- main/webapps/WEB-INF/conf/imcms_eng.properties	(revision 13203)
++++ main/webapps/WEB-INF/conf/imcms_eng.properties	(working copy)
 @@ -924,6 +924,8 @@
  
  install/htdocs/sv/jsp/category_admin/inherited = Inherited to new documents
@@ -56,10 +56,10 @@ Index:main/webapps/WEB-INF/conf/imcms_eng.properties
  install/htdocs/sv/jsp/category_admin/remove_category = Remove category
  
  install/htdocs/sv/jsp/category_admin/remove_category_type = Remove category type
-Index:main/webapps/WEB-INF/conf/imcms_swe.properties
+Index: src/main/webapps/WEB-INF/conf/imcms_swe.properties
 ===================================================================
----main/webapps/WEB-INF/conf/imcms_swe.properties	(revision 13203)
-+++main/webapps/WEB-INF/conf/imcms_swe.properties	(working copy)
+--- main/webapps/WEB-INF/conf/imcms_swe.properties	(revision 13203)
++++ main/webapps/WEB-INF/conf/imcms_swe.properties	(working copy)
 @@ -925,6 +925,8 @@
  
  install/htdocs/sv/jsp/category_admin/inherited = \u00c4rvs till nya dokument
@@ -69,10 +69,10 @@ Index:main/webapps/WEB-INF/conf/imcms_swe.properties
  install/htdocs/sv/jsp/category_admin/remove_category = Ta bort kategori
  
  install/htdocs/sv/jsp/category_admin/remove_category_type = Ta bort kategorityp
-Index:main/webapps/WEB-INF/conf/server.properties
+Index: src/main/webapps/WEB-INF/conf/server.properties
 ===================================================================
----main/webapps/WEB-INF/conf/server.properties	(revision 13203)
-+++main/webapps/WEB-INF/conf/server.properties	(working copy)
+--- main/webapps/WEB-INF/conf/server.properties	(revision 13203)
++++ main/webapps/WEB-INF/conf/server.properties	(working copy)
 @@ -47,6 +47,7 @@
  
  # Url, relative to the context path
