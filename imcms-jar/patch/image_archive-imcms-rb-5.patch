@@ -1,321 +1,135 @@
-Index: src/main/java/imcode/server/ImcmsConstants.java
+Index: main/java/com/imcode/imcms/api/ContentManagementSystem.java
 ===================================================================
---- src/main/java/imcode/server/ImcmsConstants.java	(revision 13135)
-+++ src/main/java/imcode/server/ImcmsConstants.java	(working copy)
-@@ -49,7 +49,15 @@
-     
-     /** Permission to change the includes of a text-document. **/
-     public final static int PERM_EDIT_TEXT_DOCUMENT_GROUPS   = (1 << 21); //  2097152
-+    
-+    
-+    /** Permission to use images in image archive */
-+    public final static int PERM_IMAGE_ARCHIVE_USE_IMAGE = (1 << 22);
-+    
-+    /** Permission to change images in image archive */
-+    public final static int PERM_IMAGE_ARCHIVE_CHANGE_IMAGE = (1 << 23);
+--- main/java/com/imcode/imcms/api/ContentManagementSystem.java	(revision 13201)
++++ main/java/com/imcode/imcms/api/ContentManagementSystem.java	(working copy)
+@@ -7,6 +7,7 @@
  
-+    
-     /* Log instances. */
+ import javax.servlet.ServletRequest;
+ import javax.servlet.http.HttpServletRequest;
++import javax.servlet.http.HttpServletResponse;
  
-     /** The access-log, used for keeping track of page hits. **/
-Index: src/main/java/imcode/server/Config.java
+ public abstract class ContentManagementSystem {
+ 
+@@ -41,7 +42,7 @@
+      * @param password
+      * @return The new ContentManagementSystem, or null if the login failed.
+      */
+-    public static ContentManagementSystem login(HttpServletRequest request, String username, String password) {
++    public static ContentManagementSystem login(HttpServletRequest request, HttpServletResponse response, String username, String password) {
+         ImcmsServices services = Imcms.getServices();
+         UserDomainObject user = services.verifyUser(username, password);
+ 
+@@ -57,6 +58,12 @@
+             cms.getUserService().updateUserSession(currentUser);
+         }
+         
++        String rememberCd = user.getRememberCd();
++        if (rememberCd == null || rememberCd.isEmpty()) {
++        	cms.getUserService().updateUserRememberCd(user);
++        }
++        Utility.setRememberCdCookie(request, response, user.getRememberCd());
++        
+         Utility.makeUserLoggedIn(request, user);
+ 
+         return cms;
+Index: main/java/com/imcode/imcms/api/DocumentService.java
 ===================================================================
---- src/main/java/imcode/server/Config.java	(revision 13135)
-+++ src/main/java/imcode/server/Config.java	(working copy)
-@@ -26,6 +26,7 @@
-     private String workaroundUriEncoding;
-     private boolean secureLoginRequired;
-     private boolean denyMultipleUserLogin;
-+    private String imageArchiveUrl;
- 
-     public String getWorkaroundUriEncoding() {
-         return workaroundUriEncoding;
-@@ -181,4 +182,12 @@
-     public void setDenyMultipleUserLogin(boolean denyMultipleUserLogin) {
-         this.denyMultipleUserLogin = denyMultipleUserLogin;
-     }
-+    
-+    public String getImageArchiveUrl() {
-+    	return imageArchiveUrl;
-+    }
-+    
-+    public void setImageArchiveUrl(String imageArchiveUrl) {
-+    	this.imageArchiveUrl = imageArchiveUrl;
-+    }
- }
-Index: src/main/java/imcode/server/user/ImcmsAuthenticatorAndUserAndRoleMapper.java
-===================================================================
---- src/main/java/imcode/server/user/ImcmsAuthenticatorAndUserAndRoleMapper.java	(revision 13135)
-+++ src/main/java/imcode/server/user/ImcmsAuthenticatorAndUserAndRoleMapper.java	(working copy)
-@@ -47,7 +47,7 @@
-     private static final String SQL_SELECT_USERS = "SELECT user_id, login_name, login_password, first_name, last_name, "
-                                                    + "title, company, address, city, zip, country, county_council, "
-                                                    + "email, language, active, "
--                                                   + "create_date, external, session_id "
-+                                                   + "create_date, external, session_id, remember_cd "
-                                                    + "FROM users";
- 
-     public static final String SQL_ROLES_COLUMNS = "roles.role_id, roles.role_name, roles.admin_role, roles.permissions";
-@@ -66,6 +66,8 @@
-     private static final String SQL_UPDATE_USER_SESSION = "update users set session_id = ? where user_id = ?";
- 
-     private static final String SQL_SELECT_USER_SESSION = "select session_id from users where user_id = ?";
-+    
-+    private static final String SQL_UPDATE_USER_REMEMBER_CD = "UPDATE users SET remember_cd = ? WHERE user_id = ?";
- 
-     private final ImcmsServices services;
- 
-@@ -129,6 +131,7 @@
-         user.setCreateDate(Utility.parseDateFormat(dateFormat, sqlResult[15]));
-         user.setImcmsExternal(0 != Integer.parseInt(sqlResult[16]));
-         user.setSessionId(sqlResult[17]);
-+        user.setRememberCd(sqlResult[18]);
-     }
- 
-     private RoleId[] getRoleReferencesForUser(UserDomainObject user) {
-@@ -148,6 +151,11 @@
-             throw new UnhandledException(e);
+--- main/java/com/imcode/imcms/api/DocumentService.java	(revision 13201)
++++ main/java/com/imcode/imcms/api/DocumentService.java	(working copy)
+@@ -215,7 +215,7 @@
+     public CategoryType createNewCategoryType(String name,
+                                               int maxChoices) throws NoPermissionException, CategoryTypeAlreadyExistsException {
+         if ( getCategoryMapper().isUniqueCategoryTypeName(name) ) {
+-            CategoryTypeDomainObject newCategoryTypeDO = new CategoryTypeDomainObject(0, name, maxChoices, false);
++        	CategoryTypeDomainObject newCategoryTypeDO = new CategoryTypeDomainObject(0, name, maxChoices, false, false);
+             newCategoryTypeDO = getCategoryMapper().addCategoryTypeToDb(newCategoryTypeDO);
+             return new CategoryType(newCategoryTypeDO);
+         } else {
+@@ -346,4 +346,4 @@
+             return wrapDocumentDomainObject((DocumentDomainObject) documentList.set(index, ((Document)element).getInternal()), contentManagementSystem) ;
          }
      }
-+    
-+    public void updateUserRememberCd(final UserDomainObject user) {
-+    	services.getDatabase().execute(new SqlUpdateCommand(SQL_UPDATE_USER_REMEMBER_CD, 
-+    			new Object[] { user.getRememberCd(), user.getId() }));
-+    }
- 
-     private RoleId getRoleReferenceFromSqlResult(String[] sqlRow) {
-         return new RoleId(Integer.parseInt(sqlRow[0]));
-Index: src/main/java/imcode/server/user/UserDomainObject.java
-===================================================================
---- src/main/java/imcode/server/user/UserDomainObject.java	(revision 13135)
-+++ src/main/java/imcode/server/user/UserDomainObject.java	(working copy)
-@@ -60,6 +60,8 @@
- 
-     /** Http session id.*/
-     private String sessionId;
-+    
-+    private String rememberCd;
- 
-     public UserDomainObject() {
-     }
-@@ -450,6 +452,14 @@
-         this.sessionId = sessionId;
-     }
-     
-+    public String getRememberCd() {
-+    	return rememberCd;
-+    }
-+    
-+    public void setRememberCd(String rememberCd) {
-+    	this.rememberCd = rememberCd;
-+    }
-+    
-     public boolean isImcmsExternal() {
-         return imcmsExternal;
-     }
-Index: src/main/java/imcode/server/document/textdocument/ImageDomainObject.java
-===================================================================
---- src/main/java/imcode/server/document/textdocument/ImageDomainObject.java	(revision 13135)
-+++ src/main/java/imcode/server/document/textdocument/ImageDomainObject.java	(working copy)
-@@ -53,6 +53,9 @@
-      */
- 	//@Id
-     private String name = "";
-+    
-+    @Column(name="image_name", length=40, nullable=false)
-+    private String imageName = "";
- 	
-     private int width;
-     private int height;
-@@ -80,7 +83,10 @@
-     
-     private Integer type;
-     
-+    @Column(name="archive_image_id")
-+    private Long archiveImageId;
-     
-+    
-     /**
-      * i18n support 
-      */
-@@ -326,4 +332,20 @@
- 	public void setType(Integer type) {
- 		this.type = type;
- 	}
-+	
-+	public Long getArchiveImageId() {
-+		return archiveImageId;
-+	}
-+	
-+	public void setArchiveImageId(Long archiveImageId) {
-+		this.archiveImageId = archiveImageId;
-+	}
-+	
-+	public String getImageName() {
-+		return imageName;
-+	}
-+	
-+	public void setImageName(String imageName) {
-+		this.imageName = imageName;
-+	}
- }
+-}
 \ No newline at end of file
-Index: src/main/java/imcode/server/document/CategoryTypeDomainObject.java
++}
+Index: main/java/com/imcode/imcms/api/UserService.java
 ===================================================================
---- src/main/java/imcode/server/document/CategoryTypeDomainObject.java	(revision 13135)
-+++ src/main/java/imcode/server/document/CategoryTypeDomainObject.java	(working copy)
-@@ -13,12 +13,14 @@
-     private String name ;
-     private int maxChoices ;
-     private boolean inherited;
-+    private boolean imageArchive;
+--- main/java/com/imcode/imcms/api/UserService.java	(revision 13201)
++++ main/java/com/imcode/imcms/api/UserService.java	(working copy)
+@@ -4,7 +4,9 @@
+ import imcode.server.user.NameTooLongException;
+ import imcode.server.user.RoleDomainObject;
+ import imcode.server.user.UserDomainObject;
++import imcode.util.Utility;
  
--    public CategoryTypeDomainObject(int id, String name, int maxChoices, boolean inherited) {
-+    public CategoryTypeDomainObject(int id, String name, int maxChoices, boolean inherited, boolean imageArchive) {
-         this.id = id;
-         this.name = name;
-         this.maxChoices = maxChoices;  // 0=single choice, 1=multi choice
-         this.inherited = inherited;
-+        this.imageArchive = imageArchive;
-     }
++import java.security.SecureRandom;
+ import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.List;
+@@ -12,6 +14,8 @@
+ public class UserService {
  
-     public int getId() {
-@@ -88,4 +90,11 @@
-         return hasImages;
-     }
- 
-+    public boolean isImageArchive() {
-+    	return imageArchive;
-+    }
+     private ContentManagementSystem contentManagementSystem;
 +    
-+    public void setImageArchive(boolean imageArchive) {
-+    	this.imageArchive = imageArchive;
-+    }
- }
-Index: src/main/java/imcode/util/Utility.java
-===================================================================
---- src/main/java/imcode/util/Utility.java	(revision 13135)
-+++ src/main/java/imcode/util/Utility.java	(working copy)
-@@ -9,9 +9,12 @@
- import java.io.ByteArrayOutputStream;
- import java.io.File;
- import java.io.IOException;
-+import java.io.UnsupportedEncodingException;
- import java.net.URLEncoder;
- import java.security.KeyStore;
- import java.security.KeyStoreException;
-+import java.security.MessageDigest;
-+import java.security.NoSuchAlgorithmException;
- import java.security.cert.Certificate;
- import java.text.DateFormat;
- import java.text.ParseException;
-@@ -36,6 +39,7 @@
- import javax.servlet.RequestDispatcher;
- import javax.servlet.ServletException;
- import javax.servlet.ServletRequest;
-+import javax.servlet.http.Cookie;
- import javax.servlet.http.HttpServletRequest;
- import javax.servlet.http.HttpServletResponse;
- import javax.servlet.http.HttpServletResponseWrapper;
-@@ -81,6 +85,8 @@
-     public static final ResultSetHandler STRING_ARRAY_HANDLER = new StringArrayResultSetHandler();
-     public static final ResultSetHandler STRING_ARRAY_ARRAY_HANDLER = new StringArrayArrayResultSetHandler();
-     private static final String LOGGED_IN_USER = "logon.isDone";
-+    private static final Pattern DOMAIN_PATTERN = Pattern.compile("^.*?([^.]+?\\.[^.]+)$");
-+    private static final Pattern IP_PATTERN = Pattern.compile("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
++    private static final SecureRandom random = new SecureRandom();
  
-     private Utility() {
- 
-@@ -492,5 +498,72 @@
-     public static ResourceBundle getResourceBundle(HttpServletRequest request) {
-         return Imcms.getServices().getLocalizedMessageProvider().getResourceBundle(Utility.getLoggedOnUser(request).getLanguageIso639_2());
+     public UserService( ContentManagementSystem contentManagementSystem ) {
+         this.contentManagementSystem = contentManagementSystem;
+@@ -171,6 +175,19 @@
+     public void updateUserSession(User user) {
+         getMapper().updateUserSessionId(user.getInternal());
      }
 +    
-+    public static String hex(byte[] data) {
-+    	StringBuilder builder = new StringBuilder();
++    public void updateUserRememberCd(UserDomainObject user) {
++    	long rand = 0L;
 +    	
-+    	for (int i = 0; i < data.length; i++) {
-+    		int halfByte = (data[i] >>> 4) & 0x0f;
-+    		int twoHalfs = 0;
-+    		
-+    		do {
-+    			if (0 <= halfByte && halfByte <= 9) {
-+    				builder.append((char) ('0' + halfByte));
-+    			} else {
-+    				builder.append((char) ('a' + (halfByte - 10)));
-+    			}
-+    			halfByte = data[i] & 0x0f;
-+    		} while (twoHalfs++ < 1);
++    	synchronized (random) {
++    		rand = random.nextLong();
 +    	}
 +    	
-+    	return builder.toString();
-+    }
-+    
-+    public static String shaHex(String data) {
-+    	try {
-+    		return hex(MessageDigest.getInstance("SHA").digest(data.getBytes()));
-+    	} catch (NoSuchAlgorithmException ex) {
-+    		throw new RuntimeException(ex.getMessage(), ex);
-+    	}
-+    }
-+    
-+    public static void setRememberCdCookie(HttpServletRequest request, HttpServletResponse response, String rememberCd) {
-+    	Cookie cookie = new Cookie("im_remember_cd", rememberCd);
-+    	cookie.setMaxAge(60 * 60 * 2);
-+    	cookie.setPath("/");
++    	String code = Utility.shaHex(Integer.toString(user.getId()) + Long.toString(rand));
++    	user.setRememberCd(code);
 +    	
-+    	setCookieDomain(request, cookie);
-+    	response.addCookie(cookie);
-+    }
-+    
-+    public static void removeRememberCdCookie(HttpServletRequest request, HttpServletResponse response) {
-+    	Cookie cookie = new Cookie("im_remember_cd", "");
-+    	cookie.setMaxAge(0);
-+    	cookie.setPath("/");
-+    	
-+    	setCookieDomain(request, cookie);
-+    	response.addCookie(cookie);
-+    }
-+    
-+    public static void setCookieDomain(HttpServletRequest request, Cookie cookie) {
-+    	String serverName = request.getServerName();    	
-+    	if (!IP_PATTERN.matcher(serverName).matches()) {
-+    		Matcher matcher = DOMAIN_PATTERN.matcher(serverName);
-+    		
-+    		if (matcher.matches()) {
-+    			cookie.setDomain("." + matcher.group(1));
-+    		}
-+    	}
-+    }
-+    
-+    public static String encodeUrl(String value) {
-+    	try {
-+    		return URLEncoder.encode(value, "UTF-8");
-+    	} catch (UnsupportedEncodingException ex) {
-+    		log.warn(ex.getMessage(), ex);
-+    		
-+    		throw new RuntimeException(ex.getMessage(), ex);
-+    	}
++    	getMapper().updateUserRememberCd(user);
 +    }
  
- }
-Index: src/main/java/com/imcode/imcms/servlet/VerifyUser.java
+     /**
+      * Send a password reminder mail
+Index: main/java/com/imcode/imcms/mapping/CategoryMapper.java
 ===================================================================
---- src/main/java/com/imcode/imcms/servlet/VerifyUser.java	(revision 13135)
-+++ src/main/java/com/imcode/imcms/servlet/VerifyUser.java	(working copy)
-@@ -43,7 +43,7 @@
-         String name = req.getParameter(REQUEST_PARAMETER__USERNAME);
-         String passwd = req.getParameter(REQUEST_PARAMETER__PASSWORD);
+--- main/java/com/imcode/imcms/mapping/CategoryMapper.java	(revision 13201)
++++ main/java/com/imcode/imcms/mapping/CategoryMapper.java	(working copy)
+@@ -28,7 +28,7 @@
+     private static final int UNLIMITED_MAX_CATEGORY_CHOICES = 0;
  
--        ContentManagementSystem cms = ContentManagementSystem.login(req, name, passwd);
-+        ContentManagementSystem cms = ContentManagementSystem.login(req, res, name, passwd);
+     private static final String SQL__CATEGORY__COLUMNS = "categories.category_id, categories.name, categories.description, categories.image";
+-    public static final String SQL__CATEGORY_TYPE__COLUMNS = "category_types.category_type_id, category_types.name, category_types.max_choices, category_types.inherited";
++    public static final String SQL__CATEGORY_TYPE__COLUMNS = "category_types.category_type_id, category_types.name, category_types.max_choices, category_types.inherited, category_types.is_image_archive";
+     public static final String SQL_GET_ALL_CATEGORIES_OF_TYPE = "SELECT "+SQL__CATEGORY__COLUMNS+"\n"
+                                                                 + "FROM categories\n"
+                                                                 + "JOIN category_types ON categories.category_type_id = category_types.category_type_id\n"
+@@ -133,6 +133,7 @@
+                 { "name", categoryType.getName() },
+                 { "max_choices", new Integer(categoryType.getMaxChoices()) },
+                 { "inherited", new Integer(categoryType.isInherited() ? 1 : 0) },
++                { "is_image_archive", new Integer(categoryType.isImageArchive() ? 1 : 0) },
+         };
+     }
  
-         if ( null != cms ) {
-             User currentUser = cms.getCurrentUser();
-Index: src/main/java/com/imcode/imcms/servlet/admin/ImageEditPage.java
+@@ -271,7 +272,8 @@
+             String name = resultSet.getString(offset+2);
+             int maxChoices = resultSet.getInt(offset+3);
+             boolean inherited = 0 != resultSet.getInt(offset+4);
+-            return new CategoryTypeDomainObject(id, name, maxChoices, inherited) ;
++            boolean imageArchive = 0 != resultSet.getInt(offset+5);
++            return new CategoryTypeDomainObject(id, name, maxChoices, inherited, imageArchive) ;
+         }
+ 
+         public Class getClassOfCreatedObjects() {
+Index: main/java/com/imcode/imcms/servlet/admin/ImageEditPage.java
 ===================================================================
---- src/main/java/com/imcode/imcms/servlet/admin/ImageEditPage.java	(revision 13135)
-+++ src/main/java/com/imcode/imcms/servlet/admin/ImageEditPage.java	(working copy)
+--- main/java/com/imcode/imcms/servlet/admin/ImageEditPage.java	(revision 13201)
++++ main/java/com/imcode/imcms/servlet/admin/ImageEditPage.java	(working copy)
 @@ -52,6 +52,11 @@
      public static final String REQUEST_PARAMETER__LINK_URL = "imageref_link";
      public static final String REQUEST_PARAMETER__LINK_TARGET = EditDocumentInformationPageFlow.REQUEST_PARAMETER__TARGET;
@@ -429,10 +243,10 @@ Index: src/main/java/com/imcode/imcms/servlet/admin/ImageEditPage.java
  
      private void goToImageBrowser(
              final HttpServletRequest request,
-Index: src/main/java/com/imcode/imcms/servlet/LogOut.java
+Index: main/java/com/imcode/imcms/servlet/LogOut.java
 ===================================================================
---- src/main/java/com/imcode/imcms/servlet/LogOut.java	(revision 13135)
-+++ src/main/java/com/imcode/imcms/servlet/LogOut.java	(working copy)
+--- main/java/com/imcode/imcms/servlet/LogOut.java	(revision 13201)
++++ main/java/com/imcode/imcms/servlet/LogOut.java	(working copy)
 @@ -14,6 +14,7 @@
      public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
          String language = Utility.getLoggedOnUser(req).getLanguageIso639_2();
@@ -441,10 +255,10 @@ Index: src/main/java/com/imcode/imcms/servlet/LogOut.java
          req.setAttribute("language", language);
          req.getRequestDispatcher("/login/logged_out.jsp").forward(req, res);
  
-Index: src/main/java/com/imcode/imcms/servlet/superadmin/AdminCategories.java
+Index: main/java/com/imcode/imcms/servlet/superadmin/AdminCategories.java
 ===================================================================
---- src/main/java/com/imcode/imcms/servlet/superadmin/AdminCategories.java	(revision 13135)
-+++ src/main/java/com/imcode/imcms/servlet/superadmin/AdminCategories.java	(working copy)
+--- main/java/com/imcode/imcms/servlet/superadmin/AdminCategories.java	(revision 13201)
++++ main/java/com/imcode/imcms/servlet/superadmin/AdminCategories.java	(working copy)
 @@ -53,6 +53,7 @@
      public static final String PARAMETER_CATEGORY_TYPE_ADD = "category_type_add";
      private static final String PARAMETER__ADD_CATEGORY_BUTTON = "category_add";
@@ -481,124 +295,325 @@ Index: src/main/java/com/imcode/imcms/servlet/superadmin/AdminCategories.java
  
      public static String createHtmlOptionListOfCategoryTypes( CategoryTypeDomainObject selectedType ) {
          ImcmsServices imcref = Imcms.getServices();
-Index: src/main/java/com/imcode/imcms/api/DocumentService.java
+Index: main/java/com/imcode/imcms/servlet/VerifyUser.java
 ===================================================================
---- src/main/java/com/imcode/imcms/api/DocumentService.java	(revision 13135)
-+++ src/main/java/com/imcode/imcms/api/DocumentService.java	(working copy)
-@@ -215,7 +215,7 @@
-     public CategoryType createNewCategoryType(String name,
-                                               int maxChoices) throws NoPermissionException, CategoryTypeAlreadyExistsException {
-         if ( getCategoryMapper().isUniqueCategoryTypeName(name) ) {
--            CategoryTypeDomainObject newCategoryTypeDO = new CategoryTypeDomainObject(0, name, maxChoices, false);
-+        	CategoryTypeDomainObject newCategoryTypeDO = new CategoryTypeDomainObject(0, name, maxChoices, false, false);
-             newCategoryTypeDO = getCategoryMapper().addCategoryTypeToDb(newCategoryTypeDO);
-             return new CategoryType(newCategoryTypeDO);
-         } else {
-Index: src/main/java/com/imcode/imcms/api/UserService.java
+--- main/java/com/imcode/imcms/servlet/VerifyUser.java	(revision 13201)
++++ main/java/com/imcode/imcms/servlet/VerifyUser.java	(working copy)
+@@ -43,7 +43,7 @@
+         String name = req.getParameter(REQUEST_PARAMETER__USERNAME);
+         String passwd = req.getParameter(REQUEST_PARAMETER__PASSWORD);
+ 
+-        ContentManagementSystem cms = ContentManagementSystem.login(req, name, passwd);
++        ContentManagementSystem cms = ContentManagementSystem.login(req, res, name, passwd);
+ 
+         if ( null != cms ) {
+             User currentUser = cms.getCurrentUser();
+Index: main/java/imcode/server/Config.java
 ===================================================================
---- src/main/java/com/imcode/imcms/api/UserService.java	(revision 13135)
-+++ src/main/java/com/imcode/imcms/api/UserService.java	(working copy)
-@@ -4,7 +4,9 @@
- import imcode.server.user.NameTooLongException;
- import imcode.server.user.RoleDomainObject;
- import imcode.server.user.UserDomainObject;
-+import imcode.util.Utility;
+--- main/java/imcode/server/Config.java	(revision 13201)
++++ main/java/imcode/server/Config.java	(working copy)
+@@ -26,6 +26,7 @@
+     private String workaroundUriEncoding;
+     private boolean secureLoginRequired;
+     private boolean denyMultipleUserLogin;
++    private String imageArchiveUrl;
  
-+import java.security.SecureRandom;
- import java.util.ArrayList;
- import java.util.Arrays;
- import java.util.List;
-@@ -12,6 +14,8 @@
- public class UserService {
- 
-     private ContentManagementSystem contentManagementSystem;
-+    
-+    private static final SecureRandom random = new SecureRandom();
- 
-     public UserService( ContentManagementSystem contentManagementSystem ) {
-         this.contentManagementSystem = contentManagementSystem;
-@@ -171,6 +175,19 @@
-     public void updateUserSession(User user) {
-         getMapper().updateUserSessionId(user.getInternal());
+     public String getWorkaroundUriEncoding() {
+         return workaroundUriEncoding;
+@@ -181,4 +182,12 @@
+     public void setDenyMultipleUserLogin(boolean denyMultipleUserLogin) {
+         this.denyMultipleUserLogin = denyMultipleUserLogin;
      }
 +    
-+    public void updateUserRememberCd(UserDomainObject user) {
-+    	long rand = 0L;
-+    	
-+    	synchronized (random) {
-+    		rand = random.nextLong();
-+    	}
-+    	
-+    	String code = Utility.shaHex(Integer.toString(user.getId()) + Long.toString(rand));
-+    	user.setRememberCd(code);
-+    	
-+    	getMapper().updateUserRememberCd(user);
++    public String getImageArchiveUrl() {
++    	return imageArchiveUrl;
++    }
++    
++    public void setImageArchiveUrl(String imageArchiveUrl) {
++    	this.imageArchiveUrl = imageArchiveUrl;
++    }
+ }
+Index: main/java/imcode/server/document/CategoryTypeDomainObject.java
+===================================================================
+--- main/java/imcode/server/document/CategoryTypeDomainObject.java	(revision 13201)
++++ main/java/imcode/server/document/CategoryTypeDomainObject.java	(working copy)
+@@ -13,12 +13,14 @@
+     private String name ;
+     private int maxChoices ;
+     private boolean inherited;
++    private boolean imageArchive;
+ 
+-    public CategoryTypeDomainObject(int id, String name, int maxChoices, boolean inherited) {
++    public CategoryTypeDomainObject(int id, String name, int maxChoices, boolean inherited, boolean imageArchive) {
+         this.id = id;
+         this.name = name;
+         this.maxChoices = maxChoices;  // 0=single choice, 1=multi choice
+         this.inherited = inherited;
++        this.imageArchive = imageArchive;
+     }
+ 
+     public int getId() {
+@@ -88,4 +90,11 @@
+         return hasImages;
+     }
+ 
++    public boolean isImageArchive() {
++    	return imageArchive;
++    }
++    
++    public void setImageArchive(boolean imageArchive) {
++    	this.imageArchive = imageArchive;
++    }
+ }
+Index: main/java/imcode/server/document/textdocument/ImageDomainObject.java
+===================================================================
+--- main/java/imcode/server/document/textdocument/ImageDomainObject.java	(revision 13201)
++++ main/java/imcode/server/document/textdocument/ImageDomainObject.java	(working copy)
+@@ -53,6 +53,9 @@
+      */
+ 	//@Id
+     private String name = "";
++    
++    @Column(name="image_name", length=40, nullable=false)
++    private String imageName = "";
+ 	
+     private int width;
+     private int height;
+@@ -80,7 +83,10 @@
+     
+     private Integer type;
+     
++    @Column(name="archive_image_id")
++    private Long archiveImageId;
+     
++    
+     /**
+      * i18n support 
+      */
+@@ -326,4 +332,20 @@
+ 	public void setType(Integer type) {
+ 		this.type = type;
+ 	}
+-}
+\ No newline at end of file
++	
++	public Long getArchiveImageId() {
++		return archiveImageId;
++	}
++	
++	public void setArchiveImageId(Long archiveImageId) {
++		this.archiveImageId = archiveImageId;
++	}
++	
++	public String getImageName() {
++		return imageName;
++	}
++	
++	public void setImageName(String imageName) {
++		this.imageName = imageName;
++	}
++}
+Index: main/java/imcode/server/ImcmsConstants.java
+===================================================================
+--- main/java/imcode/server/ImcmsConstants.java	(revision 13201)
++++ main/java/imcode/server/ImcmsConstants.java	(working copy)
+@@ -49,7 +49,15 @@
+     
+     /** Permission to change the includes of a text-document. **/
+     public final static int PERM_EDIT_TEXT_DOCUMENT_GROUPS   = (1 << 21); //  2097152
++    
++    
++    /** Permission to use images in image archive */
++    public final static int PERM_IMAGE_ARCHIVE_USE_IMAGE = (1 << 22);
++    
++    /** Permission to change images in image archive */
++    public final static int PERM_IMAGE_ARCHIVE_CHANGE_IMAGE = (1 << 23);
+ 
++    
+     /* Log instances. */
+ 
+     /** The access-log, used for keeping track of page hits. **/
+Index: main/java/imcode/server/user/ImcmsAuthenticatorAndUserAndRoleMapper.java
+===================================================================
+--- main/java/imcode/server/user/ImcmsAuthenticatorAndUserAndRoleMapper.java	(revision 13201)
++++ main/java/imcode/server/user/ImcmsAuthenticatorAndUserAndRoleMapper.java	(working copy)
+@@ -47,7 +47,7 @@
+     private static final String SQL_SELECT_USERS = "SELECT user_id, login_name, login_password, first_name, last_name, "
+                                                    + "title, company, address, city, zip, country, county_council, "
+                                                    + "email, language, active, "
+-                                                   + "create_date, external, session_id "
++                                                   + "create_date, external, session_id, remember_cd "
+                                                    + "FROM users";
+ 
+     public static final String SQL_ROLES_COLUMNS = "roles.role_id, roles.role_name, roles.admin_role, roles.permissions";
+@@ -66,6 +66,8 @@
+     private static final String SQL_UPDATE_USER_SESSION = "update users set session_id = ? where user_id = ?";
+ 
+     private static final String SQL_SELECT_USER_SESSION = "select session_id from users where user_id = ?";
++    
++    private static final String SQL_UPDATE_USER_REMEMBER_CD = "UPDATE users SET remember_cd = ? WHERE user_id = ?";
+ 
+     private final ImcmsServices services;
+ 
+@@ -129,6 +131,7 @@
+         user.setCreateDate(Utility.parseDateFormat(dateFormat, sqlResult[15]));
+         user.setImcmsExternal(0 != Integer.parseInt(sqlResult[16]));
+         user.setSessionId(sqlResult[17]);
++        user.setRememberCd(sqlResult[18]);
+     }
+ 
+     private RoleId[] getRoleReferencesForUser(UserDomainObject user) {
+@@ -148,6 +151,11 @@
+             throw new UnhandledException(e);
+         }
+     }
++    
++    public void updateUserRememberCd(final UserDomainObject user) {
++    	services.getDatabase().execute(new SqlUpdateCommand(SQL_UPDATE_USER_REMEMBER_CD, 
++    			new Object[] { user.getRememberCd(), user.getId() }));
 +    }
  
-     /**
-      * Send a password reminder mail
-Index: src/main/java/com/imcode/imcms/api/ContentManagementSystem.java
-===================================================================
---- src/main/java/com/imcode/imcms/api/ContentManagementSystem.java	(revision 13135)
-+++ src/main/java/com/imcode/imcms/api/ContentManagementSystem.java	(working copy)
-@@ -7,6 +7,7 @@
- 
- import javax.servlet.ServletRequest;
- import javax.servlet.http.HttpServletRequest;
-+import javax.servlet.http.HttpServletResponse;
- 
- public abstract class ContentManagementSystem {
- 
-@@ -41,7 +42,7 @@
-      * @param password
-      * @return The new ContentManagementSystem, or null if the login failed.
-      */
--    public static ContentManagementSystem login(HttpServletRequest request, String username, String password) {
-+    public static ContentManagementSystem login(HttpServletRequest request, HttpServletResponse response, String username, String password) {
-         ImcmsServices services = Imcms.getServices();
-         UserDomainObject user = services.verifyUser(username, password);
- 
-@@ -57,6 +58,12 @@
-             cms.getUserService().updateUserSession(currentUser);
-         }
-         
-+        String rememberCd = user.getRememberCd();
-+        if (rememberCd == null || rememberCd.isEmpty()) {
-+        	cms.getUserService().updateUserRememberCd(user);
-+        }
-+        Utility.setRememberCdCookie(request, response, user.getRememberCd());
-+        
-         Utility.makeUserLoggedIn(request, user);
- 
-         return cms;
-Index: src/main/java/com/imcode/imcms/mapping/CategoryMapper.java
-===================================================================
---- src/main/java/com/imcode/imcms/mapping/CategoryMapper.java	(revision 13135)
-+++ src/main/java/com/imcode/imcms/mapping/CategoryMapper.java	(working copy)
-@@ -28,7 +28,7 @@
-     private static final int UNLIMITED_MAX_CATEGORY_CHOICES = 0;
- 
-     private static final String SQL__CATEGORY__COLUMNS = "categories.category_id, categories.name, categories.description, categories.image";
--    public static final String SQL__CATEGORY_TYPE__COLUMNS = "category_types.category_type_id, category_types.name, category_types.max_choices, category_types.inherited";
-+    public static final String SQL__CATEGORY_TYPE__COLUMNS = "category_types.category_type_id, category_types.name, category_types.max_choices, category_types.inherited, category_types.is_image_archive";
-     public static final String SQL_GET_ALL_CATEGORIES_OF_TYPE = "SELECT "+SQL__CATEGORY__COLUMNS+"\n"
-                                                                 + "FROM categories\n"
-                                                                 + "JOIN category_types ON categories.category_type_id = category_types.category_type_id\n"
-@@ -133,6 +133,7 @@
-                 { "name", categoryType.getName() },
-                 { "max_choices", new Integer(categoryType.getMaxChoices()) },
-                 { "inherited", new Integer(categoryType.isInherited() ? 1 : 0) },
-+                { "is_image_archive", new Integer(categoryType.isImageArchive() ? 1 : 0) },
-         };
+     private RoleId getRoleReferenceFromSqlResult(String[] sqlRow) {
+         return new RoleId(Integer.parseInt(sqlRow[0]));
+@@ -668,4 +676,4 @@
+         return null;
      }
  
-@@ -271,7 +272,8 @@
-             String name = resultSet.getString(offset+2);
-             int maxChoices = resultSet.getInt(offset+3);
-             boolean inherited = 0 != resultSet.getInt(offset+4);
--            return new CategoryTypeDomainObject(id, name, maxChoices, inherited) ;
-+            boolean imageArchive = 0 != resultSet.getInt(offset+5);
-+            return new CategoryTypeDomainObject(id, name, maxChoices, inherited, imageArchive) ;
-         }
+-}
+\ No newline at end of file
++}
+Index: main/java/imcode/server/user/UserDomainObject.java
+===================================================================
+--- main/java/imcode/server/user/UserDomainObject.java	(revision 13201)
++++ main/java/imcode/server/user/UserDomainObject.java	(working copy)
+@@ -60,6 +60,8 @@
  
-         public Class getClassOfCreatedObjects() {
+     /** Http session id.*/
+     private String sessionId;
++    
++    private String rememberCd;
+ 
+     public UserDomainObject() {
+     }
+@@ -450,6 +452,14 @@
+         this.sessionId = sessionId;
+     }
+     
++    public String getRememberCd() {
++    	return rememberCd;
++    }
++    
++    public void setRememberCd(String rememberCd) {
++    	this.rememberCd = rememberCd;
++    }
++    
+     public boolean isImcmsExternal() {
+         return imcmsExternal;
+     }
+Index: main/java/imcode/util/Utility.java
+===================================================================
+--- main/java/imcode/util/Utility.java	(revision 13201)
++++ main/java/imcode/util/Utility.java	(working copy)
+@@ -9,9 +9,12 @@
+ import java.io.ByteArrayOutputStream;
+ import java.io.File;
+ import java.io.IOException;
++import java.io.UnsupportedEncodingException;
+ import java.net.URLEncoder;
+ import java.security.KeyStore;
+ import java.security.KeyStoreException;
++import java.security.MessageDigest;
++import java.security.NoSuchAlgorithmException;
+ import java.security.cert.Certificate;
+ import java.text.DateFormat;
+ import java.text.ParseException;
+@@ -36,6 +39,7 @@
+ import javax.servlet.RequestDispatcher;
+ import javax.servlet.ServletException;
+ import javax.servlet.ServletRequest;
++import javax.servlet.http.Cookie;
+ import javax.servlet.http.HttpServletRequest;
+ import javax.servlet.http.HttpServletResponse;
+ import javax.servlet.http.HttpServletResponseWrapper;
+@@ -81,6 +85,8 @@
+     public static final ResultSetHandler STRING_ARRAY_HANDLER = new StringArrayResultSetHandler();
+     public static final ResultSetHandler STRING_ARRAY_ARRAY_HANDLER = new StringArrayArrayResultSetHandler();
+     private static final String LOGGED_IN_USER = "logon.isDone";
++    private static final Pattern DOMAIN_PATTERN = Pattern.compile("^.*?([^.]+?\\.[^.]+)$");
++    private static final Pattern IP_PATTERN = Pattern.compile("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
+ 
+     private Utility() {
+ 
+@@ -492,5 +498,72 @@
+     public static ResourceBundle getResourceBundle(HttpServletRequest request) {
+         return Imcms.getServices().getLocalizedMessageProvider().getResourceBundle(Utility.getLoggedOnUser(request).getLanguageIso639_2());
+     }
++    
++    public static String hex(byte[] data) {
++    	StringBuilder builder = new StringBuilder();
++    	
++    	for (int i = 0; i < data.length; i++) {
++    		int halfByte = (data[i] >>> 4) & 0x0f;
++    		int twoHalfs = 0;
++    		
++    		do {
++    			if (0 <= halfByte && halfByte <= 9) {
++    				builder.append((char) ('0' + halfByte));
++    			} else {
++    				builder.append((char) ('a' + (halfByte - 10)));
++    			}
++    			halfByte = data[i] & 0x0f;
++    		} while (twoHalfs++ < 1);
++    	}
++    	
++    	return builder.toString();
++    }
++    
++    public static String shaHex(String data) {
++    	try {
++    		return hex(MessageDigest.getInstance("SHA").digest(data.getBytes()));
++    	} catch (NoSuchAlgorithmException ex) {
++    		throw new RuntimeException(ex.getMessage(), ex);
++    	}
++    }
++    
++    public static void setRememberCdCookie(HttpServletRequest request, HttpServletResponse response, String rememberCd) {
++    	Cookie cookie = new Cookie("im_remember_cd", rememberCd);
++    	cookie.setMaxAge(60 * 60 * 2);
++    	cookie.setPath("/");
++    	
++    	setCookieDomain(request, cookie);
++    	response.addCookie(cookie);
++    }
++    
++    public static void removeRememberCdCookie(HttpServletRequest request, HttpServletResponse response) {
++    	Cookie cookie = new Cookie("im_remember_cd", "");
++    	cookie.setMaxAge(0);
++    	cookie.setPath("/");
++    	
++    	setCookieDomain(request, cookie);
++    	response.addCookie(cookie);
++    }
++    
++    public static void setCookieDomain(HttpServletRequest request, Cookie cookie) {
++    	String serverName = request.getServerName();    	
++    	if (!IP_PATTERN.matcher(serverName).matches()) {
++    		Matcher matcher = DOMAIN_PATTERN.matcher(serverName);
++    		
++    		if (matcher.matches()) {
++    			cookie.setDomain("." + matcher.group(1));
++    		}
++    	}
++    }
++    
++    public static String encodeUrl(String value) {
++    	try {
++    		return URLEncoder.encode(value, "UTF-8");
++    	} catch (UnsupportedEncodingException ex) {
++    		log.warn(ex.getMessage(), ex);
++    		
++    		throw new RuntimeException(ex.getMessage(), ex);
++    	}
++    }
+ 
+ }
