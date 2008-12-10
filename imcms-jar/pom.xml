@@ -436,7 +436,7 @@
 
                                                           <execution>
 
-                                                          <id>bugfix-patches</id>
+                                                          <id>imagearchive-patches</id>
 
                                                           <configuration>
 

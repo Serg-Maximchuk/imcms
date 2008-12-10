@@ -10,7 +10,7 @@
    <name>Uber pom</name>
   <modules>
       <module>imcms-jar</module>
-      <!--module>imcms-rb4</module>
-      <module>imcms-rb5</module-->
+      <module>imcms-web</module>
+      <!--module>imcms-rb5</module-->
   </modules>
 </project>
