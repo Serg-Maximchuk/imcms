@@ -4,13 +4,13 @@
   <groupId>com.imcode.imcms.imagearchive</groupId>
   <artifactId>imcms-jar</artifactId>
   <packaging>jar</packaging>
-  <version>5.0-SNAPSHOT</version>
+  <version>RB-5-ImageArchive</version>
   <name>imCMS-web</name>
 
   <parent>
     <groupId>com.imcode.imcms.imagearchive</groupId>
     <artifactId>imagearchive</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>RB-5-ImageArchive</version>
   </parent> 
 
   <dependencies>
