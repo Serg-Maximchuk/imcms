@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.imcode.imcms.imagearchive</groupId>
   <artifactId>imcms-web</artifactId>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <version>5.0-SNAPSHOT</version>
   <name>imCMS</name>
 
