@@ -9,8 +9,10 @@ import imcode.server.document.textdocument.ImageDomainObject;
 import imcode.server.document.textdocument.ImageSource;
 import imcode.server.document.textdocument.TextDocumentDomainObject;
 import imcode.server.document.textdocument.TextDomainObject;
+import imcode.server.document.textdocument.ImageDomainObject.CropRegion;
 import imcode.server.user.UserDomainObject;
 import imcode.util.DateConstants;
+import imcode.util.image.Format;
 import imcode.util.io.FileInputStreamSource;
 import imcode.util.io.FileUtility;
 import imcode.util.io.InputStreamSource;
@@ -35,7 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
 
@@ -194,7 +195,7 @@ public class DocumentStoringVisitor extends DocumentVisitor {
 
     private void sqlInsertImageHistory(TextDocumentDomainObject textDocument, Integer imageIndex, UserDomainObject user) {
         SimpleDateFormat dateFormat = new SimpleDateFormat( DateConstants.DATETIME_FORMAT_STRING);
-        String[] columnNames = new String[] {"imgurl", "width", "height", "border", "v_space", "h_space", "image_name", "target", "align", "alt_text", "low_scr", "linkurl", "type", "archive_image_id", "meta_id", "name", "modified_datetime", "user_id" };
+        String[] columnNames = new String[] {"imgurl", "width", "height", "border", "v_space", "h_space", "image_name", "target", "align", "alt_text", "low_scr", "linkurl", "type", "archive_image_id", "format", "crop_x1", "crop_y1", "crop_x2", "crop_y2", "meta_id", "name", "modified_datetime", "user_id" };
         ImageDomainObject image = textDocument.getImage(imageIndex.intValue());
         final Object[] parameters = getSqlImageParameters(image, textDocument.getId(), imageIndex.intValue());
         List <Object> param =  new ArrayList <Object>( Arrays.asList(parameters) ) ;
@@ -261,14 +262,19 @@ public class DocumentStoringVisitor extends DocumentVisitor {
         	+ "low_scr          = ?, \n"
         	+ "linkurl          = ?, \n"
         	+ "type             = ?, \n"
-        	+ "archive_image_id = ?  \n"
-                + "where meta_id = ? \n"
-                + "and name = ? \n";
+        	+ "archive_image_id = ?, \n"
+			+ "format      		= ?, \n"
+            + "crop_x1     		= ?, \n"
+            + "crop_y1     		= ?, \n"
+            + "crop_x2     		= ?, \n"
+            + "crop_y2     		= ?  \n"
+            + "where meta_id = ? \n"
+            + "and name = ? \n";
 
         int rowUpdateCount = sqlImageUpdateQuery(sqlStr, image, meta_id, img_no);
         if (0 == rowUpdateCount) {
-            sqlStr = "insert into images (imgurl, width, height, border, v_space, h_space, image_name, target, align, alt_text, low_scr, linkurl, type, archive_image_id, meta_id, name)"
-            	+ " values(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?,?)";
+            sqlStr = "insert into images (imgurl, width, height, border, v_space, h_space, image_name, target, align, alt_text, low_scr, linkurl, type, archive_image_id, format, crop_x1, crop_y1, crop_x2, crop_y2, meta_id, name)"
+            	+ " values(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?)";
 
             sqlImageUpdateQuery(sqlStr, image, meta_id, img_no);
         }
@@ -281,6 +287,9 @@ public class DocumentStoringVisitor extends DocumentVisitor {
 
     private static Object[] getSqlImageParameters(ImageDomainObject image, int meta_id, int img_no) {
         ImageSource imageSource = image.getSource();
+		Format format = image.getFormat();
+        CropRegion region = image.getCropRegion();
+
         return new Object[] {
             imageSource.toStorageString(),
             image.getWidth(),
@@ -296,6 +305,11 @@ public class DocumentStoringVisitor extends DocumentVisitor {
             image.getLinkUrl(),
             imageSource.getTypeId(),
             image.getArchiveImageId(),
+			(format != null ? format.getOrdinal() : 0),
+            (region.isValid() ? region.getCropX1() : -1), 
+            (region.isValid() ? region.getCropY1() : -1),
+            (region.isValid() ? region.getCropX2() : -1),
+            (region.isValid() ? region.getCropY2() : -1),
             meta_id,
             img_no,
         };
