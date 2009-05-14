@@ -38,6 +38,7 @@ public class Config {
     private List<RoleId> imageArchiveAllowedRoleIdList;
     private File imageArchiveImagePath;
     private String imageArchiveImageUrl;
+    private File imageMagickPath;
 
     public String getWorkaroundUriEncoding() {
         return workaroundUriEncoding;
@@ -269,4 +270,12 @@ public class Config {
 	public void setImageCacheMaxSize(long imageCacheMaxSize) {
 		this.imageCacheMaxSize = imageCacheMaxSize;
 	}
+
+    public File getImageMagickPath() {
+        return imageMagickPath;
+    }
+
+    public void setImageMagickPath(File imageMagickPath) {
+        this.imageMagickPath = imageMagickPath;
+    }
 }
