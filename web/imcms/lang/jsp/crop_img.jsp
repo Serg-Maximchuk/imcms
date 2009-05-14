@@ -73,15 +73,13 @@
                             displayOnInit: true
                         };
 
-                        if (${forcedWidth gt 0}) {
-                        	options.minWidth = ${forcedWidth} / scale;
-                            options.maxWidth = ${forcedWidth} / scale;
+                        if (${image.width gt 0 and image.height gt 0}) {
+                            options.ratioDim = {
+                                x: ${image.width}, 
+                                y: ${image.height}
+                            };
                         }
-                        if (${forcedHeight gt 0}) {
-                        	options.minHeight = ${forcedHeight} / scale;
-                            options.maxHeight = ${forcedHeight} / scale;
-                        }
-
+                        
                         if (${region.valid}) {
                             options.onloadCoords = {
                                 x1: Math.floor(${region.cropX1} / scale), 
@@ -91,7 +89,25 @@
                             };
                         }
                         
-                        new Cropper.Img("image", options);
+                        var cropper = new Cropper.Img("image", options);
+
+                        Event.observe("reset", "click", function() {
+                            var options = cropper.options;
+                            options.onloadCoords = null;
+                            options.displayOnInit = false;
+                            
+                            cropper.reset();
+
+                            var startCoords = { x1: 0, y1: 0, x2: 0, y2: 0 };
+                            cropper.setAreaCoords( startCoords, false, false, 1);
+                            
+                            $("crop_x1").value = 0;
+                            $("crop_y1").value = 0;
+                            $("crop_x2").value = 0;
+                            $("crop_y2").value = 0;
+                            $("width").value = 0;
+                            $("height").value = 0;
+                        });
                     }
                 );
             </script>
@@ -175,19 +191,23 @@
                                                     <b><? web/imcms/lang/jsp/crop_img.jsp/height ?></b>
                                                 </label>
                                             </td>
+                                            <td>&nbsp;</td>
+                                            <td></td>
                                         </tr>
                                         <tr>
-                                            <td><input id="crop_x1" name="${const.PARAM_CROP_X1}" type="text" readonly="readonly" size="4" maxlength="4" value="${region.valid ? region.cropX1 : ''}"/></td>
+                                            <td><input id="crop_x1" name="${const.PARAM_CROP_X1}" type="text" class="imcmsDisabled" readonly="readonly" size="4" maxlength="4" value="${region.valid ? region.cropX1 : ''}"/></td>
                                             <td>&nbsp;</td>
-                                            <td><input id="crop_y1" name="${const.PARAM_CROP_Y1}" type="text" readonly="readonly" size="4" maxlength="4" value="${region.valid ? region.cropY1 : ''}"/></td>
+                                            <td><input id="crop_y1" name="${const.PARAM_CROP_Y1}" type="text" class="imcmsDisabled" readonly="readonly" size="4" maxlength="4" value="${region.valid ? region.cropY1 : ''}"/></td>
                                             <td>&nbsp;</td>
-                                            <td><input id="crop_x2" name="${const.PARAM_CROP_X2}" type="text" readonly="readonly" size="4" maxlength="4" value="${region.valid ? region.cropX2 : ''}"/></td>
+                                            <td><input id="crop_x2" name="${const.PARAM_CROP_X2}" type="text" class="imcmsDisabled" readonly="readonly" size="4" maxlength="4" value="${region.valid ? region.cropX2 : ''}"/></td>
                                             <td>&nbsp;</td>
-                                            <td><input id="crop_y2" name="${const.PARAM_CROP_Y2}" type="text" readonly="readonly" size="4" maxlength="4" value="${region.valid ? region.cropY2 : ''}"/></td>
+                                            <td><input id="crop_y2" name="${const.PARAM_CROP_Y2}" type="text" class="imcmsDisabled" readonly="readonly" size="4" maxlength="4" value="${region.valid ? region.cropY2 : ''}"/></td>
                                             <td>&nbsp;&nbsp;</td>
-                                            <td><input id="width" type="text" readonly="readonly" size="4" maxlength="4" value="${region.width}"/></td>
+                                            <td><input id="width" type="text" class="imcmsDisabled" readonly="readonly" size="4" maxlength="4" value="${region.width}"/></td>
                                             <td>&nbsp;X&nbsp;</td>
-                                            <td><input id="height" type="text" readonly="readonly" size="4" maxlength="4" value="${region.height}"/></td>
+                                            <td><input id="height" type="text" class="imcmsDisabled" readonly="readonly" size="4" maxlength="4" value="${region.height}"/></td>
+                                            <td>&nbsp;&nbsp;</td>
+                                            <td><input id="reset" type="button" class="imcmsFormBtnSmall" value="<? templates/sv/change_img.html/4008 ?>"/></td>
                                         </tr>
                                     </table>
                                 </td>

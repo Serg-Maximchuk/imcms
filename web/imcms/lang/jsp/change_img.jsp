@@ -61,6 +61,14 @@ BODY {
 
 <script type="text/javascript">
 <!--
+function addScrolling() {
+	if (window.opener) {
+		var obj = document.getElementById("outer_container") ;
+		obj.style.height = "100%" ;
+		obj.style.overflow = "scroll" ;
+	}
+}
+
 function setDef() {
 	var f   = document.forms[0] ;
 	if (!hasDocumentLayers && f.imageref.value == "") f.image_align.selectedIndex = 0;
@@ -132,6 +140,12 @@ function resetCrop() {
 
     cell.removeChild(cell.getElementsByTagName("table")[0]);
 
+    var croppedSizeRow = document.getElementById("croppedSize");
+    var croppedSizeLabelRow = document.getElementById("croppedSizeLabel");
+
+    croppedSizeRow.parentNode.removeChild(croppedSizeRow);
+    croppedSizeLabelRow.parentNode.removeChild(croppedSizeLabelRow);
+
     document.getElementById("h_crop_x1").value = "-1";
     document.getElementById("h_crop_y1").value = "-1";
     document.getElementById("h_crop_x2").value = "-1";
@@ -140,16 +154,18 @@ function resetCrop() {
     var forcedWidth = parseInt(document.getElementById("forced_width").value, 10), 
         forcedHeight = parseInt(document.getElementById("forced_height").value, 10);
 
+    var widthInput = document.getElementById("image_width");
     if (forcedWidth > 0) {
-    	document.getElementById("image_width").value = forcedWidth;
+        widthInput.value = forcedWidth;
     } else {
-    	document.getElementById("image_width").readOnly = false;
+        widthInput.readOnly = false;
     }
 
+    var heightInput = document.getElementById("image_height");
     if (forcedHeight > 0) {
-    	document.getElementById("image_height").value = forcedHeight;
+        heightInput.value = forcedHeight;
     } else {
-    	document.getElementById("image_height").readOnly = false;
+        heightInput.readOnly = false;
     }
 
     cropButton.style.display = "inline";
@@ -158,7 +174,7 @@ function resetCrop() {
 </script>
 
 </head>
-<body id="body" bgcolor="#FFFFFF" onload="setDef(); document.forms[0].imageref.focus();">
+<body id="body" bgcolor="#FFFFFF" onload="setDef(); addScrolling(); document.forms[0].imageref.focus();">
 
 <div id="outer_container">
 	<div id="inner_container">
@@ -278,7 +294,7 @@ function resetCrop() {
 						%>size="4" maxlength="4" value="<%
 						if (image.getWidth() > 0) {
 							%><%= image.getWidth() %><%
-						} %>" <%= (cropRegion.isValid() || imageEditPage.getForcedWidth() > 0 ? "readonly='readonly'" : "") %> ></td>
+						} %>" <%= (imageEditPage.getForcedWidth() > 0 ? "readonly='readonly' class='imcmsDisabled'" : "") %> ></td>
 						<td>&nbsp;X&nbsp;</td>
 						<td><input type="text" <%
 						%>name="<%= ImageEditPage.REQUEST_PARAMETER__IMAGE_HEIGHT %>" <%
@@ -286,26 +302,19 @@ function resetCrop() {
 						%>size="4" maxlength="4" value="<%
 						if (image.getHeight() > 0) {
 							%><%= image.getHeight() %><%
-						} %>" <%= (cropRegion.isValid() || imageEditPage.getForcedHeight() > 0 ? "readonly='readonly'" : "") %> ></td>
+						} %>" <%= (imageEditPage.getForcedHeight() > 0 ? "readonly='readonly' class='imcmsDisabled'" : "") %> ></td>
 						<td>&nbsp;</td>
 						<td><input type="text" <%
 						%>name="<%= ImageEditPage.REQUEST_PARAMETER__IMAGE_BORDER %>" <%
 						%>id="<%= ImageEditPage.REQUEST_PARAMETER__IMAGE_BORDER %>" <%
 						%>size="4" maxlength="4" value="<%= image.getBorder() %>"></td>
 						<td>&nbsp;</td>
-						<td><? templates/sv/change_img.html/size_explanation ?></td>
-					</tr>
-					<tr>
-						<td height="20">&nbsp;<%= realImageSize.getWidth() %></td>
-						<td>&nbsp;X&nbsp;</td>
-						<td>&nbsp;<%= realImageSize.getHeight() %></td>
-						<td>&nbsp;</td>
-						<td colspan="3"><? templates/sv/change_img.html/originalSize ?></td>
+						<td><input type="submit" name="<%= ImageEditPage.REQUEST_PARAMETER__PREVIEW_BUTTON %>" 
+                                   class="imcmsFormBtnSmall" value="<? templates/sv/change_img.html/2006 ?>"/></td>
 					</tr>
 					</table></td>
 				</tr>
-        <% if (!image.isEmpty() && imageEditPage.getForcedWidth() <= realImageSize.getWidth() 
-        	      && imageEditPage.getForcedHeight() <= realImageSize.getHeight()) { %>
+        <% if (!image.isEmpty()) { %>
             <tr>
                 <td nowrap><? templates/sv/change_img.html/4003 ?></td>
                 <td id="crop_cell">
@@ -331,11 +340,11 @@ function resetCrop() {
                                 <td></td>
                             </tr>
                             <tr>
-                                <td><input id="crop_x1" type="text" value="<%= cropRegion.getCropX1() %>" readonly="readonly" size="4" maxlength="4"/></td>
-                                <td><input id="crop_y1" type="text" value="<%= cropRegion.getCropY1() %>" readonly="readonly" size="4" maxlength="4"/></td>
+                                <td><input id="crop_x1" type="text" value="<%= cropRegion.getCropX1() %>" readonly="readonly" class="imcmsDisabled" size="4" maxlength="4"/></td>
+                                <td><input id="crop_y1" type="text" value="<%= cropRegion.getCropY1() %>" readonly="readonly" class="imcmsDisabled" size="4" maxlength="4"/></td>
                                 <td>&nbsp;&nbsp;</td>
-                                <td><input id="crop_x2" type="text" value="<%= cropRegion.getCropX2() %>" readonly="readonly" size="4" maxlength="4"/></td>
-                                <td><input id="crop_y2" type="text" value="<%= cropRegion.getCropY2() %>" readonly="readonly" size="4" maxlength="4"/></td>
+                                <td><input id="crop_x2" type="text" value="<%= cropRegion.getCropX2() %>" readonly="readonly" class="imcmsDisabled" size="4" maxlength="4"/></td>
+                                <td><input id="crop_y2" type="text" value="<%= cropRegion.getCropY2() %>" readonly="readonly" class="imcmsDisabled" size="4" maxlength="4"/></td>
                                 <td>&nbsp;&nbsp;</td>
                                 <td>
                                     <input type="submit" name="<%= ImageEditPage.REQUEST_PARAMETER__GO_TO_CROP_IMAGE %>" 
@@ -355,6 +364,37 @@ function resetCrop() {
                 </td>
             </tr>
         <% } %>
+        <tr>
+            <td nowrap>
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <% if (cropRegion.isValid()) { %>
+                    <tr id="croppedSizeLabel">
+                        <td height="25"><? templates/sv/change_img.html/4010 ?></td>
+                    </tr>
+                    <% } %>
+                    <tr>
+                        <td height="25"><? templates/sv/change_img.html/4011 ?></td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <% if (cropRegion.isValid()) { %>
+                    <tr id="croppedSize">
+                        <td height="25"><%= cropRegion.getWidth() %></td>
+                        <td>&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+                        <td><%= cropRegion.getHeight() %></td>
+                    </tr>
+                    <% } %>
+                    <tr>
+                        <td height="25"><%= realImageSize.getWidth() %></td>
+                        <td>&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+                        <td><%= realImageSize.getHeight() %></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        
         <tr>
             <td nowrap><label for="format"><? templates/sv/change_img.html/4009 ?></label></td>
             <td>

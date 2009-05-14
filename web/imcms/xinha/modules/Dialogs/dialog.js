@@ -52,36 +52,36 @@ Dialog._modal = null;
 Dialog._arguments = null;
 
 Dialog._getAttributes = function(attrs) {
-	var defaultAttributes = {
-		toolbar: "no", 
-		menubar: "no", 
-		personalbar: "no", 
-		width: 10, 
-		height: 10, 
-		scrollbars: "no", 
-		resizable: "yes", 
-		modal: "yes", 
-		dependable: "yes"
-	};
-	
-	for (var attribute in attrs) {
-		if (attrs.hasOwnProperty(attribute)) {
-			defaultAttributes[attribute] = attrs[attribute];
-		}
-	}
-	
-	var arr = [], 
-		joined = "";
-	
-	for (var attribute in defaultAttributes) {
-		arr.push(attribute + "=" + defaultAttributes[attribute]);
-	}
-	
-	return arr.join(",");
+    var defaultAttributes = {
+        toolbar: "no", 
+        menubar: "no", 
+        personalbar: "no", 
+        width: 10, 
+        height: 10, 
+        scrollbars: "no", 
+        resizable: "yes", 
+        modal: "yes", 
+        dependable: "yes"
+    };
+    
+    for (var attribute in attrs) {
+        if (attrs.hasOwnProperty(attribute)) {
+            defaultAttributes[attribute] = attrs[attribute];
+        }
+    }
+    
+    var arr = [], 
+        joined = "";
+    
+    for (var attribute in defaultAttributes) {
+        arr.push(attribute + "=" + defaultAttributes[attribute]);
+    }
+    
+    return arr.join(",");
 };
 
 Dialog._geckoOpenModal = function(url, action, init, windowAttributes) {
-	var dlg = window.open(url, "hadialog", Dialog._getAttributes(windowAttributes));
+    var dlg = window.open(url, "hadialog", Dialog._getAttributes(windowAttributes));
 	Dialog._modal = dlg;
 	Dialog._arguments = init;
 

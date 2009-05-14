@@ -24,16 +24,21 @@ LI { padding-bottom:5; }
 <body bgcolor="#f0f0ff" style="margin: 10 0 10 10">
 <table border="0" cellspacing="0" cellpadding="5" height="100%" align="center" bgcolor="#ffffff">
 <tr>
+    <td align="center" valign="bottom">&nbsp;<br>
+        <imcms:admin/>
+    </td>
+</tr>
+<tr>
 	<td valign="top">
 	<table border="0" cellspacing="0" cellpadding="0" width="760">
 	<tr>
-		<td colspan="5"><imcms:include url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoTop"/></td>
+		<td colspan="5"></td>
 	</tr>
 	<tr>
 		<td colspan="5" height="15">&nbsp;</td>
 	</tr>
 	<tr valign="top">
-		<td width="200"><imcms:include url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoLeft"/></td>
+		<td width="200"></td>
 
 		<td width="15">&nbsp;</td>
 
@@ -54,21 +59,21 @@ LI { padding-bottom:5; }
                     </imcms:menuloop>
                 </ul>
             </imcms:menu>
-            <imcms:include url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoContent" pre='<hr>' post='<hr>'/>
-            <imcms:image no='3' label='Bild' pre='<br><br>' post='<br>'/><br>
+            
+            <imcms:image no='3' label='Bild' pre='<br><br>' post='<br>' style="width:300px;height:200px;"/><br>
+            <imcms:image no='4' label='Bild 2' pre='<br><br>' post='<br>'/><br>
+            <imcms:image no='5' label='Bild 3' pre='<br><br>' post='<br>' style="width:300px;"/><br>
+            <imcms:image no='6' label='Bild 4' pre='<br><br>' post='<br>' style="height:300px;"/><br>
+            <imcms:image no='7' label='Bild 5' pre='<br><br>' post='<br>' style="width:300px;height:200px;"/><br>
+            <imcms:image no='8' label='Bild 6' pre='<br><br>' post='<br>'/><br>
             <imcms:include no='1' label='Dynamisk inkludering 1'/>
         </td>
     
 		<td width="10">&nbsp;</td>
 
-		<td width="150"><imcms:include url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoRight"/></td>
+		<td width="150"></td>
 	</tr>
 	</table></td>
-</tr>
-<tr>
-	<td align="center" valign="bottom">&nbsp;<br><imcms:admin/>
-        <imcms:include url="@documentationwebappurl@/servlet/GetDoc?meta_id=1054&template=imcmsDemoBottom"/>        
-    </td>
 </tr>
 </table>
 
