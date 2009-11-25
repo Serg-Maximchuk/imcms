@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8"
     import="com.imcode.imcms.api.Document,
             com.imcode.imcms.flow.CreateDocumentPageFlow,
@@ -20,16 +22,15 @@
             imcode.util.jscalendar.JSCalendar,
             org.apache.commons.lang.ObjectUtils,
             org.apache.commons.lang.StringEscapeUtils,
-            org.apache.commons.lang.StringUtils,
             javax.servlet.http.Cookie,
             java.net.URLEncoder,
             java.text.Collator,
             java.text.DateFormat,
             java.text.SimpleDateFormat,
-            java.util.Arrays,
-            java.util.Date,
-            java.util.Set,
-            java.util.TreeSet"%>
+            java.util.*,
+            org.apache.taglibs.standard.tag.common.fmt.BundleSupport,
+            javax.servlet.jsp.jstl.fmt.LocalizationContext"%>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 
 <%@	taglib prefix="vel" uri="imcmsvelocity"%><%
 
@@ -50,7 +51,9 @@
     boolean adminButtonsHidden = creatingNewDocument || documentInformationPage.isAdminButtonsHidden() ;
 
     JSCalendar jsCalendar = new JSCalendar( Utility.getLoggedOnUser(request).getLanguageIso639_2(), request ) ;
-    String calendarButtonTitle = "<? web/imcms/lang/jscalendar/show_calendar_button ?>";
+    LocalizationContext locCtx = BundleSupport.getLocalizationContext(pageContext);
+    ResourceBundle bundle = locCtx.getResourceBundle();
+    String calendarButtonTitle = bundle.getString("web/imcms/lang/jscalendar/show_calendar_button");
 
 %><%!
 
@@ -72,7 +75,7 @@ String formatTime(Date time) {
 
 %><vel:velocity><html>
 <head>
-<title><? install/htdocs/sv/jsp/docadmin/document_information.jsp/document_information_title ?></title>
+<title><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/document_information_title"/></title>
 
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
@@ -107,7 +110,7 @@ function checkFocus() {
 
 
 #gui_outer_start()
-#gui_head( '<? global/imcms_administration ?>' )<%
+#gui_head( '<fmt:message key="global/imcms_administration"/>' )<%
 
 /* *******************************************************************************************
  *         HEAD                                                                              *
@@ -117,10 +120,10 @@ function checkFocus() {
 <form name="mainForm" method="POST" action="<%= request.getContextPath() %>/servlet/DocumentPageFlowDispatcher">
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td><input type="submit" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/document_information.jsp/2001 ?>"></td>
+	<td><input type="submit" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/2001"/>"></td>
 	<td>&nbsp;</td>
-	<td><input type="button" value="<? install/htdocs/sv/jsp/docadmin/document_information.jsp/2002 ?>"
-	title="<? install/htdocs/sv/jsp/docadmin/document_information.jsp/2003 ?>" class="imcmsFormBtn" onClick="openHelpW('PageInfoChange')"></td>
+	<td><input type="button" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/2002"/>"
+	title="<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/2003"/>" class="imcmsFormBtn" onClick="openHelpW('PageInfoChange')"></td>
 </tr>
 </table>
 #gui_mid()
@@ -138,11 +141,11 @@ function checkFocus() {
     value="<%= EditDocumentInformationPageFlow.PAGE__DOCUMENT_INFORMATION %>">
 <% if (creatingNewDocument) { %>
 <tr>
-	<td>#gui_heading( '<? install/htdocs/sv/jsp/docadmin/document_information.jsp/create_document_heading ?>' )</td>
+	<td>#gui_heading( '<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/create_document_heading"/>' )</td>
 </tr><%
 } else { %>
 <tr>
-	<td>#gui_heading( '<? install/htdocs/sv/jsp/docadmin/document_information.jsp/edit_document_heading ?> <%= document.getId() %>' )</td>
+	<td>#gui_heading( '<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/edit_document_heading"/> <%= document.getId() %>' )</td>
 </tr><%
 } %>
 <tr>
@@ -150,21 +153,21 @@ function checkFocus() {
 	<table border="0" cellspacing="0" cellpadding="0" width="656">
 	<tr>
 		<td class="imcmsAdmText" nowrap>
-		<? install/htdocs/sv/jsp/docadmin/document_information.jsp/6 ?><sup class="imNote">1</sup></td>
+		<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/6"/><sup class="imNote">1</sup></td>
 		<td><input type="text" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__HEADLINE %>" size="48" maxlength="255" style="width: 100%"
 		value="<%= StringEscapeUtils.escapeHtml(document.getHeadline()) %>"></td>
 	</tr>
     <tr>
         <td></td>
         <td class="imNoteComment"><sup class="imNote">1</sup>
-        <? install/htdocs/sv/jsp/docadmin/document_information.jsp/46 ?></td>
+        <fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/46"/></td>
     </tr>
 	<tr>
 		<td><img src="$contextPath/imcms/$language/images/admin/1x1.gif" width="96" height="2"></td>
 		<td><img src="$contextPath/imcms/$language/images/admin/1x1.gif" width="556" height="2"></td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText" nowrap><? install/htdocs/sv/jsp/docadmin/document_information.jsp/1002 ?>&nbsp;</td>
+		<td class="imcmsAdmText" nowrap><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/1002"/>&nbsp;</td>
 		<td class="imcmsAdmForm">
 		<textarea name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__MENUTEXT %>" class="imcmsAdmForm" cols="47" rows="3" wrap="virtual" style="width:100%; overflow:auto;">
 <%= StringEscapeUtils.escapeHtml(document.getMenuText()) %></textarea><%
@@ -173,20 +176,20 @@ function checkFocus() {
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td><input type="CHECKBOX" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__COPY_HEADLINE_AND_TEXT_TO_TEXTFIELDS %>" value="1" checked></td>
-			<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/copy_headline_and_text_to_textfields ?></td>
+			<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/copy_headline_and_text_to_textfields"/></td>
 		</tr>
 		</table><%
 		} %></td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText" nowrap><? install/htdocs/sv/jsp/docadmin/document_information.jsp/10 ?></td>
+		<td class="imcmsAdmText" nowrap><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/10"/></td>
 		<td>
 		<table border="0" cellspacing="0" cellpadding="0" width="100%">
 		<tr>
 			<td width="85%"><input type="text" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__IMAGE %>" size="40" maxlength="255" style="width: 100%"
 			value="<%= StringEscapeUtils.escapeHtml( (String)ObjectUtils.defaultIfNull( document.getMenuImage(), "" )) %>"></td>
 			<td align="right"><input type="submit" class="imcmsFormBtnSmall" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__GO_TO_IMAGE_BROWSER%>"
-			value=" <? install/htdocs/global/pageinfo/browse ?> "></td>
+			value=" <fmt:message key="install/htdocs/global/pageinfo/browse"/> "></td>
 		</tr>
         </table></td>
 	</tr>
@@ -202,14 +205,14 @@ function checkFocus() {
         <td colspan="2" class="error"><span style='color:red'><%= EditDocumentInformationPageFlow.ALIAS_ERROR__USED_BY_SYSTEM.toLocalizedString(user) %></span></td>
     </tr><%}%>
     <tr>
-        <td class="imcmsAdmText" nowrap><? global/Page_alias ?></td>
+        <td class="imcmsAdmText" nowrap><fmt:message key="global/Page_alias"/></td>
         <td>
         <table border="0" cellspacing="0" cellpadding="0" width="100%">
         <tr>
             <td  align="right" width="85%"><%= "http://" + request.getServerName() + request.getContextPath() + "/" %>&nbsp;<input type="text" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__DOCUMENT_ALIAS %>" size="40" maxlength="255"
             value="<%= ObjectUtils.defaultIfNull( StringEscapeUtils.escapeHtml( document.getAlias() ), "" ) %>"></td>
             <td align="right"><input type="submit" class="imcmsFormBtnSmall" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__GO_TO_ALIAS_LIST %>"
-            value=" <? global/view ?> "></td>
+            value=" <fmt:message key="global/view"/> "></td>
         </tr>
         </table></td>
     </tr>
@@ -231,21 +234,21 @@ function checkFocus() {
 	</tr>
 	<tr>
 		<td class="imcmsAdmText">
-		<? install/htdocs/sv/jsp/docadmin/document_information.jsp/status ?></td>
+		<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/status"/></td>
 		<td>
 		<select name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__STATUS %>" onFocus="selFocused = true;">
 			<option value="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__STATUS__NEW %>"<%
 				if (Document.PublicationStatus.NEW.equals(document.getPublicationStatus())) {
 					%> selected<%
-				} %>><? install/htdocs/sv/jsp/docadmin/document_information.jsp/status_new ?></option>
+				} %>><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/status_new"/></option>
 			<option value="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__STATUS__APPROVED %>"<%
 				if (Document.PublicationStatus.APPROVED.equals(document.getPublicationStatus())) {
 					%> selected<%
-				} %>><? install/htdocs/sv/jsp/docadmin/document_information.jsp/status_publication_approved ?></option>
+				} %>><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/status_publication_approved"/></option>
 			<option value="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__STATUS__DISAPPROVED %>"<%
 				if (Document.PublicationStatus.DISAPPROVED.equals(document.getPublicationStatus())) {
 					%> selected<%
-				} %>><? install/htdocs/sv/jsp/docadmin/document_information.jsp/status_publication_disapproved ?></option>
+				} %>><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/status_publication_disapproved"/></option>
 		</select>
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
@@ -253,18 +256,18 @@ function checkFocus() {
 			Date now = new Date();
 			Date publicationStartDatetime = document.getPublicationStartDatetime();
 			if (!Document.PublicationStatus.APPROVED.equals(document.getPublicationStatus()) || null == publicationStartDatetime || publicationStartDatetime.after(now)) { %>
-			<? install/htdocs/sv/jsp/docadmin/document_information.jsp/document_will_be_published_at ?><%
+			<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/document_will_be_published_at"/><%
 			} else { %>
-			<? install/htdocs/sv/jsp/docadmin/document_information.jsp/document_was_published_at ?><%
+			<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/document_was_published_at"/><%
 			} %></td>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_START_DATE %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_START_DATE %>" size="11" maxlength="10" style="width: 7em;"
 			value="<%= StringEscapeUtils.escapeHtml( formatDate(publicationStartDatetime) ) %>"></td>
-			<td class="imcmsAdmText">&nbsp;<? install/htdocs/sv/jsp/docadmin/document_information.jsp/1007 ?></td>
+			<td class="imcmsAdmText">&nbsp;<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/1007"/></td>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_START_TIME %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_START_TIME %>" size="5" maxlength="5" style="width: 4em;"
 			value="<%= StringEscapeUtils.escapeHtml( formatTime(document.getPublicationStartDatetime()) ) %>"></td>
 			<td><%= jsCalendar.getInstance(EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_START_DATE,
 			    EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_START_TIME).getButton(calendarButtonTitle) %>&nbsp;(<%= Utility.formatHtmlDatetime( publicationStartDatetime ) %>)&nbsp;&nbsp;</td>
-			<td><input type="button" id="nowBtn0" value="&laquo;&nbsp;<? global/Now ?>" class="imcmsFormBtnSmall" style="width:40px; visibility:hidden;" onClick="setNow('<%=
+			<td><input type="button" id="nowBtn0" value="&laquo;&nbsp;<fmt:message key="global/Now"/>" class="imcmsFormBtnSmall" style="width:40px; visibility:hidden;" onClick="setNow('<%=
 			EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_START_DATE %>','<%=
 			EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_START_TIME %>');"></td>
 		</tr>
@@ -272,18 +275,18 @@ function checkFocus() {
 			<td class="imcmsAdmText"><%
 			Date archivedDatetime = document.getArchivedDatetime();
 			if (null == archivedDatetime || archivedDatetime.after(now)) { %>
-			<? install/htdocs/sv/jsp/docadmin/document_information.jsp/document_will_be_archived_at ?><%
+			<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/document_will_be_archived_at"/><%
 			} else { %>
-			<? install/htdocs/sv/jsp/docadmin/document_information.jsp/document_was_archived_at ?><%
+			<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/document_was_archived_at"/><%
 			} %></td>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__ARCHIVED_DATE %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__ARCHIVED_DATE %>" size="11" maxlength="10" style="width: 7em;"
 			value="<%= StringEscapeUtils.escapeHtml( formatDate(archivedDatetime) ) %>"></td>
-			<td class="imcmsAdmText">&nbsp;<? install/htdocs/sv/jsp/docadmin/document_information.jsp/1009 ?></td>
+			<td class="imcmsAdmText">&nbsp;<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/1009"/></td>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__ARCHIVED_TIME %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__ARCHIVED_TIME %>" size="5" maxlength="5" style="width: 4em;"
 			value="<%= StringEscapeUtils.escapeHtml( formatTime(archivedDatetime) ) %>"></td>
 			<td><%= jsCalendar.getInstance(EditDocumentInformationPageFlow.REQUEST_PARAMETER__ARCHIVED_DATE,
 			    EditDocumentInformationPageFlow.REQUEST_PARAMETER__ARCHIVED_TIME).getButton(calendarButtonTitle) %>&nbsp;(<%= Utility.formatHtmlDatetime( archivedDatetime ) %>)&nbsp;&nbsp;</td>
-			<td><input type="button" id="nowBtn1" value="&laquo;&nbsp;<? global/Now ?>" class="imcmsFormBtnSmall" style="width:40px; visibility:hidden;" onClick="setNow('<%=
+			<td><input type="button" id="nowBtn1" value="&laquo;&nbsp;<fmt:message key="global/Now"/>" class="imcmsFormBtnSmall" style="width:40px; visibility:hidden;" onClick="setNow('<%=
 			EditDocumentInformationPageFlow.REQUEST_PARAMETER__ARCHIVED_DATE %>','<%=
 			EditDocumentInformationPageFlow.REQUEST_PARAMETER__ARCHIVED_TIME %>');"></td>
 		</tr>
@@ -291,18 +294,18 @@ function checkFocus() {
 			<td class="imcmsAdmText" nowrap><%
 			Date publicationEndDatetime = document.getPublicationEndDatetime();
 			if (null == publicationEndDatetime || publicationEndDatetime.after(now)) { %>
-			<? install/htdocs/sv/jsp/docadmin/document_information.jsp/document_will_cease_to_be_published_at ?><%
+			<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/document_will_cease_to_be_published_at"/><%
 			} else { %>
-			<? install/htdocs/sv/jsp/docadmin/document_information.jsp/document_ceased_to_be_published_at ?><%
+			<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/document_ceased_to_be_published_at"/><%
 			} %>&nbsp;</td>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_END_DATE %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_END_DATE %>" size="11" maxlength="10" style="width: 7em;"
 			value="<%= StringEscapeUtils.escapeHtml( formatDate(publicationEndDatetime) ) %>"></td>
-			<td class="imcmsAdmText">&nbsp;<? install/htdocs/sv/jsp/docadmin/document_information.jsp/1009 ?></td>
+			<td class="imcmsAdmText">&nbsp;<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/1009"/></td>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_END_TIME %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_END_TIME %>" size="5" maxlength="5" style="width: 4em;"
 			value="<%= StringEscapeUtils.escapeHtml( formatTime(publicationEndDatetime) ) %>"></td>
 			<td><%= jsCalendar.getInstance(EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_END_DATE,
                     EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_END_TIME).getButton(calendarButtonTitle) %>&nbsp;(<%= Utility.formatHtmlDatetime( publicationEndDatetime ) %>)&nbsp;&nbsp;</td>
-			<td><input type="button" id="nowBtn2" value="&laquo;&nbsp;<? global/Now ?>" class="imcmsFormBtnSmall" style="width:40px; visibility:hidden;" onClick="setNow('<%=
+			<td><input type="button" id="nowBtn2" value="&laquo;&nbsp;<fmt:message key="global/Now"/>" class="imcmsFormBtnSmall" style="width:40px; visibility:hidden;" onClick="setNow('<%=
 			EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_END_DATE %>','<%=
 			EditDocumentInformationPageFlow.REQUEST_PARAMETER__PUBLICATION_END_TIME %>');"></td>
 		</tr>
@@ -325,10 +328,10 @@ function checkFocus() {
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0" width="100%">
 	<tr>
-		<td><span class="imcmsAdmHeading"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/21/1 ?></span></td>
+		<td><span class="imcmsAdmHeading"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/21/1"/></span></td>
 		<script language="javascript">
 		if (hasGetElementById) {
-			document.writeln('<td align="right"><input type="button" id="advanced_button1" class="imcmsFormBtnSmall" value="<? install/htdocs/sv/jsp/docadmin/document_information.jsp/advanced_button_hide ?>" onClick="toggleAdvanced()"></td>') ;
+			document.writeln('<td align="right"><input type="button" id="advanced_button1" class="imcmsFormBtnSmall" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/advanced_button_hide"/>" onClick="toggleAdvanced()"></td>') ;
 		}
 		</script>
 	</tr>
@@ -350,9 +353,9 @@ function checkFocus() {
         Set documentSections = documentMapper.getSections(documentSectionIds) ;
 	if (sections != null && sections.length > 0) { %>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/22 ?></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/22"/></td>
 		<td class="imcmsAdmText">
-		<a href="$contextPath/imcms/$language/jsp/section_descriptions.jsp" target="_blank"><? global/view ?> info</a><br>
+		<a href="$contextPath/imcms/$language/jsp/section_descriptions.jsp" target="_blank"><fmt:message key="global/view"/> info</a><br>
 		<img src="$contextPath/imcms/$language/images/admin/1x1.gif" width="1" height="3"><br>
 		<select name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__SECTIONS %>" size="<%= (sections.length > 5) ? 5 : sections.length %>" multiple><%
 		ToStringPairTransformer sectionToStrings = new ToStringPairTransformer() {
@@ -363,10 +366,10 @@ function checkFocus() {
 		} ; %>
 		<%= Html.createOptionList( Arrays.asList( sections ), documentSections, sectionToStrings ) %>
 		</select>
-		&nbsp; <? install/htdocs/sv/jsp/docadmin/document_information.jsp/current_section ?>
+		&nbsp; <fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/current_section"/>
 		<%=
 		documentSections.isEmpty()
-		? "<? install/htdocs/sv/jsp/docadmin/document_information.jsp/no_section ?>"
+		? bundle.getString("install/htdocs/sv/jsp/docadmin/document_information.jsp/no_section")
 		: StringUtils.join(documentSections.iterator(), ", ")
 		%></td>
 	</tr>
@@ -380,12 +383,12 @@ function checkFocus() {
 	 ******************************************************************************************* */
 	 %>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/26 ?></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/26"/></td>
 		<td class="imcmsAdmText">
 		<select name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__LANGUAGE %>" size="1" onFocus="selFocused = true;">
 			<%= service.getLanguageMapper().createLanguagesOptionList( user, document.getLanguageIso639_2() ) %>
 		</select>
-		&nbsp; <? install/htdocs/sv/jsp/docadmin/document_information.jsp/current_language ?> <%= service.getLanguageMapper().getCurrentLanguageNameInUsersLanguage( user, document.getLanguageIso639_2() )%></td>
+		&nbsp; <fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/current_language"/> <%= service.getLanguageMapper().getCurrentLanguageNameInUsersLanguage( user, document.getLanguageIso639_2() )%></td>
 	</tr>
 	<tr>
 		<td colspan="2">#gui_hr( "cccccc" )</td>
@@ -402,7 +405,7 @@ function checkFocus() {
 
 	if (categoryTypes != null && categoryTypes.length > 0) { %>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/29 ?></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/29"/></td>
 		<td class="imcmsAdmText"><%
 		for ( int i = 0; i < categoryTypes.length; i++ ) {
 			CategoryTypeDomainObject categoryType = categoryTypes[i] ;
@@ -417,8 +420,8 @@ function checkFocus() {
 					<%= Html.createOptionListOfCategoriesOfTypeNotSelectedForDocument( documentMapper, categoryType, document) %>
 				</select></td>
 				<td valign="middle" align="center">
-					<input type="submit" name="<%=EditDocumentInformationPageFlow.REQUEST_PARAMETER__ADD_CATEGORY%>" class="imcmsFormBtnSmall" value="<? global/addToRight ?>" style="width:11ex; margin-bottom:3px;"><br>
-					<input type="submit" name="<%=EditDocumentInformationPageFlow.REQUEST_PARAMETER__REMOVE_CATEGORY%>" class="imcmsFormBtnSmall" value="<? global/removeToLeft ?>" style="width:11ex; margin-top:3px;">
+					<input type="submit" name="<%=EditDocumentInformationPageFlow.REQUEST_PARAMETER__ADD_CATEGORY%>" class="imcmsFormBtnSmall" value="<fmt:message key="global/addToRight"/>" style="width:11ex; margin-bottom:3px;"><br>
+					<input type="submit" name="<%=EditDocumentInformationPageFlow.REQUEST_PARAMETER__REMOVE_CATEGORY%>" class="imcmsFormBtnSmall" value="<fmt:message key="global/removeToLeft"/>" style="width:11ex; margin-top:3px;">
 				</td>
 				<td valign="top"><select name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__CATEGORY_IDS_TO_REMOVE %>" size="4" multiple>
 					<% Set documentSelectedCategories = new TreeSet(categoryMapper.getCategoriesOfType( categoryType, document.getCategoryIds() ));%>
@@ -480,7 +483,7 @@ function checkFocus() {
 
 	%>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/32 ?></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/32"/></td>
 		<td class="imcmsAdmText">
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
@@ -488,14 +491,14 @@ function checkFocus() {
 			if (document.isLinkedForUnauthorizedUsers()) {
 				%> checked<%
 			} %>></td>
-			<td class="imcmsAdmText">&nbsp;<label for="shareCb0"><? install/htdocs/global/pageinfo/show_link_to_unauthorized_user ?></label></td>
+			<td class="imcmsAdmText">&nbsp;<label for="shareCb0"><fmt:message key="install/htdocs/global/pageinfo/show_link_to_unauthorized_user"/></label></td>
 		</tr>
 		<tr>
 			<td><input type="CHECKBOX" id="shareCb1" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__LINKABLE_BY_OTHER_USERS %>" value="1"<%
 			if (document.isLinkableByOtherUsers()) {
 				%> checked<%
 			} %>></td>
-			<td class="imcmsAdmText">&nbsp;<label for="shareCb1"><? install/htdocs/global/pageinfo/share ?></label></td>
+			<td class="imcmsAdmText">&nbsp;<label for="shareCb1"><fmt:message key="install/htdocs/global/pageinfo/share"/></label></td>
 		</tr>
 		</table></td>
 	</tr>
@@ -503,7 +506,7 @@ function checkFocus() {
 		<td colspan="2">#gui_hr( "cccccc" )</td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/35 ?></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/35"/></td>
 		<td class="imcmsAdmText"><%
 		Set documentKeywords = document.getKeywords();
         String[] keywords = (String[])documentKeywords.toArray(new String[documentKeywords.size()]);
@@ -513,17 +516,17 @@ function checkFocus() {
 		%>
 		<input type="text" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__KEYWORDS %>" size="48" maxlength="200" style="width: 100%"
 		value="<%= StringEscapeUtils.escapeHtml( keywordsParser.formatKeywords(keywords) )%>"><br>
-		<span class="imcmsAdmDim"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/keywords_explanation ?></span><br>
+		<span class="imcmsAdmDim"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/keywords_explanation"/></span><br>
 		<input type="CHECKBOX" id="lucene0" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__SEARCH_DISABLED %>" value="1" <%
 		if (document.isSearchDisabled()) {
 			%> checked<%
-		} %>> <label for="lucene0"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/37 ?></label></td>
+		} %>> <label for="lucene0"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/37"/></label></td>
 	</tr>
 	<tr>
 		<td colspan="2">#gui_hr( "cccccc" )</td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/39 ?></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/39"/></td>
 		<td class="imcmsAdmText" nowrap>
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr><%
@@ -533,21 +536,21 @@ function checkFocus() {
 				%> checked<%
 				target = null;
 			} %>></td>
-			<td class="imcmsAdmText">&nbsp;<label for="targetCb0"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/1015 ?></label> &nbsp;</td>
+			<td class="imcmsAdmText">&nbsp;<label for="targetCb0"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/1015"/></label> &nbsp;</td>
 			<td><input type="radio" id="targetCb1" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__TARGET %>" value="_blank"<%
 			if ("_blank".equalsIgnoreCase( target ) ) {
 				%> checked<%
 				target = null;
 			} %>></td>
-			<td class="imcmsAdmText">&nbsp;<label for="targetCb1"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/1016 ?></label> &nbsp;</td>
+			<td class="imcmsAdmText">&nbsp;<label for="targetCb1"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/1016"/></label> &nbsp;</td>
 			<td><input type="radio" id="targetCb2" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__TARGET %>" value="_top"<%
 			if ("_top".equalsIgnoreCase( target ) ) {
 				%> checked<%
 				target = null;
 			} %>></td>
-			<td class="imcmsAdmText">&nbsp;<label for="targetCb2"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/1017 ?></label> &nbsp;</td>
+			<td class="imcmsAdmText">&nbsp;<label for="targetCb2"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/1017"/></label> &nbsp;</td>
 			<td><input type="radio" id="targetCb3" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__TARGET %>" <% if (null != target) { %> checked<% } %> onclick="document.getElementById('otherTarget').focus();"></td>
-			<td class="imcmsAdmText">&nbsp;<label for="targetCb3"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/1018 ?></label>&nbsp;</td>
+			<td class="imcmsAdmText">&nbsp;<label for="targetCb3"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/1018"/></label>&nbsp;</td>
 			<td>
 			<input type="text" id="otherTarget" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__TARGET %>" size="9" maxlength="20" style="width:120"
 			value="<%
@@ -562,29 +565,29 @@ function checkFocus() {
 		<td colspan="2">#gui_hr( "cccccc" )</td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/document_information.jsp/created ?></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/created"/></td>
 		<td>
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__CREATED_DATE %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__CREATED_DATE %>" size="11" maxlength="10" style="width: 7em;"
 			value="<%= formatDate( document.getCreatedDatetime() ) %>"></td>
-			<td class="imcmsAdmText">&nbsp;<? install/htdocs/sv/jsp/docadmin/document_information.jsp/time ?></td>
+			<td class="imcmsAdmText">&nbsp;<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/time"/></td>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__CREATED_TIME %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__CREATED_TIME %>" size="5" maxlength="5" style="width: 4em;"
 			value="<%= formatTime( document.getCreatedDatetime() ) %>"></td>
 			<td class="imcmsAdmText"><%= jsCalendar.getInstance(EditDocumentInformationPageFlow.REQUEST_PARAMETER__CREATED_DATE,
-			                             EditDocumentInformationPageFlow.REQUEST_PARAMETER__CREATED_TIME).getButton(calendarButtonTitle) %>&nbsp;<? install/htdocs/sv/jsp/docadmin/document_information.jsp/created_by ?>
-			<%= Utility.formatUser(userMapper.getUser(document.getCreatorId())) %>&nbsp;<input type="submit" class="imcmsFormBtnSmall" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__GO_TO_CREATOR_BROWSER %>" value="<? install/htdocs/sv/jsp/docadmin/document_information.jsp/select_creator_button ?>"></td>
+			                             EditDocumentInformationPageFlow.REQUEST_PARAMETER__CREATED_TIME).getButton(calendarButtonTitle) %>&nbsp;<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/created_by"/>
+			<%= Utility.formatUser(userMapper.getUser(document.getCreatorId())) %>&nbsp;<input type="submit" class="imcmsFormBtnSmall" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__GO_TO_CREATOR_BROWSER %>" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/select_creator_button"/>"></td>
 		</tr>
 		</table></td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText"><? global/modified ?></td>
+		<td class="imcmsAdmText"><fmt:message key="global/modified"/></td>
 		<td>
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__MODIFIED_DATE %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__MODIFIED_DATE %>" size="11" maxlength="10" style="width: 7em;"
 			value="<%= formatDate( document.getModifiedDatetime() ) %>"></td>
-			<td class="imcmsAdmText">&nbsp;<? install/htdocs/sv/jsp/docadmin/document_information.jsp/time ?></td>
+			<td class="imcmsAdmText">&nbsp;<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/time"/></td>
 			<td><input type="text" id="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__MODIFIED_TIME %>" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__MODIFIED_TIME %>" size="5" maxlength="5" style="width: 4em;"
 			value="<%= formatTime( document.getModifiedDatetime() ) %>"></td>
             <td><%= jsCalendar.getInstance(EditDocumentInformationPageFlow.REQUEST_PARAMETER__MODIFIED_DATE,
@@ -597,15 +600,15 @@ function checkFocus() {
 		<td colspan="2">#gui_hr( "cccccc" )</td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText"><? global/Publisher ?></td>
+		<td class="imcmsAdmText"><fmt:message key="global/Publisher"/></td>
 		<td class="imcmsAdmText">
 		<% Integer publisherId = document.getPublisherId();
             UserDomainObject publisher = null == publisherId ? null : userMapper.getUser(publisherId.intValue()) ; %>
 		<%=
 		null == publisher
-		? "<? install/htdocs/sv/jsp/docadmin/document_information.jsp/no_publisher ?>"
+		? bundle.getString("install/htdocs/sv/jsp/docadmin/document_information.jsp/no_publisher")
 		: Utility.formatUser(publisher)
-		%>&nbsp;<input type="submit" class="imcmsFormBtnSmall" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__GO_TO_PUBLISHER_BROWSER %>" value="<? install/htdocs/sv/jsp/docadmin/document_information.jsp/select_publisher_button ?>"></td>
+		%>&nbsp;<input type="submit" class="imcmsFormBtnSmall" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__GO_TO_PUBLISHER_BROWSER %>" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/select_publisher_button"/>"></td>
 	</tr>
 	<tr>
 		<td><img src="$contextPath/imcms/$language/images/admin/1x1.gif" width="96" height="1"></td>
@@ -627,15 +630,15 @@ function checkFocus() {
 	<tr>
 		<script language="javascript">
 		if (hasGetElementById) {
-			document.writeln('<td><input type="button" id="advanced_button2" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/document_information.jsp/advanced_button ?>" onClick="toggleAdvanced()"></td>') ;
+			document.writeln('<td><input type="button" id="advanced_button2" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/advanced_button"/>" onClick="toggleAdvanced()"></td>') ;
 			document.writeln('<td>&nbsp;&nbsp;</td>') ;
 		}
 		</script>
 		<td><input type="SUBMIT" class="imcmsFormBtn" name="<%= PageFlow.REQUEST_PARAMETER__OK_BUTTON %>" onClick="return singleclicked();"
-		value=" <? install/htdocs/sv/jsp/docadmin/document_information.jsp/2004 ?> "></td>
+		value=" <fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/2004"/> "></td>
 		<td>&nbsp;</td>
 		<td><input type="SUBMIT" class="imcmsFormBtn" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>"
-		value="<? install/htdocs/sv/jsp/docadmin/document_information.jsp/2006 ?>"></td>
+		value="<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/2006"/>"></td>
 	</tr>
 	</table></td>
 </tr>
@@ -671,8 +674,8 @@ if (all_cookies.length > 0) {
 	}
 } %>
 var viewCookieName = "<%= viewCookieName %>" ;
-var BTN_SHOW_VALUE = "<? install/htdocs/sv/jsp/docadmin/document_information.jsp/advanced_button ?>" ;
-var BTN_HIDE_VALUE = "<? install/htdocs/sv/jsp/docadmin/document_information.jsp/advanced_button_hide ?>" ;<%
+var BTN_SHOW_VALUE = "<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/advanced_button"/>" ;
+var BTN_HIDE_VALUE = "<fmt:message key="install/htdocs/sv/jsp/docadmin/document_information.jsp/advanced_button_hide"/>" ;<%
 
 if (actCookieValue.equals("advanced")) { %>
 document.getElementById("advanced").style.display = (isGecko) ? "table-row-group" : "block" ;
@@ -725,4 +728,5 @@ if (document.getElementById) {
 
 </body>
 </html>
+
 

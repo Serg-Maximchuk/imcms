@@ -1,10 +1,12 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="vel" uri="imcmsvelocity"%>
 <vel:velocity>
 <html>
 <head>
 
 
-<title><? install/htdocs/imcms/html/link_editor.jsp/1 ?></title>
+<title><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/1"/></title>
 
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
 <script src="$contextPath/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
@@ -13,11 +15,11 @@
 <body bgcolor="#FFFFFF" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0" class="imcmsAdmBgCont" style="border:0; margin:0" onLoad="focusField(1,'createLinkDesc')">
 
 #gui_outer_start_noshade()
-#gui_head_noshade("<? global/imcms_administration ?>")
+#gui_head_noshade("<fmt:message key="global/imcms_administration"/>")
 <table border="0" cellspacing="0" cellpadding="0">
 <form>
 <tr>
-	<td><input type="button" class="imcmsFormBtn" value="<? install/htdocs/imcms/html/link_editor.jsp/2001 ?>" onClick="window.close(); return false"></td>
+	<td><input type="button" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/2001"/>" onClick="window.close(); return false"></td>
 </tr>
 </form>
 </table>
@@ -28,37 +30,37 @@
 	<td>
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
-		<td colspan="2">#gui_heading( "<? install/htdocs/imcms/html/link_editor.jsp/4/1 ?>" )</td>
+		<td colspan="2">#gui_heading( "<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/4/1"/>" )</td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/imcms/html/link_editor.jsp/5 ?></td>
-		<td><input type="text" name="createLinkDesc" size="54" maxlength="255" style="width: 100%" value="<? install/htdocs/imcms/html/link_editor.jsp/6/1 ?>"></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/5"/></td>
+		<td><input type="text" name="createLinkDesc" size="54" maxlength="255" style="width: 100%" value="<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/6/1"/>"></td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText"><? install/htdocs/imcms/html/link_editor.jsp/7 ?></td>
+		<td class="imcmsAdmText"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/7"/></td>
 		<td class="form">
 		<select class="form" name="createLinkType" onChange="changeLinkType(document.forms.createLinkForm.createLinkType.options[document.forms.createLinkForm.createLinkType.selectedIndex].value)">
-			<option value="GetDoc"><? install/htdocs/imcms/html/link_editor.jsp/8 ?></option>
-			<option value="http"><? install/htdocs/imcms/html/link_editor.jsp/9 ?></option>
-			<option value="mailto"><? install/htdocs/imcms/html/link_editor.jsp/10 ?></option>
-			<option value="ftp"><? install/htdocs/imcms/html/link_editor.jsp/11 ?></option>
-			<option value="#"><? install/htdocs/imcms/html/link_editor.jsp/12 ?></option>
-			<option value="NAME"><? install/htdocs/imcms/html/link_editor.jsp/13 ?></option>
+			<option value="GetDoc"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/8"/></option>
+			<option value="http"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/9"/></option>
+			<option value="mailto"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/10"/></option>
+			<option value="ftp"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/11"/></option>
+			<option value="#"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/12"/></option>
+			<option value="NAME"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/13"/></option>
 		</select></td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText" nowrap><? install/htdocs/imcms/html/link_editor.jsp/1001 ?>&nbsp;</td>
+		<td class="imcmsAdmText" nowrap><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/1001"/>&nbsp;</td>
 		<td>
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td nowrap>
 			<select name="createLinkTargetTemp" onChange="document.forms.createLinkForm.createLinkTarget.value = document.forms.createLinkForm.createLinkTargetTemp.options[document.forms.createLinkForm.createLinkTargetTemp.selectedIndex].value; document.forms.createLinkForm.createLinkTarget.focus(); document.forms.createLinkForm.createLinkTarget.select()">
-				<option value="" selected><? install/htdocs/imcms/html/link_editor.jsp/14 ?></option>
-				<option value="_blank"><? install/htdocs/imcms/html/link_editor.jsp/15 ?></option>
-				<option value="_top"><? install/htdocs/imcms/html/link_editor.jsp/16 ?></option>
-				<option value="_self"><? install/htdocs/imcms/html/link_editor.jsp/17 ?></option>
-				<option value="_parent"><? install/htdocs/imcms/html/link_editor.jsp/18 ?></option>
-				<option value="Skriv namn!"><? install/htdocs/imcms/html/link_editor.jsp/19 ?></option>
+				<option value="" selected><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/14"/></option>
+				<option value="_blank"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/15"/></option>
+				<option value="_top"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/16"/></option>
+				<option value="_self"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/17"/></option>
+				<option value="_parent"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/18"/></option>
+				<option value="Skriv namn!"><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/19"/></option>
 			</select></td>
 			<td>&nbsp;</td>
 			<td class="form" align="right"><input type="text" name="createLinkTarget" size="12" maxlength="50" style="width: 100" value=""></td>
@@ -67,11 +69,11 @@
 	</tr>
 	<tr>
 		<td class="imcmsAdmText" nowrap>
-		<? install/htdocs/imcms/html/link_editor.jsp/1002 ?> &nbsp;</td>
-		<td><input type="text" name="createLinkValue" size="54" maxlength="100" style="width: 100%" value="<? install/htdocs/imcms/html/link_editor.jsp/21/1 ?>"></td>
+		<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/1002"/> &nbsp;</td>
+		<td><input type="text" name="createLinkValue" size="54" maxlength="100" style="width: 100%" value="<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/21/1"/>"></td>
 	</tr>
 	<tr>
-		<td class="imcmsAdmText" nowrap><? install/htdocs/imcms/html/link_editor.jsp/22 ?></td>
+		<td class="imcmsAdmText" nowrap><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/22"/></td>
 		<td><input type="text" name="createLinkCss" size="20" maxlength="50" style="width: 150" value=""></td>
 	</tr>
 	<tr>
@@ -81,14 +83,14 @@
 		<td colspan="2" align="right">
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<td><input type="submit" value="<? install/htdocs/imcms/html/link_editor.jsp/2002 ?>" class="imcmsFormBtnSmall" width="120" style="width:120" onClick="createLink();"></td>
+			<td><input type="submit" value="<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/2002"/>" class="imcmsFormBtnSmall" width="120" style="width:120" onClick="createLink();"></td>
 			<td>&nbsp;</td>
-			<td><input type="reset" value="<? install/htdocs/imcms/html/link_editor.jsp/2003 ?>" class="imcmsFormBtnSmall" onClick="hideLinkExample(0);"></td>
+			<td><input type="reset" value="<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/2003"/>" class="imcmsFormBtnSmall" onClick="hideLinkExample(0);"></td>
 		</tr>
 		</table></td>
 	</tr>
 	<tr>
-		<td colspan="2" nowrap>&nbsp;<br>#gui_heading( "<? install/htdocs/imcms/html/link_editor.jsp/25/1 ?>" )</td>
+		<td colspan="2" nowrap>&nbsp;<br>#gui_heading( "<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/25/1"/>" )</td>
 	</tr>
 	<tr>
 		<td colspan="2"><input type="text" name="theLinkCodeField" size="76" maxlength="255" style="width: 100%" value=""><div id="theLinkCodeFieldDiv"></div></td>
@@ -110,8 +112,8 @@ var ns4 = (document.layers) ? 1 : 0;
 var ns6 = (document.getElementById) ? 1 : 0;
 var moz = (document.getElementById) ? 1 : 0;
 
-var arrTheFieldValues = new Array("<? install/htdocs/imcms/html/link_editor.jsp/21/1 ?>", "http:/\/", "<? install/htdocs/imcms/html/link_editor.jsp/3002 ?>", "<? install/htdocs/imcms/html/link_editor.jsp/3003 ?>", "<? install/htdocs/imcms/html/link_editor.jsp/3003 ?>", "ftp:/\/");
-var defValDesc = "<? install/htdocs/imcms/html/link_editor.jsp/3004 ?>";
+var arrTheFieldValues = new Array("<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/21/1"/>", "http:/\/", "<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/3002"/>", "<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/3003"/>", "<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/3003"/>", "ftp:/\/");
+var defValDesc = "<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/3004"/>";
 
 function changeLinkType(what) {
 	var theField     = document.forms.createLinkForm.createLinkValue;
@@ -214,7 +216,7 @@ function createLink() {
 	if (po) {
 		var poEl = (po.format_type) ? po.format_type[1] : po.type[1] ;
 		if (!(poEl.checked == 1)) {
-			if(confirm("<? install/htdocs/imcms/html/link_editor.jsp/3005 ?>")){
+			if(confirm("<fmt:message key="install/htdocs/imcms/html/link_editor.jsp/3005"/>")){
 				poEl.checked = 1;
 			}
 		}
@@ -234,7 +236,7 @@ function createLink() {
 	if (moz) {
 		if (document.getElementById("theLinkCodeFieldDiv")) {
 			hideLinkExample(1) ;
-			document.getElementById("theLinkCodeFieldDiv").innerHTML = "&nbsp;<br><span class=\"imcmsAdmText\"><b><? install/htdocs/imcms/html/link_editor.jsp/3006 ?>: &nbsp;</b>" + previewHref + "</span>" ;
+			document.getElementById("theLinkCodeFieldDiv").innerHTML = "&nbsp;<br><span class=\"imcmsAdmText\"><b><fmt:message key="install/htdocs/imcms/html/link_editor.jsp/3006"/>: &nbsp;</b>" + previewHref + "</span>" ;
 		}
 	}
 }
@@ -255,3 +257,4 @@ hideLinkExample(0) ;
 </body>
 </html>
 </vel:velocity>
+

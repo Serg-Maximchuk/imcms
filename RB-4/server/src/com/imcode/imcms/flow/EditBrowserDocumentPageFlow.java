@@ -19,7 +19,7 @@ public class EditBrowserDocumentPageFlow extends EditDocumentPageFlow {
 
     public final static String REQUEST_PARAMETER__BROWSERS = "browsers";
     public final static String REQUEST_PARAMETER_PREFIX__DESTINATION = "destination_";
-    public static final String URL_I15D_PAGE__BROWSERDOC = "/jsp/docadmin/browser_document.jsp";
+    public static final String URL_I15D_PAGE__BROWSERDOC = "lang/jsp/docadmin/browser_document.jsp";
     public static final String REQUEST_PARAMETER__ADD_BROWSERS_BUTTON = "add_browsers";
     public static final String REQUEST_ATTRIBUTE__ADDED_BROWSERS = "addedBrowsers";
 
@@ -52,7 +52,7 @@ public class EditBrowserDocumentPageFlow extends EditDocumentPageFlow {
                                                              HttpServletResponse response, Map browsersMap ) throws ServletException, IOException {
         UserDomainObject user = Utility.getLoggedOnUser( request );
         request.setAttribute( REQUEST_ATTRIBUTE__ADDED_BROWSERS, browsersMap );
-        request.getRequestDispatcher( URL_I15D_PAGE__PREFIX + user.getLanguageIso639_2() + URL_I15D_PAGE__BROWSERDOC ).forward( request, response );
+        request.getRequestDispatcher( URL_I15D_PAGE__PREFIX + URL_I15D_PAGE__BROWSERDOC ).forward( request, response );
     }
 
     Map getAddedBrowsersFromRequest( HttpServletRequest request, DocumentMapper documentMapper ) {

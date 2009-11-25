@@ -5,6 +5,8 @@
                  imcode.util.Html,
                  imcode.server.user.UserDomainObject"%>
 <%@ page import="org.apache.commons.lang.ObjectUtils"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%@taglib prefix="vel" uri="imcmsvelocity"%>
 <jsp:useBean id="listItemBean" class="com.imcode.imcms.servlet.beans.AdminManagerSubReportListItemBean" scope="request"/>
 <%
@@ -43,3 +45,4 @@
     </td>
    </tr>
 </vel:velocity>
+

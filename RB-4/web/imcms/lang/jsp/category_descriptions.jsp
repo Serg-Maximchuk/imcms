@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page
 	
 	import="com.imcode.imcms.api.*,
@@ -16,7 +18,7 @@ Category[] categories           = documentService.getAllCategoriesOfType(categor
 %>
 <html>
 <head>
-<title><? install/htdocs/sv/jsp/category_descriptions.jsp/1/1 ?> <%= categoryTypeName %></title>
+<title><fmt:message key="install/htdocs/sv/jsp/category_descriptions.jsp/1/1"/> <%= categoryTypeName %></title>
 
 <style type="text/css">
 <!-- 
@@ -51,3 +53,4 @@ TD { font: 11px Verdana,sans-serif; }
 
 </body>
 </html>
+

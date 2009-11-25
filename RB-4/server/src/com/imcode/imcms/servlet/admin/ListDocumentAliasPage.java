@@ -64,8 +64,7 @@ public class ListDocumentAliasPage extends OkCancelPage {
 
     public String getPath(HttpServletRequest request) {
         UserDomainObject user = Utility.getLoggedOnUser( request );
-        return "/imcms/" + user.getLanguageIso639_2()
-               + "/jsp/document_alias_list.jsp";
+        return "/imcms/lang/jsp/document_alias_list.jsp";
     }
 
 }

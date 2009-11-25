@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.imcode.imcms.flow.DocumentPageFlow,
                  com.imcode.imcms.flow.EditDocumentPageFlow,
                  com.imcode.imcms.flow.EditHtmlDocumentPageFlow,
@@ -11,20 +13,20 @@
 <vel:velocity>
 <html>
 <head>
-<title><? install/htdocs/sv/jsp/docadmin/html_document.jsp/1 ?></title>
+<title><fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/1"/></title>
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
 <script src="$contextPath/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
 
 </head>
 <body bgcolor="#FFFFFF" onLoad="focusField(1,'frame_set')">
 #gui_outer_start()
-#gui_head("<? global/imcms_administration ?>")
+#gui_head("<fmt:message key="global/imcms_administration"/>")
 <table border="0" cellspacing="0" cellpadding="0">
 <form method="POST" action="DocumentPageFlowDispatcher">
 <tr>
-	<td><input type="submit" class="imcmsFormBtn" name="cancel" value="<? install/htdocs/sv/jsp/docadmin/html_document.jsp/2001 ?>"></td>
+	<td><input type="submit" class="imcmsFormBtn" name="cancel" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/2001"/>"></td>
 	<td>&nbsp;</td>
-    <td><input type="button" value="<? install/htdocs/sv/jsp/docadmin/html_document.jsp/2002 ?>" title="<? install/htdocs/sv/jsp/docadmin/html_document.jsp/2003 ?>" class="imcmsFormBtn" onClick="openHelpW('LinkHTMLPage')"></td>
+    <td><input type="button" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/2002"/>" title="<fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/2003"/>" class="imcmsFormBtn" onClick="openHelpW('LinkHTMLPage')"></td>
 </tr>
 </form>
 </table>
@@ -41,11 +43,11 @@
     value="<%= EditDocumentPageFlow.PAGE__EDIT %>">
 <tr>
 	<td>
-        #gui_heading( "<? install/htdocs/sv/jsp/docadmin/html_document.jsp/6 ?>" )
+        #gui_heading( "<fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/6"/>" )
     </td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/jsp/docadmin/html_document.jsp/5 ?></td>
+	<td><fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/5"/></td>
 </tr>
 <tr>
 	<td><textarea name="<%= EditHtmlDocumentPageFlow.REQUEST_PARAMETER__HTML_DOC__HTML %>" cols="57" rows="16" wrap="virtual" style="width:100%; overflow:auto">
@@ -58,9 +60,9 @@
 </tr>
 <tr>
 	<td align="right">
-	<input type="submit" class="imcmsFormBtn" name="ok" value="<? install/htdocs/sv/jsp/docadmin/html_document.jsp/2004 ?>" onClick="return singleclicked();">
-	<input type="reset" class="imcmsFormBtn" name="reset" value="<? install/htdocs/sv/jsp/docadmin/html_document.jsp/2005 ?>">
-	<input type="submit" class="imcmsFormBtn" name="cancel" value="<? install/htdocs/sv/jsp/docadmin/html_document.jsp/2006 ?>"></td>
+	<input type="submit" class="imcmsFormBtn" name="ok" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/2004"/>" onClick="return singleclicked();">
+	<input type="reset" class="imcmsFormBtn" name="reset" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/2005"/>">
+	<input type="submit" class="imcmsFormBtn" name="cancel" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/html_document.jsp/2006"/>"></td>
 </tr>
 </form>
 </table>
@@ -69,3 +71,4 @@
 </vel:velocity>
 </body>
 </html>
+

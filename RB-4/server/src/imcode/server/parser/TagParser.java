@@ -226,8 +226,8 @@ public class TagParser {
                     request.setAttribute("includedDocumentId", includedDocumentId);
                     request.setAttribute("label", label);
                     request.setAttribute("includeIndex", new Integer(no));
-                    return Utility.getContents("/imcms/" + user.getLanguageIso639_2()
-                                               + "/jsp/docadmin/text/edit_include.jsp", request, response);
+                    return Utility.getContents("/imcms/lang/jsp/docadmin/text/edit_include.jsp",
+                            request, response);
                 } catch ( Exception e ) {
                     throw new UnhandledException(e);
                 }
@@ -452,8 +452,8 @@ public class TagParser {
             request.setAttribute("rows", attributes.getProperty("rows"));
 
             try {
-                result = Utility.getContents("/imcms/" + documentRequest.getUser().getLanguageIso639_2()
-                                             + "/jsp/docadmin/text/edit_text.jsp", request, response);
+                result = Utility.getContents("/imcms/lang/jsp/docadmin/text/edit_text.jsp",
+                        request, response);
             } catch ( ServletException e ) {
                 throw new UnhandledException(e);
             } catch ( IOException e ) {

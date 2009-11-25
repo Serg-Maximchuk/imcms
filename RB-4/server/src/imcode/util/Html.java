@@ -211,7 +211,7 @@ public class Html {
         try {
             request.setAttribute( "document", document );
             request.setAttribute( "user", user );
-            return Utility.getContents( "/imcms/" + user.getLanguageIso639_2() + "/jsp/admin/adminbuttons.jsp", request, response );
+            return Utility.getContents( "/imcms/lang/jsp/admin/adminbuttons.jsp", request, response );
         } catch ( ServletException e ) {
             throw new UnhandledException( e );
         } catch ( IOException e ) {

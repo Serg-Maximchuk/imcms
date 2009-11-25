@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.imcode.imcms.flow.DocumentPageFlow,
                  com.imcode.imcms.flow.EditDocumentPageFlow,
                  com.imcode.imcms.flow.EditUrlDocumentPageFlow,
@@ -13,20 +15,20 @@
 <vel:velocity>
 <html>
 <head>
-<title><? install/htdocs/sv/jsp/docadmin/url_document.jsp/1 ?></title>
+<title><fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/1"/></title>
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
 <script src="$contextPath/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
 
 </head>
 <body bgcolor="#FFFFFF" onLoad="focusField(1,'url_ref')">
 #gui_outer_start()
-#gui_head("<? global/imcms_administration ?>")
+#gui_head("<fmt:message key="global/imcms_administration"/>")
 <table border="0" cellspacing="0" cellpadding="0">
 <form action="DocumentPageFlowDispatcher">
 <tr>
-	<td><input type="submit" name="cancel" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/url_document.jsp/2001 ?>"></td>
+	<td><input type="submit" name="cancel" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/2001"/>"></td>
 	<td>&nbsp;</td>
-	<td><input type="button" value="<? install/htdocs/sv/jsp/docadmin/url_document.jsp/2002 ?>" title="<? install/htdocs/sv/jsp/docadmin/url_document.jsp/2003 ?>" class="imcmsFormBtn" onClick="openHelpW('LinkExternal')"></td>
+	<td><input type="button" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/2002"/>" title="<fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/2003"/>" class="imcmsFormBtn" onClick="openHelpW('LinkExternal')"></td>
 </tr>
 </table>
 #gui_mid()
@@ -37,11 +39,11 @@
     value="<%= EditDocumentPageFlow.PAGE__EDIT %>">
 <tr>
 	<td colspan="2">
-        #gui_heading( "<? install/htdocs/sv/jsp/docadmin/url_document.jsp/4/1 ?>" )
+        #gui_heading( "<fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/4/1"/>" )
     </td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/url_document.jsp/1001 ?>&nbsp;</td>
+	<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/1001"/>&nbsp;</td>
 	<td><input type="text" name="<%= EditUrlDocumentPageFlow.REQUEST_PARAMETER__URL_DOC__URL %>" size="62" maxlength="255"
                 value="<%= StringEscapeUtils.escapeHtml( (String)ObjectUtils.defaultIfNull( document.getUrl(), "" )) %>"></td>
 </tr>
@@ -51,7 +53,7 @@
     </td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? install/htdocs/sv/jsp/docadmin/url_document.jsp/1002 ?><img src="$contextPath/imcms/$language/images/admin/1x1.gif" width="1" height="22"></td>
+	<td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/1002"/><img src="$contextPath/imcms/$language/images/admin/1x1.gif" width="1" height="22"></td>
 	<td>
         <% request.setAttribute( "target", document.getTarget() );%>
         <jsp:include page="target.jsp"/>
@@ -64,9 +66,9 @@
 </tr>
 <tr>
 	<td colspan="2" align="right">
-	<input type="submit" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/url_document.jsp/2004 ?>" name="ok" onClick="return singleclicked();">
-	<input type="reset" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/url_document.jsp/2005 ?>">
-	<input type="submit" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/url_document.jsp/2006 ?>" name="cancel"></td>
+	<input type="submit" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/2004"/>" name="ok" onClick="return singleclicked();">
+	<input type="reset" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/2005"/>">
+	<input type="submit" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/url_document.jsp/2006"/>" name="cancel"></td>
 </tr>
 </form>
 </table>
@@ -75,3 +77,4 @@
 </vel:velocity>
 </body>
 </html>
+

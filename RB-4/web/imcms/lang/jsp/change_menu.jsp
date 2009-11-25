@@ -1,5 +1,7 @@
 <%@ page import="com.imcode.imcms.flow.OkCancelPage, com.imcode.imcms.flow.Page, com.imcode.imcms.servlet.admin.MenuEditPage, com.imcode.imcms.util.l10n.LocalizedMessage, com.imcode.util.HtmlBuilder, imcode.server.document.DocumentDomainObject, imcode.server.document.DocumentTypeDomainObject, imcode.server.document.TextDocumentPermissionSetDomainObject, imcode.server.document.textdocument.MenuDomainObject, imcode.server.document.textdocument.MenuItemDomainObject, imcode.server.document.textdocument.TextDocumentDomainObject, imcode.server.document.textdocument.TreeSortKeyDomainObject, imcode.server.user.UserDomainObject, imcode.util.Html, imcode.util.IdLocalizedNamePair, imcode.util.IdLocalizedNamePairToOptionTransformer, imcode.util.Utility, org.apache.commons.collections.CollectionUtils, org.apache.commons.collections.Predicate, org.apache.commons.lang.StringEscapeUtils, org.apache.commons.lang.StringUtils, java.util.ArrayList, java.util.Arrays, java.util.List, java.util.Set"%>
-<%@ page contentType="text/html; charset=UTF-8"%><%
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%
     
     MenuEditPage menuEditPage = (MenuEditPage) Page.fromRequest(request);
     final MenuDomainObject menu = menuEditPage.getMenu();
@@ -16,13 +18,13 @@
             <%= Page.htmlHidden(request) %>
 
         #gui_outer_start()
-        #gui_head( "<? global/imcms_administration ?>" )
-		<input type="submit" tabindex="10" value="<? global/back ?>" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" class="imcmsFormBtn">
+        #gui_head( "<fmt:message key="global/imcms_administration"/>" )
+		<input type="submit" tabindex="10" value="<fmt:message key="global/back"/>" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" class="imcmsFormBtn">
 
         #gui_mid()
         
             <div>
-                <? templates/sv/textdoc/add_doc.html/2 ?>
+                <fmt:message key="templates/sv/textdoc/add_doc.html/2"/>
                 <select name="<%= MenuEditPage.DOCUMENT_TYPE_ID %>">
                             <%
                                 TextDocumentPermissionSetDomainObject permissionSet = (TextDocumentPermissionSetDomainObject)user.getPermissionSetFor( textDocument );
@@ -44,7 +46,7 @@
                                 HtmlBuilder html = new HtmlBuilder(); %>
                                <%= html.options(docTypeIdsOrder, new IdLocalizedNamePairToOptionTransformer(user.getLanguageIso639_2())) %>
                 </select>
-                <input type="submit" name="<%= MenuEditPage.CREATE %>" value="<? global/create ?>" class="imcmsFormBtnSmall">
+                <input type="submit" name="<%= MenuEditPage.CREATE %>" value="<fmt:message key="global/create"/>" class="imcmsFormBtnSmall">
             </div>
             #gui_hr("cccccc")
             <div>
@@ -63,7 +65,7 @@
                             }
                         }) %>
                 </select>
-                <input type="submit" name="<%= MenuEditPage.SORT %>" value="<? templates/sv/textdoc/archive_del_button.html/1 ?>" class="imcmsFormBtnSmall">
+                <input type="submit" name="<%= MenuEditPage.SORT %>" value="<fmt:message key="templates/sv/textdoc/archive_del_button.html/1"/>" class="imcmsFormBtnSmall">
             </div>
             #gui_hr("cccccc")
             <div>
@@ -101,14 +103,14 @@
             </div>
             #gui_hr("cccccc")
             <div>
-                <input type="submit" name="<%= MenuEditPage.COPY %>" value="<? templates/sv/textdoc/archive_del_button.html/2001 ?>" class="imcmsFormBtnSmall">
-                <input type="submit" name="<%= MenuEditPage.ARCHIVE %>" value="<? templates/sv/textdoc/archive_del_button.html/2002 ?>" class="imcmsFormBtnSmall">
-                <input type="submit" name="<%= MenuEditPage.REMOVE %>" value="<? templates/sv/textdoc/archive_del_button.html/2003 ?>" class="imcmsFormBtnSmall">
+                <input type="submit" name="<%= MenuEditPage.COPY %>" value="<fmt:message key="templates/sv/textdoc/archive_del_button.html/2001"/>" class="imcmsFormBtnSmall">
+                <input type="submit" name="<%= MenuEditPage.ARCHIVE %>" value="<fmt:message key="templates/sv/textdoc/archive_del_button.html/2002"/>" class="imcmsFormBtnSmall">
+                <input type="submit" name="<%= MenuEditPage.REMOVE %>" value="<fmt:message key="templates/sv/textdoc/archive_del_button.html/2003"/>" class="imcmsFormBtnSmall">
             </div>
             #gui_hr("cccccc")
             <div style="text-align: right;">
-                <input type="submit" name="<%= OkCancelPage.REQUEST_PARAMETER__OK %>" value="<? global/OK ?>" class="imcmsFormBtn">
-                <input type="submit" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<? global/cancel ?>" class="imcmsFormBtn">
+                <input type="submit" name="<%= OkCancelPage.REQUEST_PARAMETER__OK %>" value="<fmt:message key="global/OK"/>" class="imcmsFormBtn">
+                <input type="submit" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<fmt:message key="global/cancel"/>" class="imcmsFormBtn">
             </div>
 
         #gui_bottom()
@@ -118,3 +120,4 @@
 
     </body>
 </html></vel:velocity>
+

@@ -21,7 +21,7 @@ import java.util.Properties;
 public class AdminUser extends HttpServlet {
 
     private final static Logger log = Logger.getLogger( AdminUser.class.getName() );
-    private final static String CHANGE_EXTERNAL_USER_URL = "/jsp/changeexternaluser.jsp";
+    private final static String CHANGE_EXTERNAL_USER_URL = "lang/jsp/changeexternaluser.jsp";
     private static final LocalizedMessage BUTTON_TEXT__EDIT_USER = new LocalizedMessage( "templates/sv/AdminChangeUser.htm/2006" );
     private static final LocalizedMessage HEADLINE__EDIT_USER = new LocalizedMessage( "templates/sv/AdminChangeUser.htm/4/1" );
     public final static String USER_LOGIN_NAME_PARAMETER_NAME = "loginname";
@@ -72,7 +72,7 @@ public class AdminUser extends HttpServlet {
                                  + URLEncoder.encode( USER_LOGIN_NAME_PARAMETER_NAME, "UTF-8" )
                                  + "="
                                  + URLEncoder.encode( userToChange.getLoginName(), "UTF-8" );
-            RequestDispatcher rd = req.getRequestDispatcher( "/imcms/" + user.getLanguageIso639_2()
+            RequestDispatcher rd = req.getRequestDispatcher( "/imcms/" 
                                                              + CHANGE_EXTERNAL_USER_URL
                                                              + queryString );
             rd.forward( req, res );

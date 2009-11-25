@@ -29,7 +29,7 @@ public class DocumentPermissionsPage extends OkCancelPage {
     public static final String REQUEST_PARAMETER__ADD_ROLES = "add_roles";
     public static final String REQUEST_PARAMETER__RESTRICTED_ONE_MORE_PRIVILEGED_THAN_RESTRICTED_TWO = "restricted_one_more_privileged_than_restricted_two";
 
-    private static final String URL_I15D_PAGE__DOCUMENT_PERMISSIONS = "/jsp/docadmin/document_permissions.jsp";
+    private static final String URL_I15D_PAGE__DOCUMENT_PERMISSIONS = "lang/jsp/docadmin/document_permissions.jsp";
 
     private DocumentDomainObject document;
 
@@ -41,8 +41,8 @@ public class DocumentPermissionsPage extends OkCancelPage {
 
     public String getPath(HttpServletRequest request) {
         UserDomainObject user = Utility.getLoggedOnUser( request );
-        return EditDocumentPageFlow.URL_I15D_PAGE__PREFIX + user.getLanguageIso639_2()
-               + URL_I15D_PAGE__DOCUMENT_PERMISSIONS;
+        return EditDocumentPageFlow.URL_I15D_PAGE__PREFIX +
+               URL_I15D_PAGE__DOCUMENT_PERMISSIONS;
     }
 
     protected void dispatchOther( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {

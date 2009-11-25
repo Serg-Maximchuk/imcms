@@ -3,6 +3,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page import="com.imcode.imcms.flow.Page"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%--<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"> --%>
@@ -11,7 +13,7 @@
 <vel:velocity>
     <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
-            <title><? web/imcms/lang/jsp/crop_img.jsp/title ?></title>
+            <title><fmt:message key="web/imcms/lang/jsp/crop_img.jsp/title"/></title>
             
             <link rel="stylesheet" type="text/css" href="${contextPath}/imcms/css/imcms_admin.css.jsp"/>
             <script src="${contextPath}/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
@@ -134,7 +136,7 @@
             <div id="outer_container">
                 <div id="inner_container">
                     #gui_outer_start()
-                    #gui_head( "<? global/imcms_administration ?>" )
+                    #gui_head( "<fmt:message key="global/imcms_administration"/>" )
                     
                     <form method="post" action="${contextPath}/servlet/PageDispatcher">
                         <input type="hidden" name="${const.IN_REQUEST}" value="${cropPage.sessionAttributeName}"/>
@@ -168,37 +170,37 @@
                                         <tr>
                                             <td>
                                                 <label for="crop_x1">
-                                                    <b><? web/imcms/lang/jsp/crop_img.jsp/x1 ?></b>
+                                                    <b><fmt:message key="web/imcms/lang/jsp/crop_img.jsp/x1"/></b>
                                                 </label>
                                             </td>
                                             <td>&nbsp;</td>
                                             <td>
                                                 <label for="crop_y1">
-                                                    <b><? web/imcms/lang/jsp/crop_img.jsp/y1 ?></b>
+                                                    <b><fmt:message key="web/imcms/lang/jsp/crop_img.jsp/y1"/></b>
                                                 </label>
                                             </td>
                                             <td>&nbsp;</td>
                                             <td>
                                                 <label for="crop_x2">
-                                                    <b><? web/imcms/lang/jsp/crop_img.jsp/x2 ?></b>
+                                                    <b><fmt:message key="web/imcms/lang/jsp/crop_img.jsp/x2"/></b>
                                                 </label>
                                             </td>
                                             <td>&nbsp;</td>
                                             <td>
                                                 <label for="crop_y2">
-                                                    <b><? web/imcms/lang/jsp/crop_img.jsp/y2 ?></b>
+                                                    <b><fmt:message key="web/imcms/lang/jsp/crop_img.jsp/y2"/></b>
                                                 </label>
                                             </td>
                                             <td>&nbsp;</td>
                                             <td>
                                                 <label for="width">
-                                                    <b><? web/imcms/lang/jsp/crop_img.jsp/width ?></b>
+                                                    <b><fmt:message key="web/imcms/lang/jsp/crop_img.jsp/width"/></b>
                                                 </label>
                                             </td>
                                             <td></td>
                                             <td>
                                                 <label for="height">
-                                                    <b><? web/imcms/lang/jsp/crop_img.jsp/height ?></b>
+                                                    <b><fmt:message key="web/imcms/lang/jsp/crop_img.jsp/height"/></b>
                                                 </label>
                                             </td>
                                             <td>&nbsp;</td>
@@ -221,18 +223,18 @@
                                             <td>&nbsp;X&nbsp;</td>
                                             <td><input id="height" type="text" class="imcmsDisabled" readonly="readonly" size="4" maxlength="4" value="${region.height}"/></td>
                                             <td>&nbsp;&nbsp;</td>
-                                            <td><input id="reset" type="button" class="imcmsFormBtnSmall" value="<? templates/sv/change_img.html/4008 ?>"/></td>
+                                            <td><input id="reset" type="button" class="imcmsFormBtnSmall" value="<fmt:message key="templates/sv/change_img.html/4008"/>"/></td>
 
                                             <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                            <td><input type="submit" class="imcmsFormBtnSmall" name="${const.REQUEST_PARAMETER__ROTATE_LEFT}" value="<? web/imcms/lang/jsp/crop_img.jsp/rotate_left ?>"/></td>
+                                            <td><input type="submit" class="imcmsFormBtnSmall" name="${const.REQUEST_PARAMETER__ROTATE_LEFT}" value="<fmt:message key="web/imcms/lang/jsp/crop_img.jsp/rotate_left"/>"/></td>
                                             <td>&nbsp;</td>
-                                            <td><input type="submit" class="imcmsFormBtnSmall" name="${const.REQUEST_PARAMETER__ROTATE_RIGHT}" value="<? web/imcms/lang/jsp/crop_img.jsp/rotate_right ?>"/></td>
+                                            <td><input type="submit" class="imcmsFormBtnSmall" name="${const.REQUEST_PARAMETER__ROTATE_RIGHT}" value="<fmt:message key="web/imcms/lang/jsp/crop_img.jsp/rotate_right"/>"/></td>
                                         </tr>
                                     </table>
                                 </td>
                                 <td align="right">
-                                    <input type="submit" class="imcmsFormBtn" name="${const.REQUEST_PARAMETER__OK}" value=" <? web/imcms/lang/jsp/crop_img.jsp/crop ?> "/>
-                                    <input type="submit" class="imcmsFormBtn" name="${const.REQUEST_PARAMETER__CANCEL}" value=" <? web/imcms/lang/jsp/crop_img.jsp/cancel ?> "/>
+                                    <input type="submit" class="imcmsFormBtn" name="${const.REQUEST_PARAMETER__OK}" value=" <fmt:message key="web/imcms/lang/jsp/crop_img.jsp/crop"/> "/>
+                                    <input type="submit" class="imcmsFormBtn" name="${const.REQUEST_PARAMETER__CANCEL}" value=" <fmt:message key="web/imcms/lang/jsp/crop_img.jsp/cancel"/> "/>
                                 </td>
                             </tr>
                         </table>
@@ -245,3 +247,4 @@
         </body>
     </html>
 </vel:velocity>
+

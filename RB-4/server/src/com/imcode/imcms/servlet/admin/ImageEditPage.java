@@ -153,7 +153,7 @@ public class ImageEditPage extends OkCancelPage {
 
     public String getPath(HttpServletRequest request) {
         UserDomainObject user = Utility.getLoggedOnUser(request);
-        return "/imcms/" + user.getLanguageIso639_2() + "/jsp/change_img.jsp";
+        return "/imcms/lang/jsp/change_img.jsp";
     }
 
     protected void updateFromRequest(HttpServletRequest request) {

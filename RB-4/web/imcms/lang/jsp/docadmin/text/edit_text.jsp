@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="imcode.server.document.DocumentDomainObject,
                  imcode.server.user.UserDomainObject,
                  imcode.util.Html,
@@ -30,3 +32,4 @@
 %><a href="<%= url %>" class="imcms_label"><%= label %><img src="<%= request.getContextPath() %>/imcms/<%= user.getLanguageIso639_2() %>/images/admin/red.gif" alt="" style="border:0 !important;" /></a>
 <%= content %>
 <a href="<%= url %>"><img src="<%= request.getContextPath() %>/imcms/<%= user.getLanguageIso639_2() %>/images/admin/ico_txt.gif" alt="" style="border:0 !important;" /></a>
+

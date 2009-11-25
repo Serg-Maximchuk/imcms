@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page
 	
 	import="imcode.server.document.textdocument.TextDocumentDomainObject,
@@ -28,3 +30,4 @@ String lang = user.getLanguageIso639_2() ;
 <%= content %>
     <a href="<%= cp %>/servlet/ChangeMenu?documentId=<%= metaId %>&amp;menuIndex=<%= menuIndex %>"><%-- 
     --%><img src="<%= cp %>/imcms/<%= lang %>/images/admin/ico_txt.gif" alt="edit menu <%= menuIndex%>" style="border:0 !important;" /></a>
+

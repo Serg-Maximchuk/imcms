@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page
 	
 	import="java.text.DateFormat,
@@ -634,3 +636,4 @@ if (window.attachEvent) {
 </body>
 </html>
 </vel:velocity>
+

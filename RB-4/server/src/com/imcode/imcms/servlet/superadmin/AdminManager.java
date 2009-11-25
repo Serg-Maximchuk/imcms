@@ -448,8 +448,8 @@ public class AdminManager extends HttpServlet {
             expandableDatesBean.setExpanded( true );
             expandableDatesBean.setDocument( document );
             request.setAttribute( "expandableDatesBean", expandableDatesBean );
-            return Utility.getContents( "/imcms/" + user.getLanguageIso639_2()
-                                        + "/jsp/admin/admin_manager_expandable_dates.jsp", request, response );
+            return Utility.getContents( "/imcms/lang/jsp/admin/admin_manager_expandable_dates.jsp", 
+                    request, response );
         }
 
         public LocalizedMessage getName() {
@@ -501,7 +501,7 @@ public class AdminManager extends HttpServlet {
 
         public void forward( HttpServletRequest request, HttpServletResponse response, UserDomainObject user ) throws IOException, ServletException {
             putInRequest( request );
-            String forwardPath = "/imcms/" + user.getLanguageIso639_2() + "/jsp/admin/admin_manager.jsp";
+            String forwardPath = "/imcms/lang/jsp/admin/admin_manager.jsp";
             request.getRequestDispatcher( forwardPath ).forward( request, response );
         }
 

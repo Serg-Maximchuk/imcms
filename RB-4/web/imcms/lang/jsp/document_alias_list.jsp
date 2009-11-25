@@ -11,7 +11,9 @@
 <%@ page import="java.util.Iterator"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="com.imcode.imcms.flow.OkCancelPage"%>
-<%@page contentType="text/html; charset=UTF-8"%><%@taglib prefix="vel" uri="imcmsvelocity"%>
+<%@page contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="vel" uri="imcmsvelocity"%>
 <%  ListDocumentAliasPage listDocumentAliasPage = (ListDocumentAliasPage) ListDocumentAliasPage.fromRequest(request) ;
     ContentManagementSystem imcmsSystem = ContentManagementSystem.fromRequest( request );
     UserService userService = imcmsSystem.getUserService();
@@ -22,7 +24,7 @@
 <html>
 <head>
 
-<title><? imcms/lang/jsp/document_list.jsp/title ?></title>
+<title><fmt:message key="imcms/lang/jsp/document_list.jsp/title"/></title>
 
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
 <script src="<%= request.getContextPath() %>/imcms/<%= user.getLanguageIso639_2() %>/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
@@ -31,15 +33,15 @@
 <body bgcolor="#FFFFFF">
 
 #gui_outer_start()
-#gui_head( "<? imcms/lang/jsp/document_list.jsp/title ?>" )
+#gui_head( "<fmt:message key="imcms/lang/jsp/document_list.jsp/title"/>" )
 
 <form method="POST" action="<%= request.getContextPath() %>/servlet/PageDispatcher">
 <table border="0" cellspacing="0" cellpadding="0">
 <%= ListDocumentAliasPage.htmlHidden( request ) %>
 <tr>
-	<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<? global/cancel ?>"></td>
+	<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<fmt:message key="global/cancel"/>"></td>
 	<td>&nbsp;</td>
-    <td><input type="button" value="<? global/help ?>" class="imcmsFormBtn" onClick="openHelpW('')"></td>
+    <td><input type="button" value="<fmt:message key="global/help"/>" class="imcmsFormBtn" onClick="openHelpW('')"></td>
 </tr>
 </table>
 
@@ -50,15 +52,15 @@
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0">
     <tr>
-		<td><? imcms/lang/jsp/document_alias_list.jsp/title ?></td>
+		<td><fmt:message key="imcms/lang/jsp/document_alias_list.jsp/title"/></td>
 		<td>&nbsp;&nbsp;</td>
 		<td><input type="text" name="<%= ListDocumentAliasPage.REQUEST_PARAMETER__LIST_START %>" value="<%= listDocumentAliasPage.startString %>" size="1" maxlength="1"></td>
 		<td>&nbsp;&nbsp;</td>
-		<td><? imcms/lang/jsp/document_list.jsp/1004 ?></td>
+		<td><fmt:message key="imcms/lang/jsp/document_list.jsp/1004"/></td>
 		<td>&nbsp;&nbsp;</td>
 		<td><input type="text" name="<%= ListDocumentAliasPage.REQUEST_PARAMETER__LIST_END %>" value="<%= listDocumentAliasPage.endString %>" size="1" maxlength="1"></td>
 		<td>&nbsp;&nbsp;</td>
-		<td><input type="submit" class="imcmsFormBtnSmall" name="<%= ListDocumentAliasPage.REQUEST_PARAMETER_BUTTON__LIST %>" value=" <? imcms/lang/jsp/document_list.jsp/2002 ?> "></td>
+		<td><input type="submit" class="imcmsFormBtnSmall" name="<%= ListDocumentAliasPage.REQUEST_PARAMETER_BUTTON__LIST %>" value=" <fmt:message key="imcms/lang/jsp/document_list.jsp/2002"/> "></td>
     </tr>
 	</table></td>
 </tr>
@@ -71,12 +73,12 @@ if (null != listDocumentAliasPage.aliasInSelectedRange) { %>
 
 <table border="0" cellspacing="0" cellpadding="2" width="680">
 <tr>
-    <td><b><? global/Page_alias ?>&nbsp;</b></td>
-    <td><b><? web/imcms/lang/jsp/heading_status ?>&nbsp;</b></td>
-	<td><b><? web/imcms/lang/jsp/heading_type ?></b></td>
-	<td><b><? web/imcms/lang/jsp/heading_adminlink ?></b></td>
-	<td><b><? global/Created_by ?></b></td>
-    <td><b><? global/Publisher ?></b></td>
+    <td><b><fmt:message key="global/Page_alias"/>&nbsp;</b></td>
+    <td><b><fmt:message key="web/imcms/lang/jsp/heading_status"/>&nbsp;</b></td>
+	<td><b><fmt:message key="web/imcms/lang/jsp/heading_type"/></b></td>
+	<td><b><fmt:message key="web/imcms/lang/jsp/heading_adminlink"/></b></td>
+	<td><b><fmt:message key="global/Created_by"/></b></td>
+    <td><b><fmt:message key="global/Publisher"/></b></td>
 </tr><%
     Iterator aliasIter = listDocumentAliasPage.aliasInSelectedRange.iterator();
 	while ( aliasIter.hasNext() ) {
@@ -103,7 +105,7 @@ if (null != listDocumentAliasPage.aliasInSelectedRange) { %>
 	<td colspan="6">#gui_hr( "blue" )</td>
 </tr>
 <tr>
-	<td colspan="6" align="right"><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<? global/cancel ?>"></td>
+	<td colspan="6" align="right"><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<fmt:message key="global/cancel"/>"></td>
 </tr>
 </table>
 <%}%>
@@ -115,3 +117,4 @@ if (null != listDocumentAliasPage.aliasInSelectedRange) { %>
 </body>
 </html>
 </vel:velocity>
+

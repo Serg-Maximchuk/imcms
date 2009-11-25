@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java"
 	
 	import="imcode.server.Imcms,
@@ -273,9 +275,9 @@ function findIt(str) {
 	<td height="35" nowrap><span class="imcmsAdmHeadingTop">
 	&nbsp;<%
 	if (isStat) {
-		%><? install/htdocs/sv/jsp/FileAdmin_preview.jsp/1002/1 ?><%
+		%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/1002/1"/><%
 	} else {
-		%><? install/htdocs/sv/jsp/FileAdmin_preview.jsp/1002/2 ?><%
+		%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/1002/2"/><%
 	} %> &nbsp;</span></td>
 
 	<td align="right"><%
@@ -285,13 +287,13 @@ function findIt(str) {
 	<tr><%
 		if (hasDocumentAll || hasDocumentLayers) { %>
 		<td class="imcmsAdmText"><input type="text" name="searchString" size="15" value="" class="imcmsAdmText" style="width:100px;"></td>
-		<td><a id="btnSearch" href="javascript://find()" onClick="findIt(document.forms[0].searchString.value);"><img src="<%= IMG_PATH %>btn_find.gif" border="0" hspace="5" alt="<? install/htdocs/sv/jsp/FileAdmin_preview.jsp/2001 ?>"></a></td><%
+		<td><a id="btnSearch" href="javascript://find()" onClick="findIt(document.forms[0].searchString.value);"><img src="<%= IMG_PATH %>btn_find.gif" border="0" hspace="5" alt="<fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/2001"/>"></a></td><%
 		} %>
 		<td class="imcmsAdmText">&nbsp;&nbsp;</td><%
 		if (!isMac) { %>
-		<td><a href="javascript://print()" onClick="top.frames.main.focus(); top.frames.main.print();"><img src="<%= IMG_PATH %>btn_print.gif" border="0" hspace="5" alt="<? install/htdocs/sv/jsp/FileAdmin_preview.jsp/2002 ?>"></a></td><%
+		<td><a href="javascript://print()" onClick="top.frames.main.focus(); top.frames.main.print();"><img src="<%= IMG_PATH %>btn_print.gif" border="0" hspace="5" alt="<fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/2002"/>"></a></td><%
 		} %>
-		<td><a href="javascript://close()" onClick="closeIt();"><img src="<%= IMG_PATH %>btn_close.gif" border="0" hspace="5" alt="<? install/htdocs/sv/jsp/FileAdmin_preview.jsp/2003 ?>"></a></td>
+		<td><a href="javascript://close()" onClick="closeIt();"><img src="<%= IMG_PATH %>btn_close.gif" border="0" hspace="5" alt="<fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/2003"/>"></a></td>
 		<td class="imcmsAdmText">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 	</tr>
 	</table>
@@ -303,7 +305,7 @@ function findIt(str) {
 	<input type="hidden" name="file" value="<%= StringEscapeUtils.escapeHtml(orgFileParam) %>">
 	<tr>
 		<td class="imcmsAdmText"><span class="imcmsAdmText" style="color:#ffffff;">| &nbsp; <%
-		if (hasGetElementById) { %><span onDblClick="document.forms[0].zoom.selectedIndex = 3; document.forms[0].submit();"><? install/htdocs/sv/jsp/FileAdmin_preview.jsp/16 ?></span>&nbsp;</span></td>
+		if (hasGetElementById) { %><span onDblClick="document.forms[0].zoom.selectedIndex = 3; document.forms[0].submit();"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/16"/></span>&nbsp;</span></td>
 		<td class="imcmsAdmText">
 		<select name="zoom" onChange="this.form.submit();">
 			<option value="0.25"<% if (defZoom.equals("0.25")) { %> selected<% } %>>25%</option>
@@ -317,10 +319,10 @@ function findIt(str) {
 			<option value="16.0"<% if (defZoom.equals("16.0")) { %> selected<% } %>>1600%</option>
 		</select></td>
 		<td><span class="imcmsAdmText" style="color:#ffffff;"> &nbsp; | &nbsp; <%
-		} %><? install/htdocs/sv/jsp/FileAdmin_preview.jsp/1004/1 ?>
-		<a href="<%= thisPage %>?frame=main&file=<%= Utility.escapeUrl(file) %>&border=1" target="main" style="color:#ffffff;"><? install/htdocs/sv/jsp/FileAdmin_preview.jsp/1004/2 ?></a> /
-		<a href="<%= thisPage %>?frame=main&file=<%= Utility.escapeUrl(file) %>&border=0" target="main" style="color:#ffffff;"><? install/htdocs/sv/jsp/FileAdmin_preview.jsp/1004/3 ?></a> &nbsp; | &nbsp;
-		<a href="javascript: closeIt();" style="color:#ffffff;"><b><? install/htdocs/sv/jsp/FileAdmin_preview.jsp/1004/4 ?></b></a> &nbsp; | &nbsp;</span></td>
+		} %><fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/1004/1"/>
+		<a href="<%= thisPage %>?frame=main&file=<%= Utility.escapeUrl(file) %>&border=1" target="main" style="color:#ffffff;"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/1004/2"/></a> /
+		<a href="<%= thisPage %>?frame=main&file=<%= Utility.escapeUrl(file) %>&border=0" target="main" style="color:#ffffff;"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/1004/3"/></a> &nbsp; | &nbsp;
+		<a href="javascript: closeIt();" style="color:#ffffff;"><b><fmt:message key="install/htdocs/sv/jsp/FileAdmin_preview.jsp/1004/4"/></b></a> &nbsp; | &nbsp;</span></td>
 	</tr>
 	</form>
 	</table><%
@@ -376,3 +378,4 @@ function findIt(str) {
 <%
 } %>
 </vel:velocity>
+

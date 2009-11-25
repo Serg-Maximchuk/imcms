@@ -15,7 +15,9 @@
 <%@ page import="java.util.Set"%>
 <%@ page import="imcode.server.document.DocumentPermissionSetTypeDomainObject"%>
 <%@ page import="imcode.server.document.textdocument.TextDocumentDomainObject, java.util.List"%>
-<%@ page contentType="text/html; charset=UTF-8"%><%@taglib uri="imcmsvelocity" prefix="vel"%><%
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib uri="imcmsvelocity" prefix="vel"%><%
     DocumentPermissionSetPage documentPermissionSetPage = (DocumentPermissionSetPage)Page.fromRequest(request) ;
     DocumentPermissionSetDomainObject documentPermissionSet = documentPermissionSetPage.getDocumentPermissionSet() ;
     UserDomainObject user = Utility.getLoggedOnUser(request) ;
@@ -23,24 +25,24 @@
 <html>
 <head>
 
-<title><? templates/sv/permissions/define_permissions.html/1 ?></title>
+<title><fmt:message key="templates/sv/permissions/define_permissions.html/1"/></title>
 
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
-<script src="<%= request.getContextPath() %>/imcms/<%= user.getLanguageIso639_2() %>/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
+<script src="<%= request.getContextPath() %>/imcms/lang/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
 
 </head>
 <body bgcolor="#FFFFFF">
 
 #gui_outer_start()
-#gui_head( "<? global/imcms_administration ?>" )
+#gui_head( "<fmt:message key="global/imcms_administration"/>" )
 
 <form method="POST" action="PageDispatcher">
 <table border="0" cellspacing="0" cellpadding="0">
 <%= Page.htmlHidden( request ) %>
 <tr>
-	<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<? global/cancel ?>"></td>
+	<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<fmt:message key="global/cancel"/>"></td>
 	<td>&nbsp;</td>
-    <td><input type="button" value="<? global/help ?>" class="imcmsFormBtn" onClick="openHelpW('PrivilegesLimited')"></td>
+    <td><input type="button" value="<fmt:message key="global/help"/>" class="imcmsFormBtn" onClick="openHelpW('PrivilegesLimited')"></td>
 </tr>
 </table>
 
@@ -49,37 +51,37 @@
 <table border="0" cellspacing="0" cellpadding="2" width="660" align="center">
 <tr>
 <% if (documentPermissionSetPage.isForNew()) { %>
-	<td colspan="3">#gui_heading( "<? templates/sv/permissions/define_permissions.html/permissions_for_restricted ?> <%= documentPermissionSet.getType() %> <? templates/sv/permissions/define_permissions.html/permissions_for_restricted/new ?>" )</td>
+	<td colspan="3">#gui_heading( "<fmt:message key="templates/sv/permissions/define_permissions.html/permissions_for_restricted"/> <%= documentPermissionSet.getType() %> <fmt:message key="templates/sv/permissions/define_permissions.html/permissions_for_restricted/new"/>" )</td>
 <% } else { %>
-	<td colspan="3">#gui_heading( "<? templates/sv/permissions/define_permissions.html/permissions_for_restricted ?> <%= documentPermissionSet.getType() %> <? templates/sv/permissions/define_permissions.html/permissions_for_restricted/this ?>" )</td>
+	<td colspan="3">#gui_heading( "<fmt:message key="templates/sv/permissions/define_permissions.html/permissions_for_restricted"/> <%= documentPermissionSet.getType() %> <fmt:message key="templates/sv/permissions/define_permissions.html/permissions_for_restricted/this"/>" )</td>
 <% } %>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/permissions/define_permission_1.html/1 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/define_permission_1.html/1"/></td>
 	<td colspan="2"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_DOCUMENT_INFORMATION %>" value="1" <% if( documentPermissionSet.getEditDocumentInformation()) { %>checked<% } %>></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/permissions/define_permission_4.html/1 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/define_permission_4.html/1"/></td>
 	<td colspan="2"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_PERMISSIONS %>" value="1" <% if (documentPermissionSet.getEditPermissions() ) { %>checked<% } %>></td>
 </tr>
 <% if (documentPermissionSet instanceof TextDocumentPermissionSetDomainObject && documentPermissionSetPage.getDocument() instanceof TextDocumentDomainObject) {
     TextDocumentPermissionSetDomainObject textDocumentPermissionSet = (TextDocumentPermissionSetDomainObject)documentPermissionSet ;
     %>
     <tr>
-        <td class="imcmsAdmText"><? templates/sv/permissions/define_permission_2_65536.html/1 ?></td>
+        <td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/define_permission_2_65536.html/1"/></td>
         <td colspan="2"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_TEXTS %>" value="1" <% if ( textDocumentPermissionSet.getEditTexts() ) { %>checked<% } %>></td>
     </tr>
     <tr>
-        <td class="imcmsAdmText"><? templates/sv/permissions/define_permission_2_131072.html/1 ?></td>
+        <td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/define_permission_2_131072.html/1"/></td>
         <td colspan="2"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_IMAGES %>" value="1" <% if ( textDocumentPermissionSet.getEditImages() ) { %>checked<% } %>></td>
     </tr>
     <tr>
-        <td class="imcmsAdmText"><? templates/sv/permissions/define_permission_2_1048576.html/1 ?></td>
+        <td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/define_permission_2_1048576.html/1"/></td>
         <td colspan="2"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_INCLUDES %>" value="1" <% if( textDocumentPermissionSet.getEditIncludes() ) { %>checked<% } %>></td>
     </tr>
     <tr>
-        <td class="imcmsAdmText"><? templates/sv/permissions/define_permission_2_262144.html/1 ?></td>
-        <td class="imcmsAdmText"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_MENUS %>" value="1" <% if ( textDocumentPermissionSet.getEditMenus() ) { %>checked<% } %>><? templates/sv/permissions/define_permission_2_262144.html/1001 ?></td>
+        <td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/define_permission_2_262144.html/1"/></td>
+        <td class="imcmsAdmText"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_MENUS %>" value="1" <% if ( textDocumentPermissionSet.getEditMenus() ) { %>checked<% } %>><fmt:message key="templates/sv/permissions/define_permission_2_262144.html/1001"/></td>
         <td>
             <select name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__ALLOWED_DOCUMENT_TYPE_IDS %>" size="6" multiple>
                 <%
@@ -98,8 +100,8 @@
         </td>
     </tr>
     <tr>
-        <td class="imcmsAdmText"><? templates/sv/permissions/define_permission_2_524288.html/1 ?></td>
-        <td class="imcmsAdmText"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_TEMPLATES %>" value="1" <% if( textDocumentPermissionSet.getEditTemplates() ) { %>checked<% } %>><? templates/sv/permissions/define_permission_2_524288.html/1001 ?></td>
+        <td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/define_permission_2_524288.html/1"/></td>
+        <td class="imcmsAdmText"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT_TEMPLATES %>" value="1" <% if( textDocumentPermissionSet.getEditTemplates() ) { %>checked<% } %>><fmt:message key="templates/sv/permissions/define_permission_2_524288.html/1001"/></td>
         <td>
         <select name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__ALLOWED_TEMPLATE_GROUP_IDS %>" size="6" multiple>
             <%
@@ -115,10 +117,10 @@
     </tr>
     <% if (documentPermissionSetPage.isForNew()) { %>
         <tr>
-            <td class="imcmsAdmText"><? templates/sv/docinfo/default_templates.html/2 ?></td>
+            <td class="imcmsAdmText"><fmt:message key="templates/sv/docinfo/default_templates.html/2"/></td>
             <td class="imcmsAdmText">
                 <select name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__DEFAULT_TEMPLATE_ID %>">
-                    <option value=""><? templates/sv/docinfo/default_templates_1.html/2 ?></option>
+                    <option value=""><fmt:message key="templates/sv/docinfo/default_templates_1.html/2"/></option>
                     <%
                         List<TemplateDomainObject> allTemplates = services.getTemplateMapper().getAllTemplates() ;
                         TextDocumentDomainObject textDocument = (TextDocumentDomainObject) documentPermissionSetPage.getDocument();
@@ -140,7 +142,7 @@
 <% } else {
     %>
     <tr>
-        <td class="imcmsAdmText"><? templates/sv/permissions/define_permission_5_65536.html/1 ?></td>
+        <td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/define_permission_5_65536.html/1"/></td>
         <td colspan="2"><input type="checkbox" name="<%= DocumentPermissionSetPage.REQUEST_PARAMETER__EDIT %>" value="1" <% if( documentPermissionSet.getEdit() ) { %>checked<% } %>></td>
     </tr>
 <% } %>
@@ -151,11 +153,11 @@
 	<td colspan="3" align="right">
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__OK %>" value="<? templates/sv/permissions/define_permissions.html/2004 ?>"></td>
+		<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__OK %>" value="<fmt:message key="templates/sv/permissions/define_permissions.html/2004"/>"></td>
 		<td>&nbsp;</td>
-		<td><input type="reset" class="imcmsFormBtn" name="Reset" value="<? templates/sv/permissions/define_permissions.html/2005 ?>"></td>
+		<td><input type="reset" class="imcmsFormBtn" name="Reset" value="<fmt:message key="templates/sv/permissions/define_permissions.html/2005"/>"></td>
 		<td>&nbsp;</td>
-		<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<? templates/sv/permissions/define_permissions.html/2006 ?>"></td>
+		<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<fmt:message key="templates/sv/permissions/define_permissions.html/2006"/>"></td>
 	</tr>
 	</table></td>
 </tr>
@@ -167,3 +169,4 @@
 </body>
 </html>
 </vel:velocity>
+

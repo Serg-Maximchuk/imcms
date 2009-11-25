@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page
 	
 	import="imcode.server.Imcms,
@@ -48,3 +50,4 @@ if (sections != null) {
 
 </body>
 </html>
+

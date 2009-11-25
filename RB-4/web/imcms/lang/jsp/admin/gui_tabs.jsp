@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.imcode.imcms.servlet.beans.Tab,
                  imcode.util.Utility"%>
 <%!
@@ -131,3 +133,4 @@ private String createNavBar( String text, String url, String pos, boolean thisAc
 }
 
 %>
+

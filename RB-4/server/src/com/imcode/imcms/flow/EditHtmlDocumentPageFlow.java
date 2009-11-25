@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class EditHtmlDocumentPageFlow extends EditDocumentPageFlow {
 
-    private final static String URL_I15D_PAGE__HTMLDOC = "/jsp/docadmin/html_document.jsp";
+    private final static String URL_I15D_PAGE__HTMLDOC = "lang/jsp/docadmin/html_document.jsp";
     public static final String REQUEST_PARAMETER__HTML_DOC__HTML = "html";
 
     public EditHtmlDocumentPageFlow( HtmlDocumentDomainObject document, DispatchCommand returnCommand,
@@ -30,7 +30,7 @@ public class EditHtmlDocumentPageFlow extends EditDocumentPageFlow {
 
     protected void dispatchToFirstPage( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
         UserDomainObject user = Utility.getLoggedOnUser( request );
-        request.getRequestDispatcher( URL_I15D_PAGE__PREFIX + user.getLanguageIso639_2() + URL_I15D_PAGE__HTMLDOC ).forward( request, response );
+        request.getRequestDispatcher( URL_I15D_PAGE__PREFIX + URL_I15D_PAGE__HTMLDOC ).forward( request, response );
     }
 
 }

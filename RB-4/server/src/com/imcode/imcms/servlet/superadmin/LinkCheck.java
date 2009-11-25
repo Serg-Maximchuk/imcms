@@ -126,7 +126,7 @@ public class LinkCheck extends HttpServlet {
 
         public void forward( HttpServletRequest request, HttpServletResponse response, UserDomainObject user ) throws IOException, ServletException {
             putInRequest( request );
-            String forwardPath = "/imcms/" + user.getLanguageIso639_2() + "/jsp/linkcheck/linkcheck.jsp";
+            String forwardPath = "/imcms/lang/jsp/linkcheck/linkcheck.jsp";
             request.getRequestDispatcher( forwardPath ).forward( request, response );
         }
 

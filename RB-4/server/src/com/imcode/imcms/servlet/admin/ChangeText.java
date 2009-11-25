@@ -94,7 +94,7 @@ public class ChangeText extends HttpServlet {
 
         public void forward( HttpServletRequest request, HttpServletResponse response, UserDomainObject user ) throws IOException, ServletException {
             request.setAttribute( REQUEST_ATTRIBUTE__PAGE, this );
-            String forwardPath = "/imcms/" + user.getLanguageIso639_2() + "/jsp/" + JSP__CHANGE_TEXT;
+            String forwardPath = "/imcms/lang/jsp/" + JSP__CHANGE_TEXT;
             request.getRequestDispatcher( forwardPath ).forward( request, response );
         }
 

@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page
 	
 	import="imcode.server.document.DocumentDomainObject,
@@ -54,19 +56,20 @@ if (validId) {
 <input type="hidden" name="include_id" value="<%= includeIndex %>" />
 <table border="0" cellspacing="0" cellpadding="3" style="border: 1px solid #e1ded9; background-color:#f5f5f7;">
 <tr bgcolor="#20568D">
-	<td align="center"><span style="font: bold 9pt Tahoma,Verdana,sans-serif; color:#fff"><? templates/sv/change_include.html/1 ?></span></td>
-	<td align="right"><input type="button" value="<? global/help ?>" title="<? global/openthehelppage ?>" class="imcmsFormBtnSmall" onclick="openHelpW('Include'); return false" /></td>
+	<td align="center"><span style="font: bold 9pt Tahoma,Verdana,sans-serif; color:#fff"><fmt:message key="templates/sv/change_include.html/1"/></span></td>
+	<td align="right"><input type="button" value="<fmt:message key="global/help"/>" title="<fmt:message key="global/openthehelppage"/>" class="imcmsFormBtnSmall" onclick="openHelpW('Include'); return false" /></td>
 </tr>
 <tr>
 	<td height="35"><input type="text" name="include_meta_id" value="<%= includedDocumentIdString %>" size="6" maxlength="6" style="font: 9pt Tahoma,Verdana,sans-serif" /></td>
-	<td align="right"><input type="submit" name="ok" value=" <? templates/sv/change_include.html/2001 ?> " class="changePageButton" /></td>
+	<td align="right"><input type="submit" name="ok" value=" <fmt:message key="templates/sv/change_include.html/2001"/> " class="changePageButton" /></td>
 </tr><%
 if (validId) { %>
 <tr>
 	<td colspan="1" align="center">
-	<a href="$contextPath/servlet/GetDoc?meta_id=<%= includedDocumentId %>" target="_blank"><span style="font: x-small Verdana,Geneva,sans-serif; color:#000099; text-decoration:none"><? templates/sv/change_include.html/1001 ?></span></a></td>
+	<a href="$contextPath/servlet/GetDoc?meta_id=<%= includedDocumentId %>" target="_blank"><span style="font: x-small Verdana,Geneva,sans-serif; color:#000099; text-decoration:none"><fmt:message key="templates/sv/change_include.html/1001"/></span></a></td>
 </tr><%
 } %>
 </table>
 </form>
 </vel:velocity>
+

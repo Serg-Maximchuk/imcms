@@ -40,7 +40,7 @@ public class EditFileDocumentPageFlow extends EditDocumentPageFlow {
     public static final String REQUEST_PARAMETER__SAVE_FILE_BUTTON = "save_file_button";
     public static final String REQUEST_PARAMETER__FILE_DOC__NEW_FILE_ID_PREFIX = "new_file_id_";
 
-    private static final String URL_I15D_PAGE__FILEDOC = "/jsp/docadmin/file_document.jsp";
+    private static final String URL_I15D_PAGE__FILEDOC = "lang/jsp/docadmin/file_document.jsp";
 
     private static final LocalizedMessage ERROR_MESSAGE__UNABLE_TO_AUTODETECT_MIMETYPE = new LocalizedMessage( "server/src/com/imcode/imcms/flow/EditFileDocumentPageFlow/unable_to_autodetect_mimetype" );
     private static final LocalizedMessage ERROR_MESSAGE__NO_FILE_UPLOADED = new LocalizedMessage( "server/src/com/imcode/imcms/flow/EditFileDocumentPageFlow/no_file_uploaded" );
@@ -286,7 +286,7 @@ public class EditFileDocumentPageFlow extends EditDocumentPageFlow {
         public void forward( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
             request.setAttribute( REQUEST_ATTRIBUTE__FILE_DOCUMENT_EDIT_PAGE, this );
             UserDomainObject user = Utility.getLoggedOnUser( request );
-            request.getRequestDispatcher( URL_I15D_PAGE__PREFIX + user.getLanguageIso639_2() + URL_I15D_PAGE__FILEDOC ).forward( request, response );
+            request.getRequestDispatcher( URL_I15D_PAGE__PREFIX + URL_I15D_PAGE__FILEDOC ).forward( request, response );
         }
 
         public void setErrorMessage( LocalizedMessage localizedErrorMessage ) {

@@ -19,7 +19,9 @@
 <%@ page import="java.util.Iterator"%>
 <%@ page import="java.util.SortedSet"%>
 <%@ page import="java.util.TreeSet"%><%@ page import="imcode.server.user.ImcmsAuthenticatorAndUserAndRoleMapper, java.util.List"%>
-<%@page contentType="text/html; charset=UTF-8"%><%@taglib uri="imcmsvelocity" prefix="vel"%><%!
+<%@page contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib uri="imcmsvelocity" prefix="vel"%><%!
     String formatRolePermissionRadioButton( DocumentPermissionSetTypeDomainObject radioButtonDocumentPermissionSetType, UserDomainObject user, DocumentPermissionSetTypeDomainObject documentPermissionSetType,
                                             RoleId roleId,
                                             DocumentDomainObject document ) {
@@ -40,40 +42,40 @@
 %><vel:velocity>
 <html>
 <head>
-<title><? templates/sv/docinfo/change_meta_rights.html/1 ?></title>
+<title><fmt:message key="templates/sv/docinfo/change_meta_rights.html/1"/></title>
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/imcms/css/imcms_admin.css.jsp">
 </head>
 <body bgcolor="#FFFFFF">
 
 #gui_outer_start()
-#gui_head( "<? global/imcms_administration ?>" )
+#gui_head( "<fmt:message key="global/imcms_administration"/>" )
 
 <form method="POST" action="<%= request.getContextPath() %>/servlet/PageDispatcher">
 <%= Page.htmlHidden( request ) %>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td><input type="submit" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>" class="imcmsFormBtn" value="<? templates/sv/docinfo/change_meta_rights.html/2001 ?>"></td>
+            <td><input type="submit" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>" class="imcmsFormBtn" value="<fmt:message key="templates/sv/docinfo/change_meta_rights.html/2001"/>"></td>
             <td>&nbsp;</td>
-            <td><input type="button" value="<? templates/sv/docinfo/change_meta_rights.html/2002 ?>" title="<? templates/sv/docinfo/change_meta_rights.html/2003 ?>" class="imcmsFormBtn" onClick="openHelpW('Privileges')"></td>
+            <td><input type="button" value="<fmt:message key="templates/sv/docinfo/change_meta_rights.html/2002"/>" title="<fmt:message key="templates/sv/docinfo/change_meta_rights.html/2003"/>" class="imcmsFormBtn" onClick="openHelpW('Privileges')"></td>
         </tr>
     </table>
 #gui_mid()
 
     <table border="0" cellspacing="0" cellpadding="2" width="660" align="center">
         <tr>
-            <td colspan="2">#gui_heading( "<? templates/sv/docinfo/change_meta_rights.html/5/1 ?> <%= document.getId() %>" )</td>
+            <td colspan="2">#gui_heading( "<fmt:message key="templates/sv/docinfo/change_meta_rights.html/5/1"/> <%= document.getId() %>" )</td>
         </tr>
         <tr>
-            <td class="imcmsAdmText"><? templates/sv/docinfo/change_meta_rights.html/1001 ?></td>
+            <td class="imcmsAdmText"><fmt:message key="templates/sv/docinfo/change_meta_rights.html/1001"/></td>
             <td class="imcmsAdmText">
                 <table border="0" cellspacing="0" cellpadding="0" width="90%">
                 <tr align="center">
-                    <td class="imcmsAdmText" colspan="2" align="left"><? templates/sv/permissions/roles_rights_table_head.html/1 ?></td>
-                    <td class="imcmsAdmText" width="15%"><? templates/sv/permissions/roles_rights_table_head.html/2 ?></td>
-                    <td class="imcmsAdmText" width="15%"><? templates/sv/permissions/roles_rights_table_head.html/3 ?></td>
-                    <td class="imcmsAdmText" width="15%"><? templates/sv/permissions/roles_rights_table_head.html/4 ?></td>
-                    <td class="imcmsAdmText" width="15%"><? templates/sv/permissions/roles_rights_table_head.html/5 ?></td>
-                    <td class="imcmsAdmText" width="15%"><? templates/sv/permissions/roles_rights_table_head.html/6 ?></td>
+                    <td class="imcmsAdmText" colspan="2" align="left"><fmt:message key="templates/sv/permissions/roles_rights_table_head.html/1"/></td>
+                    <td class="imcmsAdmText" width="15%"><fmt:message key="templates/sv/permissions/roles_rights_table_head.html/2"/></td>
+                    <td class="imcmsAdmText" width="15%"><fmt:message key="templates/sv/permissions/roles_rights_table_head.html/3"/></td>
+                    <td class="imcmsAdmText" width="15%"><fmt:message key="templates/sv/permissions/roles_rights_table_head.html/4"/></td>
+                    <td class="imcmsAdmText" width="15%"><fmt:message key="templates/sv/permissions/roles_rights_table_head.html/5"/></td>
+                    <td class="imcmsAdmText" width="15%"><fmt:message key="templates/sv/permissions/roles_rights_table_head.html/6"/></td>
                 </tr>
                 <%
                     ImcmsAuthenticatorAndUserAndRoleMapper userMapper = Imcms.getServices().getImcmsAuthenticatorAndUserAndRoleMapper();
@@ -113,12 +115,12 @@
             </td>
         </tr>
         <tr>
-            <td class="imcmsAdmText"><? templates/sv/docinfo/change_meta_rights.html/7 ?></td>
+            <td class="imcmsAdmText"><fmt:message key="templates/sv/docinfo/change_meta_rights.html/7"/></td>
             <td>
             <table border="0" cellspacing="0" cellpadding="2">
                 <tr>
-                    <td align="right"><input type="submit" class="imcmsFormBtnSmall" name="add_roles" value="<? templates/sv/docinfo/change_meta_rights.html/2004 ?>" style="width:130" ></td>
-                    <td class="imcmsAdmDim">&nbsp; <? templates/sv/docinfo/change_meta_rights.html/1002 ?></td>
+                    <td align="right"><input type="submit" class="imcmsFormBtnSmall" name="add_roles" value="<fmt:message key="templates/sv/docinfo/change_meta_rights.html/2004"/>" style="width:130" ></td>
+                    <td class="imcmsAdmDim">&nbsp; <fmt:message key="templates/sv/docinfo/change_meta_rights.html/1002"/></td>
                 </tr>
                 <tr>
                     <td colspan="2">
@@ -136,26 +138,26 @@
         </tr>
         <% if (user.canDefineRestrictedOneFor( document )) { %>
             <tr>
-                <td colspan="2">&nbsp;<br>#gui_heading( "<? templates/sv/docinfo/change_meta_rights.html/9/1 ?>" )</td>
+                <td colspan="2">&nbsp;<br>#gui_heading( "<fmt:message key="templates/sv/docinfo/change_meta_rights.html/9/1"/>" )</td>
             </tr>
             <tr>
-                <td class="imcmsAdmText"><? templates/sv/permissions/set_1_button.html/1 ?></td>
+                <td class="imcmsAdmText"><fmt:message key="templates/sv/permissions/set_1_button.html/1"/></td>
                 <td>
-                    <input type="submit" class="imcmsFormBtnSmall" name="define_set_1" value="<? templates/sv/permissions/set_1_button.html/2001 ?>">
+                    <input type="submit" class="imcmsFormBtnSmall" name="define_set_1" value="<fmt:message key="templates/sv/permissions/set_1_button.html/2001"/>">
                     <% if (document instanceof TextDocumentDomainObject) { %>
-                        <input type="submit" class="imcmsFormBtnSmall" name="define_new_set_1" value="<? templates/sv/permissions/new_set_1_button.html/2001 ?>">
+                        <input type="submit" class="imcmsFormBtnSmall" name="define_new_set_1" value="<fmt:message key="templates/sv/permissions/new_set_1_button.html/2001"/>">
                     <% } %>
                 </td>
             </tr>
             <% if (user.canDefineRestrictedTwoFor(document)) { %>
                 <tr>
                     <td>
-                        <? templates/sv/permissions/set_2_button.html/1 ?>
+                        <fmt:message key="templates/sv/permissions/set_2_button.html/1"/>
                     </td>
                     <td>
-                        <input type="submit" class="imcmsFormBtnSmall" name="define_set_2" value="<? templates/sv/permissions/set_2_button.html/2001 ?>">
+                        <input type="submit" class="imcmsFormBtnSmall" name="define_set_2" value="<fmt:message key="templates/sv/permissions/set_2_button.html/2001"/>">
                         <% if (document instanceof TextDocumentDomainObject) { %>
-                            <input type="submit" class="imcmsFormBtnSmall" name="define_new_set_2" value="<? templates/sv/permissions/new_set_2_button.html/2001 ?>">
+                            <input type="submit" class="imcmsFormBtnSmall" name="define_new_set_2" value="<fmt:message key="templates/sv/permissions/new_set_2_button.html/2001"/>">
                         <% } %>
                     </td>
                 </tr>
@@ -163,11 +165,11 @@
             <% if (user.isSuperAdminOrHasFullPermissionOn(document)) { %>
                 <tr>
                     <td class="imcmsAdmText">
-                        <? templates/sv/permissions/sets_precedence.html/precedence ?>
+                        <fmt:message key="templates/sv/permissions/sets_precedence.html/precedence"/>
                     </td>
                     <td class="imcmsAdmText">
                         <input type="CHECKBOX" id="setsPrecedenceCb" name="<%= DocumentPermissionsPage.REQUEST_PARAMETER__RESTRICTED_ONE_MORE_PRIVILEGED_THAN_RESTRICTED_TWO %>" value="1" <% if (document.isRestrictedOneMorePrivilegedThanRestrictedTwo()) { %>checked<% } %>>
-                        <label for="setsPrecedenceCb"><? templates/sv/permissions/sets_precedence.html/1001 ?></label>
+                        <label for="setsPrecedenceCb"><fmt:message key="templates/sv/permissions/sets_precedence.html/1001"/></label>
                     </td>
                 </tr>
             <% } %>
@@ -178,10 +180,10 @@
                 <td colspan="2">#gui_hr( "cccccc" )</td>
             </tr>
             <tr>
-                <td class="imcmsAdmText"><? templates/sv/docinfo/default_templates.html/2 ?></td>
+                <td class="imcmsAdmText"><fmt:message key="templates/sv/docinfo/default_templates.html/2"/></td>
                 <td class="imcmsAdmText">
                     <select name="<%= DocumentPermissionsPage.REQUEST_PARAMETER__DEFAULT_TEMPLATE_ID %>">
-                        <option value=""><? templates/sv/docinfo/default_templates_1.html/2 ?></option>
+                        <option value=""><fmt:message key="templates/sv/docinfo/default_templates_1.html/2"/></option>
                         <%
                             String defaultTemplateId = textDocument.getDefaultTemplateName();
                             List<TemplateDomainObject> allTemplates = Imcms.getServices().getTemplateMapper().getAllTemplates() ;
@@ -196,7 +198,7 @@
             <td colspan="2">#gui_hr( "blue" )</td>
         </tr>
         <tr>
-            <td class="imcmsAdmText"><? templates/sv/docinfo/change_meta_rights.html/12 ?></td>
+            <td class="imcmsAdmText"><fmt:message key="templates/sv/docinfo/change_meta_rights.html/12"/></td>
             <td>
             <table border="0" cellspacing="0" cellpadding="0" width="100%">
             <tr>
@@ -204,15 +206,15 @@
                 <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <td><input type="CHECKBOX" id="showMetaCb" name="show_meta" value="1" <% if (document.isLinkedForUnauthorizedUsers()) {%>checked<% } %>></td>
-                    <td class="imcmsAdmText">&nbsp;<label for="showMetaCb"><? templates/global/pageinfo/ShowLinkToUnuthorizedUser ?></label></td>
+                    <td class="imcmsAdmText">&nbsp;<label for="showMetaCb"><fmt:message key="templates/global/pageinfo/ShowLinkToUnuthorizedUser"/></label></td>
                 </tr>
                 <tr>
                     <td><input type="CHECKBOX" id="linkableCb" name="<%= EditDocumentInformationPageFlow.REQUEST_PARAMETER__LINKABLE_BY_OTHER_USERS %>" value="1" <% if (document.isLinkableByOtherUsers()) {%>checked<% } %>></td>
-                    <td class="imcmsAdmText">&nbsp;<label for="linkableCb"><? templates/global/pageinfo/share ?></label></td>
+                    <td class="imcmsAdmText">&nbsp;<label for="linkableCb"><fmt:message key="templates/global/pageinfo/share"/></label></td>
                 </tr>
                 </table>
                 </td>
-                <td class="imcmsAdmText" nowrap><? global/Created_by ?>&nbsp;<i><%= Utility.formatUser(userMapper.getUser(document.getCreatorId())) %></i></td>
+                <td class="imcmsAdmText" nowrap><fmt:message key="global/Created_by"/>&nbsp;<i><%= Utility.formatUser(userMapper.getUser(document.getCreatorId())) %></i></td>
             </tr>
             </table></td>
         </tr>
@@ -224,11 +226,11 @@
             <td align="right">
             <table border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td><input type="SUBMIT" name="<%= PageFlow.REQUEST_PARAMETER__OK_BUTTON %>" class="imcmsFormBtn" value="<? templates/sv/docinfo/change_meta_rights.html/2005 ?>"></td>
+                <td><input type="SUBMIT" name="<%= PageFlow.REQUEST_PARAMETER__OK_BUTTON %>" class="imcmsFormBtn" value="<fmt:message key="templates/sv/docinfo/change_meta_rights.html/2005"/>"></td>
                 <td>&nbsp;</td>
-                <td><input type="RESET" name="reset" class="imcmsFormBtn" value="<? templates/sv/docinfo/change_meta_rights.html/2006 ?>"></td>
+                <td><input type="RESET" name="reset" class="imcmsFormBtn" value="<fmt:message key="templates/sv/docinfo/change_meta_rights.html/2006"/>"></td>
                 <td>&nbsp;</td>
-                <td><input type="submit" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>" class="imcmsFormBtn" value="<? templates/sv/docinfo/change_meta_rights.html/2007 ?>"></td>
+                <td><input type="submit" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>" class="imcmsFormBtn" value="<fmt:message key="templates/sv/docinfo/change_meta_rights.html/2007"/>"></td>
             </tr>
             </table></td>
         </tr>
@@ -245,3 +247,4 @@
 </body>
 </html>
 </vel:velocity>
+

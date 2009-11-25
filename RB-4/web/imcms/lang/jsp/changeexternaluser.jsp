@@ -5,7 +5,9 @@
                  java.io.IOException,
                  java.util.Arrays,
                  java.util.HashSet"
-%><%@ page import="java.util.Iterator"%><%@ page import="java.util.Set"%><%@ page import="java.util.TreeSet"%><%@taglib prefix="vel" uri="imcmsvelocity"
+%><%@ page import="java.util.Iterator"%><%@ page import="java.util.Set"%><%@ page import="java.util.TreeSet"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="vel" uri="imcmsvelocity"
 %><vel:velocity><%!
 
 private final static String ACTION_SAVE_USER       = "SAVE_USER" ;
@@ -64,7 +66,7 @@ if ( buttonPressed(request, ACTION_CANCEL) ) {
 %>
 <html>
 <head>
-<title><? install/htdocs/sv/adminuser/changeexternaluser.jsp/1 ?></title>
+<title><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/1"/></title>
 
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
 <script src="$contextPath/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
@@ -73,90 +75,90 @@ if ( buttonPressed(request, ACTION_CANCEL) ) {
 <body>
 
 #gui_outer_start()
-#gui_head( "<? install/htdocs/sv/adminuser/changeexternaluser.jsp/1 ?>" )
+#gui_head( "<fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/1"/>" )
 <form method="POST" action="$contextPath/imcms/$language/jsp/changeexternaluser.jsp">
 <table border="0" cellspacing="0" cellpadding="0">
 <input type="hidden" name="<%= AdminUser.USER_LOGIN_NAME_PARAMETER_NAME %>" value="<%= userLoginName %>">
 <tr>
-	<td><input type="submit" class="imcmsFormBtn" name="<%= ACTION_CANCEL %>" value="<? global/back ?>"></td>
+	<td><input type="submit" class="imcmsFormBtn" name="<%= ACTION_CANCEL %>" value="<fmt:message key="global/back"/>"></td>
 </tr>
 </table>
 #gui_mid()
 <table border="0" cellspacing="0" cellpadding="2" width="400">
 <tr>
-	<td colspan="2">#gui_heading( "<? install/htdocs/sv/adminuser/changeexternaluser.jsp/2 ?>" )</td>
+	<td colspan="2">#gui_heading( "<fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/2"/>" )</td>
 </tr>
 <tr>
-	<td colspan="2"><? install/htdocs/sv/adminuser/changeexternaluser.jsp/3 ?><br>&nbsp;</td>
+	<td colspan="2"><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/3"/><br>&nbsp;</td>
 </tr>
 <tr>
-	<td width="30%"><? install/htdocs/sv/adminuser/changeexternaluser.jsp/4 ?></td>
+	<td width="30%"><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/4"/></td>
 	<td width="70%" nowrap><%=user.getLoginName()%></td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/5 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/5"/></td>
 	<td><%= user.getFirstName() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/6 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/6"/></td>
 	<td><%= user.getLastName() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/7 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/7"/></td>
 	<td><%= user.getTitle() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/8 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/8"/></td>
 	<td><%= user.getCompany() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/9 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/9"/></td>
 	<td><%= user.getAddress() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/10 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/10"/></td>
 	<td><%= user.getZip() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/11 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/11"/></td>
 	<td><%= user.getCity() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/12 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/12"/></td>
 	<td><%= user.getWorkPhone() %></td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/13 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/13"/></td>
 	<td><%= user.getMobilePhone() %></td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/14 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/14"/></td>
 	<td><%= user.getHomePhone() %>&nbsp;</td>
 </tr>
 <tr>
 	<td colspan="2">&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/15 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/15"/></td>
 	<td><%= user.getProvince() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/16 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/16"/></td>
 	<td><%= user.getCountry() %>&nbsp;</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/17 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/17"/></td>
 	<td><%= user.getEmailAddress() %>&nbsp;</td>
 </tr>
 <tr>
 	<td colspan="2">#gui_hr( "cccccc" )</td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/18 ?></td>
+	<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/18"/></td>
 	<td><img src="$contextPath/imcms/$language/images/admin/btn_checked_<%= user.isActive() ? "1" : "0" %>.gif" width="13" height="12" alt="">&nbsp;</td>
 </tr>
 <tr valign="top">
-	<td nowrap><? install/htdocs/sv/adminuser/changeexternaluser.jsp/19 ?></td>
+	<td nowrap><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/19"/></td>
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0" width="100%">
 	<tr>
@@ -174,7 +176,7 @@ if ( buttonPressed(request, ACTION_CANCEL) ) {
 
 		<td>&nbsp;</td>
 
-		<td><? install/htdocs/sv/adminuser/changeexternaluser.jsp/21 ?></td>
+		<td><fmt:message key="install/htdocs/sv/adminuser/changeexternaluser.jsp/21"/></td>
 	</tr>
 	</table></td>
 </tr>
@@ -183,10 +185,11 @@ if ( buttonPressed(request, ACTION_CANCEL) ) {
 </tr>
 <tr>
 	<td colspan="2" align="right">
-	<input type="submit" class="imcmsFormBtn" name="<%= ACTION_SAVE_USER %>" value="<? global/save ?>">
-	<input type="submit" class="imcmsFormBtn" name="<%= ACTION_CANCEL %>" value="<? global/cancel ?>"></td>
+	<input type="submit" class="imcmsFormBtn" name="<%= ACTION_SAVE_USER %>" value="<fmt:message key="global/save"/>">
+	<input type="submit" class="imcmsFormBtn" name="<%= ACTION_CANCEL %>" value="<fmt:message key="global/cancel"/>"></td>
 </tr>
 </table>
 </form>
 #gui_end_of_page()
 </vel:velocity>
+

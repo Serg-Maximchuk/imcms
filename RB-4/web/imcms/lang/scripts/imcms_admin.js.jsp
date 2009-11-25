@@ -1,4 +1,6 @@
 <%@page contentType="text/javascript"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%@taglib prefix="vel" uri="imcmsvelocity"%>
 <vel:velocity>
 
@@ -95,3 +97,4 @@ function popWinOpen(winW,winH,sUrl,sName,iResize,iScroll) {
 	}
 }
 </vel:velocity>
+

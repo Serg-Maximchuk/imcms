@@ -4,6 +4,8 @@
                  org.apache.commons.lang.StringEscapeUtils,
                  java.util.List"%>
 <%@page contentType="text/html; charset=UTF-8" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <jsp:useBean id="subreport" scope="request" class="com.imcode.imcms.servlet.beans.AdminManagerSubreport"/>
 <%
     String imagesPath = request.getContextPath()+"/imcms/"+Utility.getLoggedOnUser( request ).getLanguageIso639_2()+"/images/admin/" ;
@@ -16,15 +18,15 @@
         <td colspan="2"><img src="<%= imagesPath %>/1x1.gif" width="1" height="25"></td>
     </tr>
     <tr>
-        <td><span class="imcmsAdmHeading" ><%= StringEscapeUtils.escapeHtml( subreportHeading.toLocalizedString( request ) ) %><br>(<%= documents.size() %> <? web/imcms/lang/jsp/admin/admin_manager.jsp/10 ?>)</span></td>
+        <td><span class="imcmsAdmHeading" ><%= StringEscapeUtils.escapeHtml( subreportHeading.toLocalizedString( request ) ) %><br>(<%= documents.size() %> <fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/10"/>)</span></td>
         <td align="right">
             <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <% if ( subreport.isExpanded() ) { %>
                         <input type="hidden" name="<%= subreport.getName() %>_expand" value="1">
-                        <td><input type="submit" class="imcmsFormBtnSmall" name="<%= subreport.getName() %>_unexpand" value="<? web/imcms/lang/jsp/admin/admin_manager.jsp/12 ?> &raquo;"></td>
+                        <td><input type="submit" class="imcmsFormBtnSmall" name="<%= subreport.getName() %>_unexpand" value="<fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/12"/> &raquo;"></td>
                     <%}else{ %>
-                        <td><input type="submit" class="imcmsFormBtnSmall" name="<%= subreport.getName() %>_expand" value="<? web/imcms/lang/jsp/admin/admin_manager.jsp/11 ?> &raquo;"></td>
+                        <td><input type="submit" class="imcmsFormBtnSmall" name="<%= subreport.getName() %>_expand" value="<fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/11"/> &raquo;"></td>
                     <%}%>
                 </tr>
             </table>
@@ -37,13 +39,13 @@
         <td colspan="2">
             <table border="0" cellspacing="0" cellpadding="2" width="100%">
                 <tr valign="bottom">
-                    <td><b><? global/Page_alias ?>&nbsp;</b></td>
-                    <td width="40"><b><? web/imcms/lang/jsp/admin/admin_manager.jsp/16 ?></b>&nbsp;</td>
-                    <td><b><? web/imcms/lang/jsp/admin/admin_manager.jsp/15 ?></b></td>
-                    <td><b><? web/imcms/lang/jsp/admin/admin_manager.jsp/21 ?></b></td>
-                    <td><b><? web/imcms/lang/jsp/admin/admin_manager.jsp/17 ?>/<? web/imcms/lang/jsp/admin/admin_manager.jsp/18 ?></b></td>
+                    <td><b><fmt:message key="global/Page_alias"/>&nbsp;</b></td>
+                    <td width="40"><b><fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/16"/></b>&nbsp;</td>
+                    <td><b><fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/15"/></b></td>
+                    <td><b><fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/21"/></b></td>
+                    <td><b><fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/17"/>/<fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/18"/></b></td>
                     <td align="right" nowrap>
-                        <input type="submit" class="imcmsFormBtnSmall" value="<? web/imcms/lang/jsp/admin/admin_manager_search.jsp/7 ?>">
+                        <input type="submit" class="imcmsFormBtnSmall" value="<fmt:message key="web/imcms/lang/jsp/admin/admin_manager_search.jsp/7"/>">
                         &nbsp;
                         <select name="<%= subreport.getName() %>_sortorder" onChange="this.form.submit();">
                             <% request.setAttribute( "SORT", subreport.getSortorder() ); %>
@@ -76,9 +78,10 @@
     %>
         <tr>
             <td colspan="4" align="center"><img src="<%= imagesPath %>/1x1.gif" height="20" width="1"><br>
-                <a href="<%= request.getContextPath() %>/servlet/AdminManager?show=search&<%= searchQueryString %>"><? web/imcms/lang/jsp/admin/admin_manager.jsp/19 ?></a>
+                <a href="<%= request.getContextPath() %>/servlet/AdminManager?show=search&<%= searchQueryString %>"><fmt:message key="web/imcms/lang/jsp/admin/admin_manager.jsp/19"/></a>
             </td>
         </tr>
         <form name="seachForm99"></form>
     <%}%>
 </table>
+

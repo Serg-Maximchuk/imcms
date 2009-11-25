@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8"
          import="imcode.server.Imcms,
                  imcode.server.document.BrowserDocumentDomainObject,
@@ -13,7 +15,7 @@
 <html>
 <head>
 
-<title><? install/htdocs/sv/jsp/docadmin/browser_document.jsp/1 ?></title>
+<title><fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/1"/></title>
 
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
 <script src="$contextPath/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
@@ -21,13 +23,13 @@
 </head>
 <body bgcolor="#FFFFFF" onLoad="focusField(1,'new_browsers')">
 #gui_outer_start()
-#gui_head("<? global/imcms_administration ?>")
+#gui_head("<fmt:message key="global/imcms_administration"/>")
 <table border="0" cellspacing="0" cellpadding="0">
 <form method="POST" action="DocumentPageFlowDispatcher">
 <tr>
-	<td><input type="submit" name="cancel" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/browser_document.jsp/2001 ?>"></td>
+	<td><input type="submit" name="cancel" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/2001"/>"></td>
 	<td>&nbsp;</td>
-    <td><input type="button" value="<? install/htdocs/sv/jsp/docadmin/browser_document.jsp/2002 ?>" title="<? install/htdocs/sv/jsp/docadmin/browser_document.jsp/2003 ?>" class="imcmsFormBtn" onClick="openHelpW('LinkBrowserControl')"></td>
+    <td><input type="button" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/2002"/>" title="<fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/2003"/>" class="imcmsFormBtn" onClick="openHelpW('LinkBrowserControl')"></td>
 </tr>
 </table>
 #gui_mid()
@@ -38,7 +40,7 @@
     value="<%= EditDocumentPageFlow.PAGE__EDIT %>">
 <tr>
 	<td colspan="3">
-        #gui_heading( "<? install/htdocs/sv/jsp/docadmin/browser_document.jsp/4/1 ?>" )
+        #gui_heading( "<fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/4/1"/>" )
     </td>
 </tr>
 <tr>
@@ -61,7 +63,7 @@
     </td>
 	<td align="center">
         <input type="submit" class="imcmsFormBtnSmall" name="<%= EditBrowserDocumentPageFlow.REQUEST_PARAMETER__ADD_BROWSERS_BUTTON %>"
-                value="<? install/htdocs/sv/jsp/docadmin/browser_document.jsp/2004 ?>">
+                value="<fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/2004"/>">
     </td>
 	<td>
         <table border="0">
@@ -79,23 +81,23 @@
                 }
             %>
             <tr>
-                <td><? install/htdocs/sv/jsp/docadmin/browser_document.jsp/other_browsers ?>:</td>
+                <td><fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/other_browsers"/>:</td>
                 <td><input type="text" name="<%= EditBrowserDocumentPageFlow.REQUEST_PARAMETER_PREFIX__DESTINATION %><%= BrowserDocumentDomainObject.Browser.DEFAULT.getId() %>" size="5" maxlength="9" value="<%= ObjectUtils.defaultIfNull( addedBrowsers.get(BrowserDocumentDomainObject.Browser.DEFAULT),"") %>"></td>
             </tr>
         </table>
     </td>
 </tr>
 <tr>
-	<td colspan="3"><? install/htdocs/sv/jsp/docadmin/browser_document.jsp/7 ?> </td>
+	<td colspan="3"><fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/7"/> </td>
 </tr>
 <tr>
 	<td colspan="3">#gui_hr( "blue" )</td>
 </tr>
 <tr>
 	<td colspan="3" align="right">
-	<input type="SUBMIT" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/browser_document.jsp/2005 ?>" name="<%= PageFlow.REQUEST_PARAMETER__OK_BUTTON %>" onClick="return singleclicked();">
-	<input type="RESET" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/browser_document.jsp/2006 ?>" name="reset">
-	<input type="SUBMIT" class="imcmsFormBtn" value="<? install/htdocs/sv/jsp/docadmin/browser_document.jsp/2007 ?>" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>"></td>
+	<input type="SUBMIT" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/2005"/>" name="<%= PageFlow.REQUEST_PARAMETER__OK_BUTTON %>" onClick="return singleclicked();">
+	<input type="RESET" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/2006"/>" name="reset">
+	<input type="SUBMIT" class="imcmsFormBtn" value="<fmt:message key="install/htdocs/sv/jsp/docadmin/browser_document.jsp/2007"/>" name="<%= PageFlow.REQUEST_PARAMETER__CANCEL_BUTTON %>"></td>
 </tr>
 </form>
 </table>
@@ -115,3 +117,4 @@ if (el) {
 </body>
 </html>
 </vel:velocity>
+

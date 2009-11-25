@@ -1,4 +1,6 @@
 <%@page contentType="text/javascript"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%@taglib prefix="vel" uri="imcmsvelocity"%>
 <vel:velocity><%
 if (true == false) {

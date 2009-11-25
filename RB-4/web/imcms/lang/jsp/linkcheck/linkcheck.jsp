@@ -8,7 +8,9 @@
                  imcode.util.Html,
                  imcode.util.Utility,
                  org.apache.commons.lang.StringEscapeUtils"%><%@ page import="java.util.Iterator"%>
-<%@page contentType="text/html; charset=UTF-8"%><%@taglib prefix="vel" uri="imcmsvelocity"%><%
+<%@page contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="vel" uri="imcmsvelocity"%><%
 
 LinkCheck.LinkCheckPage linkCheckPage = (LinkCheck.LinkCheckPage) request.getAttribute(LinkCheck.LinkCheckPage.REQUEST_ATTRIBUTE__PAGE) ;
 boolean doCheckLinks = linkCheckPage.isDoCheckLinks();
@@ -16,26 +18,26 @@ String language = Utility.getLoggedOnUser( request ).getLanguageIso639_2() ;
 
 %>
 <vel:velocity>
-#gui_start_of_page( "<? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading ?>" "AdminManager" "" "LinksValidate" "" )
+#gui_start_of_page( "<fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading"/>" "AdminManager" "" "LinksValidate" "" )
 
 <form method="GET" action="LinkCheck">
 <table border="0" cellspacing="0" cellpadding="2" width="100%">
 <tr>
-	<td>#gui_heading( "<? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading ?>" )</td>
+	<td>#gui_heading( "<fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading"/>" )</td>
 </tr>
 <tr>
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="120"><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/only_broken ?></td>
+		<td width="120"><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/only_broken"/></td>
 		<td><input type="checkbox" name="<%= LinkCheck.REQUEST_PARAMETER__BROKEN_ONLY %>"  value="0"  <%= linkCheckPage.isBrokenOnly() ? "checked" : "" %> ></td>
 	</tr>
 	<tr>
-		<td><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/start_id ?></td>
+		<td><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/start_id"/></td>
 		<td><input type="text" name="<%= LinkCheck.REQUEST_PARAMETER__START_ID %>"  size="5" value="<%= linkCheckPage.getStartId() %>"></td>
 	</tr>
 	<tr>
-		<td><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/end_id ?></td>
+		<td><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/end_id"/></td>
 		<td><input type="text" name="<%= LinkCheck.REQUEST_PARAMETER__END_ID %>" size="5" value="<%= linkCheckPage.getEndId() %>"></td>
 	</tr>
 	</table><img src="$contextPath/imcms/$language/images/admin/1x1.gif" width="396" height="1"></td>
@@ -45,7 +47,7 @@ String language = Utility.getLoggedOnUser( request ).getLanguageIso639_2() ;
 </tr>
 <tr>
 	<td align="right">
-	<input type="submit" name="<%= LinkCheck.REQUEST_PARAMETER__START_BUTTON %>" value="<? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/start_check ?>" class="imcmsFormBtn"></td>
+	<input type="submit" name="<%= LinkCheck.REQUEST_PARAMETER__START_BUTTON %>" value="<fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/start_check"/>" class="imcmsFormBtn"></td>
 </tr>
 </table>
 </form>
@@ -60,15 +62,15 @@ if (doCheckLinks) {
 	<td colspan="9"><vel:velocity><img src="$contextPath/imcms/$language/images/admin/1x1.gif" width="1" height="15"></vel:velocity></td>
 </tr>
 <tr>
-    <td><b><? global/Page_alias ?>&nbsp;</b></td>
-    <td style="width: 50px"><b><? web/imcms/lang/jsp/heading_status ?></b></td>
-	<td style="width: 70px"><b><? web/imcms/lang/jsp/heading_type ?></b></td>
-	<td><b><? web/imcms/lang/jsp/heading_adminlink ?></b></td>
-	<td><b><? web/imcms/lang/jsp/heading_references ?></b></td>
-	<td><b><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading_url ?></b></td>
-	<td align="center" style="width: 5em;"><b><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading_host_found ?></b></td>
-	<td align="center" style="width: 5em;"><b><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading_host_reachable ?></b></td>
-	<td align="center" style="width: 5em;"><b><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading_ok ?></b></td>
+    <td><b><fmt:message key="global/Page_alias"/>&nbsp;</b></td>
+    <td style="width: 50px"><b><fmt:message key="web/imcms/lang/jsp/heading_status"/></b></td>
+	<td style="width: 70px"><b><fmt:message key="web/imcms/lang/jsp/heading_type"/></b></td>
+	<td><b><fmt:message key="web/imcms/lang/jsp/heading_adminlink"/></b></td>
+	<td><b><fmt:message key="web/imcms/lang/jsp/heading_references"/></b></td>
+	<td><b><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading_url"/></b></td>
+	<td align="center" style="width: 5em;"><b><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading_host_found"/></b></td>
+	<td align="center" style="width: 5em;"><b><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading_host_reachable"/></b></td>
+	<td align="center" style="width: 5em;"><b><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/heading_ok"/></b></td>
 </tr>
 <tr>
 	<td colspan="9"><vel:velocity>#gui_hr( "cccccc" )</vel:velocity></td>
@@ -90,7 +92,7 @@ if (doCheckLinks) {
 			if (link instanceof LinkCheck.UrlDocumentLink) {
 				LinkCheck.UrlDocumentLink urlDocumentLink = (LinkCheck.UrlDocumentLink)link ;
 				DocumentMapper.TextDocumentMenuIndexPair[] documentMenuPairsContainingUrlDocument = urlDocumentLink.getDocumentMenuPairsContainingUrlDocument(); %>
-	<td nowrap><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/url_document ?></td>
+	<td nowrap><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/url_document"/></td>
 	<td nowrap><a href="<%= request.getContextPath() %>/servlet/AdminDoc?meta_id=<%=
 				document.getId() %>&<%=
 				AdminDoc.PARAMETER__DISPATCH_FLAGS%>=<%=
@@ -103,7 +105,7 @@ if (doCheckLinks) {
 					document.getId() %>&<%=
 					DocumentReferences.REQUEST_PARAMETER__RETURNURL %>=LinkCheck"><%
 				}
-				%><%= documentMenuPairsContainingUrlDocument.length %> <? web/imcms/lang/jsp/parent_count_unit ?><%
+				%><%= documentMenuPairsContainingUrlDocument.length %> <fmt:message key="web/imcms/lang/jsp/parent_count_unit"/><%
 				if (documentMenuPairsContainingUrlDocument.length > 0) {
 					%></a><%
 				} %></td><%
@@ -111,9 +113,9 @@ if (doCheckLinks) {
 				LinkCheck.TextDocumentElementLink textDocumentElementLink = (LinkCheck.TextDocumentElementLink)link ; %>
 	<td><%
 				if (link instanceof LinkCheck.TextLink) { %>
-	<? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/text ?><%
+	<fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/text"/><%
 				} else { %>
-	<? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/image ?><%
+	<fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/image"/><%
 				} %></td>
 	<td><%
 				if (link instanceof LinkCheck.TextLink) {
@@ -139,7 +141,7 @@ if (doCheckLinks) {
 	<td align="center"><img src="<%= request.getContextPath() %>/imcms/<%= language %>/images/admin/<%
 			%>btn_checked_<%= (link.isOk() ) ? "1" : "0" %>.gif"></td>
     <% } else { %>
-    <td align="center" colspan="3"><? web/imcms/lang/jsp/linkcheck/linkcheck.jsp/uncheckable ?></td>
+    <td align="center" colspan="3"><fmt:message key="web/imcms/lang/jsp/linkcheck/linkcheck.jsp/uncheckable"/></td>
     <% } %>
 </tr><%
 			response.flushBuffer();
@@ -150,3 +152,4 @@ if (doCheckLinks) {
 <vel:velocity>
 #gui_end_of_page()
 </vel:velocity>
+

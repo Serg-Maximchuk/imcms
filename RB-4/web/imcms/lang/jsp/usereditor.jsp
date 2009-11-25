@@ -4,6 +4,8 @@
 <%@ page import="imcode.util.Utility"%><%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="java.text.SimpleDateFormat, imcode.server.Imcms"%>
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%
     UserEditorPage userEditorPage = (UserEditorPage) Page.fromRequest(request);
     UserDomainObject editedUser = userEditorPage.getEditedUser() ;
@@ -17,7 +19,7 @@
     LocalizedMessage errorMessage = userEditorPage.getErrorMessage() ;
 %><%@taglib prefix="vel" uri="imcmsvelocity"%><vel:velocity><html>
 <head>
-<title><? templates/sv/AdminUserResp.htm/1 ?></title>
+<title><fmt:message key="templates/sv/AdminUserResp.htm/1"/></title>
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
 <script src="$contextPath/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
 <script language="javascript">
@@ -28,13 +30,13 @@ function evalPrepareAdd() {
 	if( document.forms[0].login_name.value == "" ) valFieldsOk = false
 
 	if(!valFieldsOk) {
-		var msg = "<? templates/sv/AdminUserResp.htm/2/1 ?>"
+		var msg = "<fmt:message key="templates/sv/AdminUserResp.htm/2/1"/>"
 		alert(msg)
 		return false
 	}
 
 	if(document.forms[0].password1.value != document.forms[0].password2.value){
-		var msg = "<? templates/sv/AdminUserResp.htm/2/2 ?>"
+		var msg = "<fmt:message key="templates/sv/AdminUserResp.htm/2/2"/>"
 		document.forms[0].password1.value = ""
 		document.forms[0].password2.value = ""
 		document.forms[0].password1.focus()
@@ -65,67 +67,67 @@ function activateUseradmin_roles(){
 
 
 #gui_outer_start()
-#gui_head( "<? global/imcms_administration ?>" )
+#gui_head( "<fmt:message key="global/imcms_administration"/>" )
 
 <form method="post" action="$contextPath/servlet/PageDispatcher">
 <%= Page.htmlHidden(request) %>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<? templates/sv/AdminUserResp.htm/2001 ?>"></td>
+	<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<fmt:message key="templates/sv/AdminUserResp.htm/2001"/>"></td>
 	<td>&nbsp;</td>
-    <td><input type="button" value="<? templates/sv/AdminUserResp.htm/2002 ?>" title="<? templates/sv/AdminUserResp.htm/2003 ?>" class="imcmsFormBtn" onClick="openHelpW('UserEdit')"></td>
+    <td><input type="button" value="<fmt:message key="templates/sv/AdminUserResp.htm/2002"/>" title="<fmt:message key="templates/sv/AdminUserResp.htm/2003"/>" class="imcmsFormBtn" onClick="openHelpW('UserEdit')"></td>
 </tr>
 </table>
 #gui_mid()
 
 <table border="0" cellspacing="0" cellpadding="0" width="660" align="center">
 <tr>
-	<td colspan="2">#gui_heading( "<? templates/sv/AdminUserResp.htm/5/1 ?>" )</td>
+	<td colspan="2">#gui_heading( "<fmt:message key="templates/sv/AdminUserResp.htm/5/1"/>" )</td>
 </tr>
 <tr>
 	<td colspan="2" class="imcmsAdmText">
-	<? templates/sv/AdminUserResp.htm/6 ?></td>
+	<fmt:message key="templates/sv/AdminUserResp.htm/6"/></td>
 </tr>
 <tr>
 	<td colspan="2">#gui_hr( "cccccc" )</td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/8 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/8"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__LOGIN_NAME %>" size="25" maxlength="50" value="<%= StringEscapeUtils.escapeHtml(editedUser.getLoginName()) %>"></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText" nowrap><? templates/sv/AdminUserResp.htm/10 ?> <span class="imcmsAdmDim"><? templates/sv/AdminUserResp.htm/11 ?></span> &nbsp;</td>
+	<td class="imcmsAdmText" nowrap><fmt:message key="templates/sv/AdminUserResp.htm/10"/> <span class="imcmsAdmDim"><fmt:message key="templates/sv/AdminUserResp.htm/11"/></span> &nbsp;</td>
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td><input type="password" name="<%= UserEditorPage.REQUEST_PARAMETER__PASSWORD1 %>" size="16" maxlength="15" value=""></td>
-		<td class="imcmsAdmText" nowrap>&nbsp; <? templates/sv/AdminUserResp.htm/1001 ?> &nbsp;</td>
+		<td class="imcmsAdmText" nowrap>&nbsp; <fmt:message key="templates/sv/AdminUserResp.htm/1001"/> &nbsp;</td>
 		<td><input type="password" name="<%= UserEditorPage.REQUEST_PARAMETER__PASSWORD2 %>" size="16" maxlength="15" value=""></td>
 	</tr>
 	</table></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/14 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/14"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__FIRST_NAME %>" size="25" maxlength="25" value="<%= StringEscapeUtils.escapeHtml(editedUser.getFirstName()) %>"></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/16 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/16"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__LAST_NAME %>" size="25" maxlength="30" value="<%= StringEscapeUtils.escapeHtml(editedUser.getLastName()) %>"></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/18 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/18"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__TITLE %>" size="25" maxlength="30" value="<%= StringEscapeUtils.escapeHtml(editedUser.getTitle()) %>"></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/20 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/20"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__COMPANY %>" size="25" maxlength="30" value="<%= StringEscapeUtils.escapeHtml(editedUser.getCompany())%>"></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/22 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/22"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__ADDRESS %>" size="25" maxlength="30" value="<%= StringEscapeUtils.escapeHtml(editedUser.getAddress())%>"></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/24 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/24"/></td>
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
@@ -136,22 +138,22 @@ function activateUseradmin_roles(){
 	</table></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/27 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/27"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__DISTRICT %>" size="25" maxlength="30" value="<%= StringEscapeUtils.escapeHtml(editedUser.getProvince())%>"></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/29 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/29"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__COUNTRY %>" size="25" maxlength="30" value="<%= StringEscapeUtils.escapeHtml(editedUser.getCountry())%>"></td>
 </tr>
 <tr>
-    <td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/30 ?></td>
+    <td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/30"/></td>
     <td><select name="<%= UserEditorPage.REQUEST_PARAMETER__LANGUAGE %>"><%= userEditorPage.createLanguagesHtmlOptionList( loggedOnUser, editedUser ) %></select></td>
 </tr>
 <tr>
 	<td colspan="2">#gui_hr( "cccccc" )</td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/32 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/32"/></td>
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
@@ -162,7 +164,7 @@ function activateUseradmin_roles(){
 		<td>&nbsp;</td>
 		<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__EDITED_PHONE_NUMBER %>" size="16" maxlength="25" value="<%= userEditorPage.getCurrentPhoneNumber() %>"></td>
 		<td>&nbsp;</td>
-		<td><input type="submit" class="imcmsFormBtnSmall" value="<? templates/sv/AdminUserResp.htm/2004 ?>" name="<%= UserEditorPage.REQUEST_PARAMETER__ADD_PHONE_NUMBER %>"></td>
+		<td><input type="submit" class="imcmsFormBtnSmall" value="<fmt:message key="templates/sv/AdminUserResp.htm/2004"/>" name="<%= UserEditorPage.REQUEST_PARAMETER__ADD_PHONE_NUMBER %>"></td>
 	</tr>
 	</table></td>
 </tr>
@@ -176,28 +178,28 @@ function activateUseradmin_roles(){
 		    <%= userEditorPage.getUserPhoneNumbersHtmlOptionList(request) %>
 		</select></td>
 		<td>&nbsp;</td>
-		<td><input type="submit" class="imcmsFormBtnSmall" name="<%= UserEditorPage.REQUEST_PARAMETER__EDIT_PHONE_NUMBER %>" value="<? templates/sv/AdminUserResp.htm/2005 ?>"></td>
+		<td><input type="submit" class="imcmsFormBtnSmall" name="<%= UserEditorPage.REQUEST_PARAMETER__EDIT_PHONE_NUMBER %>" value="<fmt:message key="templates/sv/AdminUserResp.htm/2005"/>"></td>
 		<td>&nbsp;</td>
-		<td><input type="submit" class="imcmsFormBtnSmall" name="<%= UserEditorPage.REQUEST_PARAMETER__REMOVE_PHONE_NUMBER %>" value="<? templates/sv/AdminUserResp.htm/2006 ?>"></td>
+		<td><input type="submit" class="imcmsFormBtnSmall" name="<%= UserEditorPage.REQUEST_PARAMETER__REMOVE_PHONE_NUMBER %>" value="<fmt:message key="templates/sv/AdminUserResp.htm/2006"/>"></td>
 	</tr>
 	</table></td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp.htm/36 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp.htm/36"/></td>
 	<td><input type="text" name="<%= UserEditorPage.REQUEST_PARAMETER__EMAIL %>" size="50" maxlength="50" value="<%= StringEscapeUtils.escapeHtml(editedUser.getEmailAddress())%>"></td>
 </tr>
 <tr>
 	<td colspan="2">#gui_hr( "blue" )</td>
 </tr>
 <tr>
-	<td class="imcmsAdmText"><? templates/sv/AdminUserResp_superadmin_part.htm/2 ?></td>
+	<td class="imcmsAdmText"><fmt:message key="templates/sv/AdminUserResp_superadmin_part.htm/2"/></td>
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td><input type="checkbox" name="active" value="1" <% if (editedUser.isActive()) { %>checked<% } %>></td>
 		<td class="imcmsAdmText" nowrap>&nbsp;
             <% if (null != editedUser.getCreateDate()) { %>
-                &nbsp; <? templates/sv/AdminUserResp_superadmin_part.htm/12 ?> &nbsp; <%= new SimpleDateFormat(DateConstants.DATETIME_FORMAT_STRING).format(editedUser.getCreateDate()) %>
+                &nbsp; <fmt:message key="templates/sv/AdminUserResp_superadmin_part.htm/12"/> &nbsp; <%= new SimpleDateFormat(DateConstants.DATETIME_FORMAT_STRING).format(editedUser.getCreateDate()) %>
             <% } %>
         </td>
 	</tr>
@@ -205,11 +207,11 @@ function activateUseradmin_roles(){
 </tr>
 <% if (loggedOnUser.canEditRolesFor(userEditorPage.getUneditedUser())) { %>
 <tr>
-	<td colspan="2">&nbsp;<br>#gui_heading( "<? templates/sv/AdminUserResp_superadmin_part.htm/3/1 ?>" )</td>
+	<td colspan="2">&nbsp;<br>#gui_heading( "<fmt:message key="templates/sv/AdminUserResp_superadmin_part.htm/3/1"/>" )</td>
 </tr>
 <tr valign="top">
 	<td class="imcmsAdmText" nowrap>
-	<? templates/sv/AdminUserResp_superadmin_part.htm/1001 ?> &nbsp;</td>
+	<fmt:message key="templates/sv/AdminUserResp_superadmin_part.htm/1001"/> &nbsp;</td>
 	<td>
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr valign="top">
@@ -219,7 +221,7 @@ function activateUseradmin_roles(){
 		</select></td>
         <% if (loggedOnUser.isSuperAdmin()) { %>
             <td>&nbsp;</td>
-            <td class="imcmsAdmText" nowrap><? templates/sv/AdminUserResp_superadmin_part.htm/8 ?></td>
+            <td class="imcmsAdmText" nowrap><fmt:message key="templates/sv/AdminUserResp_superadmin_part.htm/8"/></td>
             <td>&nbsp;</td>
             <td>
             <select name="<%= UserEditorPage.REQUEST_PARAMETER__USER_ADMIN_ROLE_IDS %>" size="5" multiple>
@@ -228,10 +230,10 @@ function activateUseradmin_roles(){
         <% } %>
     </tr>
 	<tr valign="top">
-		<td class="imcmsAdmDim"><? templates/sv/AdminUserResp_superadmin_part.htm/10 ?></td>
+		<td class="imcmsAdmDim"><fmt:message key="templates/sv/AdminUserResp_superadmin_part.htm/10"/></td>
         <% if (loggedOnUser.isSuperAdmin()) { %>
             <td colspan="3">&nbsp;</td>
-            <td class="imcmsAdmDim"><? templates/sv/AdminUserResp_superadmin_part.htm/11 ?></td>
+            <td class="imcmsAdmDim"><fmt:message key="templates/sv/AdminUserResp_superadmin_part.htm/11"/></td>
         <% } %>
     </tr>
 	</table></td>
@@ -244,7 +246,7 @@ function activateUseradmin_roles(){
 	<td colspan="2">
 	<table border="0" cellspacing="0" cellpadding="0" width="656">
 	<tr>
-		<td class="imcmsAdmComment"><? templates/sv/AdminUserResp.htm/40 ?></td>
+		<td class="imcmsAdmComment"><fmt:message key="templates/sv/AdminUserResp.htm/40"/></td>
 		<td align="right">
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
@@ -253,11 +255,11 @@ function activateUseradmin_roles(){
                     %><td><span class="error"><%= errorMessage.toLocalizedString(request) %></span></td><td>&nbsp;</td><%
                 }
             %>
-			<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__OK %>" value="<? templates/sv/AdminUserResp.htm/2007 ?>" onClick="if( !evalPrepareAdd() ) return false;"></td>
+			<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__OK %>" value="<fmt:message key="templates/sv/AdminUserResp.htm/2007"/>" onClick="if( !evalPrepareAdd() ) return false;"></td>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="imcmsFormBtn" value="<? templates/sv/AdminUserResp.htm/2008 ?>"></td>
+			<td><input type="submit" class="imcmsFormBtn" value="<fmt:message key="templates/sv/AdminUserResp.htm/2008"/>"></td>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<? templates/sv/AdminUserResp.htm/2009 ?>"></td>
+			<td><input type="submit" class="imcmsFormBtn" name="<%= OkCancelPage.REQUEST_PARAMETER__CANCEL %>" value="<fmt:message key="templates/sv/AdminUserResp.htm/2009"/>"></td>
 		</tr>
 		</table></td>
 	</tr>
@@ -270,3 +272,4 @@ function activateUseradmin_roles(){
 </body>
 </html>
 </vel:velocity>
+

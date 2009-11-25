@@ -1,17 +1,25 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java"
 
 	import="imcode.util.Utility,
 	        org.apache.oro.text.perl.Perl5Util,
 	        java.io.*,
-            imcode.server.user.UserDomainObject, imcode.server.Imcms, org.apache.commons.lang.StringUtils"
+            imcode.server.user.UserDomainObject,
+            imcode.server.Imcms, org.apache.commons.lang.StringUtils"
 	
 	contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"
 
-%><%@taglib prefix="vel" uri="imcmsvelocity"%><%
+%>
+<%@ page import="org.apache.taglibs.standard.tag.common.fmt.BundleSupport" %>
+<%@ page import="javax.servlet.jsp.jstl.fmt.LocalizationContext" %>
+<%@ page import="java.util.ResourceBundle" %>
+<%@taglib prefix="vel" uri="imcmsvelocity"%><%
 
 request.setCharacterEncoding("UTF-8");
-    
+LocalizationContext locCtx = BundleSupport.getLocalizationContext(pageContext);
+ResourceBundle bundle = locCtx.getResourceBundle();
 UserDomainObject user = Utility.getLoggedOnUser( request );
 if (!user.isSuperAdmin()) {
     return ;
@@ -118,7 +126,7 @@ String sError   = "" ;
 if (doSave) {
 	try {
 		if (!fn.exists()) {
-			sError = "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1001/1 ?>" ;
+			sError = bundle.getString("install/htdocs/sv/jsp/FileAdmin_edit.jsp/1001/1");
 		}
 		session.setAttribute("fileSaved", fileSrc) ;
 		/*for (int i = 0; i < fuckedUpUmlingBack.length; i = i + 2) {
@@ -128,9 +136,9 @@ if (doSave) {
 		fileOut.write(fileSrc) ;
 		isSaved = true ;
 	} catch (FileNotFoundException fnEx) {
-		sError = "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1001/2 ?>" ;
+		sError = bundle.getString("install/htdocs/sv/jsp/FileAdmin_edit.jsp/1001/2");
 	} catch (IOException ioEx) {
-		sError = "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1001/3 ?>" ;
+		sError = bundle.getString("install/htdocs/sv/jsp/FileAdmin_edit.jsp/1001/3");
 	} finally {
 		if (fileOut != null) {
 			fileOut.close() ;
@@ -232,25 +240,25 @@ if (isHelpWin) { %>
 <tr>
 	<td class="imcmsAdmText"><%
 	if (!hasDocumentLayers && !isMac) { %>
-	<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/6 ?> <i><%
+	<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/6"/> <i><%
 		if (isReadonly) {
-			%><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/7 ?> <%
+			%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/7"/> <%
 		} else {
-			%><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/8 ?> <%
+			%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/8"/> <%
 		}
 		if (isTempl) {
-			%><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/9 ?><%
+			%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/9"/><%
 		} else {
-			%><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/10 ?><%
-		} %></i> <? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/11 ?><%
+			%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/10"/><%
+		} %></i> <fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/11"/><%
 		if (hasDocumentAll) {
-		%> <? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/12 ?><%
+		%> <fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/12"/><%
 		} %><br><br><%
 	}
 	if (!isReadonly) { %>
-	<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/13 ?><%
+	<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/13"/><%
 		if (hasDocumentAll && !isMac) { %>
-	<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/14 ?><%
+	<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/14"/><%
 		}
 	} %></td>
 </tr>
@@ -314,7 +322,7 @@ function findIt(str) {
 }
 
 function doSave() {
-	if (confirm("<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/1 ?>")) {
+	if (confirm("<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/1"/>")) {
 		return true;
 	}
 	return false;
@@ -324,8 +332,8 @@ function doReset() {
 	var f = document.forms.resetForm;
 	var theSel = f.resetFile.options[f.resetFile.selectedIndex].value;
 	if (theSel != "") {
-		var theText = (theSel == "org") ? "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/2 ?>" : "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/3 ?>";
-		if (confirm("<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/4 ?>" + theText + "\n\n<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/5 ?>")) {
+		var theText = (theSel == "org") ? "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/2"/>" : "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/3"/>";
+		if (confirm("<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/4"/>" + theText + "\n\n<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2/5"/>")) {
 			f.submit();
 		} else {
 			f.resetFile.selectedIndex = 0;
@@ -430,14 +438,14 @@ function popWinOpen(winW,winH,sUrl,sName,iResize,iScroll) {
 			<td height="35" nowrap><span class="imcmsAdmHeadingTop" onDblClick="toggleFontSize(this)">
 			&nbsp;<%
 			if (isReadonly) {
-				%><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1002/1 ?> <%
+				%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1002/1"/> <%
 			} else {
-				%><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1002/2 ?> <%
+				%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1002/2"/> <%
 			}
 			if (isTempl) {
-				%><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1002/3 ?><%
+				%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1002/3"/><%
 			} else {
-				%><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1002/4 ?><%
+				%><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1002/4"/><%
 			} %> &nbsp; </span></td>
 
 			<td nowrap><span class="imcmsAdmText" style="color:#ffffff;">
@@ -474,7 +482,7 @@ function popWinOpen(winW,winH,sUrl,sName,iResize,iScroll) {
 			<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<td><input type="text" name="searchString" size="8" value="<%= theSearchString %>" style="width:50px;"></td>
-				<td><a id="btnSearch" href="javascript://find()" onClick="findIt(document.forms[0].searchString.value);"><img src="<%= IMG_PATH %>btn_find.gif" border="0" hspace="5" alt="<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2001 ?>"></a></td>
+				<td><a id="btnSearch" href="javascript://find()" onClick="findIt(document.forms[0].searchString.value);"><img src="<%= IMG_PATH %>btn_find.gif" border="0" hspace="5" alt="<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2001"/>"></a></td>
 			</tr>
 			</table>
 			</form></td><%
@@ -491,12 +499,12 @@ function popWinOpen(winW,winH,sUrl,sName,iResize,iScroll) {
 			} %>
 			<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<td class="imcmsAdmText"><a href="javascript://help" onClick="alert('Choose to reset the file to what it looked like when:\n\n - You saved it last.\n - You opened it.')"><span style="color:#ffffff; text-decoration:none; cursor:help;"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/4 ?></span></a>&nbsp;</td>
+				<td class="imcmsAdmText"><a href="javascript://help" onClick="alert('Choose to reset the file to what it looked like when:\n\n - You saved it last.\n - You opened it.')"><span style="color:#ffffff; text-decoration:none; cursor:help;"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/4"/></span></a>&nbsp;</td>
 				<td class="imcmsAdmText">
 				<select name="resetFile" onChange="doReset(); return false">
-					<option value=""><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/5 ?>
-					<option value="saved"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/6 ?>
-					<option value="org"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/7 ?>
+					<option value=""><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/5"/>
+					<option value="saved"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/6"/>
+					<option value="org"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/7"/>
 				</select></td>
 			</tr>
 			</table>
@@ -513,13 +521,13 @@ function popWinOpen(winW,winH,sUrl,sName,iResize,iScroll) {
 			} %>
 			<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<td><input name="btnSave" id="btnSave" type="image" src="<%= IMG_PATH %>btn_save.gif" alt="<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2002 ?>"></td>
+				<td><input name="btnSave" id="btnSave" type="image" src="<%= IMG_PATH %>btn_save.gif" alt="<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2002"/>"></td>
 				<td class="imcmsAdmText">&nbsp;&nbsp;</td>
 				<td><%
 				if (hasDocumentLayers) {
-					%><a href="javascript: closeIt();"><img src="<%= IMG_PATH %>btn_close.gif" border="0" alt="<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2003 ?>"></a><%
+					%><a href="javascript: closeIt();"><img src="<%= IMG_PATH %>btn_close.gif" border="0" alt="<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2003"/>"></a><%
 				} else {
-					%><input name="btnClose" id="btnClose" type="image" src="<%= IMG_PATH %>btn_close.gif" alt="<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2004 ?>" onClick="closeIt(); return false"><%
+					%><input name="btnClose" id="btnClose" type="image" src="<%= IMG_PATH %>btn_close.gif" alt="<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/2004"/>" onClick="closeIt(); return false"><%
 				} %></td>
 				<td>&nbsp;&nbsp;</td>
 			</tr>
@@ -532,9 +540,9 @@ function popWinOpen(winW,winH,sUrl,sName,iResize,iScroll) {
 		<tr>
 			<td><%
 			if (hasDocumentLayers) {
-				%><a href="javascript:closeIt();"><img src="<%= IMG_PATH %>btn_close.gif" border="0" alt="<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2005 ?>"></a><%
+				%><a href="javascript:closeIt();"><img src="<%= IMG_PATH %>btn_close.gif" border="0" alt="<fmt:message key='install/htdocs/sv/jsp/FileAdmin_edit.jsp/2005'/>"></a><%
 			} else {
-				%><input name="btnClose" id="btnClose" type="image" src="<%= IMG_PATH %>btn_close.gif" alt="<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/2006 ?>" onClick="closeIt(); return false"><%
+				%><input name="btnClose" id="btnClose" type="image" src="<%= IMG_PATH %>btn_close.gif" alt="<fmt:message key='install/htdocs/sv/jsp/FileAdmin_edit.jsp/2006'/>" onClick="closeIt(); return false"><%
 			} %></td>
 			<td>&nbsp;&nbsp;</td>
 		</tr>
@@ -544,14 +552,14 @@ function popWinOpen(winW,winH,sUrl,sName,iResize,iScroll) {
 	<tr class="imcmsAdmBgCont">
 		<td colspan="2" height="18" class="small"><span class="imcmsAdmTextSmall"><%
 			if (isTempl && !(isMac && (hasDocumentLayers || hasDocumentAll))) { %>
-		&nbsp;&nbsp;<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/1 ?>&nbsp;
-		<a href="javascript: imScriptCount('text');"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/2 ?></a> |
-		<a href="javascript: imScriptCount('image');"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/3 ?></a> |
-		<a href="javascript: imScriptCount('menu');"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/4 ?></a> |
-		<a href="javascript: imScriptCount('include');"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/5 ?></a> |
-		<a href="javascript: imScriptCount('date');"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/6 ?></a> |
-		<a href="javascript: imScriptCount('bradgard');"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/7 ?></a> |
-		<a href="javascript: imScriptCount('other');"><? install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/8 ?></a><%
+		&nbsp;&nbsp;<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/1"/>&nbsp;
+		<a href="javascript: imScriptCount('text');"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/2"/></a> |
+		<a href="javascript: imScriptCount('image');"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/3"/></a> |
+		<a href="javascript: imScriptCount('menu');"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/4"/></a> |
+		<a href="javascript: imScriptCount('include');"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/5"/></a> |
+		<a href="javascript: imScriptCount('date');"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/6"/></a> |
+		<a href="javascript: imScriptCount('bradgard');"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/7"/></a> |
+		<a href="javascript: imScriptCount('other');"><fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/1004/8"/></a><%
 			} else {
 				out.print("&nbsp;") ;
 			}
@@ -589,8 +597,8 @@ if (isTempl && !(isMac && (hasDocumentLayers || hasDocumentAll))) { %>
 <!--
 function imScriptCount(imType) {
 	var hits,arr1,arr2;
-	var retStr = "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/8 ?>\n----------------------------------------\n";
-	if (hasDocumentLayers) retStr += "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/9 ?>\n----------------------------------------\n";
+	var retStr = "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/8"/>\n----------------------------------------\n";
+	if (hasDocumentLayers) retStr += "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/9"/>\n----------------------------------------\n";
 	var head_1_a = ":: ";
 	var head_1_b = " ::";
 	var head_2_a = "        - ";
@@ -610,17 +618,17 @@ function imScriptCount(imType) {
 			if (re1.test(cont)) {
 				hits = cont.match(re1);
 				//hits = hits.sort();
-				retStr += head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/10 ?>" + head_1_b + "\n\n";
+				retStr += head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/10"/>" + head_1_b + "\n\n";
 				if (hits.length > 1) {
-					retStr += head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11 ?>" + head_2_b + "\n\n";
+					retStr += head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11"/>" + head_2_b + "\n\n";
 					hits    = fixImCmsTags(hits, "codeOrder");
 					retStr += hits.join("\n");
-					retStr += "\n\n" + head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/12 ?>" + head_2_b + "\n\n";
+					retStr += "\n\n" + head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/12"/>" + head_2_b + "\n\n";
 				}
 				hits    = fixImCmsTags(hits, "numOrder");
 				retStr += hits.join("\n");
 			} else {
-				retStr = head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/1 ?>" + head_1_b;
+				retStr = head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/1"/>" + head_1_b;
 			}
 			alert(retStr);
 		break;
@@ -628,17 +636,17 @@ function imScriptCount(imType) {
 			if (re2.test(cont)) {
 				hits = cont.match(re2);
 				//hits = hits.sort();
-				retStr += head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/13 ?>" + head_1_b + "\n\n";
+				retStr += head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/13"/>" + head_1_b + "\n\n";
 				if (hits.length > 1) {
-					retStr += head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11 ?>" + head_2_b + "\n\n";
+					retStr += head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11"/>" + head_2_b + "\n\n";
 					hits    = fixImCmsTags(hits, "codeOrder");
 					retStr += hits.join("\n");
-					retStr += "\n\n" + head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/12 ?>" + head_2_b + "\n\n";
+					retStr += "\n\n" + head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/12"/>" + head_2_b + "\n\n";
 				}
 				hits    = fixImCmsTags(hits, "numOrder");
 				retStr += hits.join("\n");
 			} else {
-				retStr = head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/2 ?>" + head_1_b;
+				retStr = head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/2"/>" + head_1_b;
 			}
 			alert(retStr);
 		break;
@@ -646,17 +654,17 @@ function imScriptCount(imType) {
 			if (re3.test(cont)) {
 				hits = cont.match(re3);
 				//hits = hits.sort();
-				retStr += head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/14 ?>" + head_1_b + "\n\n";
+				retStr += head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/14"/>" + head_1_b + "\n\n";
 				if (hits.length > 1) {
-					retStr += head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11 ?>:\n\n";
+					retStr += head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11"/>:\n\n";
 					hits    = fixImCmsTags(hits, "codeOrder");
 					retStr += hits.join("\n");
-					retStr += "\n\n" + head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/12 ?>" + head_2_b + "\n\n";
+					retStr += "\n\n" + head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/12"/>" + head_2_b + "\n\n";
 				}
 				hits    = fixImCmsTags(hits, "numOrder");
 				retStr += hits.join("\n");
 			} else {
-				retStr = head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/3 ?>" + head_1_b;
+				retStr = head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/3"/>" + head_1_b;
 			}
 			alert(retStr);
 		break;
@@ -664,51 +672,51 @@ function imScriptCount(imType) {
 			if (re4.test(cont)) {
 				hits = cont.match(re4);
 				//hits = hits.sort();
-				retStr += head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/15 ?>" + head_1_b + "\n\n";
+				retStr += head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/15"/>" + head_1_b + "\n\n";
 				if (hits.length > 1) {
-					retStr += head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11 ?>" + head_2_b + "\n\n";
+					retStr += head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11"/>" + head_2_b + "\n\n";
 				}
 				hits    = fixImCmsTags(hits, "codeOrder");
 				retStr += hits.join("\n");
 			} else {
-				retStr = head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/4 ?>" + head_1_b;
+				retStr = head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/4"/>" + head_1_b;
 			}
 			alert(retStr);
 		break;
 		case 'bradgard':
 			if (re5.test(cont)) {
 				hits = cont.match(re5);
-				retStr += head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/16 ?>" + head_1_b + "\n\n";
+				retStr += head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/16"/>" + head_1_b + "\n\n";
 				if (hits.length > 1) {
-					retStr += head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11 ?>" + head_2_b + "\n\n";
+					retStr += head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11"/>" + head_2_b + "\n\n";
 				}
 				hits    = fixImCmsTags(hits, "codeOrder");
 				retStr += hits.join("\n");
 			} else {
-				retStr = head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/5 ?>" + head_1_b;
+				retStr = head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/5"/>" + head_1_b;
 			}
 			alert(retStr);
 		break;
 		case 'date':
 			if (re6.test(cont)) {
 				hits = cont.match(re6);
-				retStr += head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/17 ?>" + head_1_b + "\n\n";
+				retStr += head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/17"/>" + head_1_b + "\n\n";
 				if (hits.length > 1) {
-					retStr += head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11 ?>" + head_2_b + "\n\n";
+					retStr += head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11"/>" + head_2_b + "\n\n";
 				}
 				hits    = fixImCmsTags(hits, "codeOrder");
 				retStr += hits.join("\n");
 			} else {
-				retStr = head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/6 ?>" + head_1_b;
+				retStr = head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/6"/>" + head_1_b;
 			}
 			alert(retStr);
 		break;
 		case 'other':
 			if (re7.test(cont)) {
 				hits = cont.match(re7);
-				retStr += head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/18 ?>" + head_1_b + "\n\n";
+				retStr += head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/18"/>" + head_1_b + "\n\n";
 				if (hits.length > 1) {
-					retStr += head_2_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11 ?>" + head_2_b + "\n\n";
+					retStr += head_2_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/11"/>" + head_2_b + "\n\n";
 				}
 				var arrTemp = new Array();
 				var iCount = 0;
@@ -723,7 +731,7 @@ function imScriptCount(imType) {
 				arrTemp = fixImCmsTags(arrTemp, "codeOrder");
 				retStr += arrTemp.join("\n");
 			} else {
-				retStr = head_1_a + "<? install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/7 ?>" + head_1_b;
+				retStr = head_1_a + "<fmt:message key="install/htdocs/sv/jsp/FileAdmin_edit.jsp/10/7"/>" + head_1_b;
 			}
 			alert(retStr);
 		break;
@@ -832,3 +840,4 @@ function replaceLongParams(theString) {
 
 </body>
 </html>
+

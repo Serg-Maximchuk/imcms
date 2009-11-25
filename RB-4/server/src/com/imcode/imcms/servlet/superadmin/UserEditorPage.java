@@ -171,7 +171,7 @@ public class UserEditorPage extends OkCancelPage {
 
     public String getPath(HttpServletRequest request) {
         UserDomainObject loggedOnUser = Utility.getLoggedOnUser(request);
-        return "/imcms/" + loggedOnUser.getLanguageIso639_2() + "/jsp/usereditor.jsp";
+        return "/imcms/lang/jsp/usereditor.jsp";
     }
 
     protected void dispatchOther(HttpServletRequest request,

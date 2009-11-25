@@ -156,7 +156,7 @@ public class ImageCropPage extends OkCancelPage {
 	@Override
 	public String getPath(HttpServletRequest request) {
 		UserDomainObject user = Utility.getLoggedOnUser(request);
-        return "/imcms/" + user.getLanguageIso639_2() + "/jsp/crop_img.jsp";
+        return "/imcms/lang/jsp/crop_img.jsp";
 	}
 
 	public CropRegion getRegion() {

@@ -247,7 +247,7 @@ public class ImageBrowse extends HttpServlet {
 		public void forward( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
             request.setAttribute( REQUEST_ATTRIBUTE__IMAGE_BROWSE_PAGE, this );
             UserDomainObject user = Utility.getLoggedOnUser( request );
-            String forwardPath = "/imcms/" + user.getLanguageIso639_2() + "/jsp/" + JSP__IMAGE_BROWSE;
+            String forwardPath = "/imcms/lang/jsp/" + JSP__IMAGE_BROWSE;
             request.getRequestDispatcher( forwardPath ).forward( request, response );
         }
 

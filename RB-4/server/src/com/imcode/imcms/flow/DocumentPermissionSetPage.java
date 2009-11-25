@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class DocumentPermissionSetPage extends OkCancelPage {
 
-    private static final String URL_I15D_PAGE__DOCUMENT_PERMISSION_SET = "/jsp/docadmin/document_permission_set.jsp";
+    private static final String URL_I15D_PAGE__DOCUMENT_PERMISSION_SET = "lang/jsp/docadmin/document_permission_set.jsp";
 
     private DocumentPermissionSetDomainObject documentPermissionSet;
     private boolean forNew;
@@ -76,7 +76,7 @@ public class DocumentPermissionSetPage extends OkCancelPage {
 
     public String getPath(HttpServletRequest request) {
         UserDomainObject user = Utility.getLoggedOnUser( request );
-        return EditDocumentPageFlow.URL_I15D_PAGE__PREFIX + user.getLanguageIso639_2()
+        return EditDocumentPageFlow.URL_I15D_PAGE__PREFIX
                + URL_I15D_PAGE__DOCUMENT_PERMISSION_SET;
     }
 

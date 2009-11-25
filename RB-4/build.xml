@@ -417,7 +417,7 @@
         <echo message="${version}" file="${versionfile}"/>
 
         <copy todir="${webroot}" filtering="true">
-            <fileset dir="web" excludes="imcms/lang/**,WEB-INF/templates/lang/**,${imagespattern}"/>
+            <fileset dir="web" excludes="WEB-INF/templates/lang/**,${imagespattern}"/>
         </copy>
 
         <copy todir="${webroot}">
@@ -457,14 +457,8 @@
             <fileset dir="web/WEB-INF/templates/lang"/>
         </imtranslate>
 
-        <imtranslate bundle="web/WEB-INF/conf/imcms" bundlelanguage="${buildlanguage}"
-            starttoken="&lt;? " endtoken=" ?&gt;"
-            todir="${imcms}/${buildlanguage}" filtering="true" encoding="utf-8">
-            <fileset dir="web/imcms/lang" excludes="${imagespattern}"/>
-        </imtranslate>
-
-        <copy todir="${imcms}/${buildlanguage}" filtering="false">
-            <fileset dir="web/imcms/lang" includes="${imagespattern}"/>
+        <copy todir="${webroot}/imcms/${buildlanguage}/images">
+            <fileset dir="web/imcms/lang/images" />
         </copy>
 
     </target>

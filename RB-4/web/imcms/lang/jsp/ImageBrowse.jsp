@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.imcode.imcms.servlet.admin.ImageBrowse,
                  com.imcode.imcms.servlet.admin.ImageBrowse,
                  org.apache.commons.lang.StringEscapeUtils,
@@ -21,7 +23,7 @@ File currentDirectory = imageBrowsePage.getCurrentDirectory() ;
 <head>
 
 
-<title><? install/htdocs/sv/jsp/ImageBrowse.html/1 ?></title>
+<title><fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/1"/></title>
 
 <link rel="stylesheet" type="text/css" href="$contextPath/imcms/css/imcms_admin.css.jsp">
 <script src="$contextPath/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
@@ -34,7 +36,7 @@ File currentDirectory = imageBrowsePage.getCurrentDirectory() ;
 
 
 #gui_outer_start()
-#gui_head("<? global/imcms_administration ?>")
+#gui_head("<fmt:message key="global/imcms_administration"/>")
 <form action="ImageBrowse" method="POST" enctype="multipart/form-data">
 <input type="hidden" id="dir" name="dir" value="<%= ("\\" + FileUtility.relativizeFile( Imcms.getServices().getConfig().getImagePath().getParentFile(), currentDirectory ).toString()).replace("\\", "/") %>">
 <input type="hidden" name="editor_image" value="<%= request.getParameter("editor_image") %>">
@@ -44,9 +46,9 @@ if (null != imageBrowsePage.getLabel() ) { %>
 } %>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td><input type="Submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__CANCEL_BUTTON %>" value="<? install/htdocs/sv/jsp/ImageBrowse.html/2001 ?>"></td>
+	<td><input type="Submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__CANCEL_BUTTON %>" value="<fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/2001"/>"></td>
 	<td>&nbsp;</td>
-    <td><input type="button" value="<? install/htdocs/sv/jsp/ImageBrowse.html/2002 ?>" title="<? install/htdocs/sv/jsp/ImageBrowse.html/2003 ?>" class="imcmsFormBtn" onClick="openHelpW('ImageArchive')"></td>
+    <td><input type="button" value="<fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/2002"/>" title="<fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/2003"/>" class="imcmsFormBtn" onClick="openHelpW('ImageArchive')"></td>
 </tr>
 </table>
 #gui_mid()
@@ -55,7 +57,7 @@ if (null != imageBrowsePage.getLabel() ) { %>
 	<td width="45%" align="right">
         <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td class="imcmsAdmText"><? install/htdocs/sv/jsp/ImageBrowse.html/5 ?></td>
+            <td class="imcmsAdmText"><fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/5"/></td>
         </tr>
         <tr>
             <td>
@@ -67,12 +69,12 @@ if (null != imageBrowsePage.getLabel() ) { %>
         </table>
     </td>
 	<td width="10%" align="center">
-    	<input type="submit" class="imcmsFormBtnSmall" name="<%= ImageBrowse.REQUEST_PARAMETER__CHANGE_DIRECTORY_BUTTON %>" value="<? install/htdocs/sv/jsp/ImageBrowse.html/2004 ?>">
+    	<input type="submit" class="imcmsFormBtnSmall" name="<%= ImageBrowse.REQUEST_PARAMETER__CHANGE_DIRECTORY_BUTTON %>" value="<fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/2004"/>">
     </td>
 	<td width="45%">
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td class="imcmsAdmText" align="right"><? install/htdocs/sv/jsp/ImageBrowse.html/7 ?></td>
+                <td class="imcmsAdmText" align="right"><fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/7"/></td>
             </tr>
             <tr>
                 <td>
@@ -82,7 +84,7 @@ if (null != imageBrowsePage.getLabel() ) { %>
 								if (!"".equals(imageOptionsList)) { %>
 									<%= imageOptionsList %><%
 								} else { %>
-									<optgroup label="<? install/htdocs/sv/jsp/ImageBrowse.html/No_files ?>" style="font-weight:normal !important; font-style:italic !important;"></optgroup><%
+									<optgroup label="<fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/No_files"/>" style="font-weight:normal !important; font-style:italic !important;"></optgroup><%
 								} %>
 								</select></td>
             </tr>
@@ -96,17 +98,17 @@ if (null != imageBrowsePage.getLabel() ) { %>
 	<td colspan="3" align="right">
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td><input type="submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__OK_BUTTON %>" value="<? install/htdocs/sv/jsp/ImageBrowse.html/2005 ?>"></td>
+                <td><input type="submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__OK_BUTTON %>" value="<fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/2005"/>"></td>
                 <td>&nbsp;</td>
-                <td><input type="submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__PREVIEW_BUTTON %>" value="<? install/htdocs/sv/jsp/ImageBrowse.html/2006 ?>"
+                <td><input type="submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__PREVIEW_BUTTON %>" value="<fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/2006"/>"
                            onclick="return previewFile();"></td>
                 <td>&nbsp;</td>
-                <td><input type="Submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__CANCEL_BUTTON %>" value="<? install/htdocs/sv/jsp/ImageBrowse.html/2007 ?>"></td>
+                <td><input type="Submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__CANCEL_BUTTON %>" value="<fmt:message key="install/htdocs/sv/jsp/ImageBrowse.html/2007"/>"></td>
             </tr>
         </table></td>
 </tr>
 <tr>
-    <td colspan="3">#gui_heading( "<? templates/sv/change_img.html/4/1 ?>" )</td>
+    <td colspan="3">#gui_heading( "<fmt:message key="templates/sv/change_img.html/4/1"/>" )</td>
 </tr>
 <%
     LocalizedMessage errorMessage = imageBrowsePage.getErrorMessage() ;
@@ -124,7 +126,7 @@ if (null != imageBrowsePage.getLabel() ) { %>
                     <input type="file" name="<%= ImageBrowse.REQUEST_PARAMETER__FILE %>" id="theFile" size="54">
                 </td>
                 <td align="right">
-                    <input type="submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__UPLOAD_BUTTON %>" value="<? templates/sv/change_img.html/2005 ?>">
+                    <input type="submit" class="imcmsFormBtn" name="<%= ImageBrowse.REQUEST_PARAMETER__UPLOAD_BUTTON %>" value="<fmt:message key="templates/sv/change_img.html/2005"/>">
                 </td>
             </tr>
         </table>
@@ -188,3 +190,4 @@ function previewFile() {
 </body>
 </html>
 </vel:velocity>
+

@@ -274,7 +274,7 @@ public class Utility {
 
         response.setStatus( HttpServletResponse.SC_FORBIDDEN );
         request.setAttribute( VerifyUser.REQUEST_ATTRIBUTE__ERROR, ERROR__NO_PERMISSION );
-        request.getRequestDispatcher( "/imcms/" + user.getLanguageIso639_2() + "/login/index.jsp?"+VerifyUser.REQUEST_PARAMETER__NEXT_URL+"="+URLEncoder.encode( loginTarget.toString() ) ).forward( request,response );
+        request.getRequestDispatcher( "/imcms/lang/login/index.jsp?"+VerifyUser.REQUEST_PARAMETER__NEXT_URL+"="+URLEncoder.encode( loginTarget.toString() ) ).forward( request,response );
     }
 
     public static String[] getParameterValues( HttpServletRequest request, String parameterName ) {

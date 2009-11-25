@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page
   import="com.imcode.imcms.api.DocumentService,
           com.imcode.imcms.api.ContentManagementSystem,
@@ -77,7 +79,7 @@ if (action.equals("ExecSave")) {
 }
 %><html>
 <head>
-<title>&nbsp; <? install/htdocs/sv/htmleditor/editor/editor.jsp/1001 ?> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</title>
+<title>&nbsp; <fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1001"/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</title>
 
 <META HTTP-EQUIV="pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Cache-Control" CONTENT="must-revalidate">
@@ -119,13 +121,13 @@ if (directEditEnabled) {
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr bgcolor="#333366">
 	<td height="20" style="font: 11px Verdana,Geneva,Arial,Helvetica,sans-serif; color:#FFFFFF">
-	<img src="images/1x1.gif" width="10" height="1"><? install/htdocs/sv/htmleditor/editor/editor.jsp/2/1 ?>
+	<img src="images/1x1.gif" width="10" height="1"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2/1"/>
 	<b style="font-size:12px"><%= txt_no %></b><%
 	if (!label.equals("")) {
 		label = label.replaceAll("<[^>]+>", " ") ;
 		%> [<%= label.substring(0,(label.length() > 60 ? 60 : label.length())) + ((label.length() > 60) ? "..." : "") %>]<%
 	} %>
-	<? install/htdocs/sv/htmleditor/editor/editor.jsp/2/2 ?>
+	<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2/2"/>
 	<b style="font-size:12px"><%= meta_id %></b></td>
 	<td align="right">
 	<table border="0" cellpadding="0" cellspacing="0">
@@ -134,7 +136,7 @@ if (directEditEnabled) {
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 if (showHelpFullBtn) {
-	document.writeln('<a href="javascript:void(0)" onClick="showHelp(\'all\');"><SPAN STYLE="font: bold 10px; color:white; text-decoration:none"><? install/htdocs/sv/htmleditor/editor/editor.jsp/3/1 ?></SPAN></a>');
+	document.writeln('<a href="javascript:void(0)" onClick="showHelp(\'all\');"><SPAN STYLE="font: bold 10px; color:white; text-decoration:none"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/3/1"/></SPAN></a>');
 }
 if (showHelpFullBtn && showHelpSubjectBtn) {
 	document.writeln('</td>\n<td><img src="images/1x1.gif" width="10" height="1"></td>\n<td>');
@@ -181,14 +183,14 @@ for (var i = 0; i < arrButtonsRowOne.length; i++) {
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 if (showHtmlBtn) {
-	document.write('<button unselectable="on" id="btn12" onClick="if(document.forms[0].execState.value == \'2\')\{ showHelpLayer(\'EditCode\'); \} else \{ previewCode()\; \}" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/5/1 ?>" style="position:relative; width:55; height:21">');
+	document.write('<button unselectable="on" id="btn12" onClick="if(document.forms[0].execState.value == \'2\')\{ showHelpLayer(\'EditCode\'); \} else \{ previewCode()\; \}" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/5/1"/>" style="position:relative; width:55; height:21">');
 	document.write('		<img name="previewImg" src="images/btn_preview_html.gif"></button>');
 }
 
 if (showAdv && showSimple) {
-	document.write('&nbsp\;<button unselectable="on" id="advBtn" style="width:70" onClick="show<? install/htdocs/sv/htmleditor/editor/editor.jsp/5/3 ?>()\;" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/5/2 ?>" style="height:21"><b id="advBtnText" style="position:relative\; top:0"><? install/htdocs/sv/htmleditor/editor/editor.jsp/5/3 ?></b></button>');
+	document.write('&nbsp\;<button unselectable="on" id="advBtn" style="width:70" onClick="show<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/5/3"/>()\;" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/5/2"/>" style="height:21"><b id="advBtnText" style="position:relative\; top:0"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/5/3"/></b></button>');
 } else {
-	document.write('<button unselectable="on" id="advBtn" style="width:70" onClick="show<? install/htdocs/sv/htmleditor/editor/editor.jsp/5/3 ?>()\;" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/5/2 ?>" style="position:relative\; top:-1000\; height:21"><b id="advBtnText" style="position:relative\; top:-1000"> <? install/htdocs/sv/htmleditor/editor/editor.jsp/5/3 ?> </b></button>');
+	document.write('<button unselectable="on" id="advBtn" style="width:70" onClick="show<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/5/3"/>()\;" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/5/2"/>" style="position:relative\; top:-1000\; height:21"><b id="advBtnText" style="position:relative\; top:-1000"> <fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/5/3"/> </b></button>');
 	if (document.getElementById("btn12")) document.getElementById("btn12").style.left = 70;
 }
 //-->
@@ -252,7 +254,7 @@ if (arrButtonsRowTwo.length > 0) {
 <table border="0" cellpadding="0" cellspacing="0" width="141">
 <tr>
 	<td align="center" bgcolor="#333366" height="22">
-	    <b style="color:#ffffff" id="simpleHeadingText"><? install/htdocs/sv/htmleditor/editor/editor.jsp/7 ?></b></td>
+	    <b style="color:#ffffff" id="simpleHeadingText"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/7"/></b></td>
 </tr>
 <tr>
 	<td><img src="images/1x1.gif" width="1" height="5"></td>
@@ -268,36 +270,36 @@ if(showSimple){
 	if (showSimplePixelDiv) onCountSimple++;
 
 	if (onCountSimple > 1) {
-		document.write('	<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/1 ?></b></td>\n');
+		document.write('	<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/1"/></b></td>\n');
 		document.write('	</tr>\n');
 		document.write('	<tr>\n');
 		document.write('		<td>\n');
 		document.write('	<sel'+'ect name="simpleSelector" unselectable="On" onChange="showSimpleFunction(this.options(this.selectedIndex).value);" style="width:140">\n');
 		if(showSimpleLinkDiv) {
-			document.write('		<option value="modeSimpleLinkDiv"><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/2 ?></option>\n');
+			document.write('		<option value="modeSimpleLinkDiv"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/2"/></option>\n');
 		}
 		if(showSimpleListDiv) {
-			document.write('		<option value="modeSimpleListDiv"><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/3 ?></option>\n');
+			document.write('		<option value="modeSimpleListDiv"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/3"/></option>\n');
 		}
 		if(showSimplePixelDiv) {
-			document.write('		<option value="modeSimplePixelDiv"><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/4 ?></option>\n');
+			document.write('		<option value="modeSimplePixelDiv"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/4"/></option>\n');
 		}
 		document.write('	</sel'+'ect>');
 	} else {
 		document.write('	<sel'+'ect name="simpleSelector" style="display:none">\n');
-		document.write('		<option value="modeSimpleLinkDiv"><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/2 ?></option>\n');
-		document.write('		<option value="modeSimpleListDiv"><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/3 ?></option>\n');
-		document.write('		<option value="modeSimplePixelDiv"><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/4 ?></option>\n');
+		document.write('		<option value="modeSimpleLinkDiv"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/2"/></option>\n');
+		document.write('		<option value="modeSimpleListDiv"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/3"/></option>\n');
+		document.write('		<option value="modeSimplePixelDiv"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/4"/></option>\n');
 		document.write('	</sel'+'ect>');
 		if(showSimpleLinkDiv) {
-			document.write('<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/2 ?></b>');
-			document.getElementById("simpleHeadingText").innerText = '<? install/htdocs/sv/htmleditor/editor/editor.jsp/8/2 ?>';
+			document.write('<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/2"/></b>');
+			document.getElementById("simpleHeadingText").innerText = '<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/2"/>';
 		} else if(showSimpleListDiv) {
-			document.write('<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/3 ?></b>');
-			document.getElementById("simpleHeadingText").innerText = '<? install/htdocs/sv/htmleditor/editor/editor.jsp/8/3 ?>';
+			document.write('<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/3"/></b>');
+			document.getElementById("simpleHeadingText").innerText = '<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/3"/>';
 		} else if(showSimplePixelDiv) {
-			document.write('<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/8/4 ?></b>');
-			document.getElementById("simpleHeadingText").innerText = '<? install/htdocs/sv/htmleditor/editor/editor.jsp/8/4 ?>';
+			document.write('<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/4"/></b>');
+			document.getElementById("simpleHeadingText").innerText = '<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/8/4"/>';
 		}
 	}
 }
@@ -326,32 +328,32 @@ if(showSimple){
 <div id="modeSimpleLinkDiv" style="position:absolute; left:535; top:155; width:141; z-index:6; visibility:hidden;" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/9 ?></td>
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/9"/></td>
 </tr>
 <tr>
-	<td><img src="images/1x1.gif" width="1" height="5"><? install/htdocs/sv/htmleditor/editor/editor.jsp/10 ?></td>
+	<td><img src="images/1x1.gif" width="1" height="5"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/10"/></td>
 </tr>
 <tr>
 	<td>
 	<select name="createLinkType" unselectable="On" onChange="changeLinkType(this.value)" style="width:140">
-		<option value="GetDoc"><? install/htdocs/sv/htmleditor/editor/editor.jsp/11 ?></option>
-		<option value="http"><? install/htdocs/sv/htmleditor/editor/editor.jsp/12 ?></option>
-		<option value="mailto"><? install/htdocs/sv/htmleditor/editor/editor.jsp/13 ?></option>
-		<option value="ftp"><? install/htdocs/sv/htmleditor/editor/editor.jsp/14 ?></option>
+		<option value="GetDoc"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/11"/></option>
+		<option value="http"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/12"/></option>
+		<option value="mailto"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/13"/></option>
+		<option value="ftp"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/14"/></option>
 	</select></td>
 </tr>
 <tr>
-	<td><img src="images/1x1.gif" width="1" height="5"><? install/htdocs/sv/htmleditor/editor/editor.jsp/15 ?></td>
+	<td><img src="images/1x1.gif" width="1" height="5"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/15"/></td>
 </tr>
 <tr>
 	<td>
 	<select name="createLinkTargetTemp" unselectable="On" onChange="document.forms[0].createLinkTarget.value = this.value; document.forms[0].createLinkTarget.focus(); document.forms[0].createLinkTarget.select()" style="width:140">
-		<option value="" selected><? install/htdocs/sv/htmleditor/editor/editor.jsp/16 ?></option>
-		<option value="_top"><? install/htdocs/sv/htmleditor/editor/editor.jsp/17 ?></option>
-		<option value="_blank"><? install/htdocs/sv/htmleditor/editor/editor.jsp/18 ?></option>
-		<option value="_self"><? install/htdocs/sv/htmleditor/editor/editor.jsp/19 ?></option>
-		<option value="_parent"><? install/htdocs/sv/htmleditor/editor/editor.jsp/20 ?></option>
-		<option value="Skriv namnet!"><? install/htdocs/sv/htmleditor/editor/editor.jsp/21 ?></option>
+		<option value="" selected><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/16"/></option>
+		<option value="_top"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/17"/></option>
+		<option value="_blank"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/18"/></option>
+		<option value="_self"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/19"/></option>
+		<option value="_parent"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/20"/></option>
+		<option value="Skriv namnet!"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/21"/></option>
 	</select></td>
 </tr>
 <tr>
@@ -359,13 +361,13 @@ if(showSimple){
 	<img src="images/1x1.gif" width="1" height="5"></td>
 </tr>
 <tr>
-	<td id="createLinkFieldText"><? install/htdocs/sv/htmleditor/editor/editor.jsp/22 ?></td>
+	<td id="createLinkFieldText"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/22"/></td>
 </tr>
 <tr>
 	<td id="createLinkField"><input type="text" name="createLinkValue" value="" size="5" maxlength="6" style="width:42; text-align:right"></td>
 </tr>
 <tr>
-	<td><img src="images/1x1.gif" width="1" height="5"><? install/htdocs/sv/htmleditor/editor/editor.jsp/23 ?></td>
+	<td><img src="images/1x1.gif" width="1" height="5"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/23"/></td>
 </tr>
 <tr>
 	<td>
@@ -374,7 +376,7 @@ if(showSimple){
 var iCount = 0;
 var sChecked='';
 document.write('<select name="createLinkCssTemp" unselectable="On" style="width:140" onChange="document.forms[0].createLinkCss.value = this.options[this.selectedIndex].value; this.selectedIndex = 0">');
-document.write('	<option value=""><? install/htdocs/sv/htmleditor/editor/editor.jsp/24/1 ?></option>');
+document.write('	<option value=""><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/24/1"/></option>');
 for (var i=0; i<arrAllClass.length; i++){
 	document.write('	<option value="' + arrAllClass[i] + '">' + arrAllClass[i] + '</option>');
 }
@@ -387,11 +389,11 @@ document.write('</select>');
 </tr>
 <tr>
 	<td align="center"><img src="images/1x1.gif" width="1" height="5"><br>
-	<button unselectable="on" name="CreateLink" id="CreateLink" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/2001 ?>" class="fButtonSmall"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1002 ?></button></td>
+	<button unselectable="on" name="CreateLink" id="CreateLink" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2001"/>" class="fButtonSmall"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1002"/></button></td>
 </tr>
 <tr>
 	<td><img src="images/1x1.gif" width="1" height="15"><br>
-	<span class="dim"><? install/htdocs/sv/htmleditor/editor/editor.jsp/25 ?></span></td>
+	<span class="dim"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/25"/></span></td>
 </tr>
 </table>
 </div>
@@ -412,33 +414,33 @@ document.write('</select>');
 <div id="modeSimpleListDiv" style="position:absolute; left:535; top:155; width:141; z-index:6; visibility:hidden;" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/26 ?></td>
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/26"/></td>
 </tr>
 <tr>
-	<td><img src="images/1x1.gif" width="1" height="5"><? install/htdocs/sv/htmleditor/editor/editor.jsp/27 ?></td>
+	<td><img src="images/1x1.gif" width="1" height="5"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/27"/></td>
 </tr>
 <tr>
 	<td>
 	<select name="createListType" unselectable="On" onChange="changeListType(this.value)" style="width:140">
-		<option value="UL"><? install/htdocs/sv/htmleditor/editor/editor.jsp/28 ?></option>
-		<option value="OL"><? install/htdocs/sv/htmleditor/editor/editor.jsp/29 ?></option>
-		<option value="DL"><? install/htdocs/sv/htmleditor/editor/editor.jsp/30 ?></option>
+		<option value="UL"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/28"/></option>
+		<option value="OL"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/29"/></option>
+		<option value="DL"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/30"/></option>
 	</select></td>
 </tr>
 </table>
 <DIV id="listCountTypeDiv" style="position:relative; visibility:hidden" unselectable="On">
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td><img src="images/1x1.gif" width="1" height="5"><? install/htdocs/sv/htmleditor/editor/editor.jsp/31 ?></td>
+	<td><img src="images/1x1.gif" width="1" height="5"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/31"/></td>
 </tr>
 <tr>
 	<td>
 	<select name="createListOLType" unselectable="On" style="width:140">
-		<option value="1" selected><? install/htdocs/sv/htmleditor/editor/editor.jsp/32 ?></option>
-		<option value="A"><? install/htdocs/sv/htmleditor/editor/editor.jsp/33 ?></option>
-		<option value="a"><? install/htdocs/sv/htmleditor/editor/editor.jsp/34 ?></option>
-		<option value="I"><? install/htdocs/sv/htmleditor/editor/editor.jsp/35 ?></option>
-		<option value="i"><? install/htdocs/sv/htmleditor/editor/editor.jsp/36 ?></option>
+		<option value="1" selected><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/32"/></option>
+		<option value="A"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/33"/></option>
+		<option value="a"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/34"/></option>
+		<option value="I"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/35"/></option>
+		<option value="i"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/36"/></option>
 	</select></td>
 </tr>
 </table></DIV>
@@ -448,7 +450,7 @@ document.write('</select>');
 	<td>
 	<table border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/37 ?></td>
+		<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/37"/></td>
 		<td><img src="images/1x1.gif" width="10" height="1"></td>
 		<td>
 		<SCRIPT LANGUAGE="JavaScript">
@@ -464,7 +466,7 @@ document.write('</select>');
 	</table></td>
 </tr>
 <tr>
-	<td><img src="images/1x1.gif" width="1" height="5"><? install/htdocs/sv/htmleditor/editor/editor.jsp/39 ?></td>
+	<td><img src="images/1x1.gif" width="1" height="5"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/39"/></td>
 </tr>
 <tr>
 	<td>
@@ -473,7 +475,7 @@ document.write('</select>');
 var iCount = 0;
 var sChecked='';
 document.write('<select name="createListCssTemp" unselectable="On" style="width:140" onChange="document.forms[0].createListCss.value = this.options[this.selectedIndex].value; this.selectedIndex = 0">');
-document.write('	<option value=""><? install/htdocs/sv/htmleditor/editor/editor.jsp/40/1 ?></option>');
+document.write('	<option value=""><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/40/1"/></option>');
 for (var i=0; i<arrAllClass.length; i++){
 	document.write('	<option value="' + arrAllClass[i] + '">' + arrAllClass[i] + '</option>');
 }
@@ -486,11 +488,11 @@ document.write('</select>');
 </tr>
 <tr>
 	<td align="center"><img src="images/1x1.gif" width="1" height="5"><br>
-	<button unselectable="on" name="CreateList" id="CreateList" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/2002 ?>" class="fButtonSmall"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1003 ?></button></td>
+	<button unselectable="on" name="CreateList" id="CreateList" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2002"/>" class="fButtonSmall"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1003"/></button></td>
 </tr>
 <tr>
 	<td><img src="images/1x1.gif" width="1" height="15"><br>
-	<span class="dim"><? install/htdocs/sv/htmleditor/editor/editor.jsp/41 ?></span></td>
+	<span class="dim"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/41"/></span></td>
 </tr>
 </table></DIV>
 </div>
@@ -505,47 +507,47 @@ document.write('</select>');
 <div id="modeSimplePixelDiv" style="position:absolute; left:535; top:155; width:141; z-index:6; visibility:hidden;" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/42 ?>
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/42"/>
 	<img src="images/1x1.gif" width="1" height="5"></td>
 </tr>
 <tr>
 	<td>
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
-		<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/43 ?></td>
+		<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/43"/></td>
 		<td align="right"><input type="text" name="pixelWidth" value="1" size="4" maxlength="4" style="text-align:right; width:35"></td>
 	</tr>
 	<tr>
-		<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/44 ?></td>
+		<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/44"/></td>
 		<td align="right"><input type="text" name="pixelHeight" value="8" size="4" maxlength="4" style="text-align:right; width:35"></td>
 	</tr>
 	<tr>
-		<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/45 ?></td>
+		<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/45"/></td>
 		<td align="right"><input type="text" name="pixelBorder" value="0" size="4" maxlength="4" style="text-align:right; width:35"></td>
 	</tr>
 	<tr>
-		<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/46 ?></td>
+		<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/46"/></td>
 		<td align="right">
 		<select name="pixelAlign" unselectable="On" style="width:85">
-			<option value="" selected><? install/htdocs/sv/htmleditor/editor/editor.jsp/47 ?></option>
-			<option value="left"><? install/htdocs/sv/htmleditor/editor/editor.jsp/48 ?></option>
-			<option value="right"><? install/htdocs/sv/htmleditor/editor/editor.jsp/49 ?></option>
-			<option value="top"><? install/htdocs/sv/htmleditor/editor/editor.jsp/50 ?></option>
-			<option value="middle"><? install/htdocs/sv/htmleditor/editor/editor.jsp/51 ?></option>
-			<option value="bottom"><? install/htdocs/sv/htmleditor/editor/editor.jsp/52 ?></option>
-			<option value="texttop"><? install/htdocs/sv/htmleditor/editor/editor.jsp/53 ?></option>
-			<option value="absmiddle"><? install/htdocs/sv/htmleditor/editor/editor.jsp/54 ?></option>
-			<option value="baseline"><? install/htdocs/sv/htmleditor/editor/editor.jsp/55 ?></option>
-			<option value="absbottom"><? install/htdocs/sv/htmleditor/editor/editor.jsp/56 ?></option>
+			<option value="" selected><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/47"/></option>
+			<option value="left"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/48"/></option>
+			<option value="right"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/49"/></option>
+			<option value="top"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/50"/></option>
+			<option value="middle"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/51"/></option>
+			<option value="bottom"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/52"/></option>
+			<option value="texttop"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/53"/></option>
+			<option value="absmiddle"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/54"/></option>
+			<option value="baseline"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/55"/></option>
+			<option value="absbottom"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/56"/></option>
 		</select></td>
 	</tr>
 	<tr>
 		<td nowrap><img src="images/1x1.gif" width="1" height="5"><br>
-		<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/57/1 ?></b></td>
+		<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/57/1"/></b></td>
 	</tr>
 	<tr>
-		<td align="center"><? install/htdocs/sv/htmleditor/editor/editor.jsp/58 ?></td>
-		<td align="center"><? install/htdocs/sv/htmleditor/editor/editor.jsp/59 ?></td>
+		<td align="center"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/58"/></td>
+		<td align="center"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/59"/></td>
 	</tr>
 	<tr>
 		<td align="center"><input type="checkbox" unselectable="On" name="pixelBreakStart" value="1"></td>
@@ -555,18 +557,18 @@ document.write('</select>');
 </tr>
 <tr>
 	<td align="center"><img src="images/1x1.gif" width="1" height="5"><br>
-	<button unselectable="on" name="CreatePixel" id="CreatePixel" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/2003 ?>" class="fButtonSmall"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1004 ?></button></td>
+	<button unselectable="on" name="CreatePixel" id="CreatePixel" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2003"/>" class="fButtonSmall"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1004"/></button></td>
 </tr>
 <tr>
 	<td><img src="images/1x1.gif" width="1" height="15"><br>
-	<span class="dim"><? install/htdocs/sv/htmleditor/editor/editor.jsp/60 ?>
+	<span class="dim"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/60"/>
 	<img src="images/1x1.gif" width="1" height="5"><br>
-	&nbsp;&nbsp;&#149; <? install/htdocs/sv/htmleditor/editor/editor.jsp/1005/1 ?><br>
-	&nbsp;&nbsp;&#149; <? install/htdocs/sv/htmleditor/editor/editor.jsp/1005/2 ?><br>
-	&nbsp;&nbsp;&#149; <? install/htdocs/sv/htmleditor/editor/editor.jsp/1005/3 ?><br>
-	&nbsp;&nbsp;&#149; <? install/htdocs/sv/htmleditor/editor/editor.jsp/1005/4 ?><br>
+	&nbsp;&nbsp;&#149; <fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1005/1"/><br>
+	&nbsp;&nbsp;&#149; <fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1005/2"/><br>
+	&nbsp;&nbsp;&#149; <fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1005/3"/><br>
+	&nbsp;&nbsp;&#149; <fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1005/4"/><br>
 	<img src="images/1x1.gif" width="1" height="5"><br>
-	<? install/htdocs/sv/htmleditor/editor/editor.jsp/1006/1 ?></span></td>
+	<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1006/1"/></span></td>
 </tr>
 </table>
 </div>
@@ -580,7 +582,7 @@ document.write('</select>');
 <div id="modeAdvancedDiv" style="position:absolute; left:535; top:80; width:141; z-index:5; visibility:hidden" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0" width="141">
 <tr>
-	<td align="center" bgcolor="#333366" height="22"><b style="color:#ffffff" id="advHeadingText"><? install/htdocs/sv/htmleditor/editor/editor.jsp/61/1 ?></b></td>
+	<td align="center" bgcolor="#333366" height="22"><b style="color:#ffffff" id="advHeadingText"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/61/1"/></b></td>
 </tr>
 <tr>
 	<td><img src="images/1x1.gif" width="1" height="5"></td>
@@ -591,20 +593,20 @@ document.write('</select>');
 <!--
 var onCountAdv = 0;
 if(showAdv){
-	if (showAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?>Div) onCountAdv++;
+	if (showAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/>Div) onCountAdv++;
 	if (showAdvFontClassDiv) onCountAdv++;
 	if (showAdvFontStyleDiv) onCountAdv++;
 	if (showAdvCodeStringDiv) onCountAdv++;
-	if (showAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/3 ?>Div) onCountAdv++;
+	if (showAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/3"/>Div) onCountAdv++;
 
 	if (onCountAdv > 1) {
-		document.write('	<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/62/1 ?></b></td>\n');
+		document.write('	<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/1"/></b></td>\n');
 		document.write('	</tr>\n');
 		document.write('	<tr>\n');
 		document.write('		<td>\n');
 		document.write('	<sel'+'ect name="advSelector" unselectable="On" onChange="showAdvFunction(this.options(this.selectedIndex).value);" style="width:140">\n');
-		if(showAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?>Div){
-			document.write('		<option value="modeAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?>Div"><? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?></option>\n');
+		if(showAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/>Div){
+			document.write('		<option value="modeAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/>Div"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/></option>\n');
 		}
 		if(showAdvFontClassDiv){
 			document.write('		<option value="modeAdvFontClassDiv">Font Cl'+'ass=&quot\; X &quot\;</option>\n');
@@ -613,23 +615,23 @@ if(showAdv){
 			document.write('		<option value="modeAdvFontStyleDiv">Font Style=&quot\; X &quot\;</option>\n');
 		}
 		if(showAdvCodeStringDiv){
-			document.write('		<option value="modeAdvCodeStringDiv"><? install/htdocs/sv/htmleditor/editor/editor.jsp/62/2 ?></option>\n');
+			document.write('		<option value="modeAdvCodeStringDiv"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/2"/></option>\n');
 		}
-		if(showAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/3 ?>Div){
-			document.write('		<option value="modeAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/3 ?>Div"><? install/htdocs/sv/htmleditor/editor/editor.jsp/62/3 ?></option>\n');
+		if(showAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/3"/>Div){
+			document.write('		<option value="modeAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/3"/>Div"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/3"/></option>\n');
 		}
 		document.write('	</sel'+'ect>');
 	} else {
 		document.write('	<sel'+'ect name="advSelector" style="display:none">\n');
-		document.write('		<option value="modeAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?>Div"><? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?></option>\n');
+		document.write('		<option value="modeAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/>Div"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/></option>\n');
 		document.write('		<option value="modeAdvFontClassDiv">Font Cl'+'ass=&quot\; X &quot\;</option>\n');
 		document.write('		<option value="modeAdvFontStyleDiv">Font Style=&quot\; X &quot\;</option>\n');
-		document.write('		<option value="modeAdvCodeStringDiv"><? install/htdocs/sv/htmleditor/editor/editor.jsp/62/2 ?></option>\n');
-		document.write('		<option value="modeAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/3 ?>Div"><? install/htdocs/sv/htmleditor/editor/editor.jsp/62/3 ?></option>\n');
+		document.write('		<option value="modeAdvCodeStringDiv"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/2"/></option>\n');
+		document.write('		<option value="modeAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/3"/>Div"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/3"/></option>\n');
 		document.write('	</sel'+'ect>');
-		if(showAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?>Div) {
-			document.write('<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?></b>');
-			document.getElementById("advHeadingText").innerText = '<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/4 ?>';
+		if(showAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/>Div) {
+			document.write('<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/></b>');
+			document.getElementById("advHeadingText").innerText = '<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/4"/>';
 		} else if(showAdvFontClassDiv) {
 			document.write('<b>Font Cl'+'ass=&quot\; X &quot\;</b>');
 			document.getElementById("advHeadingText").innerText = 'Font Cl'+'ass=&quot\; X &quot\;';
@@ -638,10 +640,10 @@ if(showAdv){
 			document.getElementById("advHeadingText").innerText = 'Font Style=&quot\; X &quot\;';
 		} else if(showAdvCodeStringDiv) {
 			document.write('<b>Valfri kod</b>');
-			document.getElementById("advHeadingText").innerText = '<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/2 ?>';
-		} else if(showAdv<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/3 ?>Div) {
+			document.getElementById("advHeadingText").innerText = '<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/2"/>';
+		} else if(showAdv<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/3"/>Div) {
 			document.write('<b>Inställningar</b>');
-			document.getElementById("advHeadingText").innerText = '<? install/htdocs/sv/htmleditor/editor/editor.jsp/62/3 ?>';
+			document.getElementById("advHeadingText").innerText = '<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/62/3"/>';
 		}
 	}
 }
@@ -666,8 +668,8 @@ if(showAdv){
 <div id="modeAdvStandardDiv" style="position:absolute; left:535; top:150; width:141; z-index:5; visibility:hidden" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0" width="140">
 <tr>
-	<td nowrap><? install/htdocs/sv/htmleditor/editor/editor.jsp/63 ?></td>
-	<td align="right"><button id="btn26" class="button" unselectable="on" onClick="collectTableInfo()" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/2004 ?>">
+	<td nowrap><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/63"/></td>
+	<td align="right"><button id="btn26" class="button" unselectable="on" onClick="collectTableInfo()" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2004"/>">
 	<img src="images/btn_table.gif"></button></td>
 </tr>
 <tr>
@@ -677,23 +679,23 @@ if(showAdv){
 </tr>
 <tr>
 	<td colspan="2" nowrap>
-	<? install/htdocs/sv/htmleditor/editor/editor.jsp/64 ?>
+	<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/64"/>
 	<select name="FormatBlockCode" unselectable="On" style="font-size:9px; width:140">
-		<option value="" SELECTED><? install/htdocs/sv/htmleditor/editor/editor.jsp/65 ?></option>
-		<option value="P"><? install/htdocs/sv/htmleditor/editor/editor.jsp/66 ?></option>
-		<option value="DIV"><? install/htdocs/sv/htmleditor/editor/editor.jsp/67 ?></option>
-		<option value="H1"><? install/htdocs/sv/htmleditor/editor/editor.jsp/68 ?></option>
-		<option value="H2"><? install/htdocs/sv/htmleditor/editor/editor.jsp/69 ?></option>
-		<option value="H3"><? install/htdocs/sv/htmleditor/editor/editor.jsp/70 ?></option>
-		<option value="H4"><? install/htdocs/sv/htmleditor/editor/editor.jsp/71 ?></option>
-		<option value="H5"><? install/htdocs/sv/htmleditor/editor/editor.jsp/72 ?></option>
-		<option value="H6"><? install/htdocs/sv/htmleditor/editor/editor.jsp/73 ?></option>
-		<option value="PRE"><? install/htdocs/sv/htmleditor/editor/editor.jsp/74 ?></option>
-		<option value="ADDRESS"><? install/htdocs/sv/htmleditor/editor/editor.jsp/75 ?></option>
-		<option value="BLOCKQUOTE"><? install/htdocs/sv/htmleditor/editor/editor.jsp/76 ?></option>
+		<option value="" SELECTED><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/65"/></option>
+		<option value="P"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/66"/></option>
+		<option value="DIV"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/67"/></option>
+		<option value="H1"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/68"/></option>
+		<option value="H2"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/69"/></option>
+		<option value="H3"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/70"/></option>
+		<option value="H4"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/71"/></option>
+		<option value="H5"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/72"/></option>
+		<option value="H6"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/73"/></option>
+		<option value="PRE"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/74"/></option>
+		<option value="ADDRESS"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/75"/></option>
+		<option value="BLOCKQUOTE"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/76"/></option>
 	</select><br>
 	<img src="images/1x1.gif" width="1" height="5"><br>
-	<div align="center"><button id="btn27" unselectable="on" onClick="doFormatBlock();" class="fButtonSmall"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1007 ?></button></div></td>
+	<div align="center"><button id="btn27" unselectable="on" onClick="doFormatBlock();" class="fButtonSmall"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1007"/></button></div></td>
 </tr>
 <tr>
 	<td colspan="2" height="10">
@@ -701,8 +703,8 @@ if(showAdv){
 	<img src="images/1x1_white.gif" width="141" height="1"></td>
 </tr>
 <tr>
-	<td nowrap><? install/htdocs/sv/htmleditor/editor/editor.jsp/77 ?></td>
-	<td align="right"><button id="btn28" class="button" unselectable="On" onClick="doExecCommand('InsertHorizontalRule',true,null);" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/2005 ?>">
+	<td nowrap><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/77"/></td>
+	<td align="right"><button id="btn28" class="button" unselectable="On" onClick="doExecCommand('InsertHorizontalRule',true,null);" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2005"/>">
 	<img src="images/btn_hr.gif"></button></td>
 </tr>
 <tr>
@@ -711,8 +713,8 @@ if(showAdv){
 	<img src="images/1x1_white.gif" width="141" height="1"></td>
 </tr>
 <tr style="display:none"><!-- disconnected -->
-	<td nowrap><? install/htdocs/sv/htmleditor/editor/editor.jsp/1008 ?></td>
-	<td align="right"><button id="btn29" class="button" unselectable="On" onClick="javascript://doExecCommand('InsertImage',true,null);" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/2006 ?>">
+	<td nowrap><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1008"/></td>
+	<td align="right"><button id="btn29" class="button" unselectable="On" onClick="javascript://doExecCommand('InsertImage',true,null);" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2006"/>">
 	<img src="images/btn_image.gif"></button></td>
 </tr>
 <tr style="display:none"><!-- disconnected -->
@@ -721,8 +723,8 @@ if(showAdv){
 	<img src="images/1x1_white.gif" width="141" height="1"></td>
 </tr>
 <tr>
-	<td nowrap><? install/htdocs/sv/htmleditor/editor/editor.jsp/78 ?></td>
-	<td align="right"><button id="btn30" unselectable="on" class="button" onClick="dummyText();" title="<? install/htdocs/sv/htmleditor/editor/editor.jsp/2007 ?>">
+	<td nowrap><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/78"/></td>
+	<td align="right"><button id="btn30" unselectable="on" class="button" onClick="dummyText();" title="<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/2007"/>">
 	<img src="images/btn_text.gif"></button>
 </td>
 </tr>
@@ -737,7 +739,7 @@ if(showAdv){
 <div id="modeAdvFontClassDiv" style="position:absolute; left:535; top:155; width:141; z-index:5; visibility:hidden" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0" width="140">
 <tr>
-	<td colspan="2"><? install/htdocs/sv/htmleditor/editor/editor.jsp/79 ?></td>
+	<td colspan="2"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/79"/></td>
 </tr>
 <SCRIPT LANGUAGE="JavaScript1.2">
 <!--
@@ -758,13 +760,13 @@ for (var i=0; i<arrFavClass.length; i++){
 //-->
 </SCRIPT>
 <tr>
-	<td colspan="2"><? install/htdocs/sv/htmleditor/editor/editor.jsp/81 ?>
+	<td colspan="2"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/81"/>
 <SCRIPT LANGUAGE="JavaScript1.2">
 <!--
 var iCount = 0;
 var sChecked='';
 document.write('<select name="useClassTemp" unselectable="On" style="width:140" onChange="document.forms[0].useClass11.value = this.options[this.selectedIndex].value\; document.forms[0].useClass[10].checked = 1\; this.selectedIndex = 0">');
-document.write('	<option value=""><? install/htdocs/sv/htmleditor/editor/editor.jsp/82/1 ?></option>\n');
+document.write('	<option value=""><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/82/1"/></option>\n');
 for (var i=0; i<arrAllClass.length; i++){
 	document.write('	<option value="' + arrAllClass[i] + '">' + arrAllClass[i] + '</option>\n');
 }
@@ -778,7 +780,7 @@ document.write('</select>\n');
 </tr>
 <tr>
 	<td colspan="2" align="center"><img src="images/1x1.gif" width="1" height="5"><br>
-	<button unselectable="on" name="classBtn" id="classBtn" class="fButtonSmall"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1009 ?></button></td>
+	<button unselectable="on" name="classBtn" id="classBtn" class="fButtonSmall"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1009"/></button></td>
 </tr>
 </table></div>
 
@@ -789,34 +791,34 @@ document.write('</select>\n');
 -->
 
 <div id="modeAdvFontStyleDiv" style="position:absolute; left:535; top:155; width:141; z-index:5; visibility:hidden" unselectable="on">
-<? install/htdocs/sv/htmleditor/editor/editor.jsp/83 ?>
+<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/83"/>
 <select name="FontFamily" style="font-size:9px; width:140">
-	<option value="" SELECTED><? install/htdocs/sv/htmleditor/editor/editor.jsp/84 ?></option>
-	<option value="Verdana"><? install/htdocs/sv/htmleditor/editor/editor.jsp/85 ?></option>
-	<option value="Arial"><? install/htdocs/sv/htmleditor/editor/editor.jsp/86 ?></option>
-	<option value="Times"><? install/htdocs/sv/htmleditor/editor/editor.jsp/87 ?></option>
-	<option value="Courier"><? install/htdocs/sv/htmleditor/editor/editor.jsp/88 ?></option>
-	<option value="Comic"><? install/htdocs/sv/htmleditor/editor/editor.jsp/89 ?></option>
+	<option value="" SELECTED><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/84"/></option>
+	<option value="Verdana"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/85"/></option>
+	<option value="Arial"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/86"/></option>
+	<option value="Times"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/87"/></option>
+	<option value="Courier"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/88"/></option>
+	<option value="Comic"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/89"/></option>
 </select>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/90 ?></td>
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/90"/></td>
 	<td>
 	<select name="FontFormat" style="font-size:9px">
-		<option value="" SELECTED><? install/htdocs/sv/htmleditor/editor/editor.jsp/91 ?></option>
-		<option value="normal"><? install/htdocs/sv/htmleditor/editor/editor.jsp/92 ?></option>
-		<option value="bold"><? install/htdocs/sv/htmleditor/editor/editor.jsp/93 ?></option>
-		<option value="italic"><? install/htdocs/sv/htmleditor/editor/editor.jsp/94 ?></option>
-		<option value="both"><? install/htdocs/sv/htmleditor/editor/editor.jsp/95 ?></option>
+		<option value="" SELECTED><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/91"/></option>
+		<option value="normal"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/92"/></option>
+		<option value="bold"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/93"/></option>
+		<option value="italic"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/94"/></option>
+		<option value="both"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/95"/></option>
 	</select></td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/96 ?></td>
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/96"/></td>
 	<td>
 	<select name="FontSize" style="font-size:9px">
-		<option value="" SELECTED><? install/htdocs/sv/htmleditor/editor/editor.jsp/97 ?></option>
-		<option value="9px"><? install/htdocs/sv/htmleditor/editor/editor.jsp/98 ?></option>
-		<option value="9pt"><? install/htdocs/sv/htmleditor/editor/editor.jsp/99 ?></option>
+		<option value="" SELECTED><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/97"/></option>
+		<option value="9px"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/98"/></option>
+		<option value="9pt"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/99"/></option>
 	<SCRIPT LANGUAGE="JavaScript">
 <!--
 for(i=10;i<=48;i++){
@@ -828,10 +830,10 @@ for(i=10;i<=48;i++){
 	</select></td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/1010 ?>&nbsp;&nbsp;</td>
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1010"/>&nbsp;&nbsp;</td>
 	<td>
 	<select name="LineHeight" style="font-size:9px">
-		<option value="" SELECTED><? install/htdocs/sv/htmleditor/editor/editor.jsp/101 ?></option>
+		<option value="" SELECTED><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/101"/></option>
 	<SCRIPT LANGUAGE="JavaScript">
 <!--
 for(i=9;i<=48;i++){
@@ -843,44 +845,44 @@ for(i=9;i<=48;i++){
 	</select></td>
 </tr>
 </table>
-<input type="checkbox" name="usecolor" value="1"><b><? install/htdocs/sv/htmleditor/editor/editor.jsp/103/1 ?></b><br>
+<input type="checkbox" name="usecolor" value="1"><b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/103/1"/></b><br>
 <img src="images/1x1.gif" width="1" height="60"><br>
-<div align="center"><button unselectable="on" name="styleBtn" id="styleBtn" class="fButtonSmall"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1011 ?></button></div></div>
+<div align="center"><button unselectable="on" name="styleBtn" id="styleBtn" class="fButtonSmall"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1011"/></button></div></div>
 
 
 
 
 <div id="modeAdvCodeStringDiv" style="position:absolute; left:535; top:155; width:141; z-index:5; visibility:hidden" unselectable="on">
-<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/104/1 ?></b><br>
+<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/104/1"/></b><br>
 <textarea cols="15" rows="7" name="startCode" wrap="soft" class="fFieldSmall" style="width:140"></textarea><br>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/105/1 ?></b><br>
+<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/105/1"/></b><br>
 <textarea cols="15" rows="3" name="endCode" wrap="soft" class="fFieldSmall" style="width:140"></textarea><br>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<div align="center"><button unselectable="on" name="codeBtn" id="codeBtn" class="fButtonSmall"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1012 ?></button></div></div>
+<div align="center"><button unselectable="on" name="codeBtn" id="codeBtn" class="fButtonSmall"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1012"/></button></div></div>
 
 
 
 
 <div id="modeAdvSettingsDiv" style="position:absolute; left:535; top:155; width:141; z-index:5; visibility:hidden" unselectable="on">
-<? install/htdocs/sv/htmleditor/editor/editor.jsp/1013 ?>
+<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1013"/>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/106/1 ?></b> <SPAN STYLE="color:CC0000"><sup><? install/htdocs/sv/htmleditor/editor/editor.jsp/107 ?></sup></SPAN><br>
+<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/106/1"/></b> <SPAN STYLE="color:CC0000"><sup><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/107"/></sup></SPAN><br>
 <input type="text" name="previewWidth" value="100%" size="5" maxlength="5"><br>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/108/1 ?></b><br>
+<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/108/1"/></b><br>
 <input type="text" name="previewBackground" value="rgb(255,255,255)" size="15" maxlength="30" style="width:140"><br>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<b><? install/htdocs/sv/htmleditor/editor/editor.jsp/109/1 ?></b><br>
+<b><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/109/1"/></b><br>
 <input type="text" name="previewColor" value="rgb(0,0,0)" size="15" maxlength="30" style="width:140"><br>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<div align="center"><button unselectable="on" class="fButtonSmall" onClick="setDefaultValues('do'); saveSettings('EditorSettings')" style="width:80"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1014 ?></button><button unselectable="on" class="fButtonSmall" onClick="setDefaultValues('reset'); saveSettings('EditorSettings')" style="width:60"><? install/htdocs/sv/htmleditor/editor/editor.jsp/110 ?></button></div>
+<div align="center"><button unselectable="on" class="fButtonSmall" onClick="setDefaultValues('do'); saveSettings('EditorSettings')" style="width:80"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1014"/></button><button unselectable="on" class="fButtonSmall" onClick="setDefaultValues('reset'); saveSettings('EditorSettings')" style="width:60"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/110"/></button></div>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<SPAN CLASS="dim"><? install/htdocs/sv/htmleditor/editor/editor.jsp/111 ?>
+<SPAN CLASS="dim"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/111"/>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<? install/htdocs/sv/htmleditor/editor/editor.jsp/112/1 ?></SPAN><br>
+<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/112/1"/></SPAN><br>
 <img src="images/1x1.gif" width="1" height="5"><br>
-<SPAN STYLE="color:CC0000"><sup><? install/htdocs/sv/htmleditor/editor/editor.jsp/113 ?></sup></SPAN><SPAN CLASS="dim">&nbsp;<? install/htdocs/sv/htmleditor/editor/editor.jsp/1015 ?></SPAN>
+<SPAN STYLE="color:CC0000"><sup><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/113"/></sup></SPAN><SPAN CLASS="dim">&nbsp;<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1015"/></SPAN>
 <input type="hidden" name="previewFontSize" value="">
 <input type="hidden" name="previewFontFamily" value="">
 </div>
@@ -929,18 +931,18 @@ function toggleEditorOnOff(on) {
 	<td colspan="2"><img src="images/1x1.gif" width="1" height="16"></td>
 </tr>
 <tr>
-	<td nowrap><? install/htdocs/sv/htmleditor/editor/editor.jsp/3000 ?> &nbsp;</td>
+	<td nowrap><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/3000"/> &nbsp;</td>
 	<td><%
 	if (getCookie("imcms_use_editor", request).equals("true")) { %>
 	<button id="editorOnOffBtn0" onClick="toggleEditorOnOff(0);"
-		class="fButtonSmall" style="width:40"><? global/off ?></button>
+		class="fButtonSmall" style="width:40"><fmt:message key="global/off"/></button>
 	<button id="editorOnOffBtn1" onClick="toggleEditorOnOff(1);"
-		class="fButtonSmall" style="width:40; border-style:inset; display:none"><? global/on ?></button><%
+		class="fButtonSmall" style="width:40; border-style:inset; display:none"><fmt:message key="global/on"/></button><%
 	} else { %>
 	<button id="editorOnOffBtn0" onClick="toggleEditorOnOff(0);"
-		class="fButtonSmall" style="width:40; display:none"><? global/off ?></button>
+		class="fButtonSmall" style="width:40; display:none"><fmt:message key="global/off"/></button>
 	<button id="editorOnOffBtn1" onClick="toggleEditorOnOff(1);"
-		class="fButtonSmall" style="width:40; border-style:inset"><? global/on ?></button><%
+		class="fButtonSmall" style="width:40; border-style:inset"><fmt:message key="global/on"/></button><%
 	} %></td>
 </tr>
 </table></div>
@@ -953,17 +955,17 @@ function toggleEditorOnOff(on) {
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 if (isWordEnabled) {
-	document.write('<button id="btnFixWord" unselectable="on" cl'+'ass="fButtonSmall" style="width:100; visibility:hidden" onClick="doFixWordHTML()\;"><? install/htdocs/sv/htmleditor/editor/editor.jsp/116/1 ?></button><img src="images/1x1.gif" width="23" height="1">');
+	document.write('<button id="btnFixWord" unselectable="on" cl'+'ass="fButtonSmall" style="width:100; visibility:hidden" onClick="doFixWordHTML()\;"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/116/1"/></button><img src="images/1x1.gif" width="23" height="1">');
 }
 
 if (showCloseBtn) {
-	document.write('<button unselectable="on" cl'+'ass="fButtonSmall" style="width:45" onClick="doClose()\;"><? install/htdocs/sv/htmleditor/editor/editor.jsp/116/2 ?></button><img src="images/1x1.gif" width="3" height="1">');
+	document.write('<button unselectable="on" cl'+'ass="fButtonSmall" style="width:45" onClick="doClose()\;"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/116/2"/></button><img src="images/1x1.gif" width="3" height="1">');
 }
 if (showResetBtn) {
-	document.write('<button unselectable="on" cl'+'ass="fButtonSmall" style="width:45" onClick="if(confirm(\'<? install/htdocs/sv/htmleditor/editor/editor.jsp/116/3 ?>\'))\{ Clear()\; \}"><? install/htdocs/sv/htmleditor/editor/editor.jsp/116/4 ?></button><img src="images/1x1.gif" width="3" height="1">');
+	document.write('<button unselectable="on" cl'+'ass="fButtonSmall" style="width:45" onClick="if(confirm(\'<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/116/3"/>\'))\{ Clear()\; \}"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/116/4"/></button><img src="images/1x1.gif" width="3" height="1">');
 }
 if (showSaveBtn) {
-	document.write('<button unselectable="on" cl'+'ass="fButtonSmall" style="width:47" onClick="doSend()\; return false"><? install/htdocs/sv/htmleditor/editor/editor.jsp/116/5 ?></button><img src="images/1x1.gif" width="3" height="1">');
+	document.write('<button unselectable="on" cl'+'ass="fButtonSmall" style="width:47" onClick="doSend()\; return false"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/116/5"/></button><img src="images/1x1.gif" width="3" height="1">');
 }
 //-->
 </SCRIPT>
@@ -985,17 +987,17 @@ if (showSaveBtn) {
 <div id="modeHtmlCodeDiv" style="position:absolute; left:535; top:80; z-index:4; visibility:hidden" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0" width="141">
 <tr>
-	<td align="center" bgcolor="#333366" height="22"><? install/htdocs/sv/htmleditor/editor/editor.jsp/117 ?></td>
+	<td align="center" bgcolor="#333366" height="22"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/117"/></td>
 </tr>
 <tr>
 	<td><img src="images/1x1.gif" width="1" height="5"></td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/118 ?>
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/118"/>
 	<img src="images/1x1.gif" width="1" height="5"><br>
-	<? install/htdocs/sv/htmleditor/editor/editor.jsp/119/1 ?><br>
+	<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/119/1"/><br>
 	<img src="images/1x1.gif" width="1" height="25"><br>
-	<SPAN CLASS="dim"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1016 ?></SPAN></td>
+	<SPAN CLASS="dim"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1016"/></SPAN></td>
 </tr>
 </table></div>
 
@@ -1004,17 +1006,17 @@ if (showSaveBtn) {
 <div id="helpDescRightDiv" style="position:absolute; left:535; top:80; z-index:4; visibility:hidden" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0" width="141">
 <tr>
-	<td align="center" bgcolor="#333366" height="22"><? install/htdocs/sv/htmleditor/editor/editor.jsp/120 ?></td>
+	<td align="center" bgcolor="#333366" height="22"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/120"/></td>
 </tr>
 <tr>
 	<td><img src="images/1x1.gif" width="1" height="5"></td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/121 ?><script language="JavaScript">
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/121"/><script language="JavaScript">
 <!--
 if (showSimple || showAdv) {
 	document.writeln('<br><img src="images/1x1.gif" width="1" height="5"><br>')
-	document.writeln('<? install/htdocs/sv/htmleditor/editor/editor.jsp/122/1 ?>');
+	document.writeln('<fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/122/1"/>');
 }
 //-->
 </script></td>
@@ -1025,13 +1027,13 @@ if (showSimple || showAdv) {
 <div id="helpAllDescRightDiv" style="position:absolute; left:535; top:80; z-index:4; visibility:hidden" unselectable="on">
 <table border="0" cellpadding="0" cellspacing="0" width="141">
 <tr>
-	<td align="center" bgcolor="#333366" height="22"><? install/htdocs/sv/htmleditor/editor/editor.jsp/123 ?></td>
+	<td align="center" bgcolor="#333366" height="22"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/123"/></td>
 </tr>
 <tr>
 	<td><img src="images/1x1.gif" width="1" height="5"></td>
 </tr>
 <tr>
-	<td><? install/htdocs/sv/htmleditor/editor/editor.jsp/124 ?></td>
+	<td><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/124"/></td>
 </tr>
 </table></div>
 
@@ -1292,8 +1294,8 @@ function fBlueDn(){
 <div id="helpDiv" unselectable="off" style="position:absolute; left:5; top:80; width:525; height:380; z-index:200; background-color:#FFFFE0; text-align: left; padding:0; border: 2px inset #D6D3CE; visibility: hidden">
 <table border="0" cellpadding="5" cellspacing="0" width="100%">
 <tr>
-	<td CLASS="imEditHelpHeadingBig"><? install/htdocs/sv/htmleditor/editor/editor.jsp/129 ?></td>
-	<td align="right"><button id="hideHelpBtn" class="fButtonSmall" onClick="hideHelp('all');"><? install/htdocs/sv/htmleditor/editor/editor.jsp/130 ?></button></td>
+	<td CLASS="imEditHelpHeadingBig"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/129"/></td>
+	<td align="right"><button id="hideHelpBtn" class="fButtonSmall" onClick="hideHelp('all');"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/130"/></button></td>
 </tr>
 </table></div>
 
@@ -1310,14 +1312,14 @@ function fBlueDn(){
 <div id="helpTextAllDiv" contenteditable="false" unselectable="off" style="position:absolute; left:5; top:80; width:525; height:380; z-index:201; text-align: left; padding:5; visibility:hidden; background-color:#FFFFE0; border: 2px inset #D6D3CE; overflow=auto">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-	<td CLASS="imEditHelpHeadingBig"><? install/htdocs/sv/htmleditor/editor/editor.jsp/131 ?></td>
-	<td align="right"><button class="fButtonSmall" onClick="hideHelp('all');"><? install/htdocs/sv/htmleditor/editor/editor.jsp/132 ?></button></td>
+	<td CLASS="imEditHelpHeadingBig"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/131"/></td>
+	<td align="right"><button class="fButtonSmall" onClick="hideHelp('all');"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/132"/></button></td>
 </tr>
 </table><br>
 
-<b>|&nbsp; <span class="imEditHelpLinkActive"><? install/htdocs/sv/htmleditor/editor/editor.jsp/133 ?></span> &nbsp;|&nbsp; <a href="javascript:showHelp('upperbuttons');" class="imEditHelpLink"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1018/1 ?></a> &nbsp;|&nbsp; <a href="javascript:showHelp('rightbuttons');" class="imEditHelpLink"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1018/2 ?></a> &nbsp;|&nbsp;</b><br><br>
+<b>|&nbsp; <span class="imEditHelpLinkActive"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/133"/></span> &nbsp;|&nbsp; <a href="javascript:showHelp('upperbuttons');" class="imEditHelpLink"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1018/1"/></a> &nbsp;|&nbsp; <a href="javascript:showHelp('rightbuttons');" class="imEditHelpLink"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1018/2"/></a> &nbsp;|&nbsp;</b><br><br>
 
-<span class="imEditHelpHeading"><? install/htdocs/sv/htmleditor/editor/editor.jsp/134 ?></span><br><br>
+<span class="imEditHelpHeading"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/134"/></span><br><br>
 
 Lorem ipsum, dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.<br><br>
 
@@ -1327,14 +1329,14 @@ Duis autem, vel eum iriure dolor in hendrerit in vulputate velit esse molestie c
 <div id="helpTextAllUpperDiv" contenteditable="false" unselectable="off" style="position:absolute; left:5; top:80; width:525; height:380; z-index:201; text-align: left; padding:5; visibility:hidden; background-color:#FFFFE0; border: 2px inset #D6D3CE; overflow=auto" class="imEditHelp">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-	<td CLASS="imEditHelpHeadingBig"><? install/htdocs/sv/htmleditor/editor/editor.jsp/136 ?></td>
-	<td align="right"><button class="fButtonSmall" onClick="hideHelp('all');"><? install/htdocs/sv/htmleditor/editor/editor.jsp/137 ?></button></td>
+	<td CLASS="imEditHelpHeadingBig"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/136"/></td>
+	<td align="right"><button class="fButtonSmall" onClick="hideHelp('all');"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/137"/></button></td>
 </tr>
 </table><br>
 
-<b>|&nbsp; <a href="javascript:showHelp('all');" class="imEditHelpLink"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1019/1 ?></a> &nbsp;|&nbsp; <span class="imEditHelpLinkActive"><? install/htdocs/sv/htmleditor/editor/editor.jsp/138 ?></span> &nbsp;|&nbsp; <a href="javascript:showHelp('rightbuttons');" class="imEditHelpLink"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1020/1 ?></a> &nbsp;|&nbsp;</b><br><br>
+<b>|&nbsp; <a href="javascript:showHelp('all');" class="imEditHelpLink"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1019/1"/></a> &nbsp;|&nbsp; <span class="imEditHelpLinkActive"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/138"/></span> &nbsp;|&nbsp; <a href="javascript:showHelp('rightbuttons');" class="imEditHelpLink"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1020/1"/></a> &nbsp;|&nbsp;</b><br><br>
 
-<span class="imEditHelpHeading"><? install/htdocs/sv/htmleditor/editor/editor.jsp/139 ?></span><br><br>
+<span class="imEditHelpHeading"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/139"/></span><br><br>
 
 Lorem ipsum, dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.<br><br>
 
@@ -1356,14 +1358,14 @@ Duis autem, vel eum iriure dolor in hendrerit in vulputate velit esse molestie c
 <div id="helpTextAllRightDiv" contenteditable="false" unselectable="off" style="position:absolute; left:5; top:80; width:525; height:380; z-index:201; text-align: left; padding:5; visibility:hidden; background-color:#FFFFE0; border: 2px inset #D6D3CE; overflow=auto" class="imEditHelp">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-	<td CLASS="imEditHelpHeadingBig"><? install/htdocs/sv/htmleditor/editor/editor.jsp/141 ?></td>
-	<td align="right"><button class="fButtonSmall" onClick="hideHelp('all');"><? install/htdocs/sv/htmleditor/editor/editor.jsp/142 ?></button></td>
+	<td CLASS="imEditHelpHeadingBig"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/141"/></td>
+	<td align="right"><button class="fButtonSmall" onClick="hideHelp('all');"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/142"/></button></td>
 </tr>
 </table><br>
 
-<b>|&nbsp; <a href="javascript:showHelp('all');" class="imEditHelpLink"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1021/1 ?></a> &nbsp;|&nbsp; <a href="javascript:showHelp('upperbuttons');" class="imEditHelpLink"><? install/htdocs/sv/htmleditor/editor/editor.jsp/1021/2 ?></a> &nbsp;|&nbsp; <span class="imEditHelpLinkActive"><? install/htdocs/sv/htmleditor/editor/editor.jsp/143 ?></span> &nbsp;|&nbsp;</b><br><br>
+<b>|&nbsp; <a href="javascript:showHelp('all');" class="imEditHelpLink"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1021/1"/></a> &nbsp;|&nbsp; <a href="javascript:showHelp('upperbuttons');" class="imEditHelpLink"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/1021/2"/></a> &nbsp;|&nbsp; <span class="imEditHelpLinkActive"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/143"/></span> &nbsp;|&nbsp;</b><br><br>
 
-<span class="imEditHelpHeading"><? install/htdocs/sv/htmleditor/editor/editor.jsp/144 ?></span><br><br>
+<span class="imEditHelpHeading"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/144"/></span><br><br>
 
 Lorem ipsum, dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.<br><br>
 
@@ -1381,7 +1383,7 @@ document.all.editorDiv.unselectable = "off";
 // -->
 </script>
 
-<div id="waitingDiv" style="position:absolute; left:5; top:463; width:400; height:30; z-index:1000; text-align:left; padding:5; background-color:#D6D3CE; display:none" class="imEditHelpHeadingBig" style="font-size:20px"><? install/htdocs/sv/htmleditor/editor/editor.jsp/146 ?></div>
+<div id="waitingDiv" style="position:absolute; left:5; top:463; width:400; height:30; z-index:1000; text-align:left; padding:5; background-color:#D6D3CE; display:none" class="imEditHelpHeadingBig" style="font-size:20px"><fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/146"/></div>
 
 <div id="theOriginalCodeDiv" contenteditable style="position:absolute; left:-5000; top:-5000"><%= orgContent %></div>
 

@@ -1,3 +1,5 @@
+
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page
 
 	import="com.imcode.imcms.servlet.admin.ChangeText,
@@ -60,7 +62,7 @@ try {
 <vel:velocity>
 <html>
 <head>
-<title><? templates/sv/change_text.html/1 ?></title>
+<title><fmt:message key="templates/sv/change_text.html/1"/></title>
 
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/imcms/css/imcms_admin.css.jsp">
 <script src="<%= request.getContextPath() %>/imcms/$language/scripts/imcms_admin.js.jsp" type="text/javascript"></script>
@@ -86,7 +88,7 @@ if (rows > 0) {
 %>
 
 #gui_outer_start()
-#gui_head( "<? global/imcms_administration ?>" )
+#gui_head( "<fmt:message key="global/imcms_administration"/>" )
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 <tr>
@@ -94,27 +96,27 @@ if (rows > 0) {
 	<table border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td>
-		<input type="submit" value="<? global/back ?>" name="cancel" class="imcmsFormBtn"></td><%
+		<input type="submit" value="<fmt:message key="global/back"/>" name="cancel" class="imcmsFormBtn"></td><%
 		if (showModeEditor) { %>
-		<td style="color:#ffffff;" nowrap>&nbsp; &nbsp; <? install/htdocs/sv/htmleditor/editor/editor.jsp/3000 ?> &nbsp;</td>
+		<td style="color:#ffffff;" nowrap>&nbsp; &nbsp; <fmt:message key="install/htdocs/sv/htmleditor/editor/editor.jsp/3000"/> &nbsp;</td>
 		<td><%
 			if (editorHidden) { %>
 		<button id="editorOnOffBtn0" onClick="toggleEditorOnOff(0); return false"
-			class="imcmsFormBtn" style="width:40px;"><? global/off ?></button>
+			class="imcmsFormBtn" style="width:40px;"><fmt:message key="global/off"/></button>
 		<button id="editorOnOffBtn1" onClick="toggleEditorOnOff(1); return false"
-			class="imcmsFormBtnActive" style="width:40px; display:none"><? global/on ?></button><%
+			class="imcmsFormBtnActive" style="width:40px; display:none"><fmt:message key="global/on"/></button><%
 			} else { %>
 		<button id="editorOnOffBtn0" onClick="toggleEditorOnOff(0); return false"
-			class="imcmsFormBtn" style="width:40px; display:none"><? global/off ?></button>
+			class="imcmsFormBtn" style="width:40px; display:none"><fmt:message key="global/off"/></button>
 		<button id="editorOnOffBtn1" onClick="toggleEditorOnOff(1); return false"
-			class="imcmsFormBtnActive" style="width:40px;"><? global/on ?></button><%
+			class="imcmsFormBtnActive" style="width:40px;"><fmt:message key="global/on"/></button><%
 			} %></td><%
 		} %>
 	</tr>
 	</table></td>
 
 	<td align="right">
-	<input type="button" tabindex="12" value="<? templates/sv/change_text.html/2004 ?>" title="<? templates/sv/change_text.html/2005 ?>" class="imcmsFormBtn" onClick="openHelpW('EditText')"></td>
+	<input type="button" tabindex="12" value="<fmt:message key="templates/sv/change_text.html/2004"/>" title="<fmt:message key="templates/sv/change_text.html/2005"/>" class="imcmsFormBtn" onClick="openHelpW('EditText')"></td>
 
 </tr>
 </table>
@@ -216,10 +218,10 @@ function setHtmlMode() {
         <% } %>
     </td>
     <td align="right">
-            <input tabindex="2" type="submit" class="imcmsFormBtn" name="ok" value="  <? templates/sv/change_text.html/2006 ?>  ">
-            <input tabindex="3" type="submit" class="imcmsFormBtn" name="save" value="  <? templates/sv/change_text.html/save ?>  ">
-            <input tabindex="4" type="reset" class="imcmsFormBtn" value="<? templates/sv/change_text.html/2007 ?>">
-            <input tabindex="5" type="submit" class="imcmsFormBtn" name="cancel" value=" <? global/back ?> ">
+            <input tabindex="2" type="submit" class="imcmsFormBtn" name="ok" value="  <fmt:message key="templates/sv/change_text.html/2006"/>  ">
+            <input tabindex="3" type="submit" class="imcmsFormBtn" name="save" value="  <fmt:message key="templates/sv/change_text.html/save"/>  ">
+            <input tabindex="4" type="reset" class="imcmsFormBtn" value="<fmt:message key="templates/sv/change_text.html/2007"/>">
+            <input tabindex="5" type="submit" class="imcmsFormBtn" name="cancel" value=" <fmt:message key="global/back"/> ">
     </td>
 </tr>
 </table>
@@ -395,3 +397,4 @@ function openTextRestorer() {
 </body>
 </html>
 </vel:velocity>
+

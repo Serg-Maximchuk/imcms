@@ -31,7 +31,7 @@ import java.util.*;
 
 public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
 
-    private final static String URL_I15D_PAGE__DOCINFO = "/jsp/docadmin/document_information.jsp";
+    private final static String URL_I15D_PAGE__DOCINFO = "lang/jsp/docadmin/document_information.jsp";
     public static final String REQUEST_PARAMETER__HEADLINE = "headline";
     public static final String REQUEST_PARAMETER__MENUTEXT = "menutext";
     public static final String REQUEST_PARAMETER__COPY_HEADLINE_AND_TEXT_TO_TEXTFIELDS = "copy_headline_and_text_to_textfields";
@@ -410,7 +410,7 @@ public class EditDocumentInformationPageFlow extends EditDocumentPageFlow {
         public void forward( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
             request.setAttribute( REQUEST_ATTRIBUTE__DOCUMENT_INFORMATION_PAGE, this );
             UserDomainObject user = Utility.getLoggedOnUser( request );
-            request.getRequestDispatcher( URL_I15D_PAGE__PREFIX + user.getLanguageIso639_2() + URL_I15D_PAGE__DOCINFO ).forward( request, response );
+            request.getRequestDispatcher( URL_I15D_PAGE__PREFIX + URL_I15D_PAGE__DOCINFO ).forward( request, response );
         }
 
         public static DocumentInformationPage fromRequest( HttpServletRequest request ) {

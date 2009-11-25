@@ -86,7 +86,7 @@ public class MenuParser {
         request.setAttribute("defaultUserCount", defaultUserMenuItems.length) ;
         request.setAttribute("userCount", menuItemsUserCanSee.length);
         request.setAttribute("menuIndex", new Integer(menuIndex));
-        return Utility.getContents("/imcms/"+user.getLanguageIso639_2()+"/jsp/docadmin/text/edit_menu.jsp",
+        return Utility.getContents("/imcms/lang/jsp/docadmin/text/edit_menu.jsp",
                                    request, response) ;
     }
 

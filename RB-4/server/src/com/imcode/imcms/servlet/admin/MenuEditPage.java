@@ -159,7 +159,7 @@ public class MenuEditPage extends OkCancelPage {
 
     public String getPath(HttpServletRequest request) {
         UserDomainObject user = Utility.getLoggedOnUser(request);
-        return "/imcms/" + user.getLanguageIso639_2() + "/jsp/change_menu.jsp";
+        return "/imcms/lang/jsp/change_menu.jsp";
     }
     private void addExistingDocPage( int meta_id, int doc_menu_no,
                                      HttpServletRequest request, HttpServletResponse response ) throws IOException {

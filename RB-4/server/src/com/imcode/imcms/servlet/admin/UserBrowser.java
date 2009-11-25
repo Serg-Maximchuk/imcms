@@ -24,7 +24,7 @@ public class UserBrowser extends HttpServlet {
     public static final String REQUEST_PARAMETER__SEARCH_STRING = "searchstring";
     public static final String REQUEST_PARAMETER__INCLUDE_INACTIVE_USERS = "includeInactive";
     public static final String REQUEST_ATTRIBUTE__FORM_DATA = "formData";
-    private static final String JSP__USER_BROWSER = "/jsp/userbrowser.jsp";
+    private static final String JSP__USER_BROWSER = "lang/jsp/userbrowser.jsp";
     public static final String REQUEST_PARAMETER__SELECT_USER_BUTTON = "selectUserButton";
     public static final String REQUEST_PARAMETER__ADD_USER = "addUser";
     public static final String REQUEST_PARAMETER__CANCEL_BUTTON = "cancel";
@@ -185,8 +185,8 @@ public class UserBrowser extends HttpServlet {
         public void forward( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException {
             request.setAttribute( REQUEST_ATTRIBUTE__FORM_DATA, this );
             UserDomainObject user = Utility.getLoggedOnUser( request );
-            String userLanguage = user.getLanguageIso639_2();
-            request.getRequestDispatcher( "/imcms/" + userLanguage + JSP__USER_BROWSER ).forward( request, response );
+//            String userLanguage = user.getLanguageIso639_2();
+            request.getRequestDispatcher( "/imcms/" + JSP__USER_BROWSER ).forward( request, response );
         }
     }
 }
