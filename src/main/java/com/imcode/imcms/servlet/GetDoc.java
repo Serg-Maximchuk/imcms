@@ -42,6 +42,8 @@ import com.imcode.imcms.api.I18nLanguage;
 import com.imcode.imcms.api.I18nSupport;
 import com.imcode.imcms.api.Meta;
 import com.imcode.imcms.mapping.DocumentMapper;
+import imcode.server.kerberos.KerberosLoginResult;
+import imcode.server.kerberos.KerberosLoginStatus;
 
 public class GetDoc extends HttpServlet {
 
@@ -165,6 +167,16 @@ public class GetDoc extends HttpServlet {
         documentRequest.setRevisits(revisits);
 
         if ( !user.canAccess(document) ) {
+            if (imcref.getConfig().isSsoEnabled() && user.isDefaultUser()) {
+                KerberosLoginResult loginResult = imcref.getKerberosLoginService().login(req, res);
+                
+                if (loginResult.getStatus() == KerberosLoginStatus.SUCCESS) {
+                    privateGetDoc(document, res, req);
+                }
+                
+                return;
+            }
+            
             Utility.forwardToLogin(req, res);
             return;
         }

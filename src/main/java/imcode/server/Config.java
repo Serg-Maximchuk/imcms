@@ -31,6 +31,14 @@ public class Config {
     private boolean secureLoginRequired;
     private boolean denyMultipleUserLogin;
     private File imageArchiveImagesPath;
+    
+    private boolean ssoEnabled;
+    private boolean ssoUseLocalJaasConfig;
+    private String ssoJaasConfigName;
+    private String ssoJaasPrincipalPassword;
+    private boolean ssoUseLocalKrbConfig;
+    private boolean ssoKerberosDebug;
+    
 
     public String getWorkaroundUriEncoding() {
         return workaroundUriEncoding;
@@ -225,5 +233,53 @@ public class Config {
 
     public void setImageMagickPath(File imageMagickPath) {
         this.imageMagickPath = imageMagickPath;
+    }
+
+    public boolean isSsoEnabled() {
+        return ssoEnabled;
+    }
+
+    public void setSsoEnabled(boolean ssoEnabled) {
+        this.ssoEnabled = ssoEnabled;
+    }
+
+    public boolean isSsoKerberosDebug() {
+        return ssoKerberosDebug;
+    }
+
+    public void setSsoKerberosDebug(boolean ssoKerberosDebug) {
+        this.ssoKerberosDebug = ssoKerberosDebug;
+    }
+
+    public String getSsoJaasConfigName() {
+        return ssoJaasConfigName;
+    }
+
+    public void setSsoJaasConfigName(String ssoJaasConfigName) {
+        this.ssoJaasConfigName = ssoJaasConfigName;
+    }
+
+    public boolean isSsoUseLocalJaasConfig() {
+        return ssoUseLocalJaasConfig;
+    }
+
+    public void setSsoUseLocalJaasConfig(boolean ssoUseLocalJaasConfig) {
+        this.ssoUseLocalJaasConfig = ssoUseLocalJaasConfig;
+    }
+
+    public String getSsoJaasPrincipalPassword() {
+        return ssoJaasPrincipalPassword;
+    }
+
+    public void setSsoJaasPrincipalPassword(String ssoJaasPrincipalPassword) {
+        this.ssoJaasPrincipalPassword = ssoJaasPrincipalPassword;
+    }
+
+    public boolean isSsoUseLocalKrbConfig() {
+        return ssoUseLocalKrbConfig;
+    }
+
+    public void setSsoUseLocalKrbConfig(boolean ssoUseLocalKrbConfig) {
+        this.ssoUseLocalKrbConfig = ssoUseLocalKrbConfig;
     }
 }
