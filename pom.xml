@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.imcode.imcms</groupId>
     <artifactId>imcms</artifactId>
-    <version>almedalen_alpha23_r4</version>
+    <version>almedalen_alpha23_r5-SNAPSHOT</version>
     <name>imCMS</name>
     <packaging>war</packaging>
 
@@ -791,9 +791,9 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:svn:https://svn.imcode.com/imcode/imcms/tags/almedalen_alpha23_r4</connection>
-        <developerConnection>scm:svn:https://svn.imcode.com/imcode/imcms/tags/almedalen_alpha23_r4</developerConnection>
-        <url>/tags/almedalen_alpha23_r4</url>
+        <connection>scm:svn:https://svn.imcode.com/imcode/imcms/branches/alpha23_almedalen</connection>
+        <developerConnection>scm:svn:https://svn.imcode.com/imcode/imcms/branches/alpha23_almedalen</developerConnection>
+        <url></url>
     </scm>
 
 </project>
