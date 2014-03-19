@@ -44,7 +44,7 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${user.superAdmin}">
+            <c:if test="${archive:canAccessPreferences(user, pageContext)}">
                 <c:url var="preferencesUrl" value="/web/archive/preferences"/>
                 <li class="${currentPage eq 'preferences' ? 'sel' : ''}">
                     <a href="${preferencesUrl}">

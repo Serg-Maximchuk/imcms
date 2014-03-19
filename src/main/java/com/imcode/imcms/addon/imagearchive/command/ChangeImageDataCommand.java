@@ -2,6 +2,9 @@ package com.imcode.imcms.addon.imagearchive.command;
 
 import com.imcode.imcms.addon.imagearchive.entity.Exif;
 import com.imcode.imcms.addon.imagearchive.entity.Images;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -9,8 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public class ChangeImageDataCommand implements Serializable {
     private static final long serialVersionUID = 7628469804368247486L;
@@ -37,8 +38,15 @@ public class ChangeImageDataCommand implements Serializable {
     private List<Integer> categoryIds = new ArrayList<Integer>();
     private List<String> keywordNames = new ArrayList<String>();
     private List<String> imageKeywordNames = new ArrayList<String>();
-    
-    
+
+    // just a flag that the data was submitted
+    private boolean submitted;
+
+    /* Override if empty */
+    private boolean overrideDesc;
+    private boolean overrideArtist;
+    private boolean overrideCopyright;
+
     public ChangeImageDataCommand() {
     }
 
@@ -65,10 +73,20 @@ public class ChangeImageDataCommand implements Serializable {
     }
     
     public void toImage(Images image) {
+        String newDescription = StringUtils.trimToEmpty(description);
+        String newArtist = StringUtils.trimToEmpty(artist);
+        String newCopyright = StringUtils.trimToEmpty(copyright);
         Exif exif = image.getChangedExif();
-        exif.setDescription(StringUtils.trimToEmpty(description));
-        exif.setArtist(StringUtils.trimToEmpty(artist));
-        exif.setCopyright(StringUtils.trimToEmpty(copyright));
+
+        if(!newDescription.isEmpty() && (!isOverrideDesc() || isOverrideDesc() && StringUtils.isEmpty(exif.getDescription()))) {
+            exif.setDescription(newDescription);
+        }
+        if(!newArtist.isEmpty() && (!isOverrideArtist() || isOverrideArtist() && StringUtils.isEmpty(exif.getArtist()))) {
+            exif.setArtist(newArtist);
+        }
+        if(!newCopyright.isEmpty() && (!isOverrideCopyright() || isOverrideCopyright() && StringUtils.isEmpty(exif.getCopyright()))) {
+            exif.setCopyright(newCopyright);
+        }
         
         image.setImageNm(StringUtils.trimToEmpty(imageNm));
         image.setUploadedBy(StringUtils.trimToEmpty(uploadedBy));
@@ -261,5 +279,37 @@ public class ChangeImageDataCommand implements Serializable {
 
     public void setAltText(String altText) {
         this.altText = altText;
+    }
+
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
+    }
+
+    public boolean isOverrideDesc() {
+        return overrideDesc;
+    }
+
+    public void setOverrideDesc(boolean overrideDesc) {
+        this.overrideDesc = overrideDesc;
+    }
+
+    public boolean isOverrideArtist() {
+        return overrideArtist;
+    }
+
+    public void setOverrideArtist(boolean overrideArtist) {
+        this.overrideArtist = overrideArtist;
+    }
+
+    public boolean isOverrideCopyright() {
+        return overrideCopyright;
+    }
+
+    public void setOverrideCopyright(boolean overrideCopyright) {
+        this.overrideCopyright = overrideCopyright;
     }
 }

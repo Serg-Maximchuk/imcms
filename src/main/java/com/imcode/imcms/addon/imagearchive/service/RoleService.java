@@ -1,27 +1,25 @@
 package com.imcode.imcms.addon.imagearchive.service;
 
 import com.imcode.imcms.addon.imagearchive.command.SaveRoleCategoriesCommand;
+import com.imcode.imcms.addon.imagearchive.entity.Categories;
+import com.imcode.imcms.addon.imagearchive.entity.CategoryRoles;
+import com.imcode.imcms.addon.imagearchive.entity.Exif;
+import com.imcode.imcms.addon.imagearchive.entity.Roles;
+import com.imcode.imcms.addon.imagearchive.util.Utils;
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.User;
 import imcode.server.user.RolePermissionDomainObject;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.imcode.imcms.addon.imagearchive.entity.Categories;
-import com.imcode.imcms.addon.imagearchive.entity.CategoryRoles;
-import com.imcode.imcms.addon.imagearchive.entity.Exif;
-import com.imcode.imcms.addon.imagearchive.entity.Roles;
-import com.imcode.imcms.api.User;
-import org.hibernate.SessionFactory;
+import java.util.*;
 
 @Transactional
 public class RoleService {
@@ -36,7 +34,8 @@ public class RoleService {
 
         return (Roles) factory.getCurrentSession().get(Roles.class, id);
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
     public List<Roles> findRoles() {
 
@@ -44,7 +43,8 @@ public class RoleService {
                 .createQuery("FROM Roles r ORDER BY r.roleName")
                 .list();
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
     public List<Categories> findRoleCategories(int roleId) {
 
@@ -55,6 +55,7 @@ public class RoleService {
                 .list();
     }
 
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
     public List<Categories> findFreeCategories(int roleId) {
 
@@ -66,6 +67,7 @@ public class RoleService {
                 .list();
     }
 
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
     public List<Categories> findAllCategories() {
 
@@ -96,14 +98,15 @@ public class RoleService {
         }
         session.flush();
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public List<Categories> findCategories(User user, RolePermissionDomainObject... permissions) {
+    public List<Categories> findCategories(User user, ContentManagementSystem cms, RolePermissionDomainObject... permissions) {
 
         Session session = factory.getCurrentSession();
         Set<Integer> roleIds;
 
-        if (user.isSuperAdmin()) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             return session.createQuery(
                     "SELECT DISTINCT c.id AS id, c.name AS name FROM Categories c " +
                     "WHERE c.type.name = 'Images' ORDER BY c.name")
@@ -130,7 +133,8 @@ public class RoleService {
                 .list();
 
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
     public List<Integer> findCategoryIds(User user, RolePermissionDomainObject... permissions) {
 
@@ -148,11 +152,11 @@ public class RoleService {
 
     /* Checks whether a user has the provided permission(s), be it use/edit/any for the given category */
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public boolean hasAccessToCategory(User user, int categoryId, RolePermissionDomainObject... permissions) {
+    public boolean hasAccessToCategory(User user, int categoryId, ContentManagementSystem cms, RolePermissionDomainObject... permissions) {
 
         Set<Integer> roleIds;
 
-        if (user.isSuperAdmin()) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             return true;
 
         } else if (user.isDefaultUser()) {
@@ -179,28 +183,35 @@ public class RoleService {
 
         return count != 0L;
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public List<String> findArtists(User user) {
+    public List<String> findArtists(User user, ContentManagementSystem cms) {
+        Session session = factory.getCurrentSession();
+        if(user != null && (user.isSuperAdmin() || Utils.isImageAdmin(user, cms))) {
+            return session.createCriteria(Exif.class, "exif")
+                    .add(Restrictions.eq("exif.type", Exif.TYPE_CHANGED))
+                    .add(Restrictions.ne("exif.artist", ""))
+                    .setProjection(Projections.distinct(Projections.property("exif.artist")))
+                    .list();
+        }
 
         Set<Integer> roleIds;
-        if (user.isDefaultUser()) {
+        if (user == null || user.isDefaultUser()) {
             roleIds = new HashSet<Integer>(1);
             roleIds.add(Roles.USERS_ID);
-
         } else {
             roleIds = facade.getUserService().getRoleIdsWithPermission(user, null, Roles.ALL_PERMISSIONS);
             if (roleIds.isEmpty()) {
                 return Collections.EMPTY_LIST;
             }
-
         }
 
-        return factory.getCurrentSession()
+        return session
                 .getNamedQuery("artistsByRoleIds")
                 .setParameterList("roleIds", roleIds)
                 .setShort("changedType", Exif.TYPE_CHANGED)
-                .setInteger("userId", user.getId())
+                .setInteger("userId", user != null ? user.getId() : -1)
                 .list();
     }
 }

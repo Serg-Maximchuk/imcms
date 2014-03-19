@@ -1,24 +1,5 @@
 package com.imcode.imcms.addon.imagearchive.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.imcode.imcms.addon.imagearchive.SessionConstants;
 import com.imcode.imcms.addon.imagearchive.command.SearchImageCommand;
 import com.imcode.imcms.addon.imagearchive.entity.Categories;
@@ -31,6 +12,22 @@ import com.imcode.imcms.addon.imagearchive.util.Utils;
 import com.imcode.imcms.addon.imagearchive.validator.SearchImageValidator;
 import com.imcode.imcms.api.ContentManagementSystem;
 import com.imcode.imcms.api.User;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class SearchImageController {
@@ -78,12 +75,12 @@ public class SearchImageController {
         
         mav.addObject("search", command);
         
-        List<Categories> categories = facade.getRoleService().findCategories(user, Roles.ALL_PERMISSIONS);
+        List<Categories> categories = facade.getRoleService().findCategories(user, cms, Roles.ALL_PERMISSIONS);
         mav.addObject("categories", categories);
         mav.addObject("keywords", facade.getImageService().findKeywords());
-        mav.addObject("artists", facade.getRoleService().findArtists(user));
+        mav.addObject("artists", facade.getRoleService().findArtists(user, cms));
         
-        SearchImageValidator validator = new SearchImageValidator(facade, user);
+        SearchImageValidator validator = new SearchImageValidator(facade, user, cms);
         ValidationUtils.invokeValidator(validator, command, result);
         
         if (result.hasErrors()) {
@@ -97,12 +94,12 @@ public class SearchImageController {
             categoryIds.add(category.getId());
         }
         
-        int imageCount = facade.getImageService().searchImagesCount(command, categoryIds, user);
+        int imageCount = facade.getImageService().searchImagesCount(command, categoryIds, user, cms);
         mav.addObject("imageCount", imageCount);
         
         pag.setPageSize(command.getResultsPerPage());
         pag.update(imageCount);
-        List<Images> images = facade.getImageService().searchImages(command, pag, categoryIds, user);
+        List<Images> images = facade.getImageService().searchImages(command, pag, categoryIds, user, cms);
         
         mav.addObject("images", images);
         mav.addObject("pag", pag);
@@ -128,21 +125,21 @@ public class SearchImageController {
         mav.addObject("search", command);
         mav.addObject("pag", pag);
         
-        List<Categories> categories = facade.getRoleService().findCategories(user, Roles.ALL_PERMISSIONS);
+        List<Categories> categories = facade.getRoleService().findCategories(user, cms, Roles.ALL_PERMISSIONS);
         mav.addObject("categories", categories);
         mav.addObject("keywords", facade.getImageService().findKeywords());
-        mav.addObject("artists", facade.getRoleService().findArtists(user));
+        mav.addObject("artists", facade.getRoleService().findArtists(user, cms));
         
         List<Integer> categoryIds = new ArrayList<Integer>(categories.size());
         for (Categories category : categories) {
             categoryIds.add(category.getId());
         }
         
-        int imageCount = facade.getImageService().searchImagesCount(command, categoryIds, user);
+        int imageCount = facade.getImageService().searchImagesCount(command, categoryIds, user, cms);
         mav.addObject("imageCount", imageCount);
         
         pag.update(imageCount);
-        List<Images> images = facade.getImageService().searchImages(command, pag, categoryIds, user);
+        List<Images> images = facade.getImageService().searchImages(command, pag, categoryIds, user, cms);
         
         mav.addObject("images", images);
 

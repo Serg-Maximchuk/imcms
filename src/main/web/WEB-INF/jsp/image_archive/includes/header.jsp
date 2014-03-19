@@ -19,6 +19,8 @@
     <script type="text/javascript" src="${contextPath}/js/jquery.uploadify-v2.1.4/swfobject.js"></script>
     <script type="text/javascript" src="${contextPath}/js/image_archive.js"></script>
     <script type="text/javascript" src="${contextPath}/js/jquery.qtip.js"></script>
+    <script type="text/javascript" src='${contextPath}/js/lodash.min.js'></script>
+    <script type="text/javascript" src="${contextPath}/js/placeholders.min.js"></script>
     ${javascript}
 
 

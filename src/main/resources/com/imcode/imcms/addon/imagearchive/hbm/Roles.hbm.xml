@@ -7,7 +7,7 @@
     <query name="artistsByRoleIds">
         <![CDATA[
         SELECT DISTINCT
-          lower(e.artist) AS artist 
+          e.artist AS artist
         FROM 
           CategoryRoles cr, 
           ImageCategories ic, 

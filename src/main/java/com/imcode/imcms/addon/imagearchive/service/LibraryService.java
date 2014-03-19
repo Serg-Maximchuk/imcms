@@ -1,26 +1,26 @@
 package com.imcode.imcms.addon.imagearchive.service;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.*;
-
-import com.imcode.imcms.addon.imagearchive.util.Utils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.transform.Transformers;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.imcode.imcms.addon.imagearchive.dto.LibrariesDto;
 import com.imcode.imcms.addon.imagearchive.dto.LibraryRolesDto;
 import com.imcode.imcms.addon.imagearchive.entity.Libraries;
 import com.imcode.imcms.addon.imagearchive.entity.LibraryRoles;
 import com.imcode.imcms.addon.imagearchive.entity.Roles;
+import com.imcode.imcms.addon.imagearchive.util.Utils;
+import com.imcode.imcms.api.ContentManagementSystem;
 import com.imcode.imcms.api.User;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.*;
 
 
 @Transactional
@@ -315,19 +315,21 @@ public class LibraryService {
         for (LibraryRolesDto libraryRoleDto : toUpdate) {
             updateQuery.setInteger("roleId", libraryRoleDto.getRoleId())
                     .setBoolean("canUse", libraryRoleDto.isCanUse())
+                    .setBoolean("canChange", libraryRoleDto.isCanChange())
                     .executeUpdate();
         }
 
         session.flush();
         
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public List<LibrariesDto> findLibraries(User user) {
+    public List<LibrariesDto> findLibraries(User user, ContentManagementSystem cms) {
 
         Session session = factory.getCurrentSession();
 
-        if (user.isSuperAdmin()) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             return session.createQuery(
                     "SELECT lib.id AS id, lib.libraryNm AS libraryNm, lib.filepath AS filepath, lib.folderNm AS folderNm" +
                             " FROM Libraries lib ORDER BY lib.libraryNm")
@@ -350,7 +352,7 @@ public class LibraryService {
     }
     
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public LibrariesDto findLibraryById(User user, int libraryId) {
+    public LibrariesDto findLibraryById(User user, int libraryId, ContentManagementSystem cms) {
 
         Session session = factory.getCurrentSession();
 
@@ -364,7 +366,7 @@ public class LibraryService {
 
         if (library == null) {
             return null;
-        } else if (user.isSuperAdmin()) {
+        } else if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             library.setCanUse(true);
             library.setCanChange(true);
 

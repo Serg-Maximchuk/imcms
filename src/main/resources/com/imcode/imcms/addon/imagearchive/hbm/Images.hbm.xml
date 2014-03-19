@@ -93,12 +93,38 @@
         FROM 
           Categories c 
         WHERE 
-              c.type.name = 'Images'
+              c.type.imageArchive IS TRUE
           AND NOT EXISTS (FROM 
                             ImageCategories ic 
                           WHERE 
                                 ic.imageId = :imageId
                             AND ic.categoryId = c.id)
+        ]]>
+    </query>
+    <query name="availableCategoriesForAdmin">
+        <![CDATA[
+        SELECT
+          c.id AS id,
+          c.name AS name
+        FROM
+          Categories c
+        WHERE
+              c.type.imageArchive IS TRUE
+        ]]>
+    </query>
+    <query name="availableCategoriesForUser">
+        <![CDATA[
+        SELECT
+          c.id AS id,
+          c.name AS name
+        FROM
+          CategoryRoles cr
+        INNER JOIN
+          cr.category c
+        WHERE
+              cr.roleId IN (:roleIds) AND
+              cr.canChange = 1 AND
+              c.type.imageArchive IS TRUE
         ]]>
     </query>
     <query name="availableImageCategories">
@@ -116,8 +142,8 @@
                             ImageCategories ic 
                           WHERE
                                 ic.imageId = :imageId 
-                            AND ic.categoryId = cr.categoryId) 
-          AND c.type.name = 'Images'
+                            AND ic.categoryId = cr.categoryId)
+          AND c.type.imageArchive IS TRUE
         ]]>
     </query>
     <query name="availableKeywords">

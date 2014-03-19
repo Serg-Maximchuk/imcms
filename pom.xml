@@ -7,7 +7,7 @@
     <artifactId>imcms</artifactId>
     <packaging>war</packaging>
     <!--<version>6.0.0-alpha51-SNAPSHOT</version>-->
-    <version>6.0.0-alpha52</version>
+    <version>6.0.0-alpha52-i13124</version>
     <name>imCMS</name>
 
     <properties>
@@ -814,6 +814,11 @@
     </repositories>
 
     <pluginRepositories>
+        <pluginRepository>
+            <id>imcode</id>
+            <url>http://repo.imcode.com/maven2</url>
+        </pluginRepository>
+        
         <pluginRepository>
             <id>scala-tools.org</id>
             <name>Scala-tools Maven2 Releases Repository</name>

@@ -68,7 +68,7 @@ public class PreferencesController {
         ContentManagementSystem cms = ContentManagementSystem.fromRequest(request);
         User user = cms.getCurrentUser();
         
-        if (!user.isSuperAdmin()) {
+        if (!Utils.canAccessPreferences(user, cms)) {
             return "redirect:/web/archive";
         }
         
@@ -170,6 +170,7 @@ public class PreferencesController {
         model.put("freeCategories", facade.getRoleService().findFreeCategories(role.getId()));
         model.put("roleCategories", facade.getRoleService().findRoleCategories(role.getId()));
         model.put("allCategories", facade.getRoleService().findAllCategories());
+        model.put("user", user);
 
         return "image_archive/pages/preferences";
     }
@@ -265,7 +266,7 @@ public class PreferencesController {
         ContentManagementSystem cms = ContentManagementSystem.fromRequest(request);
         User user = cms.getCurrentUser();
         
-        if (!user.isSuperAdmin()) {
+        if (!Utils.canAccessPreferences(user, cms)) {
             return "redirect:/web/archive";
         }
         
@@ -286,7 +287,7 @@ public class PreferencesController {
         ContentManagementSystem cms = ContentManagementSystem.fromRequest(request);
         User user = cms.getCurrentUser();
         
-        if (!user.isSuperAdmin()) {
+        if (!Utils.canAccessPreferences(user, cms)) {
             return "redirect:/web/archive";
         }
         

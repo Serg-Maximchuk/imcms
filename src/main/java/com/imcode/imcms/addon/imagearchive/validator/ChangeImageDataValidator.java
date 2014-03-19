@@ -3,22 +3,25 @@ package com.imcode.imcms.addon.imagearchive.validator;
 import com.imcode.imcms.addon.imagearchive.command.ChangeImageDataCommand;
 import com.imcode.imcms.addon.imagearchive.service.Facade;
 import com.imcode.imcms.addon.imagearchive.util.ValidatorUtils;
+import com.imcode.imcms.api.ContentManagementSystem;
 import com.imcode.imcms.api.User;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 public class ChangeImageDataValidator implements Validator {
     private Facade facade;
     private User user;
+    ContentManagementSystem cms;
 
-    public ChangeImageDataValidator(Facade facade, User user) {
+    public ChangeImageDataValidator(Facade facade, User user, ContentManagementSystem cms) {
         this.facade = facade;
         this.user = user;
+        this.cms = cms;
     }
     
     
@@ -37,7 +40,7 @@ public class ChangeImageDataValidator implements Validator {
         ValidatorUtils.rejectValueIfLonger("copyright", 255, "archive.fieldLengthError", errors);
         
         List<Integer> categoryIds = command.getCategoryIds();
-        if (!categoryIds.isEmpty() && !facade.getImageService().canUseCategories(user, categoryIds)) {
+        if (!categoryIds.isEmpty() && !facade.getImageService().canUseCategories(user, categoryIds, cms)) {
             errors.rejectValue("categories", "archive.categoryPermissionError");
         }
         
@@ -59,6 +62,11 @@ public class ChangeImageDataValidator implements Validator {
             } catch (ParseException ex) {
                 errors.rejectValue("licenseEndDt", "archive.invalidEndDateError");
             }
+        }
+
+        if(command.getLicenseDate() != null && command.getLicenseEndDate() != null && (command.getLicenseDate().compareTo(command.getLicenseEndDate()) >= 1)) {
+            errors.rejectValue("licenseDt", "invalidStartDateError");
+            errors.rejectValue("licenseEndDt", "invalidEndDateError");
         }
     }
 }

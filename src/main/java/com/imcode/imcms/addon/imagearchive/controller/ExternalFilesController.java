@@ -75,7 +75,7 @@ public class ExternalFilesController {
         
         ModelAndView mav = new ModelAndView("image_archive/pages/external_files/external_files");
         
-        List<LibrariesDto> libraries = facade.getLibraryService().findLibraries(user);
+        List<LibrariesDto> libraries = facade.getLibraryService().findLibraries(user, cms);
         final List<File> firstLevelLibraries = facade.getFileService().listFirstLevelLibraryFolders();
         CollectionUtils.filter(libraries, new Predicate() {
             public boolean evaluate(Object o) {
@@ -83,9 +83,9 @@ public class ExternalFilesController {
                 return firstLevelLibraries.contains(new File(lib.getFilepath(), lib.getFolderNm()));
             }
         });
-        List<LibrariesDto> allLibraries = facade.getLibraryService().findLibraries(user);
+        List<LibrariesDto> allLibraries = facade.getLibraryService().findLibraries(user, cms);
         
-        LibrariesDto library = getLibrary(session, user);
+        LibrariesDto library = getLibrary(session, user, cms);
         LibrarySort sortBy = getSortBy(session);
         List<LibraryEntryDto> libraryEntries = facade.getFileService().listLibraryEntries(library, sortBy);
 
@@ -117,7 +117,7 @@ public class ExternalFilesController {
             if (id == LibrariesDto.USER_LIBRARY_ID) {
                 library = LibrariesDto.userLibrary(user);
             } else {
-                library = facade.getLibraryService().findLibraryById(user, id);
+                library = facade.getLibraryService().findLibraryById(user, id, cms);
             }
             session.put(LIBRARY_KEY, library);
         }
@@ -154,7 +154,7 @@ public class ExternalFilesController {
             return new ModelAndView("redirect:/web/archive/");
         }
         
-        LibrariesDto library = getLibrary(session, user);
+        LibrariesDto library = getLibrary(session, user, cms);
         if (library == null) {
             return new ModelAndView("redirect:/web/archive/external-files");
         }
@@ -185,7 +185,7 @@ public class ExternalFilesController {
                 ChangeImageDataCommand changeData = new ChangeImageDataCommand();
                 changeData.fromImage(image);
                 mav.addObject("changeData", changeData);
-                mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user));
+                mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user, cms));
 
                 List<String> keywords = facade.getImageService().findAvailableKeywords(image.getId());
                 List<String> imageKeywords = facade.getImageService().findImageKeywords(image.getId());
@@ -305,7 +305,7 @@ public class ExternalFilesController {
             for(FieldError error: result.getFieldErrors()) {
                 errors.add(facade.getCommonService().getMessage(error.getCode(), request.getLocale(), error.getArguments()));
             }
-            status.setErrors(errors);
+            status.setImageErrors(errors);
         } else {
             status.setRedirectOnAllComplete(contextPath + "/web/archive/external-files");
         }
@@ -356,7 +356,7 @@ public class ExternalFilesController {
             return new ModelAndView("redirect:/web/archive/external-files");
         }
         
-        ChangeImageDataValidator validator = new ChangeImageDataValidator(facade, user);
+        ChangeImageDataValidator validator = new ChangeImageDataValidator(facade, user, cms);
         ValidationUtils.invokeValidator(validator, changeData, result);
         
         ModelAndView mav = new ModelAndView("image_archive/pages/external_files/external_files");
@@ -377,12 +377,12 @@ public class ExternalFilesController {
                 facade.getFileService().rotateImage(image.getId(), 90, false);
             }
             
-            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user));
+            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user, cms));
             mav.addObject("imageCategories", facade.getImageService().findImageCategories(image.getId()));
             
             return mav;
         } else if (result.hasErrors()) {
-            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user));
+            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user, cms));
             mav.addObject("imageCategories", facade.getImageService().findImageCategories(image.getId()));
             
             return mav;
@@ -413,7 +413,7 @@ public class ExternalFilesController {
                 return new ModelAndView("redirect:/web/archive/image/" + image.getId());
             }
             
-            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user));
+            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user, cms));
             mav.addObject("imageCategories", facade.getImageService().findImageCategories(image.getId()));
         } catch (Exception ex) {
             log.fatal(ex.getMessage(), ex);
@@ -439,7 +439,7 @@ public class ExternalFilesController {
             if (id == LibrariesDto.USER_LIBRARY_ID) {
                 library = LibrariesDto.userLibrary(user);
             } else {
-                library = facade.getLibraryService().findLibraryById(user, id);
+                library = facade.getLibraryService().findLibraryById(user, id, cms);
             }
             
             name = StringUtils.trimToNull(name);
@@ -461,7 +461,7 @@ public class ExternalFilesController {
         return new ModelAndView("image_archive/pages/external_files/preview", model);
     }
 
-    /* Used by small tooltip when moving cursor over filenames in library entry list */
+    /* Used by small tooltip when moving cursor over filenames in library entry listByNamedParams */
     @RequestMapping("/archive/external-files/preview-tooltip")
     public ModelAndView previewTooltipHandler(
             @RequestParam(required=false) Integer id,
@@ -480,7 +480,7 @@ public class ExternalFilesController {
             if (id == LibrariesDto.USER_LIBRARY_ID) {
                 library = LibrariesDto.userLibrary(user);
             } else {
-                library = facade.getLibraryService().findLibraryById(user, id);
+                library = facade.getLibraryService().findLibraryById(user, id, cms);
             }
 
             name = StringUtils.trimToNull(name);
@@ -496,7 +496,7 @@ public class ExternalFilesController {
                         }
 
                         List<String> categoryNames = new ArrayList<String>();
-                        for(Categories cat: Utils.getCategoriesRequiredToUse(image, facade, user)) {
+                        for(Categories cat: Utils.getCategoriesRequiredToUse(image, facade, cms, user)) {
                             categoryNames.add(cat.getName());
                         }
 
@@ -542,7 +542,7 @@ public class ExternalFilesController {
         if (id == LibrariesDto.USER_LIBRARY_ID) {
             library = LibrariesDto.userLibrary(user);
         } else {
-            library = facade.getLibraryService().findLibraryById(user, id);
+            library = facade.getLibraryService().findLibraryById(user, id, cms);
         }
         
         if (library == null || !library.isCanUse()) {
@@ -589,10 +589,10 @@ public class ExternalFilesController {
         return null;
     }
     
-    private LibrariesDto getLibrary(ArchiveSession session, User user) {
+    private LibrariesDto getLibrary(ArchiveSession session, User user, ContentManagementSystem cms) {
         LibrariesDto library = (LibrariesDto) session.get(LIBRARY_KEY);
         if (library != null && !library.isUserLibrary()) {
-            library = facade.getLibraryService().findLibraryById(user, library.getId());
+            library = facade.getLibraryService().findLibraryById(user, library.getId(), cms);
         }
         if (library == null) {
             library = LibrariesDto.userLibrary(user);

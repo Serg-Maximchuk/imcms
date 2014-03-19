@@ -1,6 +1,23 @@
 package com.imcode.imcms.addon.imagearchive.util;
 
 
+import com.imcode.imcms.addon.imagearchive.entity.Categories;
+import com.imcode.imcms.addon.imagearchive.entity.Images;
+import com.imcode.imcms.addon.imagearchive.entity.Libraries;
+import com.imcode.imcms.addon.imagearchive.entity.Roles;
+import com.imcode.imcms.addon.imagearchive.service.Facade;
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.Role;
+import com.imcode.imcms.api.User;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+import org.springframework.http.server.ServletServerHttpResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -8,33 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-
-import com.imcode.imcms.addon.imagearchive.command.SearchImageCommand;
-import com.imcode.imcms.addon.imagearchive.dto.LibrariesDto;
-import com.imcode.imcms.addon.imagearchive.dto.LibraryEntryDto;
-import com.imcode.imcms.addon.imagearchive.entity.Categories;
-import com.imcode.imcms.addon.imagearchive.entity.Images;
-import com.imcode.imcms.addon.imagearchive.entity.Libraries;
-import com.imcode.imcms.addon.imagearchive.entity.Roles;
-import com.imcode.imcms.api.ContentManagementSystem;
-import com.imcode.imcms.api.User;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.imcode.imcms.addon.imagearchive.service.Facade;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.http.server.ServletServerHttpResponse;
-import org.springframework.validation.FieldError;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class Utils {
     private static final Log log = LogFactory.getLog(Utils.class);
@@ -197,12 +187,12 @@ public class Utils {
         return sameImages;
     }
 
-    public static List<Categories> getCategoriesRequiredToUse(Images img, Facade facade, User user) {
-        if(user.isSuperAdmin()) {
+    public static List<Categories> getCategoriesRequiredToUse(Images img, Facade facade, ContentManagementSystem cms, User user) {
+        if(user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             return Collections.emptyList();
         }
         
-        List<Categories> userCategories = facade.getRoleService().findCategories(user, Roles.ALL_PERMISSIONS);
+        List<Categories> userCategories = facade.getRoleService().findCategories(user, cms, Roles.ALL_PERMISSIONS);
         List<Categories> imageCategories = img.getCategories();
         List<Categories> categoriesesUserCantUse = Collections.emptyList();
         if(imageCategories != null) {
@@ -216,6 +206,15 @@ public class Utils {
         }
 
         return categoriesesUserCantUse;
+    }
+
+    public static boolean canAccessPreferences(User user, ContentManagementSystem cms) {
+        return user.isSuperAdmin() || isImageAdmin(user, cms);
+    }
+
+    public static boolean isImageAdmin(User user, ContentManagementSystem cms) {
+        Role role = cms.getUserService().getRole("Bildadmin");
+        return role != null && user.hasRole(role);
     }
     
     private Utils() {

@@ -34,12 +34,14 @@
         </div>
             <input type="button" id="uploadButton" name="upload" value="${uploadText}" class="imcmsFormBtn ${disabled ? 'disabled' : ''}"
                     onclick="${disabled ? 'return false;' : ''}" ${disabled ? 'disabled="disabled"' : ''}/>
-            <div id="uploadifyQueue" class="uploadifyQueue"></div>
         </div>
     </div>
     <h4 class="hint" style="margin-top:5px;">
         <spring:message code="archive.externalFiles.uploadedImagesGoIntoPersonalFolder" htmlEscape="true"/>
     </h4>
+    <div class='clearfix'>
+        <div id="uploadifyQueue" class="uploadifyQueue"></div>
+    </div>
 </form:form>
 <h4 class="imcmsAdmHeading"><spring:message code="archive.externalFiles.libraries" htmlEscape="true"/></h4>
 <form:form commandName="externalFiles" action="${processUrl}" method="post" enctype="multipart/form-data" cssClass="m15t clearfix">

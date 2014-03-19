@@ -1,8 +1,34 @@
 package com.imcode.imcms.addon.imagearchive.service;
 
+import com.imcode.imcms.addon.imagearchive.command.SearchImageCommand;
+import com.imcode.imcms.addon.imagearchive.entity.*;
 import com.imcode.imcms.addon.imagearchive.service.file.FileService;
+import com.imcode.imcms.addon.imagearchive.util.Pagination;
+import com.imcode.imcms.addon.imagearchive.util.Utils;
+import com.imcode.imcms.addon.imagearchive.util.exif.ExifData;
+import com.imcode.imcms.addon.imagearchive.util.exif.ExifUtils;
 import com.imcode.imcms.addon.imagearchive.util.exif.Flash;
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.User;
 import imcode.server.user.RoleDomainObject;
+import imcode.util.image.ImageInfo;
+import imcode.util.image.ImageOp;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -11,37 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import imcode.util.image.ImageOp;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.transform.Transformers;
-import org.hibernate.type.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.imcode.imcms.addon.imagearchive.command.SearchImageCommand;
-import com.imcode.imcms.addon.imagearchive.entity.Categories;
-import com.imcode.imcms.addon.imagearchive.entity.Exif;
-import com.imcode.imcms.addon.imagearchive.entity.ExifPK;
-import com.imcode.imcms.addon.imagearchive.entity.ImageCategories;
-import com.imcode.imcms.addon.imagearchive.entity.ImageKeywords;
-import com.imcode.imcms.addon.imagearchive.entity.Images;
-import com.imcode.imcms.addon.imagearchive.entity.Keywords;
-import com.imcode.imcms.addon.imagearchive.util.Pagination;
-import com.imcode.imcms.addon.imagearchive.util.Utils;
-import com.imcode.imcms.addon.imagearchive.util.exif.ExifData;
-import com.imcode.imcms.addon.imagearchive.util.exif.ExifUtils;
-import com.imcode.imcms.api.User;
-import imcode.util.image.ImageInfo;
-import org.hibernate.SessionFactory;
 
 
 @Transactional
@@ -109,8 +104,10 @@ public class ImageService {
     }
 
 
-    public boolean createImagesFromZip(File tempFile, User user) {
+    public List<Images> createImagesFromZip(File tempFile, User user) {
         ZipFile zip = null;
+        List<Images> createdImages = new ArrayList<Images>();
+
         try {
             zip = new ZipFile(tempFile, ZipFile.OPEN_READ);
 
@@ -138,7 +135,6 @@ public class ImageService {
                     inputStream = zip.getInputStream(entry);
                     outputStream = new BufferedOutputStream(FileUtils.openOutputStream(entryFile));
 
-                    /* copy doesn't flush no closes the streams */
                     IOUtils.copy(inputStream, outputStream);
                     outputStream.flush();
                     IOUtils.closeQuietly(outputStream);
@@ -148,7 +144,11 @@ public class ImageService {
                         || imageInfo.getWidth() < 1 || imageInfo.getHeight() < 1) {
                         continue;
                     }
-                    this.createImageActivated(entryFile, imageInfo, fileName, user);
+                    Images image = this.createImageActivated(entryFile, imageInfo, fileName, user);
+                    if(image != null) {
+                        createdImages.add(image);
+                    }
+
                 } catch (Exception ex) {
                     log.warn(ex.getMessage(), ex);
                     entryFile.delete();
@@ -159,7 +159,6 @@ public class ImageService {
                 }
             }
 
-            return true;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
         } finally {
@@ -172,7 +171,7 @@ public class ImageService {
             }
         }
 
-        return false;
+        return createdImages;
     }
 
     public Images createImageActivated(File tempFile, ImageInfo imageInfo, String imageName, User user) {
@@ -462,7 +461,7 @@ public class ImageService {
                 .setInteger("width", image.getWidth())
                 .setInteger("height", image.getHeight())
                 .setInteger("fileSize", image.getFileSize())
-                .setShort("format", image.getFormat())
+                .setInteger("format", image.getFormat())
                 .setString("uploadedBy", image.getUploadedBy())
                 .setDate("licenseDt", image.getLicenseDt())
                 .setDate("licenseEndDt", image.getLicenseEndDt())
@@ -697,7 +696,7 @@ public class ImageService {
     }
     
     private Query buildSearchImagesQuery(SearchImageCommand command, boolean count, 
-            List<Integer> categoryIds, User user) {
+            List<Integer> categoryIds, User user, ContentManagementSystem cms) {
 
         StringBuilder builder = new StringBuilder();
         
@@ -714,7 +713,7 @@ public class ImageService {
         builder.append("FROM Images im ");
         
         List<Integer> categoryId = command.getCategoryIds();
-        if (user.isSuperAdmin()) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             if (SearchImageCommand.CATEGORY_NO_CATEGORY.equals(categoryId)) {
                 builder.append("LEFT OUTER JOIN im.categories c ");
             } else if (!SearchImageCommand.CATEGORY_ALL.equals(categoryId)) {
@@ -763,7 +762,7 @@ public class ImageService {
         
         
         
-        if (user.isSuperAdmin()) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             if (SearchImageCommand.CATEGORY_NO_CATEGORY.equals(categoryId)) {
                 builder.append("AND im.categories IS EMPTY ");
             } else if (!SearchImageCommand.CATEGORY_ALL.equals(categoryId)) {
@@ -804,6 +803,20 @@ public class ImageService {
                 builder.append("AND (lower(im.imageNm) LIKE :freetext ESCAPE '|' " +
                         "OR lower(e.description) LIKE :freetext ESCAPE '|' " +
                         "OR lower(e.artist) LIKE :freetext ESCAPE '|' " +
+                        "OR e.xResolution LIKE :freetext ESCAPE '|' " +
+                        "OR e.yResolution LIKE :freetext ESCAPE '|' " +
+                        "OR e.copyright LIKE :freetext ESCAPE '|' " +
+                        "OR e.manufacturer LIKE :freetext ESCAPE '|' " +
+                        "OR e.model LIKE :freetext ESCAPE '|' " +
+                        "OR e.compression LIKE :freetext ESCAPE '|' " +
+                        "OR e.exposureProgram LIKE :freetext ESCAPE '|' " +
+                        "OR e.fStop LIKE :freetext ESCAPE '|' " +
+                        "OR e.focalLength LIKE :freetext ESCAPE '|' " +
+                        "OR e.colorSpace LIKE :freetext ESCAPE '|' " +
+                        "OR e.exposureProgram LIKE :freetext ESCAPE '|' " +
+                        "OR e.pixelXDimension LIKE :freetext ESCAPE '|' " +
+                        "OR e.pixelYDimension LIKE :freetext ESCAPE '|' " +
+                        "OR e.ISO LIKE :freetext ESCAPE '|' " +
                         "OR lower(c.name) LIKE :freetext ESCAPE '|' " +
                         "OR lower(k.keywordNm) LIKE :freetext ESCAPE '|') ");
             }
@@ -863,7 +876,7 @@ public class ImageService {
             query.setShort("status", status);
         }
         
-        if (user.isSuperAdmin()) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             if (!SearchImageCommand.CATEGORY_NO_CATEGORY.equals(categoryId) && !SearchImageCommand.CATEGORY_ALL.equals(categoryId)) {
                 query.setParameterList("categoryId", categoryId);
             }
@@ -904,25 +917,26 @@ public class ImageService {
     }
     
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public int searchImagesCount(SearchImageCommand command, List<Integer> categoryIds, User user) {
+    public int searchImagesCount(SearchImageCommand command, List<Integer> categoryIds, User user, ContentManagementSystem cms) {
         if (user.isDefaultUser() && categoryIds.isEmpty()) {
             return 0;
         }
         
-        long count = (Long) buildSearchImagesQuery(command, true, categoryIds, user)
+        long count = (Long) buildSearchImagesQuery(command, true, categoryIds, user, cms)
                 .uniqueResult();
         
         return (int) count;
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public List<Images> searchImages(SearchImageCommand command, Pagination pag, List<Integer> categoryIds, User user) {
+    public List<Images> searchImages(SearchImageCommand command, Pagination pag, List<Integer> categoryIds, User user, ContentManagementSystem cms) {
         
         if (user.isDefaultUser() && categoryIds.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
         
-        List<Map<String, Object>> result = buildSearchImagesQuery(command, false, categoryIds, user)
+        List<Map<String, Object>> result = buildSearchImagesQuery(command, false, categoryIds, user, cms)
                 .setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP)
                 .setFirstResult(pag.getStartPosition())
                 .setMaxResults(pag.getPageSize())
@@ -960,12 +974,32 @@ public class ImageService {
                 .list();
     }
 
+    @SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
+    public List<Categories> findAvailableCategories(User user, ContentManagementSystem cms) {
+        if(user != null && (user.isSuperAdmin() || Utils.isImageAdmin(user, cms))) {
+            return factory.getCurrentSession().getNamedQuery("availableCategoriesForAdmin")
+                    .setResultTransformer(Transformers.aliasToBean(Categories.class))
+                    .list();
+        }
+
+        Set<Integer> roleIds = facade.getUserService().getRoleIdsWithPermission(user, null, RoleDomainObject.CHANGE_IMAGES_IN_ARCHIVE_PERMISSION);
+        if (roleIds.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+
+        return factory.getCurrentSession().getNamedQuery("availableCategoriesForUser")
+                .setResultTransformer(Transformers.aliasToBean(Categories.class))
+                .list();
+    }
+
+    @SuppressWarnings("unchecked")
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public List<Categories> findAvailableImageCategories(long imageId, User user) {
+    public List<Categories> findAvailableImageCategories(long imageId, User user, ContentManagementSystem cms) {
 
         Session session = factory.getCurrentSession();
 
-        if (user.isSuperAdmin()) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             return session.getNamedQuery("availableImageCategoriesAdmin")
                     .setLong("imageId", imageId)
                     .setResultTransformer(Transformers.aliasToBean(Categories.class))
@@ -986,9 +1020,9 @@ public class ImageService {
 
     /* checks if the given user has 'use' permission to the categories with given ids */
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public boolean canUseCategories(User user, List<Integer> categoryIds) {
+    public boolean canUseCategories(User user, List<Integer> categoryIds, ContentManagementSystem cms) {
 
-        if (user.isSuperAdmin()) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             return true;
         }
 
@@ -1037,8 +1071,8 @@ public class ImageService {
     }
     
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-    public boolean canUseImage(User user, long imageId) {
-        if (user.isSuperAdmin()) {
+    public boolean canUseImage(User user, long imageId, ContentManagementSystem cms) {
+        if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             return true;
         }
 
@@ -1145,7 +1179,7 @@ public class ImageService {
         }
     }
     
-    public void createKeyword(final String keyword) {
+    public boolean createKeyword(final String keyword) {
         Session session = factory.getCurrentSession();
 
         long count = (Long) session.createQuery(
@@ -1157,7 +1191,30 @@ public class ImageService {
             Keywords k = new Keywords();
             k.setKeywordNm(keyword);
             session.persist(k);
+            return true;
         }
         session.flush();
+
+        return false;
     }
+
+    public List<String> findKeywordNames(final String pattern) {
+        List<String> keywordNames = new ArrayList<String>();
+        for(Keywords keyword: findKeywords(pattern)) {
+            keywordNames.add(keyword.getKeywordNm());
+        }
+
+        return keywordNames;
+    }
+
+    public List<Keywords> findKeywords(final String pattern) {
+        Criteria crit = factory.getCurrentSession().createCriteria(Keywords.class, "k");
+
+        if(!StringUtils.isEmpty(pattern)) {
+            crit.add(Restrictions.ilike("k.keywordNm", pattern));
+        }
+
+        return crit.list();
+    }
+
 }

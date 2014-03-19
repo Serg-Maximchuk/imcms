@@ -1,12 +1,12 @@
 package com.imcode.imcms.addon.imagearchive.controller;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.imcode.imcms.addon.imagearchive.SessionConstants;
+import com.imcode.imcms.addon.imagearchive.entity.Keywords;
+import com.imcode.imcms.addon.imagearchive.service.Facade;
+import com.imcode.imcms.addon.imagearchive.util.SessionUtils;
+import com.imcode.imcms.addon.imagearchive.util.Utils;
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.User;
 import com.imcode.imcms.servlet.admin.ImageEditPage;
 import imcode.util.Utility;
 import org.apache.commons.lang.StringUtils;
@@ -17,15 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.imcode.imcms.addon.imagearchive.SessionConstants;
-import com.imcode.imcms.addon.imagearchive.service.Facade;
-import com.imcode.imcms.addon.imagearchive.util.SessionUtils;
-import com.imcode.imcms.addon.imagearchive.util.Utils;
-import com.imcode.imcms.api.ContentManagementSystem;
-import com.imcode.imcms.api.User;
-import com.imcode.imcms.web.util.ImcmsLocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.*;
 
 @Controller
 public class GeneralController {
@@ -76,7 +74,7 @@ public class GeneralController {
         
         if (user.isDefaultUser()) {
             return "redirect:/web/archive";
-        } else if (id == null || returnTo == null || !facade.getImageService().canUseImage(user, id)) {
+        } else if (id == null || returnTo == null || !facade.getImageService().canUseImage(user, id, cms)) {
             return "redirect:/web/archive";
         }
         
@@ -137,10 +135,43 @@ public class GeneralController {
     		Utils.sendErrorCode(response, HttpServletResponse.SC_NOT_FOUND);
     	} else {
     		keyword = StringUtils.substring(keyword, 0, 50);
-    		facade.getImageService().createKeyword(keyword);
-    		
-    		response.setStatus(HttpServletResponse.SC_OK);
+    		if(!facade.getImageService().createKeyword(keyword)) {
+                Map<String, String> error = new HashMap<String, String>();
+                error.put("error", "alreadyExists");
+                Utils.writeJSON(error, response);
+            } else {
+                Map<String, String> newKeyword = new HashMap<String, String>();
+                newKeyword.put("newKeyword", keyword);
+                Utils.writeJSON(newKeyword, response);
+            }
     	}
+    }
+
+    @RequestMapping("/archive/service/keyword/list")
+    public void keywordListHandler(@RequestParam(required = false) String text,
+                                   HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   HttpSession session) {
+
+        ContentManagementSystem cms = ContentManagementSystem.fromRequest(request);
+        User user = cms.getCurrentUser();
+
+        if(user == null) {
+            return;
+        }
+
+        List<String> keywords = new ArrayList<String>();
+        text = StringUtils.trimToEmpty(text);
+        if (!text.isEmpty()) {
+            text = "%" + text + "%";
+            for (Keywords keyword : facade.getImageService().findKeywords(text)) {
+                keywords.add(keyword.getKeywordNm());
+            }
+        }
+
+        Map<String, List<String>> tmp = new HashMap<String, List<String>>();
+        tmp.put("keywords", keywords);
+        Utils.writeJSON(tmp, response);
     }
 
     @RequestMapping("/archive/logOut")

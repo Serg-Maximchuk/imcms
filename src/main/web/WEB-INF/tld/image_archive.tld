@@ -30,6 +30,16 @@
         <function-class>com.imcode.imcms.addon.imagearchive.tag.func.Functions</function-class>
         <function-signature>java.lang.String doubleToFractionsString(java.lang.Double)</function-signature>
     </function>
+    <function>
+        <name>canAccessPreferences</name>
+        <function-class>com.imcode.imcms.addon.imagearchive.tag.func.Functions</function-class>
+        <function-signature>boolean canAccessPreferences(com.imcode.imcms.api.User, javax.servlet.jsp.PageContext)</function-signature>
+    </function>
+    <function>
+        <name>isImageAdmin</name>
+        <function-class>com.imcode.imcms.addon.imagearchive.tag.func.Functions</function-class>
+        <function-signature>boolean isImageAdmin(com.imcode.imcms.api.User,javax.servlet.jsp.PageContext)</function-signature>
+    </function>
 
 
    <tag>

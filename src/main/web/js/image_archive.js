@@ -27,6 +27,31 @@ $.extend($, {
     }
 });
 
+String.prototype.compareAlphabetically = function(str, alphabet) {
+    var SvAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖabcdefghijklmnopqrstuvwxyzåäö';
+    
+    function compareLetters(a, b) {
+        var ia = alphabet.indexOf(a);
+        var ib = alphabet.indexOf(b);
+        if(ia === -1 || ib === -1) {
+            if(ib !== -1) {
+                return a > 'a';
+            }
+            if(ia !== -1) {
+                return 'a' > b;
+            }
+            return a > b;
+        }
+        return a > b;
+    }
+
+    alphabet = alphabet || SvAlphabet;
+    var pos = 0;
+    var min = Math.min(this.length, str.length);
+    while(this.charAt(pos) === str.charAt(pos) && pos < min){ pos++; }
+    return compareLetters(this.charAt(pos), str.charAt(pos)) ? 1 : -1;
+};
+
 var common = (function() {
     var objectToParams = function(params) {
         var args = [];
@@ -81,194 +106,351 @@ var setupCalendar = function(prefix) {
     });
 };
 
-/* used together with css to put html button underneath uploadify's flash for css styling */
-var resizeUplodifyButtons = function() {
-    var buttonWrapper = $(".UploadifyButtonWrapper");
-    var objectWrapper = $(".UploadifyObjectWrapper");
-    var object = $("object", buttonWrapper);
-    var fakeButton = $("button", buttonWrapper);
-    var width = fakeButton.outerWidth();
-    var height = fakeButton.outerHeight();
-    object.attr("width", width).attr("height", height);
-    buttonWrapper.css("width", width + "px").css("height", height + "px");
-    objectWrapper.hover(function() {
-        $("button", this).addClass("Hover");
-    }, function() {
-        $("button", this).removeClass("Hover");
-    });
-};
-
 var setupChangeData = function() {
-    var categoryIds = [];
-    var keywords = [];
-    var imageKeywords = [];
-    
-    $("#imageCategories option").each(function() {
-        categoryIds.push($(this).val());
-    });
-    
-    $("#availableKeywords option").each(function() {
-        keywords.push($(this).val());
-    });
-    $("#assignedKeywords option").each(function() {
-        imageKeywords.push($(this).val());
-    });
-    
-    $("#addCategory").click(function() {
-        var selected = $("#availableCategories :selected");
-        if (selected.length) {
-            selected.appendTo("#imageCategories");
-            
-            selected.each(function() {
-                categoryIds.push($(this).val());
-            });
-        }
-        
-        return false;
-    });
-    $("#deleteCategory").click(function() {
-        var selected = $("#imageCategories :selected");
-        if (selected.length) {
-            selected.appendTo("#availableCategories");
-            
-            selected.each(function() {
-                var index = $.inArray($(this).val(), categoryIds);
-                if (index != -1) {
-                    categoryIds.splice(index, 1);
-                }
-            });
-        }
-        
-        return false;
-    });
-    
-    $("#addKeyword").click(function() {
-        var selected = $("#availableKeywords :selected");
-        if (selected.length) {
-            selected.appendTo("#assignedKeywords");
-            
-            selected.each(function() {
-                var keyword = $(this).val();
+
+    /* used together with css to put html button underneath uploadify's flash for css styling */
+    var resizeUplodifyButtons = function() {
+        var buttonWrapper = $(".UploadifyButtonWrapper");
+        var objectWrapper = $(".UploadifyObjectWrapper");
+        var object = $("object", buttonWrapper);
+        var fakeButton = $("button", buttonWrapper);
+        var width = fakeButton.outerWidth();
+        var height = fakeButton.outerHeight();
+        object.attr("width", width).attr("height", height);
+        buttonWrapper.css("width", width + "px").css("height", height + "px");
+        objectWrapper.hover(function() {
+            $("button", this).addClass("Hover");
+        }, function() {
+            $("button", this).removeClass("Hover");
+        });
+    };
+
+    var setupForm = function() {
+        var categoryIds = [];
+        var keywords = [];
+        var imageKeywords = [];
+
+        $("#imageCategories option").each(function() {
+            categoryIds.push($(this).val());
+        });
+
+        $("#availableKeywords option").each(function() {
+            keywords.push({value: $(this).val(), text: $(this).text()});
+        });
+        $("#assignedKeywords option").each(function() {
+            imageKeywords.push({value: $(this).val(), text: $(this).text()});
+        });
+
+        $("#addCategory").click(function() {
+            var selected = $("#availableCategories :selected");
+            if (selected.length) {
+                selected.appendTo("#imageCategories");
+
+                selected.each(function() {
+                    categoryIds.push($(this).val());
+                });
+            }
+
+            return false;
+        });
+        $("#deleteCategory").click(function() {
+            var selected = $("#imageCategories :selected");
+            if (selected.length) {
+                selected.appendTo("#availableCategories");
+
+                selected.each(function() {
+                    var index = $.inArray($(this).val(), categoryIds);
+                    if (index != -1) {
+                        categoryIds.splice(index, 1);
+                    }
+                });
+            }
+
+            return false;
+        });
+
+        $("#addKeyword").click(function() {
+            $("#availableKeywords :selected").each(function() {
+                var keyword = {value: $(this).val(), text: $(this).text()};
+                _.remove(keywords, function(obj) {
+                    return _.isEqual(obj, keyword);
+                });
+                $(this).remove();
                 imageKeywords.push(keyword);
-                
-                var index = $.inArray(keyword, keywords);
-                if (index != -1) {
-                    keywords.splice(index, 1);
-                }
             });
-        }
-        
-        return false;
-    });
-    $("#deleteKeyword").click(function() {
-        var selected = $("#assignedKeywords :selected");
-        if (selected.length) {
-            selected.appendTo("#availableKeywords");
-            
-            selected.each(function() {
-                var keyword = $(this).val();
-                var index = $.inArray(keyword, imageKeywords);
-                if (index != -1) {
-                    imageKeywords.splice(index, 1);
-                }
-                
+
+            imageKeywords.sort(function(a, b) {
+                return a.value.compareAlphabetically(b.value);
+            });
+            $("#assignedKeywords").empty();
+            $.each(imageKeywords, function(index, obj) {
+                $("#assignedKeywords").append($('<option>', {value: obj.value, text: obj.text}));
+            });
+
+            return false;
+        });
+
+        $("#deleteKeyword").click(function() {
+            $("#assignedKeywords :selected").each(function() {
+                var keyword = {value: $(this).val(), text: $(this).text()};
+                _.remove(imageKeywords, function(obj) {
+                    return _.isEqual(obj, keyword);
+                });
+                $(this).remove();
                 keywords.push(keyword);
             });
-        }
-        
-        return false;
-    });
-    
-    var createKeywordStarted = false;
-    $("#createKeyword").click(function() {
-    	if (createKeywordStarted) {
-    		return false;
-    	}
-    	createKeywordStarted = true;
-    	
-        var keyword = $("#keyword").val().trim().toLowerCase();
-        if (keyword.length > 50) {
-            keyword = keyword.substring(0, 50);
-        }
-        
-        if (keyword.length && $.inArray(keyword, keywords) == -1 
-        		&& $.inArray(keyword, imageKeywords) == -1) {
-        	$.ajax({
-        		url: common.getRelativeUrl("/web/archive/service/keyword/add"),  
-        		data: { keyword: keyword }, 
-        		dataType: "text", 
-        		success: function() {
-    				keywords.push(keyword);
-                    
-                    keyword = keyword.escapeHTML();
-                    $("#availableKeywords").prepend('<option value="' + keyword +'">' + keyword + '</option>');
-        		}, 
-        		complete: function() {
-        			$("#keyword").val("");
-        			createKeywordStarted = false;
-        		}
-        	});
-        } else {
-        	$("#keyword").val("");
-        	createKeywordStarted = false;
-        }
-        
-        return false;
-    });
-    
-    $("#changeData").submit(function() {
-        $("#categories").val($.join(categoryIds, ","));
-        
-        var i, len, 
-            keywordNames = [], 
-            imageKeywordNames = [];
-        
-        for (i = 0, len = keywords.length; i < len; i++) {
-            keywordNames.push(encodeURIComponent(keywords[i]));
-        }
-        for (i = 0, len = imageKeywords.length; i < len; i++) {
-            imageKeywordNames.push(encodeURIComponent(imageKeywords[i]));
-        }
-        
-        $("#keywords").val($.join(keywordNames, "/"));
-        $("#imageKeywords").val($.join(imageKeywordNames, "/"));
-    });
-    
-    if ($("#licenseDt").length) {
-        setupCalendar("license");
-        setupCalendar("licenseEnd");
-        
-        $("a[id$=DtBtn]").click(function() {
-            $(this).blur();
+
+            keywords.sort(function(a, b) {
+                return a.value.compareAlphabetically(b.value);
+            });
+            $("#availableKeywords").empty();
+            $.each(keywords, function(index, obj) {
+                $("#availableKeywords").append($('<option>', {value: obj.value, text: obj.text}));
+            });
+
+            $('#keywordPattern').trigger('change');
+
+            return false;
         });
-    }
-    
-    $("#rotateRight").click(function() {
-        var form = $("#changeData");
-        
-        form.append("<input type='hidden' name='rotateRight' value='r'/>");
-        form.submit();
-    });
 
-    $("#rotateLeft").click(function() {
-        var form = $("#changeData");
-        
-        form.append("<input type='hidden' name='rotateLeft' value='l'/>");
-        form.submit();
-    });
+        var createKeywordStarted = false;
+        $("#createKeyword").click(function() {
+            var alreadyExistsError = $(this).attr('data-already-exists-error') || 'Keyword already exists';
 
-    $('#uploadButton').click(function() {
-        $('#uploadify').uploadifyUpload();
-        return false;
-    });
+            if (createKeywordStarted) {
+                return false;
+            }
+            createKeywordStarted = true;
 
-    var redirectOnAllComplete;
+            var keyword = $("#keyword").val().trim().toLowerCase();
+            if (keyword.length > 50) {
+                keyword = keyword.substring(0, 50);
+            }
+
+            if (keyword.length) {
+                $.ajax({
+                    url: common.getRelativeUrl("/web/archive/service/keyword/add"),
+                    data: { keyword: keyword },
+                    type: 'POST',
+                    success: function(data) {
+                        var error = data.error;
+                        if(typeof error !== 'undefined' && error === 'alreadyExists') {
+                            alert(alreadyExistsError);
+                            return;
+                        }
+
+                        var newKeyword = {value: data.newKeyword, text: data.newKeyword};
+                        imageKeywords.push(newKeyword);
+                        imageKeywords.sort(function(a, b) {
+                            return a.value.compareAlphabetically(b.value);
+                        });
+
+                        $("#assignedKeywords").empty();
+                        $.each(imageKeywords, function(index, obj) {
+                            $("#assignedKeywords").append($('<option>', {value: obj.value, text: obj.text}));
+                        });
+                    },
+                    complete: function() {
+                        $("#keyword").val("");
+                        createKeywordStarted = false;
+                    }
+                });
+            } else {
+                $("#keyword").val("");
+                createKeywordStarted = false;
+            }
+
+            return false;
+        });
+
+        function serializeCategoriesAndKeywords() {
+            $("#categories").val($.join(categoryIds, ","));
+
+            var keywordNames = [],
+                imageKeywordNames = [];
+
+            $.each(keywords, function(index, obj) {
+                keywordNames.push(obj.value);
+            });
+
+            $.each(imageKeywords, function(index, obj) {
+                imageKeywordNames.push(obj.value);
+            });
+
+            $("#keywords").val($.join(keywordNames, "/"));
+            $("#imageKeywords").val($.join(imageKeywordNames, "/"));
+        }
+
+        $("#changeData").submit(serializeCategoriesAndKeywords);
+
+        if ($("#licenseDt").length) {
+            setupCalendar("license");
+            setupCalendar("licenseEnd");
+
+            $("a[id$=DtBtn]").click(function() {
+                $(this).blur();
+            });
+        }
+
+        $("#rotateRight").click(function() {
+            var form = $("#changeData");
+
+            form.append("<input type='hidden' name='rotateRight' value='r'/>");
+            form.submit();
+        });
+
+        $("#rotateLeft").click(function() {
+            var form = $("#changeData");
+
+            form.append("<input type='hidden' name='rotateLeft' value='l'/>");
+            form.submit();
+        });
+
+        $.fn.filterByText = function(textbox) {
+            return this.each(function() {
+                var select = this;
+
+                $(textbox).bind('change input', function() {
+                    var search = $.trim($(this).val());
+                    var regex = new RegExp('^' + search, 'gi');
+
+                    $(select).empty();
+                    $.each(keywords, function(index, obj) {
+                        if(obj.text.match(regex) !== null) {
+                            $(select).append($('<option>', {value: obj.value, text: obj.text}));
+                        }
+                    });
+                });
+            });
+        };
+
+        $('#availableKeywords').filterByText('#keywordPattern');
+        $('#resetFilter').click(function() {
+            $('#keywordPattern').val('');
+            $('#keywordPattern').trigger('change');
+        });
+
+        /* hides the list of existing keywords */
+        $('#keyword').blur(function() {
+            $('#existingKeywordList').remove();
+        });
+
+        /* show a list of existing keywords that start with the input */
+        $('#keyword').bind('keyup input focus', function() {
+            var heading = $(this).attr('data-existing-words-heading');
+            var str = $(this).val();
+            var top = $(this).position().top + $(this).outerHeight();
+            var left = $(this).position().left;
+            var width = $(this).outerWidth();
+
+            $('#existingKeywordList').remove();
+
+            if(str.length) {
+                var allKeywords = keywords.concat(imageKeywords);
+                var regex = new RegExp('^' + str);
+                var matching = [];
+                $.each(allKeywords, function(i, obj) {
+                    if(obj.text.match(regex) !== null) {
+                        matching.push(obj);
+                    }
+                });
+
+                if(matching.length) {
+                    var keywordList = $('<ul>', {id: 'existingKeywordList'});
+                    if(heading.length) {
+                        $('<li>', {text: heading}).addClass('header').appendTo(keywordList);
+                    }
+
+                    $.each(matching, function(i, obj) {
+                        $('<li>', {text: obj.text}).appendTo(keywordList);
+                    });
+
+                    $(keywordList).appendTo('body');
+                    $(keywordList).css({top: top, left: left, width: width});
+                    $(keywordList).show();
+                }
+            }
+        });
+
+        $('#uploadButton').click(function() {
+            $('#uploadify').uploadifyUpload();
+            return false;
+        });
+
+        function addFormData(uploadifyElem, form) {
+            serializeCategoriesAndKeywords();
+            var formData = $(uploadifyElem).uploadifySettings('scriptData');
+            $(form).serializeArray().map(function(o) {
+                formData[o.name] = o.value;
+            });
+
+            $(uploadifyElem).uploadifySettings('scriptData', formData);
+        }
+
+        function checkFormData(onSuccess) {
+            $('#multiFileUploadData .error').hide();
+            addFormData($('#uploadify'), $('#multiFileUploadData'));
+            $.ajax({
+                url: common.getRelativeUrl('/web/archive/add-image/verify-data'),
+                type: 'POST',
+                data: $('#multiFileUploadData').serialize(),
+                success: function(data) {
+                    var dataErrors = data.dataErrors;
+                    if(dataErrors) {
+                        $.each(dataErrors, function(i, error) {
+                            $('#'.concat(i, '\\.error')).text(error).show();
+                        });
+                    } else {
+                        onSuccess();
+                    }
+                }
+            });
+        }
+
+        $('#uploadAndAddNew').click(function() {
+            if($('#multiFileUploadData:visible').length) {
+                checkFormData(function() {
+                    $('#uploadify').uploadifyUpload();
+                });
+            } else {
+                $('#uploadify').uploadifyUpload();
+            }
+        });
+
+        $('#uploadAndViewSearch').click(function() {
+            if($('#multiFileUploadData:visible').length) {
+                checkFormData(function() {
+                    var formData = $('#uploadify').uploadifySettings('scriptData');
+                    formData.redirToSearch = true;
+                    $('#uploadify').uploadifySettings('scriptData', formData);
+                    $('#uploadify').uploadifyUpload();
+                });
+            } else {
+                $('#uploadify').uploadifyUpload();
+            }
+        });
+
+        $('#cancelUpload').click(function() {
+            $('#uploadifyQueue .uploadifyQueueItem').each(function() {
+                $('#uploadify').uploadifyCancel($(this).attr('id'));
+            });
+            $('#uploadify').uploadifyClearQueue();
+            $('#multiFileUploadData').hide();
+        });
+    };
+
+    setupForm();
+
+    var redirectOnAllComplete = '';
     $('#uploadify').uploadify({
         'uploader': common.getRelativeUrl('/js/jquery.uploadify-v2.1.4/uploadify.swf'),
         onAllComplete: function(event, data) {
             if(redirectOnAllComplete.length > 0) {
                 window.location.replace(redirectOnAllComplete);
             }
+
+            $('#uploadButton').show();
+            $('#multiFileUploadData').hide();
         },
         onComplete: function(a, b, c, resp, info){
             var data = $.parseJSON(resp);
@@ -281,11 +463,22 @@ var setupChangeData = function() {
                     redirectOnAllComplete = data.redirectOnAllComplete;
                 }
 
-                if(data.errors) {
+                var dataErrors = data.dataErrors;
+                if(dataErrors) {
+                    $('#multiFileUploadData .error').hide();
+                    $.each(dataErrors, function(i, error) {
+                        $('#' + i + '\\.error').text(error).show();
+                    });
+                    return false;
+                }
+
+                var imageErrors = data.imageErrors;
+                if(imageErrors) {
                     var errorMessage = "";
-                    for(var error in data.errors) {
-                        errorMessage += " " + data.errors[error] + "\n";
-                    }
+                    $.each(imageErrors, function(i, error) {
+                        errorMessage += " " + error + "\n";
+                    });
+
                     $("#uploadify" + b).find('.percentage').text(" - " + errorMessage);
                     $("#uploadify" + b).find('.uploadifyProgress').hide();
                     $("#uploadify" + b).addClass('uploadifyError');
@@ -296,7 +489,6 @@ var setupChangeData = function() {
 
             return false;
         },
-        /* using getUrl() cos the context path is added by c:url in the view */
         'script': common.getUrl($('#uploadify').parents('form:first').attr('action')),
         'multi': true,
         'auto' : false,
@@ -306,9 +498,65 @@ var setupChangeData = function() {
         'wmode':'transparent',
         'cancelImg': common.getRelativeUrl('/js/jquery.uploadify-v2.1.4/cancel.png'),
         'onSelectOnce' : function(event, data) {
-            $('#uploadify').uploadifySettings("scriptData", { 'fileCount' : data.fileCount })
+            /* the 'upload' param is specific to external file upload */
+            $('#uploadify').uploadifySettings('scriptData', { 'fileCount' : data.fileCount, 'upload' : 'upload' });
+            if($('#multiUploadData').length) {
+                var hasZip = $('#uploadifyQueue .uploadifyQueueItem .fileName').filter(function() {
+                    return $(this).text().indexOf('.zip') != -1;
+                }).length > 0;
+
+                if(data.fileCount > 1 || hasZip) {
+                    $('#uploadButton').hide();
+                    if($('#multiFileUploadData').length) {
+                        $('#multiFileUploadData').show();
+                        $('#changeData').remove();
+                    } else {
+                        $.ajax({
+                            url: common.getRelativeUrl("/web/archive/add-image/multi-upload-form"),
+                            type: 'GET',
+                            success: function(response) {
+                                $('#changeData').remove();
+                                $('#multiUploadData').empty().append(response);
+                                $('#multiFileUploadData').show();
+                                setupForm();
+                            }
+                        });
+                    }
+                } else {
+                    $('#uploadButton').show();
+                    $('#multiFileUploadData').hide();
+                }
+            }
         },
-        'onSWFReady': resizeUplodifyButtons
+        'onSWFReady': resizeUplodifyButtons,
+        onCancel: function(event, ID, fileObj, data, remove, clearFast){
+            var formData = $('#uploadify').uploadifySettings('scriptData');
+            if(typeof formData.fileCount !== 'undefined') {
+                formData.fileCount = data.fileCount;
+                $('#uploadify').uploadifySettings('scriptData', formData);
+            }
+
+            if($('#multiFileUploadData').length) {
+                var hasZip = $('#uploadifyQueue .uploadifyQueueItem .fileName').filter(function() {
+                    var isZip = $(this).text().indexOf('.zip') != -1;
+                    if(isZip) {
+                        var zipElem = $(this).parents('.uploadifyQueueItem');
+                        /* Check the zip in the list is not the one being removed from queue. */
+                        isZip = zipElem.attr('id') !== 'uploadify' + ID;
+                    }
+
+                    return isZip;
+                }).length > 0;
+
+                if(data.fileCount == 0 || (data.fileCount == 1 && !hasZip)) {
+                   $('#uploadButton').show();
+                   $('#multiFileUploadData').hide();
+                }
+            }
+        },
+        onError: function(event, ID, fileObj, errorObj) {
+            console.error(errorObj);
+        }
     });
 };
 
@@ -337,15 +585,11 @@ function setupBulkSelectionCheckboxes(tableClassOrId, selectOneClass, selectAllC
 }
 
 var initAddImage = function() {
-    $(function() {
-        setupChangeData();
-    });
+    setupChangeData();
 };
 
 var initImageCard = function() {
-    $(function() {
-        setupChangeData();
-    });
+    setupChangeData();
 };
 
 var initSearchImage = function() {
@@ -449,7 +693,7 @@ var initPreferences = function() {
         if($(".editCategoryTable td").length > 0) {
             $(".editCategoryTable").tablesorter({textExtraction: function(node) {
                     if($(node).find("input").length > 0) {
-                        return $(node).find("input").val();
+                        return $(node).find("input[type='text']").val();
                     }
                     return node.innerHTML;
                 }, sortList: [[0,0]], headers:{ 1 : {sorter:false}}
@@ -702,7 +946,6 @@ function lightbox(ajaxContentUrl, width, height){
 }
 
 function closeLightbox(){
-
     $('#lightbox', top.document).hide();
     $('#lightbox-shadow', top.document).hide();
     $('#lightbox-close', top.document).hide();

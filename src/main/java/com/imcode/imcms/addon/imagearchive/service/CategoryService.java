@@ -1,20 +1,21 @@
 package com.imcode.imcms.addon.imagearchive.service;
 
-import java.util.List;
-
-import com.imcode.imcms.addon.imagearchive.dto.RoleCategoriesDto;
+import com.imcode.imcms.addon.imagearchive.entity.Categories;
 import com.imcode.imcms.addon.imagearchive.entity.CategoryRoles;
+import com.imcode.imcms.addon.imagearchive.entity.CategoryTypes;
 import com.imcode.imcms.addon.imagearchive.entity.Roles;
+import com.imcode.imcms.addon.imagearchive.service.exception.CategoryExistsException;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.imcode.imcms.addon.imagearchive.entity.Categories;
-import com.imcode.imcms.addon.imagearchive.entity.CategoryTypes;
-import com.imcode.imcms.addon.imagearchive.service.exception.CategoryExistsException;
-import org.hibernate.SessionFactory;
+import java.util.List;
 
 @Transactional
 public class CategoryService {
@@ -27,7 +28,7 @@ public class CategoryService {
 
         List<CategoryTypes> types = factory.getCurrentSession()
                 .createQuery(
-                "SELECT ct.id AS id, ct.name AS name FROM CategoryTypes ct WHERE ct.imageArchive IS TRUE ORDER BY ct.name")
+                "SELECT ct.id AS id, ct.name AS name FROM CategoryTypes ct WHERE ct.imageArchive = TRUE ORDER BY ct.name")
                 .setResultTransformer(Transformers.aliasToBean(CategoryTypes.class))
                 .list();
 
@@ -48,31 +49,25 @@ public class CategoryService {
 
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
     public boolean existsCategory(String categoryName, int categoryTypeId) {
-        
-        Integer existingCategoryId = (Integer) factory.getCurrentSession()
-                .createQuery(
-                "SELECT c.id FROM Categories c WHERE c.name = :name AND c.type.id = :typeId")
-                .setString("name", categoryName)
-                .setInteger("typeId", categoryTypeId)
-                .setMaxResults(1)
-                .uniqueResult();
 
-        return existingCategoryId != null;
+        return ((Number)factory.getCurrentSession().createCriteria(Categories.class, "c")
+                        .createAlias("c.type", "t")
+                        .add(Restrictions.eq("t.id", categoryTypeId))
+                        .add(Restrictions.sqlRestriction("{alias}.name COLLATE utf8_bin = ?", categoryName, Hibernate.STRING))
+                        .setProjection(Projections.rowCount())
+                    .list().get(0)).longValue() > 0L;
     }
     
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
     public boolean existsCategory(int categoryId, String newCategoryName) {
 
-        Integer existingCategoryId = (Integer) factory.getCurrentSession()
-                .createQuery(
-                "SELECT c.id FROM Categories c " +
-                "WHERE c.name = :newName AND c.id <> :categoryId AND c.type.name = 'Images'")
-                .setString("newName", newCategoryName)
-                .setInteger("categoryId", categoryId)
-                .setMaxResults(1)
-                .uniqueResult();
-
-        return existingCategoryId != null;
+        return ((Number)factory.getCurrentSession().createCriteria(Categories.class, "c")
+                        .createAlias("c.type", "t")
+                        .add(Restrictions.sqlRestriction("{alias}.name COLLATE utf8_bin = ?", newCategoryName, Hibernate.STRING))
+                        .add(Restrictions.ne("c.id", categoryId))
+                        .add(Restrictions.eq("t.imageArchive", true))
+                        .setProjection(Projections.rowCount())
+                    .list().get(0)).longValue() > 0L;
     }
     
     public Categories createCategory(String categoryName, int categoryTypeId) throws CategoryExistsException {

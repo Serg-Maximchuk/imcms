@@ -197,7 +197,7 @@
         <form:form action="${saveCategoriesUrl}" commandName="saveCategories" method="post" cssClass="m15t clearfix">
             <input type="hidden" id="categoryIds" name="categoryIds" value=""/>
 
-            <div class="minH30">
+            <div class="minH30 clearfix">
                 <span class="left" style="width:40px;">
                     <label for="roles">
                         <spring:message code="archive.preferences.role" htmlEscape="true"/>
@@ -264,12 +264,14 @@
                                class="imcmsFormBtn"/>
                     </div>
 
-                    <div class="clearboth m10t" style="text-align:left;">
-                        <c:url var="addNewRoleButtonURL" value="/servlet/AdminRoles"/>
-                        <a href="${addNewRoleButtonURL}" target="blank">
-                            <spring:message code="archive.preferences.libraries.addNewRole" htmlEscape="true"/></a>
-                        <span> <spring:message code="archive.preferences.libraries.addNewRoleHint" htmlEscape="true"/></span>
-                    </div>
+                    <c:if test='${user.superAdmin}'>
+                        <div class="clearboth m10t" style="text-align:left;">
+                            <c:url var="addNewRoleButtonURL" value="/servlet/AdminRoles"/>
+                            <a href="${addNewRoleButtonURL}" target="blank">
+                                <spring:message code="archive.preferences.libraries.addNewRole" htmlEscape="true"/></a>
+                            <span> <spring:message code="archive.preferences.libraries.addNewRoleHint" htmlEscape="true"/></span>
+                        </div>
+                    </c:if>
                 </div>
             </div>
         </form:form>
@@ -294,7 +296,7 @@
                     <h3><spring:message code="archive.preferences.libraries.noLibrariesCreated" htmlEscape="true"/></h3>
                 </c:when>
                 <c:otherwise>
-                    <div class="minH30">
+                    <div class="minH30 clearfix">
                         <span class="left" style="width:110px;">
                             <label for="library"><spring:message code="archive.preferences.libraries.libraryFolder"
                                                                  htmlEscape="true"/></label>
@@ -307,7 +309,7 @@
                             </c:forEach>
                         </select>
                     </div>
-                    <div class="minH30">
+                    <div class="minH30 clearfix">
                         <span class="left" style="width:110px;">
                             <label for="libraryNm"><spring:message code="archive.preferences.libraries.libraryName"
                                                                    htmlEscape="true"/></label>

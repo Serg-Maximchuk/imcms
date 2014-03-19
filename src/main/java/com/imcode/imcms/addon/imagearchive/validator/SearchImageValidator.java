@@ -1,30 +1,31 @@
 package com.imcode.imcms.addon.imagearchive.validator;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
+import com.imcode.imcms.addon.imagearchive.command.SearchImageCommand;
+import com.imcode.imcms.addon.imagearchive.entity.Roles;
+import com.imcode.imcms.addon.imagearchive.service.Facade;
 import com.imcode.imcms.addon.imagearchive.tag.func.Functions;
+import com.imcode.imcms.addon.imagearchive.util.ValidatorUtils;
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.User;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.imcode.imcms.addon.imagearchive.command.SearchImageCommand;
-import com.imcode.imcms.addon.imagearchive.entity.Roles;
-import com.imcode.imcms.addon.imagearchive.service.Facade;
-import com.imcode.imcms.addon.imagearchive.util.ValidatorUtils;
-import com.imcode.imcms.api.User;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class SearchImageValidator implements Validator {
     private Facade facade;
     private User user;
+    private ContentManagementSystem cms;
 
-    public SearchImageValidator(Facade facade, User user) {
+    public SearchImageValidator(Facade facade, User user, ContentManagementSystem cms) {
         this.facade = facade;
         this.user = user;
+        this.cms = cms;
     }
     
     
@@ -46,7 +47,7 @@ public class SearchImageValidator implements Validator {
         if (categoryIds != null && !SearchImageCommand.CATEGORY_ALL.equals(categoryIds) && !SearchImageCommand.CATEGORY_NO_CATEGORY.equals(categoryIds)) {
             List<Integer> unavailableCategoryIds = new ArrayList<Integer>();
             for(Integer categoryId: categoryIds) {
-                if(!facade.getRoleService().hasAccessToCategory(user, categoryId, Roles.ALL_PERMISSIONS)) {
+                if(!facade.getRoleService().hasAccessToCategory(user, categoryId, cms, Roles.ALL_PERMISSIONS)) {
                     unavailableCategoryIds.add(categoryId);
                 }
             }

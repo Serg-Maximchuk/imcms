@@ -72,36 +72,6 @@
             });
         });
     </script>
-
-    <c:if test="${empty search.freetext}">
-        <script type="text/javascript">
-            $(document).ready(function(){
-                var defaultText = '<spring:message code="archive.searchImage.searchPhrase"/>';
-                var freetext = $('#freetext');
-                freetext.toggleClass('placeholder');
-                freetext.val(defaultText);
-                var focused = false;
-
-                freetext.one('focus', function(){
-                    $(this).val('');
-                    $(this).toggleClass('placeholder');
-                    focused = true;
-                });
-
-                $("#search").submit(function(){
-                    if(!focused) {
-                        freetext.val('');
-                    }
-                });
-
-                $(document).keydown(function(event){
-                    if (event.keyCode == '13') {
-                        $("#search").submit();
-                    }
-                })
-            })
-        </script>
-    </c:if>
 </c:set>
 <%@ include file="/WEB-INF/jsp/image_archive/includes/header.jsp" %>
 <%@ include file="/WEB-INF/jsp/image_archive/includes/top.jsp" %>
@@ -112,7 +82,8 @@
         <div class="minH30 clearfix" style="border-bottom: 1px solid gray;margin-bottom: 15px;">
             <label class="left" style="width:130px;" for="freetext"><spring:message code="archive.searchImage.searchPhrase"/></label>
             <div class="left">
-                <form:input id="freetext" path="freetext" maxlength="120" cssStyle="width:250px;"/><br/>
+                <spring:message code="archive.searchImage.searchPhrase" var='freeTextPlaceholder'/>
+                <form:input path="freetext" cssStyle="width:250px;" maxlength="120" placeholder='${freeTextPlaceholder}'/><br/>
                 <form:errors path="freetext" cssClass="red"/>
             </div>
             <div class="left" style="margin-left:8px;">
@@ -166,7 +137,9 @@
                 <label for="artist" class="left" style="width:130px;"><spring:message code="archive.searchImage.photographer" htmlEscape="true"/></label>
                 <form:select id="artist" path="artist" cssStyle="width:128px;">
                     <option value=""><spring:message code="archive.searchImage.allNone" htmlEscape="true"/></option>
-                    <form:options items="${artists}" htmlEscape="true"/>
+                    <c:forEach var='anArtist' items="${artists}">
+                        <form:option value="${anArtist}" htmlEscape="false"><c:out value='${anArtist}'/></form:option>
+                    </c:forEach>
                 </form:select>
             </div>
             <div class="minH30">

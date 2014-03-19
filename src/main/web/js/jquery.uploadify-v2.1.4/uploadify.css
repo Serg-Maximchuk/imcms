@@ -22,13 +22,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+.uploadifyQueue {
+    width: 300px;
+    float: left;
+}
 .uploadifyQueueItem {
 	background-color: #F5F5F5;
 	border: 2px solid #E5E5E5;
 	font: 11px Verdana, Geneva, sans-serif;
 	margin-top: 5px;
 	padding: 10px;
-	width: 350px;
+	width: 100%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 .uploadifyError {
 	background-color: #FDE5DD !important;

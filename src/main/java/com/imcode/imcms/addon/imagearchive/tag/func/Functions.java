@@ -3,6 +3,9 @@ package com.imcode.imcms.addon.imagearchive.tag.func;
 import com.imcode.imcms.addon.imagearchive.dto.LibraryEntryDto;
 import com.imcode.imcms.addon.imagearchive.entity.Images;
 import com.imcode.imcms.addon.imagearchive.service.Facade;
+import com.imcode.imcms.addon.imagearchive.util.Utils;
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.User;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sanselan.common.RationalNumber;
 import org.apache.sanselan.common.RationalNumberUtilities;
@@ -63,6 +66,12 @@ public class Functions {
         return false;
     }
 
+    public static boolean canAccessPreferences(User user, PageContext pageContext) {
+        ContentManagementSystem cms = ContentManagementSystem.fromRequest(pageContext.getRequest());
+
+        return Utils.canAccessPreferences(user, cms);
+    }
+
     public static String doubleToFractionsString(Double number) {
         if(number == null) {
             return null;
@@ -70,5 +79,11 @@ public class Functions {
 
         RationalNumber rationalNumber = RationalNumberUtilities.getRationalNumber(number);
         return rationalNumber.numerator + "/" + rationalNumber.divisor;
+    }
+
+    public static boolean isImageAdmin(User user, PageContext pageContext) {
+        ContentManagementSystem cms = ContentManagementSystem.fromRequest(pageContext.getRequest());
+
+        return Utils.isImageAdmin(user, cms);
     }
 }

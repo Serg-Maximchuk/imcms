@@ -9,7 +9,6 @@
 <c:set var="javascript">
     <%@ include file="/WEB-INF/jsp/image_archive/pages/fragments/jscalendar.jsp" %>
     <script type="text/javascript">
-        initImageCard();
 
     /* setting the value of opposing dimension if aspect ration is checked and the opposite one is empty */
     var fillOnAspectRatio = function() {
@@ -72,8 +71,10 @@
             $('#overlay-shadow', top.document).show();
         }
 
-        $(document).ready(function(){
-            $('#exportBtn').click(function(){
+        $(document).ready(function() {
+            initImageCard();
+
+            $('#exportBtn').click(function() {
                 exportOverlay();
             });
             $("#exportDialogCloseBtn").click(function(){
@@ -98,7 +99,14 @@
         </a>
     </div>
     <h4 class="imcmsAdmHeading" style="text-align:center;">
-        <spring:message code="archive.imageCard.imagePropertiesFor" arguments="${image.imageNm}" htmlEscape="true"/>
+        <c:choose>
+            <c:when test='${not empty image.imageNm}'>
+                <spring:message code="archive.imageCard.imagePropertiesFor" arguments="${image.imageNm}" htmlEscape="true"/>
+            </c:when>
+            <c:otherwise>
+                &nbsp;
+            </c:otherwise>
+        </c:choose>
     </h4>
     <c:url var="thumbUrl" value="/web/archive/thumb">
         <c:param name="id" value="${image.id}"/>
@@ -112,7 +120,9 @@
                     <c:param name="id" value="${image.id}"/>
                     <c:param name="tmp" value="${action eq 'change'}"/>
                 </c:url>
-                <a href="${previewUrl}" onclick="return showPreview(${image.id}, ${image.width}, ${image.height}, ${action eq 'change'});return false;" target="_blank">
+                <a href="${previewUrl}" class='imgLink'
+                   onclick="return showPreview(${image.id}, ${image.width}, ${image.height}, ${action eq 'change'});return false;"
+                   target="_blank">
                     <img src="${thumbUrl}" width="300" height="225" alt="${image.imageNm}"/>
                 </a><br/>
                 <span class="hint"><spring:message code="archive.imageCard.clickToEnlarge" htmlEscape="true"/></span>
@@ -202,7 +212,7 @@
                     </a>
                 </c:if>
 
-                <c:if test="${user.superAdmin and image.archived}">
+                <c:if test="${(archive:isImageAdmin(user, pageContext) or user.superAdmin) and image.archived}">
                     <c:url var="unarchiveUrl" value="/web/archive/image/${image.id}/unarchive"/>
                     <a href="${unarchiveUrl}" class="imcmsFormBtn">
                         <spring:message code="archive.imageCard.unarchive" htmlEscape="true"/>

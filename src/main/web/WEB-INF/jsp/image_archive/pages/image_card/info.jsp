@@ -4,16 +4,16 @@
 <spring:message var="notAvailable" code="archive.changeData.notAvailable"/>
 
 <div class="infoRow odd clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.imageName" htmlEscape="true"/>
     </span>
-    <span><c:out value="${image.imageNm}"/></span>
+    <span class="infoValue"><c:out value="${image.imageNm}"/></span>
 </div>
 <div class="infoRow clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.description" htmlEscape="true"/>
     </span>
-    <p class="left">
+    <p class="infoValue">
         <c:choose>
             <c:when test="${not empty image.changedExif.description}">
                 ${archive:newlineToBr(fn:escapeXml(image.changedExif.description))}
@@ -25,10 +25,10 @@
     </p>
 </div>
 <div class="infoRow clearfix odd">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.category" htmlEscape="true"/>
     </span>
-    <p class="left">
+    <p class="infoValue">
         <c:choose>
             <c:when test="${not empty categories}">
                 <c:out value="${categories}"/>
@@ -40,10 +40,10 @@
     </p>
 </div>
 <div class="infoRow clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.keywords" htmlEscape="true"/>
     </span>
-    <p class="left">
+    <p class="infoValue">
         <c:choose>
             <c:when test="${not empty keywords}">
                 <c:out value="${keywords}"/>
@@ -55,10 +55,10 @@
     </p>
 </div>
 <div class="infoRow clearfix odd">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.photographer" htmlEscape="true"/>
     </span>
-    <span>
+    <span class="infoValue">
         <c:choose>
             <c:when test="${not empty image.changedExif.artist}">
                 <c:out value="${image.changedExif.artist}"/>
@@ -70,18 +70,18 @@
     </span>
 </div>
 <div class="infoRow clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.originalSizeWidth" htmlEscape="true"/>
     </span>
-    <span>
+    <span class="infoValue">
         ${image.width}x${image.height}
     </span>
 </div>
 <div class="infoRow odd clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.resolution" htmlEscape="true"/>
     </span>
-    <span>
+    <span class="infoValue">
         <c:choose>
             <c:when test="${empty image.changedExif.xResolution and empty image.changedExif.yResolution}">
                 <c:out value="${notAvailable}"/>
@@ -105,43 +105,42 @@
     </span>
 </div>
 <div class="infoRow clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.originalFileSize" htmlEscape="true"/>
     </span>
-    <span><spring:message code="archive.originalSizeKb" arguments="${image.fileSize / 1024.0}"/></span>
+    <span class="infoValue"><spring:message code="archive.originalSizeKb" arguments="${image.fileSize / 1024.0}"/></span>
 </div>
 <div class="infoRow odd clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.originalFileType" htmlEscape="true"/>
     </span>
-    <span><c:out value="${format.format}"/></span>
+    <span class="infoValue"><c:out value="${format.format}"/></span>
 </div>
 <div class="infoRow clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.id" htmlEscape="true"/>
     </span>
-    <span>${image.id}</span>
+    <span class="infoValue">${image.id}</span>
 </div>
 <div class="infoRow odd clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.usedInImcms" htmlEscape="true"/>
     </span>
-    <span>${archive:join(image.metaIds, ', ')}</span>
+    <span class="infoValue">${archive:join(image.metaIds, ', ')}</span>
 </div>
 <div class="infoRow clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.uploadedBy" htmlEscape="true"/>
     </span>
-    <span>
-
+    <span class="infoValue">
         <c:out value="${image.uploadedBy}"/>
     </span>
 </div>
 <div class="infoRow odd clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.copyright" htmlEscape="true"/>
     </span>
-    <span>
+    <span class="infoValue">
         <c:choose>
             <c:when test="${not empty image.changedExif.copyright}">
                 <c:out value="${image.changedExif.copyright}"/>
@@ -153,10 +152,10 @@
     </span>
 </div>
 <div class="infoRow clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.licensePeriod" htmlEscape="true"/>
     </span>
-    <span>
+    <span class="infoValue">
         <c:choose>
             <c:when test="${image.licenseDt ne null and image.licenseEndDt ne null}">
                 <c:choose>
@@ -184,10 +183,10 @@
     </span>
 </div>
 <div class="infoRow odd clearfix">
-    <span class="left" style="width:150px;">
+    <span class="infoLabel">
         <spring:message code="archive.changeData.altText" htmlEscape="true"/>
     </span>
-    <span>
+    <span class="infoValue">
         <c:choose>
             <c:when test="${empty image.altText}">
                 <c:out value="${notAvailable}"/>

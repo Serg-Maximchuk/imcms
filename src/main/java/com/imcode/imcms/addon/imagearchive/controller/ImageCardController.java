@@ -1,20 +1,25 @@
 package com.imcode.imcms.addon.imagearchive.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.imcode.imcms.addon.imagearchive.command.ChangeImageDataCommand;
+import com.imcode.imcms.addon.imagearchive.command.ExportImageCommand;
+import com.imcode.imcms.addon.imagearchive.command.ImageCardChangeActionCommand;
+import com.imcode.imcms.addon.imagearchive.entity.Categories;
+import com.imcode.imcms.addon.imagearchive.entity.Exif;
+import com.imcode.imcms.addon.imagearchive.entity.Images;
+import com.imcode.imcms.addon.imagearchive.entity.Keywords;
+import com.imcode.imcms.addon.imagearchive.service.Facade;
+import com.imcode.imcms.addon.imagearchive.util.ArchiveSession;
 import com.imcode.imcms.addon.imagearchive.util.SessionUtils;
+import com.imcode.imcms.addon.imagearchive.util.Utils;
+import com.imcode.imcms.addon.imagearchive.util.exif.ExifData;
+import com.imcode.imcms.addon.imagearchive.util.exif.ExifUtils;
 import com.imcode.imcms.addon.imagearchive.util.exif.Flash;
+import com.imcode.imcms.addon.imagearchive.validator.ChangeImageDataValidator;
+import com.imcode.imcms.addon.imagearchive.validator.ExportImageValidator;
+import com.imcode.imcms.addon.imagearchive.validator.ImageUploadValidator;
+import com.imcode.imcms.api.ContentManagementSystem;
+import com.imcode.imcms.api.User;
+import imcode.util.image.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -28,28 +33,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.imcode.imcms.addon.imagearchive.command.ChangeImageDataCommand;
-import com.imcode.imcms.addon.imagearchive.command.ExportImageCommand;
-import com.imcode.imcms.addon.imagearchive.command.ImageCardChangeActionCommand;
-import com.imcode.imcms.addon.imagearchive.entity.Categories;
-import com.imcode.imcms.addon.imagearchive.entity.Exif;
-import com.imcode.imcms.addon.imagearchive.entity.Images;
-import com.imcode.imcms.addon.imagearchive.entity.Keywords;
-import com.imcode.imcms.addon.imagearchive.service.Facade;
-import com.imcode.imcms.addon.imagearchive.util.ArchiveSession;
-import com.imcode.imcms.addon.imagearchive.util.Utils;
-import com.imcode.imcms.addon.imagearchive.util.exif.ExifData;
-import com.imcode.imcms.addon.imagearchive.util.exif.ExifUtils;
-import com.imcode.imcms.addon.imagearchive.validator.ChangeImageDataValidator;
-import com.imcode.imcms.addon.imagearchive.validator.ExportImageValidator;
-import com.imcode.imcms.addon.imagearchive.validator.ImageUploadValidator;
-import com.imcode.imcms.api.ContentManagementSystem;
-import com.imcode.imcms.api.User;
-import imcode.util.image.Filter;
-import imcode.util.image.Format;
-import imcode.util.image.ImageInfo;
-import imcode.util.image.ImageOp;
-import imcode.util.image.Resize;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class ImageCardController {
@@ -75,7 +65,7 @@ public class ImageCardController {
         Images image;
         
         if (imageId == null || (image = facade.getImageService().findById(imageId, user)) == null
-                || !(facade.getImageService().canUseImage(user, imageId) || image.isCanChange())) {
+                || !(facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange())) {
             return new ModelAndView("redirect:/web/archive/");
         }
         
@@ -110,8 +100,8 @@ public class ImageCardController {
         mav.addObject("categories", getCategories(image));
         mav.addObject("keywords", getKeywords(image));
         mav.addObject("canUseInImcms", SessionUtils.getImcmsReturnToUrl(request.getSession()) != null
-                && (facade.getImageService().canUseImage(user, imageId) || image.isCanChange()));
-        mav.addObject("canExport", (facade.getImageService().canUseImage(user, imageId) || image.isCanChange()));
+                && (facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange()));
+        mav.addObject("canExport", (facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange()));
         mav.addObject("format", Format.findFormat(image.getFormat()));
         
         return mav;
@@ -227,7 +217,7 @@ public class ImageCardController {
         Long imageId = getImageId(request);
         Images image;
         if (imageId == null || (image = facade.getImageService().findById(imageId, user)) == null
-                || !(facade.getImageService().canUseImage(user, imageId) || image.isCanChange())) {
+                || !(facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange())) {
             return new ModelAndView("redirect:/web/archive");
         }
 
@@ -245,9 +235,9 @@ public class ImageCardController {
         ModelAndView mav = new ModelAndView("image_archive/pages/image_card/image_card");
         mav.addObject("action", "exif");
         mav.addObject("image", image);
-        mav.addObject("canExport", (facade.getImageService().canUseImage(user, imageId) || image.isCanChange()));
+        mav.addObject("canExport", (facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange()));
         mav.addObject("canUseInImcms", SessionUtils.getImcmsReturnToUrl(request.getSession()) != null
-                && (facade.getImageService().canUseImage(user, imageId) || image.isCanChange()));
+                && (facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange()));
         
         return mav;
     }
@@ -266,7 +256,7 @@ public class ImageCardController {
             return new ModelAndView("redirect:/web/archive");
         }
 
-        if(user.isSuperAdmin()) {
+        if(user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
             facade.getImageService().unarchiveImage(imageId);
         }
 
@@ -335,7 +325,7 @@ public class ImageCardController {
             
             facade.getFileService().createTemporaryCopyOfCurrentImage(image.getId());
             
-            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user));
+            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user, cms));
             mav.addObject("imageCategories", facade.getImageService().findImageCategories(image.getId()));
             
             List<String> keywords = facade.getImageService().findAvailableKeywords(image.getId());
@@ -365,7 +355,7 @@ public class ImageCardController {
             
             mav.addObject("keywords", keywords);
             mav.addObject("imageKeywords", imageKeywords);
-            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user));
+            mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user, cms));
             mav.addObject("imageCategories", facade.getImageService().findImageCategories(image.getId()));
             
             if (action.isUpload()) {
@@ -460,7 +450,7 @@ public class ImageCardController {
                 return mav;
             }
             
-            ChangeImageDataValidator validator = new ChangeImageDataValidator(facade, user);
+            ChangeImageDataValidator validator = new ChangeImageDataValidator(facade, user, cms);
             ValidationUtils.invokeValidator(validator, changeData, result);
             
             if (action.getRotateLeft() != null) {
@@ -491,7 +481,7 @@ public class ImageCardController {
                 /* refreshing categories since those are also set earlier, before update(in case of file upload) */
                 mav.getModel().remove("categories");
                 mav.getModel().remove("imageCategories");
-                mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user));
+                mav.addObject("categories", facade.getImageService().findAvailableImageCategories(image.getId(), user, cms));
                 mav.addObject("imageCategories", facade.getImageService().findImageCategories(image.getId()));
                 
                 facade.getFileService().copyTemporaryImageToCurrent(imageId);

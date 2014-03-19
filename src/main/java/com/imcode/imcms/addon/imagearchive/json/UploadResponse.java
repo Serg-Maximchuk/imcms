@@ -1,10 +1,12 @@
 package com.imcode.imcms.addon.imagearchive.json;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class UploadResponse {
-    private List<String> errors;
+    private List<String> imageErrors;
+    private Map<String, String> dataErrors;
     private String redirect;
     private String redirectOnAllComplete;
 
@@ -16,12 +18,20 @@ public class UploadResponse {
         this.redirect = redirect;
     }
 
-    public List<String> getErrors() {
-        return errors;
+    public List<String> getImageErrors() {
+        return imageErrors;
     }
 
-    public void setErrors(List<String> errors) {
-        this.errors = errors;
+    public void setImageErrors(List<String> imageErrors) {
+        this.imageErrors = imageErrors;
+    }
+
+    public Map<String, String> getDataErrors() {
+        return dataErrors;
+    }
+
+    public void setDataErrors(Map<String, String> dataErrors) {
+        this.dataErrors = dataErrors;
     }
 
     public String getRedirectOnAllComplete() {

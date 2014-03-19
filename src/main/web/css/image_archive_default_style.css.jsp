@@ -5,6 +5,10 @@
     padding: 0;
 }
 
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+
 html {
     height: 100%;
 }
@@ -81,6 +85,10 @@ a {
     text-decoration: underline;
 }
 
+a.imgLink {
+    text-decoration: none;
+}
+
 img, table {
     border: 0 none;
 }
@@ -140,7 +148,7 @@ input[type="button"].imcmsFormBtnSmall::-moz-focus-inner, input[type="submit"].i
     clear: both !important;
     padding-top: 10px;
     padding-bottom: 20px;
-    width:850px;
+    width:890px;
 }
 
 #containerTop {
@@ -195,13 +203,30 @@ li.sel a {
 }
 
 .minH30 {
-	min-height: 30px;
-	height: auto !important;
-	height: 30px;
+    padding-bottom: 13px;
+}
+
+.infoCol {
+    width:530px;
+    float:right;
 }
 
 .infoRow {
 	padding:3px 2px;
+}
+
+.infoLabel {
+    width: 150px;
+    float: left;
+}
+
+label.withCheckbox {
+    margin-left: 3px;
+}
+
+.infoValue {
+    width: 304px;
+    float: left;
 }
 
 .minW60 {
@@ -232,8 +257,50 @@ li.sel a {
     background: white;
 }
 
-#freetext.placeholder {
+.placeholdersjs {
     color: gray;
+    font-style: italic;
+}
+
+::-webkit-input-placeholder {
+    color: gray;
+    font-style: italic;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+    color: gray;
+    font-style: italic;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+    color: gray;
+    font-style: italic;
+}
+
+:-ms-input-placeholder {
+    color: gray;
+    font-style: italic;
+}
+
+#existingKeywordList {
+    display: none;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid black;
+    list-style: none;
+    background: white;
+    box-sizing: border-box;
+}
+
+#existingKeywordList li {
+    font-size: 11px;
+    color: gray;
+    padding: 1px 3px;
+}
+
+#existingKeywordList li.header {
     font-style: italic;
 }
 
@@ -461,4 +528,15 @@ table.tablesorter tr.odd td, div.odd, .editCategoryTable tr.odd td, .editCategor
 
 .backToSearchResultsBtn {
     margin-bottom: -17px;
+}
+
+#multiFileUploadData {
+    margin-left: 20px;
+    float:left;
+    display:none;
+}
+
+.dataFormButtons {
+    margin-top: 20px;
+    text-align:right;
 }
