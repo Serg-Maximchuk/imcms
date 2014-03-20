@@ -148,7 +148,7 @@ input[type="button"].imcmsFormBtnSmall::-moz-focus-inner, input[type="submit"].i
     clear: both !important;
     padding-top: 10px;
     padding-bottom: 20px;
-    width:890px;
+    width:850px;
 }
 
 #containerTop {
@@ -207,8 +207,13 @@ li.sel a {
 }
 
 .infoCol {
-    width:530px;
+    width:500px;
     float:right;
+}
+
+.image_card_thumbnail {
+    float:left;
+    margin-left: 10px;
 }
 
 .infoRow {
