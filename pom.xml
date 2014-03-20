@@ -1230,7 +1230,7 @@
         <repository>
             <id>imcode</id>
             <name>imCode Internal Repository</name>
-            <url>scp://garm.imcode.com:/srv/www/apache/sites/repo.imcode.com/maven2</url>
+            <url>scp://bugzilla.imcode.com:2022/srv/www/repo.imcode.com/maven2</url>
         </repository>
     </distributionManagement>
 
