@@ -7,7 +7,7 @@
     <artifactId>imcms</artifactId>
     <packaging>war</packaging>
     <!--<version>6.0.0-alpha51-SNAPSHOT</version>-->
-    <version>6.0.0-alpha52-i13124-v1</version>
+    <version>6.0.0-alpha52-i13124-v1-SNAPSHOT</version>
     <name>imCMS</name>
 
     <properties>
