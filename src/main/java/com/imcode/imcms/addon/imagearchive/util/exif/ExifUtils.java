@@ -1,14 +1,5 @@
 package com.imcode.imcms.addon.imagearchive.util.exif;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.regex.Pattern;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -30,10 +21,19 @@ import org.apache.sanselan.formats.tiff.constants.TiffFieldTypeConstants;
 import org.apache.sanselan.formats.tiff.fieldtypes.FieldType;
 import org.apache.sanselan.formats.tiff.write.TiffOutputField;
 import org.apache.sanselan.formats.tiff.write.TiffOutputSet;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 public class ExifUtils {
     /* spec. used: http://www.exif.org/Exif2-2.PDF */
-    public static final SimpleDateFormat tiffExifDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+    private static final DateTimeFormatter tiffExifDateFormat = DateTimeFormat.forPattern("yyyy:MM:dd HH:mm:ss");
     private static final Log log = LogFactory.getLog(ExifUtils.class);
     
     private static final Pattern HTML_ENTITY_PATTERN = Pattern.compile("&#[0-9a-z]+;");
@@ -202,20 +202,25 @@ public class ExifUtils {
             data.setExposureProgram(exposureProgram);
             data.setfStop(fStop);
 
+            // Trimming \u0000
+            dateDigitized = StringUtils.trimToNull(dateDigitized);
             if(dateDigitized != null) {
                 Date tmpDate = null;
                 try{
-                    tmpDate = tiffExifDateFormat.parse(dateDigitized);
-                }catch(ParseException e){}
+                    tmpDate = tiffExifDateFormat.parseDateTime(dateDigitized).toDate();
+                }catch(UnsupportedOperationException e){}
+                catch (IllegalArgumentException e){}
                 
                 data.setDateDigitized(tmpDate);
             }
 
+            dateOriginal = StringUtils.trimToNull(dateOriginal);
             if(dateOriginal != null) {
                 Date tmpDate = null;
                 try{
-                    tmpDate = tiffExifDateFormat.parse(dateOriginal);
-                }catch(ParseException e){}
+                    tmpDate = tiffExifDateFormat.parseDateTime(dateOriginal).toDate();
+                }catch(UnsupportedOperationException e){}
+                catch (IllegalArgumentException e){}
 
                 data.setDateOriginal(tmpDate);
             }
