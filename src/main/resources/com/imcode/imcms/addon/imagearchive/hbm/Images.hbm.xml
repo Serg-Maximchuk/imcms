@@ -99,6 +99,7 @@
                           WHERE 
                                 ic.imageId = :imageId
                             AND ic.categoryId = c.id)
+        ORDER BY c.name ASC
         ]]>
     </query>
     <query name="availableCategoriesForAdmin">
@@ -144,6 +145,7 @@
                                 ic.imageId = :imageId 
                             AND ic.categoryId = cr.categoryId)
           AND c.type.imageArchive IS TRUE
+          ORDER BY c.name ASC
         ]]>
     </query>
     <query name="availableKeywords">
@@ -159,7 +161,7 @@
                                 ik.imageId = :imageId 
                             AND ik.keywordId = k.id) 
         ORDER BY 
-          k.keywordNm
+          k.keywordNm ASC
         ]]>
     </query>
     <query name="keywordsUsedByImages">

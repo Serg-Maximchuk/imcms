@@ -21,8 +21,7 @@
           AND e.type = :changedType 
           AND cr.category.type.name = 'Images'
           AND lower(e.artist) <> '' 
-        ORDER BY 
-          lower(e.artist) 
+        ORDER BY e.artist ASC
         ]]>
     </query>
 </hibernate-mapping>

@@ -12,6 +12,7 @@ import imcode.server.user.RolePermissionDomainObject;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -193,6 +194,7 @@ public class RoleService {
                     .add(Restrictions.eq("exif.type", Exif.TYPE_CHANGED))
                     .add(Restrictions.ne("exif.artist", ""))
                     .setProjection(Projections.distinct(Projections.property("exif.artist")))
+                    .addOrder(Order.asc("exif.artist"))
                     .list();
         }
 
