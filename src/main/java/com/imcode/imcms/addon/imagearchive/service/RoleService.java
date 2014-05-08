@@ -9,6 +9,7 @@ import com.imcode.imcms.addon.imagearchive.util.Utils;
 import com.imcode.imcms.api.ContentManagementSystem;
 import com.imcode.imcms.api.User;
 import imcode.server.user.RolePermissionDomainObject;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,9 +18,11 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.*;
 
 @Transactional
@@ -78,18 +81,19 @@ public class RoleService {
                 .setString("typeName", "Images")
                 .list();
     }
-    
-    public void assignCategoryRoles(Roles role, List<SaveRoleCategoriesCommand.CategoryRight> categoryRights) {
 
+    @SuppressWarnings("unchecked")
+    public void assignCategoryRoles(Roles role, List<SaveRoleCategoriesCommand.CategoryRight> categoryRights) {
         Session session = factory.getCurrentSession();
 
-        StringBuilder deleteBuilder = new StringBuilder(
-                "DELETE FROM CategoryRoles cr WHERE cr.roleId = :roleId ");
+        List<CategoryRoles> toDelete = session.createCriteria(CategoryRoles.class, "cr")
+                .add(Restrictions.eq("cr.roleId", role.getId()))
+                .list();
 
-
-        Query deleteQuery = session.createQuery(deleteBuilder.toString())
-                .setInteger("roleId", role.getId());
-        deleteQuery.executeUpdate();
+        for(CategoryRoles categoryRole: toDelete) {
+            session.delete(categoryRole);
+        }
+        session.flush();
 
         if(categoryRights != null) {
             for(SaveRoleCategoriesCommand.CategoryRight categoryRight: categoryRights) {
@@ -183,6 +187,10 @@ public class RoleService {
                 .uniqueResult();
 
         return count != 0L;
+    }
+
+    public Roles getUsersRole() {
+        return (Roles) factory.getCurrentSession().get(Roles.class, Roles.USERS_ID);
     }
 
     @SuppressWarnings("unchecked")

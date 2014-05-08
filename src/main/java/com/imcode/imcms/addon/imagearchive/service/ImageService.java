@@ -990,6 +990,7 @@ public class ImageService {
 
         return factory.getCurrentSession().getNamedQuery("availableCategoriesForUser")
                 .setResultTransformer(Transformers.aliasToBean(Categories.class))
+                .setParameterList("roleIds", roleIds)
                 .list();
     }
 
@@ -1069,7 +1070,11 @@ public class ImageService {
                 .setResultTransformer(Transformers.aliasToBean(Keywords.class))
                 .list();
     }
-    
+
+    public boolean canExport(User user, Images image, ContentManagementSystem cms) {
+        return user != null && !user.isDefaultUser() && canUseImage(user, image.getId(), cms) || image.isCanChange();
+    }
+
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
     public boolean canUseImage(User user, long imageId, ContentManagementSystem cms) {
         if (user.isSuperAdmin() || Utils.isImageAdmin(user, cms)) {
@@ -1077,10 +1082,12 @@ public class ImageService {
         }
 
         Session session = factory.getCurrentSession();
-        
-        Integer usersId = (Integer) session.createQuery("SELECT im.usersId FROM Images im WHERE im.id = :imageId")
-                .setLong("imageId", imageId)
-                .uniqueResult();
+        Images image = (Images) session.get(Images.class, imageId);
+        if(image == null) {
+            return false;
+        }
+
+        Integer usersId = image.getUsersId();
         if (usersId == null || usersId == user.getId()) {
             return true;
         }
@@ -1090,14 +1097,29 @@ public class ImageService {
             return false;
         }
 
-        long count = (Long) session.createQuery(
-                "SELECT count(ic.imageId) FROM CategoryRoles cr, ImageCategories ic " +
-                "WHERE cr.roleId IN (:roleIds) AND cr.categoryId = ic.categoryId AND ic.imageId = :imageId")
-                .setParameterList("roleIds", roleIds)
-                .setLong("imageId", imageId)
-                .uniqueResult();
+        if(!user.isDefaultUser()) {
+            for(Integer roleId: roleIds) {
+                Roles role = facade.getRoleService().findRoleById(roleId);
+                if(role != null) {
+                    for(Categories category: image.getCategories()) {
+                        if(role.canAccess(category, Roles.PERMISSION_USE_IMAGE)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } else {
+            Roles usersRole = facade.getRoleService().getUsersRole();
+            if(usersRole != null) {
+                for(Categories category: image.getCategories()) {
+                    if(usersRole.canAccess(category, Roles.PERMISSION_USE_IMAGE)) {
+                        return true;
+                    }
+                }
+            }
+        }
 
-        return count > 0L;
+        return false;
     }
     
     @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)

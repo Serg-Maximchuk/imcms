@@ -69,7 +69,7 @@ public class ImageCardController {
             return new ModelAndView("redirect:/web/archive/");
         }
         
-        if (command.getExport() != null && !image.isArchived()) {
+        if (command.getExport() != null && !image.isArchived() && facade.getImageService().canExport(user, image, cms)) {
             
             ExportImageValidator validator = new ExportImageValidator();
             ValidationUtils.invokeValidator(validator, command, result);
@@ -101,7 +101,7 @@ public class ImageCardController {
         mav.addObject("keywords", getKeywords(image));
         mav.addObject("canUseInImcms", SessionUtils.getImcmsReturnToUrl(request.getSession()) != null
                 && (facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange()));
-        mav.addObject("canExport", (facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange()));
+        mav.addObject("canExport", facade.getImageService().canExport(user, image, cms));
         mav.addObject("format", Format.findFormat(image.getFormat()));
         
         return mav;
@@ -235,7 +235,7 @@ public class ImageCardController {
         ModelAndView mav = new ModelAndView("image_archive/pages/image_card/image_card");
         mav.addObject("action", "exif");
         mav.addObject("image", image);
-        mav.addObject("canExport", (facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange()));
+        mav.addObject("canExport", facade.getImageService().canExport(user, image, cms));
         mav.addObject("canUseInImcms", SessionUtils.getImcmsReturnToUrl(request.getSession()) != null
                 && (facade.getImageService().canUseImage(user, imageId, cms) || image.isCanChange()));
         

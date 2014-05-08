@@ -3,9 +3,9 @@ package com.imcode.imcms.addon.imagearchive.entity;
 import imcode.server.user.RoleDomainObject;
 import imcode.server.user.RolePermissionDomainObject;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
-import javax.persistence.*;
 
 @Entity
 @Table(name="roles")
@@ -39,7 +39,7 @@ public class Roles implements Serializable {
     @Column(name="admin_role", nullable=false)
     private int adminRole;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", insertable=false, updatable=false)
     private Set<CategoryRoles> categoryRoles;
     
@@ -50,7 +50,20 @@ public class Roles implements Serializable {
         this.id = id;
     }
     
-    
+    public boolean canAccess(Categories category, int permission) {
+        for(CategoryRoles categoryRole: getCategoryRoles()) {
+            if(category.equals(categoryRole.getCategory())) {
+                if(permission == PERMISSION_USE_IMAGE) {
+                    return categoryRole.getCanUse();
+                } else if(permission == PERMISSION_CHANGE_IMAGE) {
+                    return categoryRole.getCanChange();
+                }
+            }
+        }
+
+        return false;
+    }
+
     public boolean isSuperadmin() {
         return id == SUPERADMIN_ID;
     }
