@@ -152,10 +152,11 @@ public class ImageCardController {
             
             response.setContentType(imageFormat.getMimeType());
             response.setContentLength((int) tempFile.length());
-            
-            String contentDisposition = String.format("attachment; filename=export_img_%d.%s", imageId, imageFormat.getExtension());
-            response.setHeader("Content-Disposition", contentDisposition);
-            
+
+            String contentDisposition =
+                    (StringUtils.isNotEmpty(image.getImageNm())) ?
+                            String.format("attachment; filename=%s.%s", image.getImageNm(), imageFormat.getExtension()) :
+                            String.format("attachment; filename=export_img_%d.%s", imageId, imageFormat.getExtension());            response.setHeader("Content-Disposition", contentDisposition);
             OutputStream output = null;
             InputStream input = null;
             try {
