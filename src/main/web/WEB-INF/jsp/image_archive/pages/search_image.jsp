@@ -70,6 +70,17 @@
                     }
                 }
             });
+
+            $("#clearActionBtn").click(function (event) {
+                var clearActionBtn = $(this);
+                var searchForm = $("#search");
+                $("<input>")
+                        .attr("type", "hidden")
+                        .attr("name", clearActionBtn.attr("name"))
+                        .val(clearActionBtn.val())
+                        .prependTo(searchForm);
+                searchForm.submit();
+            });
         });
     </script>
 </c:set>
@@ -194,7 +205,7 @@
                 <input type="button" id="toggleMoreCriteriaBtn" value="More criteria" class="imcmsFormBtn"/>
 
                 <spring:message var="clearText" code="archive.searchImage.clear" htmlEscape="true"/>
-                <input type="submit" name="clearAction" value="${clearText}" class="imcmsFormBtn"/>
+                <input type="button" id="clearActionBtn" name="clearAction" value="${clearText}" class="imcmsFormBtn"/>
 
                 <spring:message var="searchText" code="archive.searchImage.search" htmlEscape="true"/>
                 <input type="submit" value="${searchText}" class="imcmsFormBtn"/>
