@@ -84,7 +84,7 @@ public class ChangeImageDataCommand implements Serializable {
         if(!newArtist.isEmpty() && (!isOverrideArtist() || isOverrideArtist() && StringUtils.isEmpty(exif.getArtist()))) {
             exif.setArtist(newArtist);
         }
-        if(!newCopyright.isEmpty() && (!isOverrideCopyright() || isOverrideCopyright() && StringUtils.isEmpty(exif.getCopyright()))) {
+        if(!isOverrideCopyright() || isOverrideCopyright() && StringUtils.isEmpty(exif.getCopyright())) {
             exif.setCopyright(newCopyright);
         }
         
