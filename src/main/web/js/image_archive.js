@@ -505,7 +505,7 @@ var setupChangeData = function() {
                     return $(this).text().indexOf('.zip') != -1;
                 }).length > 0;
 
-                if(data.fileCount > 1 || hasZip) {
+                if(data.fileCount > 0 || hasZip) {
                     $('#uploadButton').hide();
                     if($('#multiFileUploadData').length) {
                         $('#multiFileUploadData').show();
@@ -548,7 +548,7 @@ var setupChangeData = function() {
                     return isZip;
                 }).length > 0;
 
-                if(data.fileCount == 0 || (data.fileCount == 1 && !hasZip)) {
+                if(data.fileCount == 0) {
                    $('#uploadButton').show();
                    $('#multiFileUploadData').hide();
                 }

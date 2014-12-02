@@ -43,59 +43,6 @@
             </c:if>
         </div>
     </div>
-    
-    <c:if test="${image ne null}">
-        <c:url var="changeDataUrl" value="/web/archive/add-image/change"/>
-        <form:form commandName="changeData" action="${changeDataUrl}" method="post" cssClass="m15t clearfix">
-            <div class="clearfix left">
-                <div class="clearfix">
-                <div style="float:left;">
-                    <c:url var="thumbUrl" value="/web/archive/thumb">
-                        <c:param name="id" value="${image.id}"/>
-                        <c:param name="size" value="medium"/>
-                    </c:url>
-                    <div style="text-align:center;">
-                        <c:url var="previewUrl" value="/web/archive/preview">
-                            <c:param name="id" value="${image.id}"/>
-                        </c:url>
-                        <a href="${previewUrl}" class='imgLink' onclick="showPreview(${image.id}, ${image.width}, ${image.height});return false;" target="_blank">
-                            <img src="${thumbUrl}" width="300" height="225" alt="${image.imageNm}"/>
-                        </a><br/>
-
-                        <span class="hint"><spring:message code="archive.imageCard.clickToEnlarge" htmlEscape="true"/></span>
-
-                        <div style="margin-top:10px;">
-                            <spring:message var="rotateLeftText" code="archive.rotateLeft" htmlEscape="true"/>
-                            <input type="button" class="imcmsFormBtnSmall" id="rotateLeft" value="${rotateLeftText}"/>
-
-                            <spring:message var="rotateRightText" code="archive.rotateRight" htmlEscape="true"/>
-                            <input type="button" class="imcmsFormBtnSmall" id="rotateRight" value="${rotateRightText}"/>
-                        </div>
-                    </div>
-                </div>
-                <div style="float:left;margin-left:20px;">
-                    <%@ include file="/WEB-INF/jsp/image_archive/pages/fragments/change_data.jsp" %>
-                </div>
-            </div>
-
-                <div class='dataFormButtons'>
-                    <spring:message var="saveText" code="archive.save" htmlEscape="true"/>
-                    <input id="save" type="submit" name="saveAction" value="${saveText}" class="imcmsFormBtn"/>
-                    <spring:message var="saveAddText" code="archive.addImage.saveAddNew" htmlEscape="true"/>
-                    <input id="saveAdd" type="submit" name="addAction" value="${saveAddText}" class="imcmsFormBtn"/>
-                    <c:set var="disabled" value="${sessionScope.returnToImcms eq null}"/>
-                    <c:if test="${not disabled}">
-                        <spring:message var="saveUseText" code="archive.saveUseInImcms" htmlEscape="true"/>
-                        <input id="saveUse" type="submit" name="useAction" value="${saveUseText}" class="imcmsFormBtn ${disabled ? 'disabled' : ''}" onclick="${disabled ? 'return false;' : ''}"/>
-                    </c:if>
-                    <spring:message var="saveReturnText" code="archive.saveReturnImageCard" htmlEscape="true"/>
-                    <input id="saveImageCard" type="submit" name="imageCardAction" value="${saveReturnText}" class="imcmsFormBtn"/>
-                    <spring:message var="discontinueText" code="archive.addImage.discontinue" htmlEscape="true"/>
-                    <input id="discontinue" type="submit" name="discontinueAction" value="${discontinueText}" class="imcmsFormBtn"/>
-                </div>
-            </div>
-        </form:form>
-    </c:if>
 </div>
 
 <%@ include file="/WEB-INF/jsp/image_archive/includes/footer.jsp" %>
