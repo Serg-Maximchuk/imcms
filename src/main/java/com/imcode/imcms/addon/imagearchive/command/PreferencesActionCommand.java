@@ -12,8 +12,12 @@ public class PreferencesActionCommand implements Serializable {
     private String editCategoryAction;
     private String saveCategoryAction;
     private String removeCategoryAction;
-    
-    
+
+    private String createKeywordAction;
+    private String saveKeywordAction;
+    private String removeKeywordAction;
+
+
     public PreferencesActionCommand() {
     }
 
@@ -41,7 +45,19 @@ public class PreferencesActionCommand implements Serializable {
     public boolean isRemoveCategory() {
         return removeCategoryAction != null;
     }
-    
+
+    public boolean isCreateKeyword() {
+        return createKeywordAction != null;
+    }
+
+    public boolean isSaveKeyword() {
+        return saveKeywordAction != null;
+    }
+
+    public boolean isRemoveKeyword() {
+        return removeKeywordAction != null;
+    }
+
     public String getSaveRoleCategoriesAction() {
         return saveRoleCategoriesAction;
     }
@@ -88,5 +104,29 @@ public class PreferencesActionCommand implements Serializable {
 
     public void setEditCategoryAction(String editCategoryAction) {
         this.editCategoryAction = editCategoryAction;
+    }
+
+    public String getCreateKeywordAction() {
+        return createKeywordAction;
+    }
+
+    public void setCreateKeywordAction(String createKeywordAction) {
+        this.createKeywordAction = createKeywordAction;
+    }
+
+    public String getSaveKeywordAction() {
+        return saveKeywordAction;
+    }
+
+    public void setSaveKeywordAction(String saveKeywordAction) {
+        this.saveKeywordAction = saveKeywordAction;
+    }
+
+    public String getRemoveKeywordAction() {
+        return removeKeywordAction;
+    }
+
+    public void setRemoveKeywordAction(String removeKeywordAction) {
+        this.removeKeywordAction = removeKeywordAction;
     }
 }

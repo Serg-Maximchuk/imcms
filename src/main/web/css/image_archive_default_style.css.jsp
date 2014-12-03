@@ -257,7 +257,7 @@ label.withCheckbox {
     text-align: left;
 }
 
-.editCategoryTable input[disabled] {
+.editCategoryTable input[disabled], .editKeywordTable input[disabled] {
     border: none;
     background: white;
 }
@@ -406,11 +406,13 @@ div.UploadifyObjectWrapper {
     margin-top:25px;
 }
 
-table.tablesorter tr.odd td, div.odd, .editCategoryTable tr.odd td, .editCategoryTable tr.odd input.disabled {
+table.tablesorter tr.odd td, div.odd, .editCategoryTable tr.odd td, .editCategoryTable tr.odd input.disabled,
+.editKeywordTable tr.odd td, .editKeywordTable tr.odd input.disabled {
     background-color: white;
 }
 
-table.tablesorter tr.odd td, div.odd, .editCategoryTable tr.odd td, .editCategoryTable tr.odd {
+table.tablesorter tr.odd td, div.odd, .editCategoryTable tr.odd td, .editCategoryTable tr.odd,
+.editKeywordTable tr.odd td, .editKeywordTable tr.odd {
     background-color: rgb(211, 234, 255);
 }
 
@@ -466,15 +468,15 @@ table.tablesorter tr.odd td, div.odd, .editCategoryTable tr.odd td, .editCategor
     margin-bottom: 15px;
 }
 
-.editCategoryTable td {
+.editCategoryTable td, .editKeywordTable td  {
     padding: 3px 2px;
 }
 
-.editCategoryTable th.header {
+.editCategoryTable th.header, .editKeywordTable th.header {
     width:320px;
 }
 
-.editCategoryTable input {
+.editCategoryTable input, .editKeywordTable input {
     width:99%;
 }
 

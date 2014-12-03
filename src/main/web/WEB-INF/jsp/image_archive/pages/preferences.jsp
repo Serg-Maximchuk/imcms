@@ -7,6 +7,10 @@
 <spring:message var="saveCategoryBtnText" code="archive.preferences.category.save" htmlEscape="true"/>
 <spring:message var="deleteCategoryBtnText" code="archive.preferences.category.delete" htmlEscape="true"/>
 <spring:message var="cancelCategoryBtnText" code="archive.preferences.category.cancel" htmlEscape="true"/>
+<spring:message var="editKeywordBtnText" code="archive.preferences.keyword.edit" htmlEscape="true"/>
+<spring:message var="saveKeywordBtnText" code="archive.preferences.keyword.save" htmlEscape="true"/>
+<spring:message var="deleteKeywordBtnText" code="archive.preferences.keyword.delete" htmlEscape="true"/>
+<spring:message var="cancelKeywordBtnText" code="archive.preferences.keyword.cancel" htmlEscape="true"/>
 <spring:message var="show" code="archive.preferences.show"/>
 <spring:message var="hide" code="archive.preferences.hide"/>
 <c:set var="currentPage" value="preferences"/>
@@ -41,6 +45,9 @@
             <c:if test="${editingCategories}">
                 contentToHide = contentToHide.not($("#contentToHideCategories"));
             </c:if>
+            <c:if test="${editingKeywords}">
+                contentToHide = contentToHide.not($("#contentToHideKeywords"));
+            </c:if>
             <c:if test="${editingRoles}">
                 contentToHide = contentToHide.not($("#contentToHideRoles"));
             </c:if>
@@ -66,51 +73,101 @@
                 toggleIndicators(this);
             });
 
+            function createButton(type, name, text) {
+                return $("<button>")
+                        .attr("class", "imcmsFormBtnSmall inBtnGroup")
+                        .attr("type", type)
+                        .attr("name", name)
+                        .text(text);
+            }
 
-            var editBtn = $('<button class="imcmsFormBtnSmall inBtnGroup" type="button" name="edit">${editCategoryBtnText}</button>');
-            var saveBtn = $('<button class="imcmsFormBtnSmall inBtnGroup" type="submit" name="saveCategoryAction">${saveCategoryBtnText}</button>');
-            var deleteBtn = $('<button class="imcmsFormBtnSmall inBtnGroup" type="submit" name="removeCategoryAction">${deleteCategoryBtnText}</button>');
-            var cancelBtn = $('<button class="imcmsFormBtnSmall inBtnGroup" type="button" name="cancel">${cancelCategoryBtnText}</button>');
-            var categoryOldName;
-            var editCategoryId;
+            var editCategoryBtn = createButton("button", "editCategory", "${editCategoryBtnText}")
+            var saveCategoryBtn = createButton("submit", "saveCategoryAction", "${saveCategoryBtnText}")
+            var deleteCategoryBtn = createButton("submit", "removeCategoryAction", "${deleteCategoryBtnText}")
+            var cancelCategoryBtn = createButton("button", "cancel", "${cancelCategoryBtnText}")
 
-            function cancelEditing(row) {
+            var editKeywordBtn = createButton("button", "editKeyword", "${editKeywordBtnText}")
+            var saveKeywordBtn = createButton("submit", "saveKeywordAction", "${saveKeywordBtnText}")
+            var deleteKeywordBtn = createButton("submit", "removeKeywordAction", "${deleteKeywordBtnText}")
+            var cancelKeywordBtn = createButton("button", "cancel", "${cancelKeywordBtnText}")
+
+            var categoryOldName, editCategoryId, keywordOldName, editKeywordId;
+
+            function cancelEditing(row, oldName, controlsCls, editBtn) {
                 // presence of any of save/delete/cancel buttons means editing
                 if (row.find("button[name=cancel]").length > 0) {
-                    var categoryName = row.find("input[type=text]");
-                    categoryName.attr("disabled", "disabled");
-                    categoryName.toggleClass("disabled");
-                    categoryName.val(categoryOldName);
-                    var controls = row.find(".controls");
+                    var inputName = row.find("input[type=text]");
+                    inputName.attr("disabled", "disabled");
+                    inputName.toggleClass("disabled");
+                    inputName.val(oldName);
+                    var controls = row.find(controlsCls);
                     controls.empty();
                     controls.append(editBtn.clone(true));
                 }
             }
 
-            editBtn.click(function() {
-                var thisRow = $(this).parent().parent();
+            function getParentParent(elm){
+                return $(elm).parent().parent();
+            }
+
+            function getOldName(thisRow){
+                var inputName = thisRow.find("input[type=text]");
+                inputName.removeAttr("disabled");
+                inputName.toggleClass("disabled");
+                return inputName.val();
+            }
+
+            function getDataId(thisRow, attrDataId){
+                var inputName = thisRow.find("input[type=text]");
+                return inputName.attr(attrDataId);
+            }
+
+            editCategoryBtn.click(function() {
+                var thisRow = getParentParent(this);
                 // cancel editing on all rows
                 thisRow.parent().find("tr").each(function() {
-                    cancelEditing($(this));
+                    cancelEditing($(this), categoryOldName, ".categoryControls", editCategoryBtn);
                 });
 
-                var categoryName = thisRow.find("input[type=text]");
-                editCategoryId.val(categoryName.attr("data-categoryId"));
-                categoryName.removeAttr("disabled");
-                categoryName.toggleClass("disabled");
-                categoryOldName = categoryName.val();
+                categoryOldName = getOldName(thisRow);
+                editCategoryId.val(getDataId(thisRow, "data-categoryId"));
+
                 var controls = $(this).parent();
                 controls.empty();
-                controls.append(saveBtn.clone(true), deleteBtn.clone(true), cancelBtn.clone(true));
+                controls.append(saveCategoryBtn.clone(true), deleteCategoryBtn.clone(true), cancelCategoryBtn.clone(true));
             });
 
-            cancelBtn.click(function() {
-                var thisRow = $(this).parent().parent();
-                cancelEditing(thisRow);
+            editKeywordBtn.click(function() {
+                var thisRow = getParentParent(this);
+                // cancel editing on all rows
+                thisRow.parent().find("tr").each(function() {
+                    cancelEditing($(this), keywordOldName, ".keywordControls", editKeywordBtn);
+                });
+
+                keywordOldName = getOldName(thisRow);
+                editKeywordId.val(getDataId(thisRow, "data-keywordId"));
+
+                var controls = $(this).parent();
+                controls.empty();
+                controls.append(saveKeywordBtn.clone(true), deleteKeywordBtn.clone(true), cancelKeywordBtn.clone(true));
             });
 
-            $(".controls").append(editBtn.clone(true));
+            cancelCategoryBtn.click(function() {
+                var thisRow = getParentParent(this);
+                cancelEditing(thisRow, categoryOldName, ".categoryControls", editCategoryBtn);
+            });
+
+            cancelKeywordBtn.click(function() {
+                var thisRow = getParentParent(this);
+                cancelEditing(thisRow, keywordOldName, ".keywordControls", editKeywordBtn);
+            });
+
+            $(".categoryControls").append(editCategoryBtn.clone(true));
             editCategoryId = $("#editCategoryId");
+
+            $(".keywordControls").append(editKeywordBtn.clone(true));
+            editKeywordId = $("#editKeywordId");
+
         });
     </script>
 </c:set>
@@ -172,10 +229,75 @@
                                 <input class="disabled" name="editCategoryName" data-categoryId="${category.id}" type="text"
                                        value="<c:out value="${category.name}"/>" disabled/>
                             </td>
-                            <td class="controls">
+                            <td class="categoryControls">
                             </td>
                         </tr>
                         </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </form:form>
+    </div>
+</div>
+
+<div class="preferencesSection">
+    <h4 class="colapsableLabel imcmsAdmHeading clearfix">
+        <span class="left"><spring:message code="archive.preferences.keywords" htmlEscape="true"/></span>
+        <span class="right indicator ${editingCategories ? 'unfolded' : 'folded'}">${editingKeywords ? hide : show}</span>
+    </h4>
+
+    <div class="contentToHide" id="contentToHideKeywords">
+        <h4 class="m15t">
+            <spring:message code="archive.preferences.createNewKeyword" htmlEscape="true"/>
+        </h4>
+
+        <c:url var="preferencesUrl" value="/web/archive/preferences"/>
+
+        <form:form action="${preferencesUrl}" commandName="createKeyword" method="post" cssClass="m15t clearfix">
+            <div class="minH30 clearfix">
+                <span class="left" style="width:65px;">
+                    <label for="createKeywordName"><spring:message code="archive.preferences.name"
+                                                                   htmlEscape="true"/></label>
+                </span>
+
+                <div class="left">
+                    <form:input path="createKeywordName" id="createKeywordName" maxlength="50"
+                                cssStyle="width:180px;"/>
+                    <spring:message var="createText" code="archive.preferences.create" htmlEscape="true"/>
+                    <input type="submit" name="createKeywordAction" value="${createText}" style="margin-left:3px;" class="imcmsSpecialButton"/>
+                    <br/>
+                    <form:errors path="createKeywordName" cssClass="red"/>
+                </div>
+            </div>
+        </form:form>
+
+        <h4 class="m15t">
+            <spring:message code="archive.preferences.editKeyword" htmlEscape="true"/>
+        </h4>
+
+        <c:url var="preferencesUrl" value="/web/archive/preferences"/>
+        <form:form action="${preferencesUrl}" commandName="editKeyword" method="post" cssClass="m15t clearfix">
+            <input type="hidden" name="editKeywordId" id="editKeywordId"/>
+
+            <div class="clearfix left">
+                <table class="editKeywordTable tablesorter" cellpadding="0" cellspacing="1">
+                    <thead>
+                    <tr>
+                        <th><spring:message code="archive.preferences.keyword" htmlEscape="true"/></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="keyword" items="${keywords}">
+                        <tr>
+                            <td>
+                                <input class="disabled" name="editKeywordName" data-keywordId="${keyword.id}" type="text"
+                                       value="<c:out value="${keyword.keywordNm}"/>" disabled/>
+                            </td>
+                            <td class="keywordControls">
+                            </td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>

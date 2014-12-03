@@ -8,11 +8,10 @@ import com.imcode.imcms.addon.imagearchive.entity.Libraries;
 import com.imcode.imcms.addon.imagearchive.entity.Roles;
 import com.imcode.imcms.addon.imagearchive.service.Facade;
 import com.imcode.imcms.addon.imagearchive.service.exception.CategoryExistsException;
+import com.imcode.imcms.addon.imagearchive.service.exception.KeywordExistsException;
 import com.imcode.imcms.addon.imagearchive.util.ArchiveSession;
 import com.imcode.imcms.addon.imagearchive.util.Utils;
-import com.imcode.imcms.addon.imagearchive.validator.CreateCategoryValidator;
-import com.imcode.imcms.addon.imagearchive.validator.EditCategoryValidator;
-import com.imcode.imcms.addon.imagearchive.validator.SaveLibraryRolesValidator;
+import com.imcode.imcms.addon.imagearchive.validator.*;
 import com.imcode.imcms.api.CategoryType;
 import com.imcode.imcms.api.CategoryTypeAlreadyExistsException;
 import com.imcode.imcms.api.ContentManagementSystem;
@@ -55,6 +54,12 @@ public class PreferencesController {
 
             @ModelAttribute("editCategory") EditCategoryCommand editCategoryCommand,
             BindingResult editCategoryResult,
+
+            @ModelAttribute("createKeyword") CreateKeywordCommand createKeywordCommand,
+            BindingResult createKeywordResult,
+
+            @ModelAttribute("editKeyword") EditKeywordCommand editKeywordCommand,
+            BindingResult editKeywordResult,
 
             @ModelAttribute("saveLibraryRoles") SaveLibraryRolesCommand librariesCommand,
             BindingResult librariesResult,
@@ -130,7 +135,19 @@ public class PreferencesController {
         } else if (actionCommand.isRemoveCategory()) {
             processRemoveCategory(editCategoryCommand);
             model.put("editingCategories", true);
-            
+
+        } else if (actionCommand.isCreateKeyword()) {
+            processCreateKeyword(createKeywordCommand, createKeywordResult);
+            model.put("editingKeywords", true);
+
+        } else if (actionCommand.isSaveKeyword()) {
+            processSaveKeyword(editKeywordCommand, editKeywordResult);
+            model.put("editingKeywords", true);
+
+        } else if (actionCommand.isRemoveKeyword()) {
+            processRemoveKeyword(editKeywordCommand);
+            model.put("editingKeywords", true);
+
         } else if (actionCommand.isSaveLibraryRoles() && library != null && librariesCommand.getLibraryRoles() != null) {
             processSaveLibraryRoles(librariesCommand, librariesResult, model);
             model.put("editingLibraries", true);
@@ -163,7 +180,9 @@ public class PreferencesController {
         model.put("categoryRoles", categoryRoles);
         
         model.put("categories", facade.getCategoryService().getCategories());
-        
+
+        model.put("keywords", facade.getKeywordService().getKeywords());
+
         model.put("roles", roles);
 
         model.put("libraries", libraries);
@@ -227,7 +246,47 @@ public class PreferencesController {
         command.setEditCategoryName("");
         command.setShowEditCategory(false);
     }
-    
+
+    private void processCreateKeyword(CreateKeywordCommand command, BindingResult result) {
+        CreateKeywordValidator validator = new CreateKeywordValidator();
+        ValidationUtils.invokeValidator(validator, command, result);
+
+        if (!result.hasErrors()) {
+            String keywordName = command.getCreateKeywordName();
+
+            try {
+                facade.getKeywordService().createKeyword(keywordName);
+
+                command.setCreateKeywordName("");
+            } catch (KeywordExistsException ex) {
+                result.rejectValue("createKeywordName", "archive.preferences.keywordExistsError");
+            }
+        }
+    }
+
+    private void processSaveKeyword(EditKeywordCommand command, BindingResult result) {
+        EditKeywordValidator validator = new EditKeywordValidator();
+        ValidationUtils.invokeValidator(validator, command, result);
+
+        if (!result.hasErrors()) {
+            long keywordId = command.getEditKeywordId();
+            String KeywordName = command.getEditKeywordName();
+
+            try {
+                facade.getKeywordService().updateKeyword(keywordId, KeywordName);
+
+            } catch (KeywordExistsException ex) {
+                result.rejectValue("editKeywordName", "archive.preferences.keywordExistsError");
+            }
+        }
+    }
+
+    private void processRemoveKeyword(EditKeywordCommand command) {
+        facade.getKeywordService().deleteKeyword(command.getEditKeywordId());
+
+        command.setEditKeywordName("");
+    }
+
     @SuppressWarnings("unchecked")
     private void processSaveLibraryRoles(SaveLibraryRolesCommand command, BindingResult result, Map<String, Object> model) {
         SaveLibraryRolesValidator validator = new SaveLibraryRolesValidator();

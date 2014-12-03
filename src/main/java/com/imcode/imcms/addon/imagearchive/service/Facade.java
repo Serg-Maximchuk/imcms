@@ -22,8 +22,9 @@ public class Facade {
     private LibraryService libraryService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private KeywordService keywordService;
 
-    
     public Facade() {
     }
     
@@ -58,5 +59,9 @@ public class Facade {
     
     public CategoryService getCategoryService() {
         return categoryService;
+    }
+
+    public KeywordService getKeywordService() {
+        return keywordService;
     }
 }

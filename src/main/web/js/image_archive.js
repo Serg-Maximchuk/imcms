@@ -690,17 +690,22 @@ var initPreferences = function() {
             return false;
         });
 
-        if($(".editCategoryTable td").length > 0) {
-            $(".editCategoryTable").tablesorter({textExtraction: function(node) {
+        var sorterFirstColumnTable = function(tableCls) {
+            if($(tableCls + " td").length > 0) {
+                $(tableCls).tablesorter({textExtraction: function(node) {
                     if($(node).find("input").length > 0) {
                         return $(node).find("input[type='text']").val();
                     }
                     return node.innerHTML;
                 }, sortList: [[0,0]], headers:{ 1 : {sorter:false}}
-            });
-        } else {
-            $(".editCategoryTable").tablesorter({headers: { 0 : {sorter:false}, 1 : {sorter:false}}});
-        }
+                });
+            } else {
+                $(tableCls).tablesorter({headers: { 0 : {sorter:false}, 1 : {sorter:false}}});
+            }
+        };
+
+        sorterFirstColumnTable(".editCategoryTable");
+        sorterFirstColumnTable(".editKeywordTable");
 
         if($(".roleTable td").length > 0) {
             $(".roleTable").tablesorter({sortList: [[0,0]], headers:{ 1 : {sorter:false}, 2 : {sorter:false}}});
