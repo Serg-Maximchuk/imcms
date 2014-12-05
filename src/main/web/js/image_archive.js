@@ -27,8 +27,12 @@ $.extend($, {
     }
 });
 
+function getSwedishAlphabet(){
+    return 'ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖabcdefghijklmnopqrstuvwxyzåäö';
+}
+
 String.prototype.compareAlphabetically = function(str, alphabet) {
-    var SvAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖabcdefghijklmnopqrstuvwxyzåäö';
+    var SvAlphabet = getSwedishAlphabet();
     
     function compareLetters(a, b) {
         var ia = alphabet.indexOf(a);
@@ -42,7 +46,7 @@ String.prototype.compareAlphabetically = function(str, alphabet) {
             }
             return a > b;
         }
-        return a > b;
+        return ia > ib;
     }
 
     alphabet = alphabet || SvAlphabet;
@@ -126,45 +130,80 @@ var setupChangeData = function() {
     };
 
     var setupForm = function() {
-        var categoryIds = [];
+        var categories = [];
+        var imageCategories = [];
         var keywords = [];
         var imageKeywords = [];
 
-        $("#imageCategories option").each(function() {
-            categoryIds.push($(this).val());
+        function sortAndReplaceDataSelect(array, select) {
+            array.sort(function(a, b) {
+                return a.text.compareAlphabetically(b.text);
+            });
+            $(select).empty();
+            $.each(array, function(index, obj) {
+                $(select).append($('<option>', {value: obj.value, text: obj.text}));
+            });
+        }
+
+        $("#availableCategories option").each(function() {
+            categories.push({value: $(this).val(), text: $(this).text()});
         });
+        sortAndReplaceDataSelect(categories, "#availableCategories");
+
+        $("#imageCategories option").each(function() {
+            imageCategories.push({value: $(this).val(), text: $(this).text()});
+        });
+        sortAndReplaceDataSelect(imageCategories, "#imageCategories");
 
         $("#availableKeywords option").each(function() {
             keywords.push({value: $(this).val(), text: $(this).text()});
         });
+        sortAndReplaceDataSelect(keywords, "#availableKeywords");
+
         $("#assignedKeywords option").each(function() {
             imageKeywords.push({value: $(this).val(), text: $(this).text()});
         });
+        sortAndReplaceDataSelect(imageKeywords, "#assignedKeywords");
 
         $("#addCategory").click(function() {
-            var selected = $("#availableCategories :selected");
-            if (selected.length) {
-                selected.appendTo("#imageCategories");
-
-                selected.each(function() {
-                    categoryIds.push($(this).val());
+            $("#availableCategories :selected").each(function() {
+                var category= {value: $(this).val(), text: $(this).text()};
+                _.remove(categories, function(obj) {
+                    return _.isEqual(obj, category);
                 });
-            }
+                $(this).remove();
+                imageCategories.push(category);
+            });
 
+            sortAndReplaceDataSelect(imageCategories, "#imageCategories");
+/*            imageCategories.sort(function(a, b) {
+                return a.text.compareAlphabetically(b.text);
+            });
+            $("#imageCategories").empty();
+            $.each(imageCategories, function(index, obj) {
+                $("#imageCategories").append($('<option>', {value: obj.value, text: obj.text}));
+            });
+*/
             return false;
         });
         $("#deleteCategory").click(function() {
-            var selected = $("#imageCategories :selected");
-            if (selected.length) {
-                selected.appendTo("#availableCategories");
-
-                selected.each(function() {
-                    var index = $.inArray($(this).val(), categoryIds);
-                    if (index != -1) {
-                        categoryIds.splice(index, 1);
-                    }
+            $("#imageCategories :selected").each(function() {
+                var category = {value: $(this).val(), text: $(this).text()};
+                _.remove(imageCategories, function(obj) {
+                    return _.isEqual(obj, category);
                 });
-            }
+                $(this).remove();
+                categories.push(category);
+            });
+
+            sortAndReplaceDataSelect(categories, "#availableCategories");
+/*            categories.sort(function(a, b) {
+                return a.text.compareAlphabetically(b.text);
+            });
+            $("#availableCategories").empty();
+            $.each(categories, function(index, obj) {
+                $("#availableCategories").append($('<option>', {value: obj.value, text: obj.text}));
+            });    */
 
             return false;
         });
@@ -179,13 +218,14 @@ var setupChangeData = function() {
                 imageKeywords.push(keyword);
             });
 
-            imageKeywords.sort(function(a, b) {
-                return a.value.compareAlphabetically(b.value);
+            sortAndReplaceDataSelect(imageKeywords, "#assignedKeywords");
+/*            imageKeywords.sort(function(a, b) {
+                return a.text.compareAlphabetically(b.text);
             });
             $("#assignedKeywords").empty();
             $.each(imageKeywords, function(index, obj) {
                 $("#assignedKeywords").append($('<option>', {value: obj.value, text: obj.text}));
-            });
+            });*/
 
             return false;
         });
@@ -199,14 +239,14 @@ var setupChangeData = function() {
                 $(this).remove();
                 keywords.push(keyword);
             });
-
-            keywords.sort(function(a, b) {
-                return a.value.compareAlphabetically(b.value);
+            sortAndReplaceDataSelect(keywords, "#availableKeywords");
+/*            keywords.sort(function(a, b) {
+                return a.text.compareAlphabetically(b.text);
             });
             $("#availableKeywords").empty();
             $.each(keywords, function(index, obj) {
                 $("#availableKeywords").append($('<option>', {value: obj.value, text: obj.text}));
-            });
+            });                    */
 
             $('#keywordPattern').trigger('change');
 
@@ -241,14 +281,16 @@ var setupChangeData = function() {
 
                         var newKeyword = {value: data.newKeyword, text: data.newKeyword};
                         imageKeywords.push(newKeyword);
-                        imageKeywords.sort(function(a, b) {
-                            return a.value.compareAlphabetically(b.value);
+
+                        sortAndReplaceDataSelect(imageKeywords, "#assignedKeywords");
+                        /*imageKeywords.sort(function(a, b) {
+                            return a.text.compareAlphabetically(b.text);
                         });
 
                         $("#assignedKeywords").empty();
                         $.each(imageKeywords, function(index, obj) {
                             $("#assignedKeywords").append($('<option>', {value: obj.value, text: obj.text}));
-                        });
+                        });*/
                     },
                     complete: function() {
                         $("#keyword").val("");
@@ -264,7 +306,12 @@ var setupChangeData = function() {
         });
 
         function serializeCategoriesAndKeywords() {
-            $("#categories").val($.join(categoryIds, ","));
+            var categoriesIds = [];
+            $.each(imageCategories, function(index, obj) {
+                categoriesIds.push(obj.value);
+            });
+            $("#categories").val($.join(categoriesIds, ","));
+
 
             var keywordNames = [],
                 imageKeywordNames = [];
@@ -651,7 +698,7 @@ var initSearchImage = function() {
 var initPreferences = function() {
     $(function() {
         var categoryIds = [];
-        
+
         $("#assignedCategories option").each(function() {
             categoryIds.push($(this).val());
         });
@@ -692,12 +739,25 @@ var initPreferences = function() {
 
         var sorterFirstColumnTable = function(tableCls) {
             if($(tableCls + " td").length > 0) {
-                $(tableCls).tablesorter({textExtraction: function(node) {
-                    if($(node).find("input").length > 0) {
-                        return $(node).find("input[type='text']").val();
+                $(tableCls).tablesorter({
+                    ignoreCase : false,
+                    textSorter: {
+                        0: function(a, b, direction, column, table){
+                            return a.compareAlphabetically(b);
+                        }
+                    },
+                    textExtraction: function (node) {
+                        if ($(node).find("input").length > 0) {
+                            return $(node).find("input[type='text']").val();
+                        }
+                        return node.innerHTML;
+                    },
+                    sortList: [[0,0]],
+                    headers: {
+                        //when 'text'  -> execute textSorter
+                        0: {sorter: 'text'},
+                        1: {sorter: false}
                     }
-                    return node.innerHTML;
-                }, sortList: [[0,0]], headers:{ 1 : {sorter:false}}
                 });
             } else {
                 $(tableCls).tablesorter({headers: { 0 : {sorter:false}, 1 : {sorter:false}}});

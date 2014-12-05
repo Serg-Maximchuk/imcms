@@ -81,15 +81,15 @@
                         .text(text);
             }
 
-            var editCategoryBtn = createButton("button", "editCategory", "${editCategoryBtnText}")
-            var saveCategoryBtn = createButton("submit", "saveCategoryAction", "${saveCategoryBtnText}")
-            var deleteCategoryBtn = createButton("submit", "removeCategoryAction", "${deleteCategoryBtnText}")
-            var cancelCategoryBtn = createButton("button", "cancel", "${cancelCategoryBtnText}")
+            var editCategoryBtn = createButton("button", "editCategory", "${editCategoryBtnText}");
+            var saveCategoryBtn = createButton("submit", "saveCategoryAction", "${saveCategoryBtnText}");
+            var deleteCategoryBtn = createButton("submit", "removeCategoryAction", "${deleteCategoryBtnText}");
+            var cancelCategoryBtn = createButton("button", "cancel", "${cancelCategoryBtnText}");
 
-            var editKeywordBtn = createButton("button", "editKeyword", "${editKeywordBtnText}")
-            var saveKeywordBtn = createButton("submit", "saveKeywordAction", "${saveKeywordBtnText}")
-            var deleteKeywordBtn = createButton("submit", "removeKeywordAction", "${deleteKeywordBtnText}")
-            var cancelKeywordBtn = createButton("button", "cancel", "${cancelKeywordBtnText}")
+            var editKeywordBtn = createButton("button", "editKeyword", "${editKeywordBtnText}");
+            var saveKeywordBtn = createButton("submit", "saveKeywordAction", "${saveKeywordBtnText}");
+            var deleteKeywordBtn = createButton("submit", "removeKeywordAction", "${deleteKeywordBtnText}");
+            var cancelKeywordBtn = createButton("button", "cancel", "${cancelKeywordBtnText}");
 
             var categoryOldName, editCategoryId, keywordOldName, editKeywordId;
 
@@ -215,10 +215,10 @@
             <input type="hidden" name="editCategoryId" id="editCategoryId"/>
 
             <div class="clearfix left">
-                <table class="editCategoryTable tablesorter" cellpadding="0" cellspacing="1">
+                <table class="editCategoryTable" cellpadding="0" cellspacing="1">
                     <thead>
                         <tr>
-                            <th><spring:message code="archive.preferences.category" htmlEscape="true"/></th>
+                            <th class="header"><spring:message code="archive.preferences.category" htmlEscape="true"/></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -280,10 +280,10 @@
             <input type="hidden" name="editKeywordId" id="editKeywordId"/>
 
             <div class="clearfix left">
-                <table class="editKeywordTable tablesorter" cellpadding="0" cellspacing="1">
+                <table class="editKeywordTable" cellpadding="0" cellspacing="1">
                     <thead>
                     <tr>
-                        <th><spring:message code="archive.preferences.keyword" htmlEscape="true"/></th>
+                        <th class="header"><spring:message code="archive.preferences.keyword" htmlEscape="true"/></th>
                         <th></th>
                     </tr>
                     </thead>
@@ -335,7 +335,7 @@
 
             <div class="clearfix">
                 <div class="left" style="width:500px;">
-                    <table class="roleTable tablesorter" cellpadding="0" cellspacing="1">
+                    <table class="roleTable" cellpadding="0" cellspacing="1">
                         <thead>
                             <tr>
                                 <th class="labelCell">
@@ -444,7 +444,7 @@
                     </div>
 
                     <div class="left" style="width:500px;margin-top:20px;">
-                        <table class="libraryCategoriesTable tablesorter" cellpadding="0" cellspacing="1">
+                        <table class="libraryCategoriesTable" cellpadding="0" cellspacing="1">
                             <thead>
                                 <tr>
                                     <th class="widerLabelCell"><spring:message code="archive.preferences.role" htmlEscape="true"/></th>
