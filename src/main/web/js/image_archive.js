@@ -176,14 +176,7 @@ var setupChangeData = function() {
             });
 
             sortAndReplaceDataSelect(imageCategories, "#imageCategories");
-/*            imageCategories.sort(function(a, b) {
-                return a.text.compareAlphabetically(b.text);
-            });
-            $("#imageCategories").empty();
-            $.each(imageCategories, function(index, obj) {
-                $("#imageCategories").append($('<option>', {value: obj.value, text: obj.text}));
-            });
-*/
+
             return false;
         });
         $("#deleteCategory").click(function() {
@@ -197,13 +190,6 @@ var setupChangeData = function() {
             });
 
             sortAndReplaceDataSelect(categories, "#availableCategories");
-/*            categories.sort(function(a, b) {
-                return a.text.compareAlphabetically(b.text);
-            });
-            $("#availableCategories").empty();
-            $.each(categories, function(index, obj) {
-                $("#availableCategories").append($('<option>', {value: obj.value, text: obj.text}));
-            });    */
 
             return false;
         });
@@ -219,13 +205,6 @@ var setupChangeData = function() {
             });
 
             sortAndReplaceDataSelect(imageKeywords, "#assignedKeywords");
-/*            imageKeywords.sort(function(a, b) {
-                return a.text.compareAlphabetically(b.text);
-            });
-            $("#assignedKeywords").empty();
-            $.each(imageKeywords, function(index, obj) {
-                $("#assignedKeywords").append($('<option>', {value: obj.value, text: obj.text}));
-            });*/
 
             return false;
         });
@@ -240,13 +219,6 @@ var setupChangeData = function() {
                 keywords.push(keyword);
             });
             sortAndReplaceDataSelect(keywords, "#availableKeywords");
-/*            keywords.sort(function(a, b) {
-                return a.text.compareAlphabetically(b.text);
-            });
-            $("#availableKeywords").empty();
-            $.each(keywords, function(index, obj) {
-                $("#availableKeywords").append($('<option>', {value: obj.value, text: obj.text}));
-            });                    */
 
             $('#keywordPattern').trigger('change');
 
@@ -283,14 +255,6 @@ var setupChangeData = function() {
                         imageKeywords.push(newKeyword);
 
                         sortAndReplaceDataSelect(imageKeywords, "#assignedKeywords");
-                        /*imageKeywords.sort(function(a, b) {
-                            return a.text.compareAlphabetically(b.text);
-                        });
-
-                        $("#assignedKeywords").empty();
-                        $.each(imageKeywords, function(index, obj) {
-                            $("#assignedKeywords").append($('<option>', {value: obj.value, text: obj.text}));
-                        });*/
                     },
                     complete: function() {
                         $("#keyword").val("");
