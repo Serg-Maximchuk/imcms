@@ -8,7 +8,10 @@
             <spring:message code="archive.changeData.imageName" htmlEscape="true"/>
         </label>
 
-        <div class="infoValue"></div>
+        <div class="infoValue">
+            <input type="text" id="image_nm" name="imageNm" value="" maxlength="255" style="width:100%;"/>
+            <span id='imageNm.error' class="error red"></span>
+        </div>
     </div>
     <div class="minH30 clearfix">
         <label for="description" class="infoLabel">
@@ -17,7 +20,7 @@
 
         <div class="infoValue">
             <textarea rows="4" cols="40" style="width:100%;height:80px;" id='description' name='description'></textarea>
-            <input id="override_desc" type='checkbox' name='overrideDesc'/><label for='override_desc' class='withCheckbox'>${overrideExif}</label>
+            <input id="override_desc" type='checkbox' name='overrideDesc'/><label id="override_desc_label" for='override_desc' class='withCheckbox'>${overrideExif}</label>
             <span id='description.error' class="error red"></span>
         </div>
     </div>
@@ -111,7 +114,7 @@
 
         <div class="infoValue">
             <input id='artist' type='text' name='artist' maxlength="255" style="width:100%;"/>
-            <input id="override_photographer" type='checkbox' name='overrideArtist'/><label for='override_photographer' class='withCheckbox'>${overrideExif}</label>
+            <input id="override_photographer" type='checkbox' name='overrideArtist'/><label id="override_photographer_label" for='override_photographer' class='withCheckbox'>${overrideExif}</label>
             <span id='artist.error' class="error red"></span>
         </div>
     </div>
@@ -162,7 +165,7 @@
 
         <div class="infoValue">
             <input type='text' name='copyright' id='copyright' maxlength="255" style="width:100%;"/>
-            <input id="override_copyright" type='checkbox' name='overrideCopyright'/><label for='override_copyright' class='withCheckbox'>${overrideExif}</label>
+            <input id="override_copyright" type='checkbox' name='overrideCopyright'/><label id="override_copyright_label" for='override_copyright' class='withCheckbox'>${overrideExif}</label>
             <span id='copyright.error' class="error red"></span>
         </div>
     </div>

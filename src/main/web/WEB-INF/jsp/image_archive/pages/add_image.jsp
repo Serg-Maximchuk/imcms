@@ -31,7 +31,7 @@
                 </div>
             </div>
             <spring:message var="uploadText" code="archive.addImage.upload" htmlEscape="true"/>
-            <input id="uploadButton" type="button" value="${uploadText}" class="imcmsFormBtn"/>
+            <%--<input id="uploadButton" type="button" value="${uploadText}" class="imcmsFormBtn"/>--%>
         </div>
     </form:form>
     <div class="clearfix">

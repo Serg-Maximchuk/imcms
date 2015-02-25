@@ -130,6 +130,13 @@ public class AddImageController {
                     } else {
                         image = facade.getImageService().createImage(validator.getTempFile(),
                             validator.getImageInfo(), validator.getImageName(), user);
+
+                        if(changeData.isSubmitted()) {
+                            if(image != null) {
+                                changeData.toImage(image);
+                                facade.getImageService().updateData(image, changeData.getCategoryIds(), changeData.getImageKeywordNames());
+                            }
+                        }
                     }
 
                     if (image == null) {

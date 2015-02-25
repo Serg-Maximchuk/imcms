@@ -452,6 +452,29 @@ var setupChangeData = function() {
 
     setupForm();
 
+    function visibleOverrideCheckbox(idCheckbox, isShow){
+        if (isShow) {
+            $(idCheckbox).show();
+            $(idCheckbox + '_label').show();
+        } else {
+            $(idCheckbox).hide();
+            $(idCheckbox + '_label').hide();
+            $(idCheckbox).removeAttr("checked");
+        }
+    }
+
+    function visibleMultiFileDataElement(isOneFile){
+        if (isOneFile) {
+            $('#image_nm').show();
+        } else {
+            $('#image_nm').val('');
+            $('#image_nm').hide();
+        }
+        visibleOverrideCheckbox('#override_photographer', !isOneFile);
+        visibleOverrideCheckbox('#override_copyright', !isOneFile);
+        visibleOverrideCheckbox('#override_desc', !isOneFile);
+    }
+
     var redirectOnAllComplete = '';
     $('#uploadify').uploadify({
         'uploader': common.getRelativeUrl('/js/jquery.uploadify-v2.1.4/uploadify.swf'),
@@ -460,7 +483,6 @@ var setupChangeData = function() {
                 window.location.replace(redirectOnAllComplete);
             }
 
-            $('#uploadButton').show();
             $('#multiFileUploadData').hide();
         },
         onComplete: function(a, b, c, resp, info){
@@ -517,7 +539,6 @@ var setupChangeData = function() {
                 }).length > 0;
 
                 if(data.fileCount > 0 || hasZip) {
-                    $('#uploadButton').hide();
                     if($('#multiFileUploadData').length) {
                         $('#multiFileUploadData').show();
                         $('#changeData').remove();
@@ -534,9 +555,11 @@ var setupChangeData = function() {
                         });
                     }
                 } else {
-                    $('#uploadButton').show();
                     $('#multiFileUploadData').hide();
                 }
+
+                var isOneFile = data.fileCount == 1 && !hasZip;
+                visibleMultiFileDataElement(isOneFile);
             }
         },
         'onSWFReady': resizeUplodifyButtons,
@@ -560,9 +583,11 @@ var setupChangeData = function() {
                 }).length > 0;
 
                 if(data.fileCount == 0) {
-                   $('#uploadButton').show();
                    $('#multiFileUploadData').hide();
                 }
+
+                var isOneFile = data.fileCount == 1 && !hasZip;
+                visibleMultiFileDataElement(isOneFile);
             }
         },
         onError: function(event, ID, fileObj, errorObj) {
